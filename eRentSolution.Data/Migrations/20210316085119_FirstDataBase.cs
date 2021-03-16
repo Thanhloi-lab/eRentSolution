@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace eRentSolution.Data.Migrations
 {
-    public partial class FirstDatabase : Migration
+    public partial class FirstDataBase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -196,6 +196,7 @@ namespace eRentSolution.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Details = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
@@ -206,18 +207,17 @@ namespace eRentSolution.Data.Migrations
                     OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     ViewCount = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AppUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_AppUsers_AppUserId",
-                        column: x => x.AppUserId,
+                        name: "FK_Products_AppUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AppUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -282,7 +282,7 @@ namespace eRentSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AppRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[] { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "2ad40f93-7d5d-49a7-843c-842cfc89958f", "Administrator role", "admin", "admin" });
+                values: new object[] { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "dd8134a1-f711-4b55-8f93-c71b96ccfb79", "Administrator role", "admin", "admin" });
 
             migrationBuilder.InsertData(
                 table: "AppUserRoles",
@@ -292,7 +292,7 @@ namespace eRentSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AppUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Dob", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "51d2063b-81bd-4bb6-97a3-2029cc326e65", new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "caothanhloi@gmail.com", true, "Lợi", "Cao Thành", false, null, "caothanhloi@gmail.com", "admin", "AQAAAAEAACcQAAAAEJmUsbvKMXL/0TOPprG+5/czeZuFrOSxgsNLwYFUvYAUufyoAG52EuO6e9b1Rpk+ag==", null, false, "", false, "admin" });
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "907b34c7-d39e-448d-a396-7e9ce9f06d0d", new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "caothanhloi@gmail.com", true, "Lợi", "Cao Thành", false, null, "caothanhloi@gmail.com", "admin", "AQAAAAEAACcQAAAAEE+EkfpICUyzPZZJugoX/Ey4ZuTmZUyIYg6C9PoRMO4nNTJ4d3g+ykj71C6AGzQ7Xw==", null, false, "", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -305,8 +305,8 @@ namespace eRentSolution.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "AppUserId", "DateCreated", "Description", "Details", "Name", "OriginalPrice", "Price", "SeoAlias", "SeoDescription", "SeoTitle" },
-                values: new object[] { 1, null, new DateTime(2021, 3, 16, 12, 10, 33, 761, DateTimeKind.Local).AddTicks(6168), "Áo sơ mi nam trắng Việt Tiến", "Áo sơ mi nam trắng Việt Tiến", "Áo sơ mi nam trắng Việt Tiến", 100000m, 200000m, "ao-so-mi-nam-trang-viet-tien", "Áo sơ mi nam trắng Việt Tiến", "Áo sơ mi nam trắng Việt Tiến" });
+                columns: new[] { "Id", "DateCreated", "Description", "Details", "Name", "OriginalPrice", "Price", "SeoAlias", "SeoDescription", "SeoTitle", "UserId" },
+                values: new object[] { 1, new DateTime(2021, 3, 16, 15, 51, 18, 631, DateTimeKind.Local).AddTicks(1533), "Áo sơ mi nam trắng Việt Tiến", "Áo sơ mi nam trắng Việt Tiến", "Áo sơ mi nam trắng Việt Tiến", 100000m, 200000m, "ao-so-mi-nam-trang-viet-tien", "Áo sơ mi nam trắng Việt Tiến", "Áo sơ mi nam trắng Việt Tiến", new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
 
             migrationBuilder.InsertData(
                 table: "ProductInCategories",
@@ -324,9 +324,9 @@ namespace eRentSolution.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_AppUserId",
+                name: "IX_Products_UserId",
                 table: "Products",
-                column: "AppUserId");
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

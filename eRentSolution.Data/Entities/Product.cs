@@ -7,6 +7,7 @@ namespace eRentSolution.Data.Entities
     public class Product
     {
         public int Id { set; get; }
+        public Guid UserId { get; set; }
         public string Name { set; get; }
         public string Description { set; get; }
         public string Details { set; get; }

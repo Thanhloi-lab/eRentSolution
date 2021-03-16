@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRentSolution.Application.System.Users
 {
-    public class UserService : IUserService
+    public class UserService
     {
     }
 }

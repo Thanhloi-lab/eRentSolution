@@ -179,7 +179,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "2ad40f93-7d5d-49a7-843c-842cfc89958f",
+                            ConcurrencyStamp = "dd8134a1-f711-4b55-8f93-c71b96ccfb79",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -256,7 +256,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "51d2063b-81bd-4bb6-97a3-2029cc326e65",
+                            ConcurrencyStamp = "907b34c7-d39e-448d-a396-7e9ce9f06d0d",
                             Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
@@ -265,7 +265,7 @@ namespace eRentSolution.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJmUsbvKMXL/0TOPprG+5/czeZuFrOSxgsNLwYFUvYAUufyoAG52EuO6e9b1Rpk+ag==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEE+EkfpICUyzPZZJugoX/Ey4ZuTmZUyIYg6C9PoRMO4nNTJ4d3g+ykj71C6AGzQ7Xw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -388,9 +388,6 @@ namespace eRentSolution.Data.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("AppUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
@@ -428,6 +425,9 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("ViewCount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -435,7 +435,7 @@ namespace eRentSolution.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Products");
 
@@ -443,7 +443,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 3, 16, 12, 10, 33, 761, DateTimeKind.Local).AddTicks(6168),
+                            DateCreated = new DateTime(2021, 3, 16, 15, 51, 18, 631, DateTimeKind.Local).AddTicks(1533),
                             Description = "Áo sơ mi nam trắng Việt Tiến",
                             Details = "Áo sơ mi nam trắng Việt Tiến",
                             Name = "Áo sơ mi nam trắng Việt Tiến",
@@ -453,6 +453,7 @@ namespace eRentSolution.Data.Migrations
                             SeoDescription = "Áo sơ mi nam trắng Việt Tiến",
                             SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
                             Stock = 0,
+                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             ViewCount = 0
                         });
                 });
@@ -564,7 +565,9 @@ namespace eRentSolution.Data.Migrations
                 {
                     b.HasOne("eRentSolution.Data.Entities.AppUser", "AppUser")
                         .WithMany("Products")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
                 });

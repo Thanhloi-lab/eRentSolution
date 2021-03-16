@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRentSolution.Application.Common
 {
-    public class FileStorageService : IStorageService
+    public class FileStorageService
     {
     }
 }

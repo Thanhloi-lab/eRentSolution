@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRentSolution.Application.System.Roles
 {
-    public class RoleService : IRoleService
+    public class RoleService
     {
     }
 }

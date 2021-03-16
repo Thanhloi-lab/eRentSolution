@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRentSolution.Application.Catalog.Products
 {
-    public class ProductService : IProductService
+    public class ProductService
     {
     }
 }
