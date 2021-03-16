@@ -5,7 +5,7 @@ using System.Text;
 
 namespace eRentSolution.ViewModels.System.Users
 {
-    public class RoleAssginRequest
+    public class RoleAssignRequest
     {
         public Guid Id { get; set; }
         public List<SelectItem> Roles { get; set; } = new List<SelectItem>();
