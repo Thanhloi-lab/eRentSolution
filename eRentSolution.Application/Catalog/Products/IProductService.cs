@@ -23,7 +23,7 @@ namespace eRentSolution.Application.Catalog.Products
         Task<int> UpdateImages(int imageId, ProductImageUpdateRequest request);
         Task<List<ProductImageViewModel>> GetListImage(int productId);
         Task<ProductImageViewModel> GetImageById(int imageId);
-        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingByCategoryIdRequest request, string languageId);
-        Task<List<ProductViewModel>> GetAll(string languageId);
+        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingByCategoryIdRequest request);
+        Task<List<ProductViewModel>> GetAll();
     }
 }
