@@ -89,8 +89,7 @@ namespace eRentSolution.Data.Extentions
                SeoDescription = "Áo sơ mi nam trắng Việt Tiến",
                SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
                Details = "Áo sơ mi nam trắng Việt Tiến",
-               Description = "Áo sơ mi nam trắng Việt Tiến",
-               UserId = adminId
+               Description = "Áo sơ mi nam trắng Việt Tiến"
            });
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
             {
