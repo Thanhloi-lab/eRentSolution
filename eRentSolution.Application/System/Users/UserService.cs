@@ -57,7 +57,7 @@ namespace eRentSolution.Application.System.Users
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(_configuration["Tokens:Issuer"],
-              _configuration["Tokens:Issuer"],
+              _configuration["Tokens:Audience"],
               claims,
               expires: DateTime.Now.AddDays(30),
               signingCredentials: credentials);
