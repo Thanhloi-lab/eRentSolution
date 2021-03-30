@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using eRentSolution.Data.Enums;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,7 @@ namespace eRentSolution.Data.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime Dob { get; set; }
-        public List<Product> Products { get; set; }
+        public List<Censor> Censors { get; set; }
+        public Status Status { get; set; }
     }
 }

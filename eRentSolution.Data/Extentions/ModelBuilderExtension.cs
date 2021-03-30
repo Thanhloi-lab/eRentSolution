@@ -43,22 +43,7 @@ namespace eRentSolution.Data.Extentions
                      SeoTitle = "Sản phẩm áo thời trang nữ"
                  });
 
-            modelBuilder.Entity<Product>().HasData(
-           new Product()
-           {
-               Id = 1,
-               DateCreated = DateTime.Now,
-               OriginalPrice = 100000,
-               Price = 200000,
-               Stock = 0,
-               ViewCount = 0,
-               Name = "Áo sơ mi nam trắng Việt Tiến",
-               SeoAlias = "ao-so-mi-nam-trang-viet-tien",
-               SeoDescription = "Áo sơ mi nam trắng Việt Tiến",
-               SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
-               Details = "Áo sơ mi nam trắng Việt Tiến",
-               Description = "Áo sơ mi nam trắng Việt Tiến"
-           });
+            
             modelBuilder.Entity<ProductInCategory>().HasData(
                 new ProductInCategory() { ProductId = 1, CategoryId = 1 }
                 );
@@ -89,6 +74,23 @@ namespace eRentSolution.Data.Extentions
                 Dob = new DateTime(2000, 01, 31)
             });
 
+            
+            modelBuilder.Entity<Product>().HasData(
+           new Product()
+           {
+               Id = 1,
+               DateCreated = DateTime.Now,
+               OriginalPrice = 100000,
+               Price = 200000,
+               Stock = 0,
+               ViewCount = 0,
+               Name = "Áo sơ mi nam trắng Việt Tiến",
+               SeoAlias = "ao-so-mi-nam-trang-viet-tien",
+               SeoDescription = "Áo sơ mi nam trắng Việt Tiến",
+               SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
+               Details = "Áo sơ mi nam trắng Việt Tiến",
+               Description = "Áo sơ mi nam trắng Việt Tiến"
+           });
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
             {
                 RoleId = roleId,
