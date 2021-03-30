@@ -7,6 +7,18 @@ namespace eRentSolution.Utilities.Constants
     public class SystemConstant
     {
         public const string MainConnectionString = "eRentSolutionDatabase";
-        public const string Token = "Token";
+        public class AppSettings
+        {
+            public const string Token = "Token";
+            public const string CurrentUserId = "CurrentUserId";
+            public const string AdminRole = "Admin";
+            public const string UserAdminRole = "UserAdmin";
+        }
+
+        public class ProductSettings
+        {
+            public const int NumberOfFeaturedProducts = 4;
+            public const int NumberOfLastestProducts = 6;
+        }
     }
 }

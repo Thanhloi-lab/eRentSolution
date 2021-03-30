@@ -1,4 +1,5 @@
-﻿using eRentSolution.ViewModels.Catalog.ProductImages;
+﻿using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.ProductImages;
 using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.ViewModels.Common;
 using System;
@@ -11,19 +12,21 @@ namespace eRentSolution.Application.Catalog.Products
     public interface IProductService
     {
         Task<int> Create(ProductCreateRequest request);
-        Task<int> Update(ProductUpdateRequest request);
-        Task<int> Delete(int productId);
+        Task<bool> Update(ProductUpdateRequest request);
+        Task<bool> Delete(int productId);
         Task<bool> UpdatePrice(int productId, decimal newPrice);
         Task<bool> UpdateStock(int productId, int addedQuantity);
-        Task AddViewcount(int productId);
-        Task<ProductViewModel> GetById(int id, string languageId);
+        Task<bool> AddViewcount(int productId);
+        Task<ProductViewModel> GetById(int id);
         Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);
-        Task<int> AddImages(int productId, ProductImageCreateRequest request);
+        Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
+        Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request);
+        Task<List<ProductViewModel>> GetLastestProducts( int take);
+        Task<int> AddImages( ProductImageCreateRequest request);
         Task<int> RemoveImages(int imageId);
-        Task<int> UpdateImages(int imageId, ProductImageUpdateRequest request);
+        Task<int> UpdateImages( ProductImageUpdateRequest request);
         Task<List<ProductImageViewModel>> GetListImage(int productId);
         Task<ProductImageViewModel> GetImageById(int imageId);
-        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingByCategoryIdRequest request);
-        Task<List<ProductViewModel>> GetAll();
+        Task<PagedResult<ProductViewModel>> GetAllPagingByCategoryId(GetProductPagingByCategoryIdRequest request);
     }
 }

@@ -15,6 +15,6 @@ namespace eRentSolution.Application.System.Users
         Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request);
         Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
         Task<ApiResult<UserViewModel>> GetById(Guid id);
-        Task<ApiResult<bool>> Delete(Guid Id);
+        Task<ApiResult<bool>> Delete(Guid id);
     }
 }

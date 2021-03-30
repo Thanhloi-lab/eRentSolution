@@ -1,0 +1,67 @@
+﻿using eRentSolution.ViewModels.Common;
+using eRentSolution.ViewModels.System.Users;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace eRentSolution.Integration
+{
+    public class UserApiClient : BaseApiClient ,IUserApiClient
+    {
+        public UserApiClient(IHttpClientFactory httpClientFactory,
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor) 
+            : base(httpClientFactory, configuration, httpContextAccessor)
+        {
+        }
+
+        public async Task<ApiResult<string>> Authenticate(UserLoginRequest login)
+        {
+            var result = await PostAsync<string>($"api/users/authenticate", login);
+            return result;
+        }
+
+        public async Task<bool> Delete(Guid id)
+        {
+            var result = await DeleteAsync<bool>($"api/users/{id}");
+            return result;
+        }
+
+        public async Task<UserViewModel> GetById(Guid id)
+        {
+            var result = await GetAsync<UserViewModel>($"api/users/{id}");
+            return result;
+        }
+
+        public async Task<PagedResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request)
+        {
+            var result = await GetAsync<PagedResult<UserViewModel>>($"/api/users/paging?" +
+                $"pageindex={request.PageIndex}" +
+                $"&pagesize={request.PageSize}" +
+                $"&keyword={request.Keyword}");
+            return result;
+        }
+
+        public async Task<ApiResult<bool>> RegisterUser(UserRegisterRequest registerRequest)
+        {
+            var result = await PostAsync<bool>($"/api/users", registerRequest);
+            return result;
+        }
+
+        public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        {
+            var result = await PutAsync<bool>($"/api/users/{id}/roles", request);
+            return result;
+        }
+
+        public async Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request)
+        {
+            var result = await PutAsync<bool>($"/api/users/{id}", request);
+            return result;
+        }
+    }
+}
