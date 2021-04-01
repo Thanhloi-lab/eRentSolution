@@ -24,5 +24,6 @@ namespace eRentSolution.Data.Entities
         public List<ProductInCategory> ProductInCategories { get; set; }
         public List<ProductImage> ProductImages { get; set; }
         public List<Censor> Censors { get; set; }
+        public List<Slide> Slides { get; set; }
     }
 }

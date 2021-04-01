@@ -45,13 +45,13 @@ namespace eRentSolution.BackendApi
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //Declare DI
             services.AddTransient<IStorageService, FileStorageService>();
-            services.AddTransient<IProductService, ProductService>();
+            //services.AddTransient<IProductService, ProductService>();
             //services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
-            //services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IRoleService, RoleService>();
             //services.AddTransient<ISlideService, SlideService>();
 
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
@@ -136,12 +136,9 @@ namespace eRentSolution.BackendApi
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseAuthentication();
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>

@@ -10,8 +10,8 @@ using eRentSolution.Data.EF;
 namespace eRentSolution.Data.Migrations
 {
     [DbContext(typeof(eRentDbContext))]
-    [Migration("20210323134941_FirstDatabase")]
-    partial class FirstDatabase
+    [Migration("20210331111245_database")]
+    partial class database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -200,7 +200,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "5746f750-a811-474a-98c6-4c6d5cfca6cd",
+                            ConcurrencyStamp = "fdc653b0-365c-4b91-b3d7-bb64732cb5b8",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -280,7 +280,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b22ae336-26a9-4729-8a4b-f9c6e1a067ce",
+                            ConcurrencyStamp = "c0b1e577-b9d4-4de3-ba7b-2263ec2b8284",
                             Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
@@ -289,7 +289,7 @@ namespace eRentSolution.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAENmOSge4W+HWVtktTbwT2yk76BDv6NRFebfk0UVh4kWPY++ro/8+MdZ1f7LOOaOxrw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIVz+kN2HMRY5ESECQYqBp/XeBsipBOdLtc9NqP0JyIpZ2Gv5dLAHOLccmpb+7KmEQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 0,
@@ -446,9 +446,12 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Details")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -498,7 +501,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 3, 23, 20, 49, 40, 167, DateTimeKind.Local).AddTicks(3921),
+                            DateCreated = new DateTime(2021, 3, 31, 18, 12, 44, 670, DateTimeKind.Local).AddTicks(1472),
                             Description = "Áo sơ mi nam trắng Việt Tiến",
                             Details = "Áo sơ mi nam trắng Việt Tiến",
                             Name = "Áo sơ mi nam trắng Việt Tiến",
@@ -640,6 +643,9 @@ namespace eRentSolution.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
@@ -652,6 +658,8 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Slides");
                 });
@@ -713,6 +721,17 @@ namespace eRentSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("eRentSolution.Data.Entities.Slide", b =>
+                {
+                    b.HasOne("eRentSolution.Data.Entities.Product", "Product")
+                        .WithMany("Slides")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("eRentSolution.Data.Entities.AdminAction", b =>
                 {
                     b.Navigation("Censors");
@@ -735,6 +754,8 @@ namespace eRentSolution.Data.Migrations
                     b.Navigation("ProductImages");
 
                     b.Navigation("ProductInCategories");
+
+                    b.Navigation("Slides");
                 });
 #pragma warning restore 612, 618
         }
