@@ -86,8 +86,8 @@ namespace eRentSolution.AdminApp.Controllers
             if (User.IsInRole(SystemConstant.AppSettings.AdminRole) == false 
                 && !id.ToString().Equals(userId))
             {
-                TempData["result"] = "You cannot update others user";
-                return RedirectToAction("index");
+                TempData["FailResult"] = "You cannot update others user";
+                return View(id);
             }
             var target = await _userApiClient.GetById(id);
             if (target != null)
@@ -132,8 +132,8 @@ namespace eRentSolution.AdminApp.Controllers
         {
             if (id.ToString().Equals(userId))
             {
-                TempData["result"] = "You cannot delete yourself";
-                return RedirectToAction("index");
+                TempData["FailResult"] = "You cannot delete yourself";
+                return View(id);
             }
             var user = await _userApiClient.GetById(id);
             
@@ -182,8 +182,8 @@ namespace eRentSolution.AdminApp.Controllers
             {
                 if (item.Name.Equals(SystemConstant.AppSettings.AdminRole) && item.Selected == false && isYourself == true)
                 {
-                    TempData["result"] = "Cannot unassign your admin role";
-                    return RedirectToAction("Index");
+                    TempData["FailResult"] = "Cannot unassign your admin role";
+                    return View(request);
                 }
             }
             var result = await _userApiClient.RoleAssign(request.Id, request);
@@ -215,8 +215,8 @@ namespace eRentSolution.AdminApp.Controllers
         }
         public IActionResult Forbidden()
         {
-            ModelState.AddModelError("Forbidden", "You are not allow to do that action");
-            return RedirectToAction("Index", "Home");
+            TempData["FailResult"] = "You are not allow to access this action";
+            return RedirectToAction("Index");
         }
     }
 }

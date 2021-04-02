@@ -45,7 +45,14 @@
                 {
                     <div id="msgAlert" class="alert alert-success" role="alert">
                         @ViewBag.Success
-                    </div>}
+                    </div>
+                }
+                @if (TempData["FailResult"] != null)
+                {
+                    <div id="msgAlert" class="alert alert-success" role="alert">
+                        @TempData["FailResult"]
+                    </div>
+                }
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered">

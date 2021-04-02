@@ -14,6 +14,7 @@ using eRentSolution.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.ProductDetails;
 
 namespace eRentSolution.Application.Catalog.Products
 {
@@ -195,14 +196,14 @@ namespace eRentSolution.Application.Catalog.Products
         public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
         {
             var query = from p in _context.Products
-                        join pd in _context.ProductDetails on p.Id equals pd.Id
+                            //join pd in _context.ProductDetails on p.Id equals pd.Id
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
 
-                        where c.Id == request.CategoryId && pd.IsThumbnail == true
-                        select new { p, c, pd};
+                        where c.Id == request.CategoryId //&& pd.IsThumbnail == true
+                        select new { p, c };//, pd};
 
             if (request.Keyword != null)
             {
@@ -215,16 +216,15 @@ namespace eRentSolution.Application.Catalog.Products
                 Description = x.p.Description,
                 Details = x.p.Details,
                 Name = x.p.Name,
-                OriginalPrice = x.pd.OriginalPrice,
-                Price = x.pd.Price,
                 SeoAlias = x.p.SeoAlias,
                 SeoDescription = x.p.SeoDescription,
                 SeoTitle = x.p.SeoTitle,
-                Stock = x.pd.Stock,
                 ViewCount = x.p.ViewCount,
-                SubProductName = x.pd.Name,
-                
             }).ToListAsync();
+            foreach (var item in products)
+            {
+                item.ProductDetailViewModels = await GetDetailsByProductId(item.Id);
+            }
             var page = new PagedResult<ProductViewModel>()
             {
                 Items = products,
@@ -241,7 +241,6 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 throw new eRentException($"Cannot find a product: { product.Id}");
             }
-            var productDetail =  await _context.ProductDetails.FirstOrDefaultAsync(x => x.ProductId == id && x.IsThumbnail == true);
             var productViewModel = new ProductViewModel()
             {
                 DateCreated = product.DateCreated,
@@ -249,18 +248,31 @@ namespace eRentSolution.Application.Catalog.Products
                 Details = product.Details,
                 Id = product.Id,
                 Name = product.Name,
-                OriginalPrice = productDetail.OriginalPrice,
-                Price = productDetail.Price,
                 SeoAlias = product.SeoAlias,
                 SeoDescription = product.SeoDescription,
                 SeoTitle = product.SeoTitle,
-                Stock = productDetail.Stock,
                 ViewCount = product.ViewCount,
-                SubProductName = productDetail.Name
+                ProductDetailViewModels = await GetDetailsByProductId(id),
             };
             return productViewModel;
         }
-
+        public async Task<List<ProductDetailViewModel>> GetDetailsByProductId(int productId)
+        {
+            var query =from pd in _context.ProductDetails
+                        join p in _context.Products on pd.ProductId equals p.Id
+                        select new { pd };
+            var productDetail = await query.Select(x => new ProductDetailViewModel()
+            {
+                Id = x.pd.Id,
+                DateCreated = x.pd.DateCreated,
+                IsThumbnail = x.pd.IsThumbnail,
+                OriginalPrice = x.pd.OriginalPrice,
+                Price = x.pd.Price,
+                ProductDetailName = x.pd.Name,
+                Stock = x.pd.Stock
+            }).ToListAsync();
+            return productDetail;
+        }
 
 
         //----------------Images-------
