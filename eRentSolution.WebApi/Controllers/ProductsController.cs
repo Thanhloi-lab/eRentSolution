@@ -28,7 +28,7 @@ namespace eRentSolution.BackendApi.Controllers
         //    return Ok(product);
         //}
         [HttpGet("paging")]
-        public async Task<IActionResult> Get([FromQuery] GetProductPagingRequest request)
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPagingRequest request)
         {
             var product = await _productService.GetAllPaging(request);
             return Ok(product);
@@ -156,10 +156,10 @@ namespace eRentSolution.BackendApi.Controllers
             return Ok(Image);
         }
         [HttpPost("add-img")]
-        public async Task<IActionResult> AddImages([FromForm]  ProductImageCreateRequest request)
+        public async Task<IActionResult> AddImages([FromForm] ProductImageCreateRequest request)
         {
             //     var productId = await _productService.Create(request);
-            var imageId = await _productService.AddImages( request);
+            var imageId = await _productService.AddImages(request);
             if (imageId == 0)
             {
                 return BadRequest();

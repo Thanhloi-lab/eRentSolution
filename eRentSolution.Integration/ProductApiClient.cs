@@ -78,8 +78,8 @@ namespace eRentSolution.Integration
 
         public async Task<ProductViewModel> GetById(int productId)
         {
-            var result = await GetPageAsync<ProductViewModel>($"/api/products/{productId}");
-            return result.ResultObject;
+            var result = await GetAsync<ProductViewModel>($"/api/products/{productId}");
+            return result;
         }
 
         public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
@@ -96,12 +96,12 @@ namespace eRentSolution.Integration
         
         public async Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request)
         {
-            var result = await GetPageAsync<PagedResult<ProductViewModel>>($"/api/products/paging?" +
-                $"pageindex={request.PageIndex}" +
-                $"&pagesize={request.PageSize}" +
+            var result = await GetAsync<PagedResult<ProductViewModel>>(
+                $"/api/products/paging?pageIndex={request.PageIndex}" +
+                $"&pageSize={request.PageSize}" +
                 $"&keyword={request.Keyword}" +
-                $"&category={request.CategoryId}");
-            return result.ResultObject;
+                $"&categoryId={request.CategoryId}");
+            return result;
         }
 
         public async Task<bool> UpdateProduct(ProductUpdateRequest request)

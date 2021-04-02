@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using eRentSolution.Admin.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using eRentSolution.Utilities.Constants;
 
 namespace eRentSolution.Admin.Controllers
 {
@@ -14,14 +16,23 @@ namespace eRentSolution.Admin.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public IActionResult Index()
         {
+            var token = _httpContextAccessor.HttpContext.Request.Cookies["Token"];
+            if(token ==null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            else
+                _httpContextAccessor.HttpContext.Session.SetString(SystemConstant.AppSettings.Token, token);
             return View();
         }
 

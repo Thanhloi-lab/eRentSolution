@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using eRentSolution.Application.Catalog.Categories;
 using eRentSolution.Application.Catalog.Products;
 using eRentSolution.Application.Common;
 using eRentSolution.Application.System.Roles;
@@ -7,7 +8,6 @@ using eRentSolution.Data.EF;
 using eRentSolution.Data.Entities;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.System.Users;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -45,8 +45,8 @@ namespace eRentSolution.BackendApi
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //Declare DI
             services.AddTransient<IStorageService, FileStorageService>();
-            //services.AddTransient<IProductService, ProductService>();
-            //services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
@@ -62,7 +62,7 @@ namespace eRentSolution.BackendApi
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger eShop Solution", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger eRent Solution", Version = "v1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -143,7 +143,7 @@ namespace eRentSolution.BackendApi
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger eShopSolution V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger eRentSolution V1");
             });
 
             app.UseEndpoints(endpoints =>

@@ -26,7 +26,7 @@ namespace eRentSolution.Integration
 
         public async Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId)
         {
-            var result = await GetListAsync<CategoryViewModel>($"api/categories/productcategories");
+            var result = await GetListAsync<CategoryViewModel>($"api/categories/productcategories/{productId}");
             return result;
         }
 

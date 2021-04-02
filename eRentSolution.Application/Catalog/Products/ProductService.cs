@@ -201,8 +201,7 @@ namespace eRentSolution.Application.Catalog.Products
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-
-                        where c.Id == request.CategoryId //&& pd.IsThumbnail == true
+                                 //&& pd.IsThumbnail == true
                         select new { p, c };//, pd};
 
             if (request.Keyword != null)
