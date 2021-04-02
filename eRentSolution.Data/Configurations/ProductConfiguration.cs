@@ -1,4 +1,5 @@
 ﻿using eRentSolution.Data.Entities;
+using eRentSolution.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -16,9 +17,7 @@ namespace eRentSolution.Data.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
 
-            builder.Property(x => x.Price).IsRequired();
-            builder.Property(x => x.OriginalPrice).IsRequired();
-            builder.Property(x => x.Stock).IsRequired().HasDefaultValue(0);
+            
             builder.Property(x => x.ViewCount).IsRequired().HasDefaultValue(0);
             builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
@@ -26,6 +25,7 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.Description).IsRequired().HasMaxLength(2000);
             builder.Property(x => x.Details).IsRequired().HasMaxLength(2000);
             builder.Property(x => x.Details).HasMaxLength(500);
+            builder.Property(x => x.Status).IsRequired().HasDefaultValue(Status.Active);
         }
     }
 }

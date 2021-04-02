@@ -1,4 +1,5 @@
 ﻿using eRentSolution.Data.Entities;
+using eRentSolution.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -13,9 +14,10 @@ namespace eRentSolution.Data.Configurations
         {
             builder.ToTable("AppUsers");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.FirstName).HasMaxLength(200).IsRequired();
-            builder.Property(x => x.LastName).HasMaxLength(200).IsRequired();
-            builder.Property(x => x.Dob).IsRequired();
+            
+            builder.Property(x => x.Status).IsRequired().HasDefaultValue(Status.Active);
+
+            builder.HasOne(x => x.Person).WithOne(x => x.AppUser).HasForeignKey<Person>(x => x.UserId);
         }
     }
 }

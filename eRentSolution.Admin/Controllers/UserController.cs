@@ -130,22 +130,13 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var user = await _userApiClient.GetById(id);
-            var httpUserName = _httpContextAccessor.HttpContext.Request.Cookies["UserName"];
-            var claims = User.Claims;
-            bool isYourself = false;
-            foreach (var item in claims)
-            {
-                if (item.Type == "NameIdentifier" && item.Value == httpUserName)
-                {
-                    isYourself = true;
-                }
-            }
-            if (isYourself==true)
+            if (id.ToString().Equals(userId))
             {
                 TempData["result"] = "You cannot delete yourself";
                 return RedirectToAction("index");
             }
+            var user = await _userApiClient.GetById(id);
+            
             return View(new UserDeleteRequest()
             {
                 Id = id

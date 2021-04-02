@@ -12,6 +12,7 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public decimal OriginalPrice { set; get; }
         public int Stock { set; get; }
         public int ViewCount { set; get; }
+        public string SubProductName { get; set; }
         public DateTime DateCreated { set; get; }
 
         // Entity ProductTranslation

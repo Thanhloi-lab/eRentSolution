@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace eRentSolution.Data.Configurations
 {
-    public class AdminActionConfiguration : IEntityTypeConfiguration<AdminAction>
+    public class AdminActionConfiguration : IEntityTypeConfiguration<UserAction>
     {
-        public void Configure(EntityTypeBuilder<AdminAction> builder)
+        public void Configure(EntityTypeBuilder<UserAction> builder)
         {
             builder.ToTable("AdminActions");
             builder.HasKey(x => x.Id);

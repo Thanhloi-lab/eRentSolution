@@ -69,20 +69,24 @@ namespace eRentSolution.Data.Extentions
                 EmailConfirmed = true,
                 PasswordHash = hasher.HashPassword(null, "123456aS"),
                 SecurityStamp = string.Empty,
-                FirstName = "Lợi",
-                LastName = "Cao Thành",
-                Dob = new DateTime(2000, 01, 31)
+                
             });
 
-            
+            modelBuilder.Entity<Person>().HasData(
+           new Person()
+           {
+               Id = 1,
+               FirstName = "Lợi",
+               LastName = "Cao Thành",
+               Dob = new DateTime(2000, 01, 31),
+               UserId = adminId
+           });
+
             modelBuilder.Entity<Product>().HasData(
            new Product()
            {
                Id = 1,
                DateCreated = DateTime.Now,
-               OriginalPrice = 100000,
-               Price = 200000,
-               Stock = 0,
                ViewCount = 0,
                Name = "Áo sơ mi nam trắng Việt Tiến",
                SeoAlias = "ao-so-mi-nam-trang-viet-tien",
@@ -90,6 +94,17 @@ namespace eRentSolution.Data.Extentions
                SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
                Details = "Áo sơ mi nam trắng Việt Tiến",
                Description = "Áo sơ mi nam trắng Việt Tiến"
+           });
+            modelBuilder.Entity<ProductDetail>().HasData(
+           new ProductDetail()
+           {
+               Id = 1,
+               DateCreated = DateTime.Now,
+               OriginalPrice = 100000,
+               Price = 200000,
+               Stock = 0,
+               Name = "Size 38",
+               ProductId = 1,
            });
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
             {

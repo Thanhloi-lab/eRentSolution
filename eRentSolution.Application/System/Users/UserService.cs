@@ -1,4 +1,5 @@
-﻿using eRentSolution.Data.Entities;
+﻿using eRentSolution.Data.EF;
+using eRentSolution.Data.Entities;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Common;
 using eRentSolution.ViewModels.System.Users;
@@ -22,16 +23,19 @@ namespace eRentSolution.Application.System.Users
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly eRentDbContext _context;
 
         public UserService(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             RoleManager<AppRole> roleManager,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            eRentDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _configuration = configuration;
+            _context = context;
         }
 
         public async Task<ApiResult<string>> Authenticate(UserLoginRequest request)
@@ -46,8 +50,6 @@ namespace eRentSolution.Application.System.Users
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName, user.FirstName),
-                new Claim(ClaimTypes.Name, user.LastName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
             foreach (var item in roles)
@@ -86,13 +88,14 @@ namespace eRentSolution.Application.System.Users
             if (user == null)
                 return new ApiErrorResult<UserViewModel>($"Cannot find user with id: {id}");
             var roles = await _userManager.GetRolesAsync(user);
+            var person =  await _context.Persons.FirstOrDefaultAsync(x => x.UserId == id);
             var userViewModel = new UserViewModel()
             {
                 PhoneNumber = user.PhoneNumber,
-                FirstName = user.FirstName,
-                Dob = user.Dob,
+                FirstName = person.FirstName,
+                Dob = person.Dob,
                 Email = user.Email,
-                LastName = user.LastName,
+                LastName = person.LastName,
                 UserName = user.UserName,
                 Roles = roles,
                 Id = id
@@ -138,27 +141,36 @@ namespace eRentSolution.Application.System.Users
         //}
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
-            var query = _userManager.Users;
+            var query = from u in _userManager.Users
+                        join p in _context.Persons on u.Id equals p.UserId
+                        select new { u, p };
             if (!string.IsNullOrEmpty(request.Keyword))
             {
-                query = query.Where(x => x.UserName.Contains(request.Keyword)
-                            || x.PhoneNumber.Contains(request.Keyword));
+                query = query.Where(x => x.u.UserName.Contains(request.Keyword)
+                            || x.u.PhoneNumber.Contains(request.Keyword)
+                            || x.p.LastName.Contains(request.Keyword)
+                            || x.p.FirstName.Contains(request.Keyword));
             }
+            
             /* PAGING*/
             int totalRow = await query.CountAsync();
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(x => new UserViewModel()
                 {
-                    Id = x.Id,
-                    PhoneNumber = x.PhoneNumber,
-                    FirstName = x.FirstName,
-                    Dob = x.Dob,
-                    Email = x.Email,
-                    LastName = x.LastName,
-                    UserName = x.UserName
+                    Id = x.u.Id,
+                    PhoneNumber = x.u.PhoneNumber,
+                    FirstName = x.p.FirstName,
+                    Dob = x.p.Dob,
+                    Email = x.u.Email,
+                    LastName = x.p.LastName,
+                    UserName = x.u.UserName
                 }).ToListAsync();
 
+            foreach (var item in data)
+            {
+                
+            }
             //4.select and projection
             var pageResult = new PagedResult<UserViewModel>()
             {
@@ -182,16 +194,24 @@ namespace eRentSolution.Application.System.Users
             }
             user = new AppUser()
             {
-                Dob = request.Dob,
                 UserName = request.UserName,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
+            };
+            var person = new Person()
+            {
+                Dob = request.Dob,
                 FirstName = request.FirstName,
                 LastName = request.LastName
             };
             var result = await _userManager.CreateAsync(user, request.Password);
+            
             if (result.Succeeded)
+            {
+                await _context.Persons.AddAsync(person);
+                await _context.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
+            }
             return new ApiErrorResult<bool>("Fail to create account");
         }
 
@@ -231,15 +251,20 @@ namespace eRentSolution.Application.System.Users
                 return new ApiErrorResult<bool>("Email already exists");
             }
             var user = await _userManager.FindByIdAsync(id.ToString());
-            user.Dob = request.Dob;
+            var person = await _context.Persons.FirstOrDefaultAsync(x => x.UserId == id);
+            person.Dob = request.Dob;
             user.Email = request.Email;
             user.PhoneNumber = request.PhoneNumber;
-            user.FirstName = request.FirstName;
-            user.LastName = request.LastName;
+            person.FirstName = request.FirstName;
+            person.LastName = request.LastName;
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
+            {
+                await _context.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
+            }
+                
             return new ApiErrorResult<bool>("Update unsuccessful");
         }
     }

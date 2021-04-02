@@ -4,7 +4,7 @@ using System.Text;
 
 namespace eRentSolution.Data.Entities
 {
-    public class AdminAction
+    public class UserAction
     {
         public int Id { get; set; }
         public string ActionName { get; set; }
