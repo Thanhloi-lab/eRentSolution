@@ -50,12 +50,20 @@ namespace eRentSolution.Data.Extentions
             // any guid
             var roleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DE");
             var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DD");
+            var roleId1 = new Guid("E4DF483B-524D-467B-B6F4-2EE002742987");
             modelBuilder.Entity<AppRole>().HasData(new AppRole
             {
                 Id = roleId,
-                Name = "admin",
+                Name = "Admin",
                 NormalizedName = "admin",
                 Description = "Administrator role"
+            },
+            new AppRole
+            {
+                Id = roleId1,
+                Name = "UserAdmin",
+                NormalizedName = "useradmin",
+                Description = "User admin role"
             });
 
             var hasher = new PasswordHasher<AppUser>();
