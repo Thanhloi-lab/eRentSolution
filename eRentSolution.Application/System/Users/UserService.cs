@@ -197,21 +197,17 @@ namespace eRentSolution.Application.System.Users
                 UserName = request.UserName,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
-            };
-            var person = new Person()
-            {
-                Dob = request.Dob,
-                FirstName = request.FirstName,
-                LastName = request.LastName
+                Person = new Person()
+                {
+                    Dob = request.Dob,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName
+                }
             };
             var result = await _userManager.CreateAsync(user, request.Password);
-            
             if (result.Succeeded)
-            {
-                await _context.Persons.AddAsync(person);
-                await _context.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
-            }
+
             return new ApiErrorResult<bool>("Fail to create account");
         }
 
