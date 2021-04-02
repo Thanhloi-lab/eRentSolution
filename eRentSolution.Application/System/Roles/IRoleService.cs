@@ -8,6 +8,6 @@ namespace eRentSolution.Application.System.Roles
 {
     public interface IRoleService
     {
-        Task<List<RolesViewModel>> GetAll();
+        Task<List<RoleViewModel>> GetAll();
     }
 }

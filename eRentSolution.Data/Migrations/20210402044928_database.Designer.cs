@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eRentSolution.Data.EF;
 
 namespace eRentSolution.Data.Migrations
 {
     [DbContext(typeof(eRentDbContext))]
-    partial class eRentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210402044928_database")]
+    partial class database
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,18 +181,10 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "a6f97d12-2f00-4dee-af59-ee5deabad987",
+                            ConcurrencyStamp = "75dd60e3-e152-4d05-8d01-c5f78ddfeed0",
                             Description = "Administrator role",
-                            Name = "Admin",
+                            Name = "admin",
                             NormalizedName = "admin"
-                        },
-                        new
-                        {
-                            Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "5a6d6cac-eb02-4cf6-bfe5-9d7dfc1b76b3",
-                            Description = "User admin role",
-                            Name = "UserAdmin",
-                            NormalizedName = "useradmin"
                         });
                 });
 
@@ -256,13 +250,13 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "43061174-ff3b-4d66-b886-e85f0eb5aa64",
+                            ConcurrencyStamp = "5b2232db-febe-434f-9284-ef0fb7bf8321",
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFVJ3n3vL1uULzeElFUk5/sx9tVRS+pk8i/a+XU7rYjLcmGIa3pp2Ol2+/2D17SSsg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJmVaTauOF460WKqOpH5xkrtUMk/XC5whLfhC/fUsQNyih6vPQ9TxmNK5ID1TVCmFA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 0,
@@ -506,7 +500,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 2, 13, 51, 15, 294, DateTimeKind.Local).AddTicks(1254),
+                            DateCreated = new DateTime(2021, 4, 2, 11, 49, 26, 804, DateTimeKind.Local).AddTicks(4156),
                             Description = "Áo sơ mi nam trắng Việt Tiến",
                             Details = "Áo sơ mi nam trắng Việt Tiến",
                             Name = "Áo sơ mi nam trắng Việt Tiến",
@@ -569,7 +563,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 2, 13, 51, 15, 296, DateTimeKind.Local).AddTicks(8599),
+                            DateCreated = new DateTime(2021, 4, 2, 11, 49, 26, 807, DateTimeKind.Local).AddTicks(3217),
                             IsThumbnail = false,
                             Name = "Size 38",
                             OriginalPrice = 100000m,

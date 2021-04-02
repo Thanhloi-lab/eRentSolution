@@ -60,6 +60,23 @@ namespace eRentSolution.Integration
             }
             return JsonConvert.DeserializeObject<T>(body);
         }
+        protected async Task<ApiResult<T>> GetPageAsync<T>(string url)
+        {
+            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+
+            var respond = await client.GetAsync(url);
+            var body = await respond.Content.ReadAsStringAsync();
+            if (respond.IsSuccessStatusCode)
+            {
+                var result = JsonConvert.DeserializeObject<ApiSuccessResult<T>>(body);
+                return result;
+            }
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<T>>(body);
+        }
         protected async Task<bool> DeleteAsync<T>(string url)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);

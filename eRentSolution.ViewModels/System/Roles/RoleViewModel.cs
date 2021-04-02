@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace eRentSolution.ViewModels.System.Roles
 {
-    public class RolesViewModel
+    public class RoleViewModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

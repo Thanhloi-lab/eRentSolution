@@ -78,14 +78,14 @@ namespace eRentSolution.Integration
 
         public async Task<ProductViewModel> GetById(int productId)
         {
-            var result = await GetAsync<ProductViewModel>($"/api/products/{productId}");
-            return result;
+            var result = await GetPageAsync<ProductViewModel>($"/api/products/{productId}");
+            return result.ResultObject;
         }
 
         public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
         {
-            var result = await GetAsync<PagedResult<ProductViewModel>>($"/api/products/feature?pageindex={request.PageIndex}&pagesize={request.PageSize}");
-            return result;
+            var result = await GetPageAsync<PagedResult<ProductViewModel>>($"/api/products/feature?pageindex={request.PageIndex}&pagesize={request.PageSize}");
+            return result.ResultObject;
         }
 
         public async Task<List<ProductViewModel>> GetLastestProducts(int take)
@@ -96,12 +96,12 @@ namespace eRentSolution.Integration
         
         public async Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request)
         {
-            var result = await GetAsync<PagedResult<ProductViewModel>>($"/api/products/paging?" +
+            var result = await GetPageAsync<PagedResult<ProductViewModel>>($"/api/products/paging?" +
                 $"pageindex={request.PageIndex}" +
                 $"&pagesize={request.PageSize}" +
                 $"&keyword={request.Keyword}" +
                 $"&category={request.CategoryId}");
-            return result;
+            return result.ResultObject;
         }
 
         public async Task<bool> UpdateProduct(ProductUpdateRequest request)

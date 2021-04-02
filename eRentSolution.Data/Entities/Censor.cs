@@ -9,9 +9,9 @@ namespace eRentSolution.Data.Entities
         public int Id { get; set; }
         public int ActionId { get; set; }
         public int ProductId { get; set; }
-        public Guid UserId { get; set; }
-        public AppUser AppUser { get; set; }
-        public AdminAction AdminAction { get; set; }
+        public int PersonId { get; set; }
+        public Person Person { get; set; }
+        public UserAction AdminAction { get; set; }
         public Product Product { get; set; }
     }
 }

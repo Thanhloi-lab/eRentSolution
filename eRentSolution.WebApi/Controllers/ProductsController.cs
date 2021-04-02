@@ -21,13 +21,13 @@ namespace eRentSolution.BackendApi.Controllers
             _productService = productService;
         }
 
-        [HttpGet("GetAllByCategoryId")]
-        public async Task<IActionResult> Get([FromQuery] GetProductPagingByCategoryIdRequest request)
-        {
-            var product = await _productService.GetAllPagingByCategoryId(request);
-            return Ok(product);
-        }
-        [HttpGet("GetAllPaging")]
+        //[HttpGet("GetAllByCategoryId")]
+        //public async Task<IActionResult> Get([FromQuery] GetProductPagingByCategoryIdRequest request)
+        //{
+        //    var product = await _productService.GetAllPagingByCategoryId(request);
+        //    return Ok(product);
+        //}
+        [HttpGet("paging")]
         public async Task<IActionResult> Get([FromQuery] GetProductPagingRequest request)
         {
             var product = await _productService.GetAllPaging(request);

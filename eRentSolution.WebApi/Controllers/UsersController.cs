@@ -12,7 +12,6 @@ namespace eRentSolution.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -35,48 +34,50 @@ namespace eRentSolution.BackendApi.Controllers
             return Ok(result);
         }
         [HttpPost("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var result = _userService.Delete(id);
+            var result = await _userService.Delete(id);
             return Ok(result);
         }
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var result = _userService.GetById(id);
+            var result = await _userService.GetById(id);
+            if(!result.IsSuccessed)
+                return BadRequest();
             return Ok(result);
         }
         [HttpGet("paging")]
-        public IActionResult GetUserPaging([FromQuery]GetUserPagingRequest request)
+        public async Task<IActionResult> GetUserPaging([FromQuery]GetUserPagingRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(request);
-            var result = _userService.GetUserPaging(request);
+            var result = await _userService.GetUserPaging(request);
             return Ok(result);
         }
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Register([FromBody]UserRegisterRequest request)
+        public async Task<IActionResult> Register([FromBody]UserRegisterRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(request);
-            var result = _userService.Register(request);
+            var result = await _userService.Register(request);
             return Ok(result);
         }
         [HttpPut("{id}/roles")]
-        public IActionResult RoleAssign(Guid id ,[FromBody]RoleAssignRequest request)
+        public async Task<IActionResult> RoleAssign(Guid id ,[FromBody]RoleAssignRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(request);
-            var result = _userService.RoleAssign(id, request);
+            var result = await _userService.RoleAssign(id, request);
             return Ok(result);
         }
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UserUpdateRequest request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(request);
-            var result = _userService.Update(id, request);
+            var result = await _userService.Update(id, request);
             return Ok(result);
         }
 

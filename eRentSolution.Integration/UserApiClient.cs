@@ -33,17 +33,15 @@ namespace eRentSolution.Integration
 
         public async Task<UserViewModel> GetById(Guid id)
         {
-            var result = await GetAsync<UserViewModel>($"api/users/{id}");
-            return result;
+            var result = await GetPageAsync<UserViewModel>($"/api/users/{id}");
+            return result.ResultObject;
         }
 
         public async Task<PagedResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request)
         {
-            var result = await GetAsync<PagedResult<UserViewModel>>($"/api/users/paging?" +
-                $"pageindex={request.PageIndex}" +
-                $"&pagesize={request.PageSize}" +
-                $"&keyword={request.Keyword}");
-            return result;
+            var result = await GetPageAsync<PagedResult<UserViewModel>>($"/api/users/paging?pageIndex=" +
+                $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}");
+            return result.ResultObject;
         }
 
         public async Task<ApiResult<bool>> RegisterUser(UserRegisterRequest registerRequest)

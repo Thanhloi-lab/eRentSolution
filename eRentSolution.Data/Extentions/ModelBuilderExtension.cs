@@ -50,12 +50,20 @@ namespace eRentSolution.Data.Extentions
             // any guid
             var roleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DE");
             var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DD");
+            var roleId1 = new Guid("E4DF483B-524D-467B-B6F4-2EE002742987");
             modelBuilder.Entity<AppRole>().HasData(new AppRole
             {
                 Id = roleId,
-                Name = "admin",
+                Name = "Admin",
                 NormalizedName = "admin",
                 Description = "Administrator role"
+            },
+            new AppRole
+            {
+                Id = roleId1,
+                Name = "UserAdmin",
+                NormalizedName = "useradmin",
+                Description = "User admin role"
             });
 
             var hasher = new PasswordHasher<AppUser>();
@@ -69,20 +77,24 @@ namespace eRentSolution.Data.Extentions
                 EmailConfirmed = true,
                 PasswordHash = hasher.HashPassword(null, "123456aS"),
                 SecurityStamp = string.Empty,
-                FirstName = "Lợi",
-                LastName = "Cao Thành",
-                Dob = new DateTime(2000, 01, 31)
+                
             });
 
-            
+            modelBuilder.Entity<Person>().HasData(
+           new Person()
+           {
+               Id = 1,
+               FirstName = "Lợi",
+               LastName = "Cao Thành",
+               Dob = new DateTime(2000, 01, 31),
+               UserId = adminId
+           });
+
             modelBuilder.Entity<Product>().HasData(
            new Product()
            {
                Id = 1,
                DateCreated = DateTime.Now,
-               OriginalPrice = 100000,
-               Price = 200000,
-               Stock = 0,
                ViewCount = 0,
                Name = "Áo sơ mi nam trắng Việt Tiến",
                SeoAlias = "ao-so-mi-nam-trang-viet-tien",
@@ -90,6 +102,17 @@ namespace eRentSolution.Data.Extentions
                SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
                Details = "Áo sơ mi nam trắng Việt Tiến",
                Description = "Áo sơ mi nam trắng Việt Tiến"
+           });
+            modelBuilder.Entity<ProductDetail>().HasData(
+           new ProductDetail()
+           {
+               Id = 1,
+               DateCreated = DateTime.Now,
+               OriginalPrice = 100000,
+               Price = 200000,
+               Stock = 0,
+               Name = "Size 38",
+               ProductId = 1,
            });
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
             {
