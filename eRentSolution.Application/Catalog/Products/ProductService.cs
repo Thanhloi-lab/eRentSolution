@@ -110,17 +110,11 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 await _storageService.DeleteFileAsync(image.ImagePath);
             }
-            
             _context.Products.Remove(product);
 
             var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteProduct);
-            var censor = new Censor()
-            {
-                ActionId = action.Id,
-                PersonId = userInfoId,
-                ProductId = productId
-            };
-            await _context.Censors.AddAsync(censor);
+            var censor = await _context.Censors.FirstOrDefaultAsync(x => x.ActionId == action.Id && x.PersonId == userInfoId && x.ProductId == productId);
+            _context.Censors.Remove(censor);
             var result = await _context.SaveChangesAsync();
             return true;
         }
