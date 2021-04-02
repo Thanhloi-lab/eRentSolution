@@ -47,10 +47,12 @@ namespace eRentSolution.Application.System.Users
             if(!result.Succeeded)
                 return new ApiErrorResult<string>("Username or password incorrect");
             var roles = await _userManager.GetRolesAsync(user);
+            var userInfo = await _context.Persons.FirstOrDefaultAsync(x => x.UserId == user.Id);
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Actor, userInfo.Id.ToString())
             };
             foreach (var item in roles)
             {

@@ -10,9 +10,9 @@ namespace eRentSolution.Integration
     public interface IProductApiClient
     {
         Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request);
-        Task<bool> CreateProduct(ProductCreateRequest request);
-        Task<bool> UpdateProduct(ProductUpdateRequest request);
-        Task<bool> DeleteProduct(int id);
+        Task<bool> CreateProduct(ProductCreateRequest request, int userInfoId);
+        Task<bool> UpdateProduct(ProductUpdateRequest request, int userInfoId);
+        Task<bool> DeleteProduct(int id, int userInfoId);
         Task<ApiResult<bool>> CategoryAssign(int productId, CategoryAssignRequest request);
         Task<ProductViewModel> GetById(int productId);
         Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request);

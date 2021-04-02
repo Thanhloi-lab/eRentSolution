@@ -43,11 +43,11 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok(product);
         }
-        [HttpPost]
+        [HttpPost("{userInfoId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Creat([FromForm] ProductCreateRequest request)
+        public async Task<IActionResult> Creat([FromForm] ProductCreateRequest request, int userInfoId)
         {
-            var productId = await _productService.Create(request);
+            var productId = await _productService.Create(request, userInfoId);
             if (productId == 0)
             {
                 return BadRequest();
@@ -56,11 +56,11 @@ namespace eRentSolution.BackendApi.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = productId }, product);
         }
-        [HttpPut]
+        [HttpPut("{userInfoId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request)
+        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, int userInfoId)
         {
-            var isSuccessful = await _productService.Update(request);
+            var isSuccessful = await _productService.Update(request, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
@@ -77,30 +77,30 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok();
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{userInfoId}/{id}")]
+        public async Task<IActionResult> Delete(int id, int userInfoId)
         {
-            var isSuccessful = await _productService.Delete(id);
+            var isSuccessful = await _productService.Delete(id, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
             }
             return Ok();
         }
-        [HttpPut("price/{id}/{newPrice}")]
-        public async Task<IActionResult> UpdatePrice(int id, decimal newPrice)
+        [HttpPut("price/{userInfoId}/{id}/{newPrice}")]
+        public async Task<IActionResult> UpdatePrice(int id, decimal newPrice, int userInfoId)
         {
-            var isSuccessful = await _productService.UpdatePrice(id, newPrice);
+            var isSuccessful = await _productService.UpdatePrice(id, newPrice, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
             }
             return Ok();
         }
-        [HttpPut("stock/{id}/{addedQuantity}")]
-        public async Task<IActionResult> UpdateStock(int id, int addedQuantity)
+        [HttpPut("stock/{userInfoId}/{id}/{addedQuantity}")]
+        public async Task<IActionResult> UpdateStock(int id, int addedQuantity, int userInfoId)
         {
-            var isSuccessful = await _productService.UpdateStock(id, addedQuantity);
+            var isSuccessful = await _productService.UpdateStock(id, addedQuantity, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();

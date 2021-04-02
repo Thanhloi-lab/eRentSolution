@@ -32,7 +32,6 @@ namespace eRentSolution.AdminApp.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var token = _httpContextAccessor.HttpContext.Request.Cookies["Token"];
@@ -86,13 +85,6 @@ namespace eRentSolution.AdminApp.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
-            foreach (var item in userPrincipal.Claims)
-            {
-                if (item.Type == "NameIdentifier")
-                {
-                    Response.Cookies.Append("UserName", item.Value, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
-                }
-            }
             Response.Cookies.Append("Token", result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }

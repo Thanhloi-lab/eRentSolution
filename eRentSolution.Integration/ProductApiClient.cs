@@ -35,7 +35,7 @@ namespace eRentSolution.Integration
             return result;
         }
 
-        public async Task<bool> CreateProduct(ProductCreateRequest request)
+        public async Task<bool> CreateProduct(ProductCreateRequest request, int userInfoId)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
             var client = _httpClientFactory.CreateClient();
@@ -65,14 +65,14 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoAlias) ? "" : request.SeoAlias.ToString()), "seoAlias");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoTitle) ? "" : request.SeoTitle.ToString()), "seoTitle");
 
-            var response = await client.PostAsync($"api/products", requestContent);
+            var response = await client.PostAsync($"api/products/{userInfoId}", requestContent);
             return response.IsSuccessStatusCode;
 
         }
 
-        public async Task<bool> DeleteProduct(int productId)
+        public async Task<bool> DeleteProduct(int productId, int userInfoId)
         {
-            var result = await DeleteAsync<bool>($"/api/products/{productId}");
+            var result = await DeleteAsync<bool>($"/api/products/{userInfoId}/{productId}");
             return result;
         }
 
@@ -104,7 +104,7 @@ namespace eRentSolution.Integration
             return result;
         }
 
-        public async Task<bool> UpdateProduct(ProductUpdateRequest request)
+        public async Task<bool> UpdateProduct(ProductUpdateRequest request, int userInfoId)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
             var client = _httpClientFactory.CreateClient();
@@ -131,7 +131,7 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoAlias) ? "" : request.SeoAlias.ToString()), "seoAlias");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoTitle) ? "" : request.SeoTitle.ToString()), "seoTitle");
 
-            var response = await client.PostAsync($"api/products/{request.Id}", requestContent);
+            var response = await client.PostAsync($"api/products/{userInfoId}/{request.Id}", requestContent);
             return response.IsSuccessStatusCode;
         }
 

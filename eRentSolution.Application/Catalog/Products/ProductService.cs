@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using eRentSolution.ViewModels.Catalog.Categories;
 using eRentSolution.ViewModels.Catalog.ProductDetails;
+using eRentSolution.Utilities.Constants;
 
 namespace eRentSolution.Application.Catalog.Products
 {
@@ -41,7 +42,7 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<int> Create(ProductCreateRequest request)
+        public async Task<int> Create(ProductCreateRequest request, int userInfoId)
         {
             var product = new Product()
             {
@@ -83,10 +84,20 @@ namespace eRentSolution.Application.Catalog.Products
                     }
                 };
             }
-            _context.Products.Add(product);
+            await _context.Products.AddAsync(product);
+
+            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                PersonId = userInfoId,
+                ProductId = product.Id
+            };
+            await _context.Censors.AddAsync(censor);
+
             return await _context.SaveChangesAsync();
         }
-        public async Task<bool> Delete(int productId)
+        public async Task<bool> Delete(int productId, int userInfoId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
@@ -101,10 +112,19 @@ namespace eRentSolution.Application.Catalog.Products
             }
             
             _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+
+            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteProduct);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                PersonId = userInfoId,
+                ProductId = productId
+            };
+            await _context.Censors.AddAsync(censor);
+            var result = await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> UpdatePrice(int productDetailId ,decimal newPrice)
+        public async Task<bool> UpdatePrice(int productDetailId ,decimal newPrice, int userInfoId)
         {
             //var product = await _context.Products.FindAsync(productId);
             //if (product == null)
@@ -117,10 +137,20 @@ namespace eRentSolution.Application.Catalog.Products
                 return false;
             }
             productDetail.Price = newPrice;
+
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
+            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdatePriceProduct);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                PersonId = userInfoId,
+                ProductId = product.Id
+            };
+            await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> UpdateStock(int productDetailId, int addedQuantity)
+        public async Task<bool> UpdateStock(int productDetailId, int addedQuantity, int userInfoId)
         {
             var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
             if (productDetail == null)
@@ -128,10 +158,20 @@ namespace eRentSolution.Application.Catalog.Products
                 return false;
             }
             productDetail.Stock += addedQuantity;
+
+            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
+            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateStockProduct);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                PersonId = userInfoId,
+                ProductId = product.Id
+            };
+            await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> Update(ProductUpdateRequest request)
+        public async Task<bool> Update(ProductUpdateRequest request, int userInfoId)
         {
             var product = await _context.Products.FindAsync(request.Id);
             if (product == null)
@@ -154,6 +194,14 @@ namespace eRentSolution.Application.Catalog.Products
                     _context.ProductImages.Update(thumbnailImage);
                 }
             }
+            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProduct);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                PersonId = userInfoId,
+                ProductId = product.Id
+            };
+            await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
             return true;
         }
