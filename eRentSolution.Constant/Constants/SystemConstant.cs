@@ -22,7 +22,7 @@ namespace eRentSolution.Utilities.Constants
         }
         public class ActionSettings
         {
-            public const string DeleteProduct = "DeleteProduct";
+            public const string HideProduct = "HideProduct";
             public const string UpdateProduct = "UpdateProduct";
             public const string UpdatePriceProduct = "UpdatePriceProduct";
             public const string UpdateStockProduct = "UpdateStockProduct";

@@ -56,11 +56,11 @@ namespace eRentSolution.BackendApi.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = productId }, product);
         }
-        [HttpPut("{userInfoId}")]
+        [HttpPut("{userInfoId}/{productId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, int userInfoId)
+        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, int userInfoId, [FromRoute]int productId)
         {
-            var isSuccessful = await _productService.Update(request, userInfoId);
+            var isSuccessful = await _productService.Update(request, userInfoId, productId);
             if (isSuccessful == false)
             {
                 return BadRequest();

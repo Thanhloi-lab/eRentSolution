@@ -66,6 +66,62 @@ namespace eRentSolution.AdminApp.Controllers
             return View(result);
         }
         [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Create([FromForm] ProductCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.CreateProduct(request, int.Parse(userInfoId));
+            if (result)
+            {
+                TempData["result"] = "Tạo mới sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Tạo mới sản phẩm thất bại");
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var product = await _productApiClient.GetById(id);
+            var productViewModel = new ProductUpdateRequest()
+            {
+                Id = id,
+                Name = product.Name,
+                Description = product.Description,
+                Details = product.Details,
+                SeoAlias = product.SeoAlias,
+                SeoDescription = product.SeoDescription,
+                SeoTitle = product.SeoTitle,
+                ThumbnailImage = null
+            };
+            return View(productViewModel);
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> Edit([FromForm] ProductUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.UpdateProduct(request, int.Parse(userInfoId));
+            if (result)
+            {
+                TempData["result"] = "Chỉnh sửa sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Chỉnh sửa sản phẩm thất bại");
+            return View(request);
+        }
+        [HttpGet]
         public IActionResult Delete(int id)
         {
             return View(new ProductDeleteRequest() { 

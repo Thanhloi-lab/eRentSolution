@@ -64,6 +64,7 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoDescription) ? "" : request.SeoDescription.ToString()), "seoDescription");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoAlias) ? "" : request.SeoAlias.ToString()), "seoAlias");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoTitle) ? "" : request.SeoTitle.ToString()), "seoTitle");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SubProductName) ? "" : request.SubProductName.ToString()), "subProductName");
 
             var response = await client.PostAsync($"api/products/{userInfoId}", requestContent);
             return response.IsSuccessStatusCode;
@@ -131,7 +132,7 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoAlias) ? "" : request.SeoAlias.ToString()), "seoAlias");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoTitle) ? "" : request.SeoTitle.ToString()), "seoTitle");
 
-            var response = await client.PostAsync($"api/products/{userInfoId}/{request.Id}", requestContent);
+            var response = await client.PutAsync($"api/products/{userInfoId}/{request.Id}", requestContent);
             return response.IsSuccessStatusCode;
         }
 

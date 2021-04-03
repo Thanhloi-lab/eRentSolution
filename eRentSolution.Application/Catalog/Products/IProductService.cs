@@ -12,7 +12,7 @@ namespace eRentSolution.Application.Catalog.Products
     public interface IProductService
     {
         Task<int> Create(ProductCreateRequest request, int userInfoId);
-        Task<bool> Update(ProductUpdateRequest request, int userInfoId);
+        Task<bool> Update(ProductUpdateRequest request, int userInfoId, int productId);
         Task<bool> Delete(int productId, int userInfoId);
         Task<bool> UpdatePrice(int productId, decimal newPrice, int userInfoId);
         Task<bool> UpdateStock(int productId, int addedQuantity, int userInfoId);

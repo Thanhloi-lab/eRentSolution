@@ -1,4 +1,5 @@
-﻿using eRentSolution.ViewModels.Catalog.ProductDetails;
+﻿using eRentSolution.Data.Enums;
+using eRentSolution.ViewModels.Catalog.ProductDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -35,6 +36,7 @@ namespace eRentSolution.ViewModels.Catalog.Products
         [Display(Name = "Từ khóa")]
         public string SeoAlias { get; set; }
         [Display(Name = "Những danh mục")]
+        public Status Status { get; set; }
         public List<string> Categories { get; set; } = new List<string>();
         public List<ProductDetailViewModel> ProductDetailViewModels { get; set; } = new List<ProductDetailViewModel>();
     }
