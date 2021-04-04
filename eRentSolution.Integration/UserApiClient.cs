@@ -19,9 +19,9 @@ namespace eRentSolution.Integration
         {
         }
 
-        public async Task<ApiResult<string>> Authenticate(UserLoginRequest login)
+        public async Task<ApiResult<string>> Authenticate(UserLoginRequest login, bool isAdminPage)
         {
-            var result = await PostAsync<string>($"api/users/authenticate", login);
+            var result = await PostAsync<string>($"api/users/authenticate/{isAdminPage}", login);
             return result;
         }
 

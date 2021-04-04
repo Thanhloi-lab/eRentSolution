@@ -38,15 +38,23 @@ namespace eRentSolution.Application.System.Users
             _context = context;
         }
 
-        public async Task<ApiResult<string>> Authenticate(UserLoginRequest request)
+        public async Task<ApiResult<string>> Authenticate(UserLoginRequest request, bool isAdminPage)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
                 return new ApiErrorResult<string>("Username or password incorrect");
+
+            if (user.Status == Data.Enums.Status.InActive)
+                return new ApiErrorResult<string>("Account was locked");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            if((!roles.Contains(SystemConstant.AppSettings.UserAdminRole) || !roles.Contains(SystemConstant.AppSettings.AdminRole)) && isAdminPage)
+                return new ApiErrorResult<string>("Username or password incorrect");
+
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
             if(!result.Succeeded)
                 return new ApiErrorResult<string>("Username or password incorrect");
-            var roles = await _userManager.GetRolesAsync(user);
+            
             var userInfo = await _context.Persons.FirstOrDefaultAsync(x => x.UserId == user.Id);
             var claims = new List<Claim>()
             {

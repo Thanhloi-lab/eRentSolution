@@ -20,13 +20,13 @@ namespace eRentSolution.BackendApi.Controllers
         {
             _userService = userService;
         }
-        [HttpPost("authenticate")]
+        [HttpPost("authenticate/{isAdminPage}")]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate([FromBody]UserLoginRequest request)
+        public async Task<IActionResult> Authenticate([FromBody]UserLoginRequest request, bool isAdminPage)
         {
             if (!ModelState.IsValid)
                 return BadRequest(request);
-            var result = await _userService.Authenticate(request);
+            var result = await _userService.Authenticate(request, isAdminPage);
             if(string.IsNullOrEmpty(result.ResultObject))
             {
                 return BadRequest(result);
