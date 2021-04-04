@@ -9,7 +9,7 @@ namespace eRentSolution.Application.System.Users
 {
     public interface IUserService
     {
-        Task<ApiResult<string>> Authenticate(UserLoginRequest request);
+        Task<ApiResult<string>> Authenticate(UserLoginRequest request, bool isAdminPage);
         Task<ApiResult<bool>> Register(UserRegisterRequest request);
         Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request);
         Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request);

@@ -67,7 +67,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View(ModelState);
 
-            var result = await _userApiClient.Authenticate(request);
+            var result = await _userApiClient.Authenticate(request, true);
             if (result.ResultObject == null)
             {
                 ModelState.AddModelError("", result.Message);

@@ -9,7 +9,7 @@ namespace eRentSolution.Integration
 {
     public interface IUserApiClient
     {
-        public Task<ApiResult<string>> Authenticate(UserLoginRequest login);
+        public Task<ApiResult<string>> Authenticate(UserLoginRequest login, bool isAdminPage);
         public Task<PagedResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request);
         public Task<ApiResult<bool>> RegisterUser(UserRegisterRequest registerRequest);
         Task<UserViewModel> GetById(Guid id);
