@@ -17,5 +17,6 @@ namespace eRentSolution.Data.Entities
         public Product Product { get; set; }
         public DateTime DateCreated { set; get; }
         public Status Status { get; set; }
+        public List<ProductImage> ProductImages { get; set; }
     }
 }

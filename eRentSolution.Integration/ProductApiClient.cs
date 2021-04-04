@@ -35,7 +35,7 @@ namespace eRentSolution.Integration
             return result;
         }
 
-        public async Task<bool> CreateProduct(ProductCreateRequest request)
+        public async Task<bool> CreateProduct(ProductCreateRequest request, int userInfoId)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
             var client = _httpClientFactory.CreateClient();
@@ -64,22 +64,23 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoDescription) ? "" : request.SeoDescription.ToString()), "seoDescription");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoAlias) ? "" : request.SeoAlias.ToString()), "seoAlias");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoTitle) ? "" : request.SeoTitle.ToString()), "seoTitle");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SubProductName) ? "" : request.SubProductName.ToString()), "subProductName");
 
-            var response = await client.PostAsync($"api/products", requestContent);
+            var response = await client.PostAsync($"api/products/{userInfoId}", requestContent);
             return response.IsSuccessStatusCode;
 
         }
 
-        public async Task<bool> DeleteProduct(int productId)
+        public async Task<bool> DeleteProduct(int productId, int userInfoId)
         {
-            var result = await DeleteAsync<bool>($"/api/products/{productId}");
+            var result = await DeleteAsync<bool>($"/api/products/{userInfoId}/{productId}");
             return result;
         }
 
         public async Task<ProductViewModel> GetById(int productId)
         {
-            var result = await GetPageAsync<ProductViewModel>($"/api/products/{productId}");
-            return result.ResultObject;
+            var result = await GetAsync<ProductViewModel>($"/api/products/{productId}");
+            return result;
         }
 
         public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
@@ -96,15 +97,15 @@ namespace eRentSolution.Integration
         
         public async Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request)
         {
-            var result = await GetPageAsync<PagedResult<ProductViewModel>>($"/api/products/paging?" +
-                $"pageindex={request.PageIndex}" +
-                $"&pagesize={request.PageSize}" +
+            var result = await GetAsync<PagedResult<ProductViewModel>>(
+                $"/api/products/paging?pageIndex={request.PageIndex}" +
+                $"&pageSize={request.PageSize}" +
                 $"&keyword={request.Keyword}" +
-                $"&category={request.CategoryId}");
-            return result.ResultObject;
+                $"&categoryId={request.CategoryId}");
+            return result;
         }
 
-        public async Task<bool> UpdateProduct(ProductUpdateRequest request)
+        public async Task<bool> UpdateProduct(ProductUpdateRequest request, int userInfoId)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
             var client = _httpClientFactory.CreateClient();
@@ -131,7 +132,7 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoAlias) ? "" : request.SeoAlias.ToString()), "seoAlias");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoTitle) ? "" : request.SeoTitle.ToString()), "seoTitle");
 
-            var response = await client.PostAsync($"api/products/{request.Id}", requestContent);
+            var response = await client.PutAsync($"api/products/{userInfoId}/{request.Id}", requestContent);
             return response.IsSuccessStatusCode;
         }
 

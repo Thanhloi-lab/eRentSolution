@@ -22,7 +22,7 @@ namespace eRentSolution.Data.Entities
         public Status Status { get; set; }
         public bool? IsFeatured { get; set; }
         public List<ProductInCategory> ProductInCategories { get; set; }
-        public List<ProductImage> ProductImages { get; set; }
+        
         public List<Censor> Censors { get; set; }
         public List<Slide> Slides { get; set; }
         public List<ProductDetail> ProductDetails { get; set; }

@@ -47,10 +47,12 @@ namespace eRentSolution.Application.System.Users
             if(!result.Succeeded)
                 return new ApiErrorResult<string>("Username or password incorrect");
             var roles = await _userManager.GetRolesAsync(user);
+            var userInfo = await _context.Persons.FirstOrDefaultAsync(x => x.UserId == user.Id);
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Actor, userInfo.Id.ToString())
             };
             foreach (var item in roles)
             {
@@ -197,21 +199,17 @@ namespace eRentSolution.Application.System.Users
                 UserName = request.UserName,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
-            };
-            var person = new Person()
-            {
-                Dob = request.Dob,
-                FirstName = request.FirstName,
-                LastName = request.LastName
+                Person = new Person()
+                {
+                    Dob = request.Dob,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName
+                }
             };
             var result = await _userManager.CreateAsync(user, request.Password);
-            
             if (result.Succeeded)
-            {
-                await _context.Persons.AddAsync(person);
-                await _context.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
-            }
+
             return new ApiErrorResult<bool>("Fail to create account");
         }
 
