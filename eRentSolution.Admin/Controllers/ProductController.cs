@@ -19,7 +19,7 @@ namespace eRentSolution.AdminApp.Controllers
         private readonly ICategoryApiClient _categoryApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string userId;
-        private readonly string userInfoId;
+        //private readonly string userInfoId;
         public ProductController(IProductApiClient productApiClient,
             IConfiguration configuration,
             ICategoryApiClient categoryApiClient,
@@ -29,7 +29,7 @@ namespace eRentSolution.AdminApp.Controllers
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
             userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            userInfoId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Actor).Value;
+            //userInfoId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Actor).Value;
         }
 
         public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 3)
@@ -77,7 +77,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = await _productApiClient.CreateProduct(request, int.Parse(userInfoId));
+            var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId));
             if (result)
             {
                 TempData["result"] = "Tạo mới sản phẩm thành công";
@@ -111,7 +111,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = await _productApiClient.UpdateProduct(request, int.Parse(userInfoId));
+            var result = await _productApiClient.UpdateProduct(request, Guid.Parse(userId));
             if (result)
             {
                 TempData["result"] = "Chỉnh sửa sản phẩm thành công";
@@ -129,21 +129,19 @@ namespace eRentSolution.AdminApp.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(int id, bool isSuccess=false)
+        public async Task<IActionResult> Delete(ProductDeleteRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
-            int infoId;
-            if(int.TryParse(userInfoId, out infoId))
-                isSuccess = await _productApiClient.DeleteProduct(id, infoId);
+            var result = await _productApiClient.DeleteProduct(request.Id, Guid.Parse(userId));
             
-            if (isSuccess)
+            if (result)
             {
                 TempData["result"] = "Xóa sản phẩm thành công";
                 return RedirectToAction("Index");
             }
             TempData["failResult"] = "Xóa sản phẩm không thành công";
-            return View(id);
+            return View(request.Id);
         }
     }
 }

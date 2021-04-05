@@ -35,7 +35,7 @@ namespace eRentSolution.Integration
             return result;
         }
 
-        public async Task<bool> CreateProduct(ProductCreateRequest request, int userInfoId)
+        public async Task<bool> CreateProduct(ProductCreateRequest request, Guid userInfoId)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
             var client = _httpClientFactory.CreateClient();
@@ -71,7 +71,7 @@ namespace eRentSolution.Integration
 
         }
 
-        public async Task<bool> DeleteProduct(int productId, int userInfoId)
+        public async Task<bool> DeleteProduct(int productId, Guid userInfoId)
         {
             var result = await DeleteAsync<bool>($"/api/products/{userInfoId}/{productId}");
             return result;
@@ -105,7 +105,7 @@ namespace eRentSolution.Integration
             return result;
         }
 
-        public async Task<bool> UpdateProduct(ProductUpdateRequest request, int userInfoId)
+        public async Task<bool> UpdateProduct(ProductUpdateRequest request, Guid userInfoId)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
             var client = _httpClientFactory.CreateClient();
