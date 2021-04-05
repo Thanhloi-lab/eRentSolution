@@ -13,6 +13,8 @@ namespace eRentSolution.Application.System.Users
         Task<ApiResult<bool>> Register(UserRegisterRequest request);
         Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request);
         Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request);
+        Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request);
+        Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request);
         Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
         Task<ApiResult<UserViewModel>> GetById(Guid id);
         Task<ApiResult<bool>> Delete(Guid id);

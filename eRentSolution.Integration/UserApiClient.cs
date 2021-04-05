@@ -61,5 +61,15 @@ namespace eRentSolution.Integration
             var result = await PutAsync<bool>($"/api/users/{id}", request);
             return result;
         }
+        public async Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request)
+        {
+            var result = await PutAsync<bool>($"/api/users/password/{request.Id}", request);
+            return result;
+        }
+        public async Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request)
+        {
+            var result = await PutAsync<bool>($"/api/users/ResetPassword/{request.Id}", request);
+            return result;
+        }
     }
 }

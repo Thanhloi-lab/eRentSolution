@@ -23,6 +23,7 @@ namespace eRentSolution.AdminApp.Controllers
         private readonly IRoleApiClient _roleApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string userId;
+        private readonly string token;
         public UserController(IUserApiClient userApiClient,
             IConfiguration configuration,
             IRoleApiClient roleApiClient,
@@ -32,7 +33,8 @@ namespace eRentSolution.AdminApp.Controllers
             _configuration = configuration;
             _roleApiClient = roleApiClient;
             _httpContextAccessor = httpContextAccessor;
-            userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token) ;
         }
 
         public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)
@@ -82,9 +84,8 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var reusult = User.IsInRole(SystemConstant.AppSettings.AdminRole);
-            if (User.IsInRole(SystemConstant.AppSettings.AdminRole) == false 
-                && !id.ToString().Equals(userId))
+            //var reusult = User.IsInRole(SystemConstant.AppSettings.AdminRole);
+            if (!id.ToString().Equals(userId))
             {
                 TempData["FailResult"] = "You cannot update others user";
                 return View(id);
@@ -115,6 +116,54 @@ namespace eRentSolution.AdminApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = "Update user successful";
+                return RedirectToAction("index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public IActionResult ChangePassword(Guid id)
+        {
+            return View(new UserUpdatePasswordRequest()
+            {
+                Id = id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(UserUpdatePasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.UpdatePassword(request);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Update password successful";
+                return RedirectToAction("index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpGet]
+        public IActionResult ResetPassword(Guid id)
+        {
+            return View(new UserResetPasswordRequest()
+            {
+                Id = id,
+                Token = token,
+                NewPassword = SystemConstant.AppSettings.PasswordReseted
+            });
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(UserResetPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.ResetPassword(request);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Update password successful";
                 return RedirectToAction("index");
             }
             ModelState.AddModelError("", result.Message);

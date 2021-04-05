@@ -48,8 +48,12 @@ namespace eRentSolution.Application.System.Users
                 return new ApiErrorResult<string>("Account was locked");
 
             var roles = await _userManager.GetRolesAsync(user);
-            if((!roles.Contains(SystemConstant.AppSettings.UserAdminRole) || !roles.Contains(SystemConstant.AppSettings.AdminRole)) && isAdminPage)
-                return new ApiErrorResult<string>("Username or password incorrect");
+            if(isAdminPage)
+            {
+                if(!roles.Contains(SystemConstant.AppSettings.UserAdminRole) && !roles.Contains(SystemConstant.AppSettings.AdminRole))
+                    return new ApiErrorResult<string>("Username or password incorrect");
+            }
+                
 
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
             if(!result.Succeeded)
@@ -60,7 +64,8 @@ namespace eRentSolution.Application.System.Users
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Actor, userInfo.Id.ToString())
+                new Claim(ClaimTypes.Actor, userInfo.Id.ToString()),
+                new Claim(ClaimTypes.Name, userInfo.LastName),
             };
             foreach (var item in roles)
             {
@@ -77,7 +82,6 @@ namespace eRentSolution.Application.System.Users
             return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
 
         }
-
         public async Task<ApiResult<bool>> Delete(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
@@ -91,7 +95,6 @@ namespace eRentSolution.Application.System.Users
             return new ApiErrorResult<bool>("Delete user unsuccessful");
 
         }
-
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
@@ -220,7 +223,6 @@ namespace eRentSolution.Application.System.Users
 
             return new ApiErrorResult<bool>("Fail to create account");
         }
-
         public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
@@ -249,7 +251,6 @@ namespace eRentSolution.Application.System.Users
 
             return new ApiSuccessResult<bool>();
         }
-
         public async Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request)
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))
@@ -271,6 +272,39 @@ namespace eRentSolution.Application.System.Users
                 return new ApiSuccessResult<bool>();
             }
                 
+            return new ApiErrorResult<bool>("Update unsuccessful");
+        }
+        public async Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            if(user == null)
+            {
+                new ApiErrorResult<bool>("Update unsuccessful");
+            }
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+            if (result.Succeeded)
+            {
+               // await _context.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }
+
+            return new ApiErrorResult<bool>("Update unsuccessful");
+        }
+        public async Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            if (user == null)
+            {
+                new ApiErrorResult<bool>("Update unsuccessful");
+            }
+            var removeResult = await _userManager.RemovePasswordAsync(user);
+            //var hashPassword = _userManager.PasswordHasher.HashPassword(user, request.NewPassword);
+            if (removeResult.Succeeded)
+            {
+                var result = await _userManager.AddPasswordAsync(user, request.NewPassword);
+               // await _context.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }
             return new ApiErrorResult<bool>("Update unsuccessful");
         }
     }

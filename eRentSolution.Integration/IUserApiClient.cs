@@ -14,6 +14,8 @@ namespace eRentSolution.Integration
         public Task<ApiResult<bool>> RegisterUser(UserRegisterRequest registerRequest);
         Task<UserViewModel> GetById(Guid id);
         Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request);
+        Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request);
+        Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request);
         Task<bool> Delete(Guid id);
         Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
     }

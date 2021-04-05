@@ -65,7 +65,7 @@ namespace eRentSolution.Application.Catalog.Products
                         OriginalPrice = request.OriginalPrice,
                         Stock = request.Stock,
                         Name = request.SubProductName,
-                        IsThumbnail =true
+                        IsThumbnail =true,
                     }
                 },
                 Censors = new List<Censor>()
@@ -73,7 +73,8 @@ namespace eRentSolution.Application.Catalog.Products
                     new Censor()
                     {
                         ActionId = action.Id,
-                        PersonId = userInfoId
+                        PersonId = userInfoId,
+                        Date = DateTime.Now
                     }
                 }
             };
@@ -138,7 +139,8 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 PersonId = userInfoId,
-                ProductId = product.Id
+                ProductId = product.Id,
+                Date = DateTime.Now
             };
             await _context.Censors.AddAsync(censor);
 
@@ -170,7 +172,8 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 PersonId = userInfoId,
-                ProductId = product.Id
+                ProductId = product.Id,
+                Date = DateTime.Now
             };
             await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
@@ -191,7 +194,9 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 PersonId = userInfoId,
-                ProductId = product.Id
+                ProductId = product.Id,
+                Date = DateTime.Now
+
             };
             await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
@@ -225,7 +230,8 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 PersonId = userInfoId,
-                ProductId = product.Id
+                ProductId = product.Id,
+                Date = DateTime.Now
             };
             await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
