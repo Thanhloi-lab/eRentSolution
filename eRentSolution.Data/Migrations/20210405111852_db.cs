@@ -224,11 +224,9 @@ namespace eRentSolution.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Persons",
+                name: "UserInfos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
@@ -236,9 +234,9 @@ namespace eRentSolution.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Persons", x => x.Id);
+                    table.PrimaryKey("PK_UserInfos", x => x.UserId);
                     table.ForeignKey(
-                        name: "FK_Persons_AppUsers_UserId",
+                        name: "FK_UserInfos_AppUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AppUsers",
                         principalColumn: "Id",
@@ -265,31 +263,6 @@ namespace eRentSolution.Data.Migrations
                     table.PrimaryKey("PK_ProductDetails", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProductDetails_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductImages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ImagePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Caption = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SortOrder = table.Column<int>(type: "int", nullable: false),
-                    FileSize = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductImages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductImages_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -353,7 +326,8 @@ namespace eRentSolution.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ActionId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    PersonId = table.Column<int>(type: "int", nullable: false)
+                    UserInfoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -365,17 +339,54 @@ namespace eRentSolution.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Censors_Persons_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "Persons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Censors_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Censors_UserInfos_UserInfoId",
+                        column: x => x.UserInfoId,
+                        principalTable: "UserInfos",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductImages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductDetailId = table.Column<int>(type: "int", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Caption = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SortOrder = table.Column<int>(type: "int", nullable: false),
+                    FileSize = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductImages_ProductDetails_ProductDetailId",
+                        column: x => x.ProductDetailId,
+                        principalTable: "ProductDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AdminActions",
+                columns: new[] { "Id", "ActionName" },
+                values: new object[,]
+                {
+                    { 1, "CreateProduct" },
+                    { 2, "UpdateProduct" },
+                    { 3, "HideProduct" },
+                    { 4, "UpdateStockProduct" },
+                    { 5, "UpdatePriceProduct" }
                 });
 
             migrationBuilder.InsertData(
@@ -383,15 +394,19 @@ namespace eRentSolution.Data.Migrations
                 columns: new[] { "Key", "Value" },
                 values: new object[,]
                 {
-                    { "HomeTitle", "This is home page of eShopSolution" },
-                    { "HomeKeyword", "This is keyword of eShopSolution" },
-                    { "HomeDescription", "This is description of eShopSolution" }
+                    { "HomeTitle", "This is home page of eRentSolution" },
+                    { "HomeKeyword", "This is keyword of eRentSolution" },
+                    { "HomeDescription", "This is description of eRentSolution" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AppRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[] { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "2805acca-c5b1-47da-aaf8-4a1c51470d13", "Administrator role", "admin", "admin" });
+                values: new object[,]
+                {
+                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "b45a759a-7f7b-4230-940f-c52d370aeb36", "Administrator role", "Admin", "admin" },
+                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "aef36558-99a2-478f-ba32-67ee7d1dbcfc", "User admin role", "UserAdmin", "useradmin" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AppUserRoles",
@@ -400,37 +415,42 @@ namespace eRentSolution.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "AppUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "76aaa138-a1f6-40dd-9249-960000854c14", "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "admin", "AQAAAAEAACcQAAAAEA8UgSPQEdhd34S5OCek88e7ajc/yL9IOJadoyWx0pADtHsaPtNAVWQt6hqDyJ72FQ==", null, false, "", false, "admin" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "78f60099-6951-4603-afe3-3fbdc8f3a81c", "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAEBjTv4bj84tlSjBzaXaepl1aRWhcNOOgA7YMu4YUNvv7LaY89zvrDz99+08t/5dJ/g==", null, false, "", 1, false, "thanhloi" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "IsShowOnHome", "Name", "ParentId", "SeoAlias", "SeoDescription", "SeoTitle", "SortOrder", "Status" },
                 values: new object[,]
                 {
-                    { 1, true, "Áo nam", null, "ao-nam", "Sản phẩm áo thời trang nam", "Sản phẩm áo thời trang nam", 1, 1 },
-                    { 2, true, "Áo nữ", null, "ao-nu", "Sản phẩm áo thời trang nữ", "Sản phẩm áo thời trang nữ", 2, 1 }
+                    { 1, true, "HomeStay", null, "homestay", "Loại hình nhà cho thuê và ở chung với chủ nhà.", "Nhà cho thuê ở cùng chủ hộ", 1, 1 },
+                    { 2, true, "Khách sạn", null, "khach-san", "Cho thuê, mướn phòng khách sạn", "Khách sạn", 2, 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "DateCreated", "Description", "Details", "IsFeatured", "Name", "SeoAlias", "SeoDescription", "SeoTitle" },
-                values: new object[] { 1, new DateTime(2021, 4, 2, 11, 37, 33, 484, DateTimeKind.Local).AddTicks(1625), "Áo sơ mi nam trắng Việt Tiến", "Áo sơ mi nam trắng Việt Tiến", null, "Áo sơ mi nam trắng Việt Tiến", "ao-so-mi-nam-trang-viet-tien", "Áo sơ mi nam trắng Việt Tiến", "Áo sơ mi nam trắng Việt Tiến" });
-
-            migrationBuilder.InsertData(
-                table: "Persons",
-                columns: new[] { "Id", "Dob", "FirstName", "LastName", "UserId" },
-                values: new object[] { 1, new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lợi", "Cao Thành", new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
+                values: new object[] { 1, new DateTime(2021, 4, 5, 18, 18, 50, 855, DateTimeKind.Local).AddTicks(7382), "HomeStay Thanh Loi tại pờ tít", "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m", null, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi" });
 
             migrationBuilder.InsertData(
                 table: "ProductDetails",
                 columns: new[] { "Id", "DateCreated", "Name", "OriginalPrice", "Price", "ProductId" },
-                values: new object[] { 1, new DateTime(2021, 4, 2, 11, 37, 33, 485, DateTimeKind.Local).AddTicks(9239), "Size 38", 100000m, 200000m, 1 });
+                values: new object[] { 1, new DateTime(2021, 4, 5, 18, 18, 50, 858, DateTimeKind.Local).AddTicks(8042), "Phòng 1 chổ nằm", 100000m, 200000m, 1 });
 
             migrationBuilder.InsertData(
                 table: "ProductInCategories",
                 columns: new[] { "CategoryId", "ProductId" },
                 values: new object[] { 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "UserInfos",
+                columns: new[] { "UserId", "Dob", "FirstName", "LastName" },
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lợi", "Cao Thành" });
+
+            migrationBuilder.InsertData(
+                table: "Censors",
+                columns: new[] { "Id", "ActionId", "Date", "ProductId", "UserInfoId" },
+                values: new object[] { 1, 1, new DateTime(2021, 4, 5, 18, 18, 50, 860, DateTimeKind.Local).AddTicks(2124), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Censors_ActionId",
@@ -438,20 +458,14 @@ namespace eRentSolution.Data.Migrations
                 column: "ActionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Censors_PersonId",
-                table: "Censors",
-                column: "PersonId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Censors_ProductId",
                 table: "Censors",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Persons_UserId",
-                table: "Persons",
-                column: "UserId",
-                unique: true);
+                name: "IX_Censors_UserInfoId",
+                table: "Censors",
+                column: "UserInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductDetails_ProductId",
@@ -459,9 +473,9 @@ namespace eRentSolution.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductImages_ProductId",
+                name: "IX_ProductImages_ProductDetailId",
                 table: "ProductImages",
-                column: "ProductId");
+                column: "ProductDetailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductInCategories_ProductId",
@@ -504,9 +518,6 @@ namespace eRentSolution.Data.Migrations
                 name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "ProductDetails");
-
-            migrationBuilder.DropTable(
                 name: "ProductImages");
 
             migrationBuilder.DropTable(
@@ -522,16 +533,19 @@ namespace eRentSolution.Data.Migrations
                 name: "AdminActions");
 
             migrationBuilder.DropTable(
-                name: "Persons");
+                name: "UserInfos");
+
+            migrationBuilder.DropTable(
+                name: "ProductDetails");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "AppUsers");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "Products");
         }
     }
 }

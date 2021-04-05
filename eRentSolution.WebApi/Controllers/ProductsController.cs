@@ -45,7 +45,7 @@ namespace eRentSolution.BackendApi.Controllers
         }
         [HttpPost("{userInfoId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Creat([FromForm] ProductCreateRequest request, int userInfoId)
+        public async Task<IActionResult> Creat([FromForm] ProductCreateRequest request, Guid userInfoId)
         {
             var productId = await _productService.Create(request, userInfoId);
             if (productId == 0)
@@ -58,7 +58,7 @@ namespace eRentSolution.BackendApi.Controllers
         }
         [HttpPut("{userInfoId}/{productId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, int userInfoId, [FromRoute]int productId)
+        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, Guid userInfoId, [FromRoute]int productId)
         {
             var isSuccessful = await _productService.Update(request, userInfoId, productId);
             if (isSuccessful == false)
@@ -78,7 +78,7 @@ namespace eRentSolution.BackendApi.Controllers
             return Ok();
         }
         [HttpDelete("{userInfoId}/{id}")]
-        public async Task<IActionResult> Delete(int id, int userInfoId)
+        public async Task<IActionResult> Delete(int id, Guid userInfoId)
         {
             var isSuccessful = await _productService.Delete(id, userInfoId);
             if (isSuccessful == false)
@@ -88,7 +88,7 @@ namespace eRentSolution.BackendApi.Controllers
             return Ok();
         }
         [HttpPut("price/{userInfoId}/{id}/{newPrice}")]
-        public async Task<IActionResult> UpdatePrice(int id, decimal newPrice, int userInfoId)
+        public async Task<IActionResult> UpdatePrice(int id, decimal newPrice, Guid userInfoId)
         {
             var isSuccessful = await _productService.UpdatePrice(id, newPrice, userInfoId);
             if (isSuccessful == false)
@@ -98,7 +98,7 @@ namespace eRentSolution.BackendApi.Controllers
             return Ok();
         }
         [HttpPut("stock/{userInfoId}/{id}/{addedQuantity}")]
-        public async Task<IActionResult> UpdateStock(int id, int addedQuantity, int userInfoId)
+        public async Task<IActionResult> UpdateStock(int id, int addedQuantity, Guid userInfoId)
         {
             var isSuccessful = await _productService.UpdateStock(id, addedQuantity, userInfoId);
             if (isSuccessful == false)

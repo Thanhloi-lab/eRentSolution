@@ -13,9 +13,9 @@ namespace eRentSolution.Data.Extentions
         public static void seed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AppConfig>().HasData(
-               new AppConfig() { Key = "HomeTitle", Value = "This is home page of eShopSolution" },
-               new AppConfig() { Key = "HomeKeyword", Value = "This is keyword of eShopSolution" },
-               new AppConfig() { Key = "HomeDescription", Value = "This is description of eShopSolution" }
+               new AppConfig() { Key = "HomeTitle", Value = "This is home page of eRentSolution" },
+               new AppConfig() { Key = "HomeKeyword", Value = "This is keyword of eRentSolution" },
+               new AppConfig() { Key = "HomeDescription", Value = "This is description of eRentSolution" }
                );
             modelBuilder.Entity<Category>().HasData(
                 new Category()
@@ -25,10 +25,10 @@ namespace eRentSolution.Data.Extentions
                     ParentId = null,
                     SortOrder = 1,
                     Status = Status.Active,
-                    Name = "Áo nam",
-                    SeoAlias = "ao-nam",
-                    SeoDescription = "Sản phẩm áo thời trang nam",
-                    SeoTitle = "Sản phẩm áo thời trang nam"
+                    Name = "HomeStay",
+                    SeoAlias = "homestay",
+                    SeoDescription = "Loại hình nhà cho thuê và ở chung với chủ nhà.",
+                    SeoTitle = "Nhà cho thuê ở cùng chủ hộ"
                 },
                  new Category()
                  {
@@ -37,10 +37,10 @@ namespace eRentSolution.Data.Extentions
                      ParentId = null,
                      SortOrder = 2,
                      Status = Status.Active,
-                     Name = "Áo nữ",
-                     SeoAlias = "ao-nu",
-                     SeoDescription = "Sản phẩm áo thời trang nữ",
-                     SeoTitle = "Sản phẩm áo thời trang nữ"
+                     Name = "Khách sạn",
+                     SeoAlias = "khach-san",
+                     SeoDescription = "Cho thuê, mướn phòng khách sạn",
+                     SeoTitle = "Khách sạn"
                  });
 
             
@@ -70,24 +70,23 @@ namespace eRentSolution.Data.Extentions
             modelBuilder.Entity<AppUser>().HasData(new AppUser
             {
                 Id = adminId,
-                UserName = "admin",
-                NormalizedUserName = "admin",
+                UserName = "thanhloi",
+                NormalizedUserName = "thanhloi",
                 Email = "caothanhloi@gmail.com",
                 NormalizedEmail = "caothanhloi@gmail.com",
                 EmailConfirmed = true,
-                PasswordHash = hasher.HashPassword(null, "123456aS"),
+                PasswordHash = hasher.HashPassword(null, "123456aS`"),
                 SecurityStamp = string.Empty,
-                
+                Status = Status.Active
             });
 
-            modelBuilder.Entity<Person>().HasData(
-           new Person()
+            modelBuilder.Entity<UserInfo>().HasData(
+           new UserInfo()
            {
-               Id = 1,
+               UserId = adminId,
                FirstName = "Lợi",
                LastName = "Cao Thành",
                Dob = new DateTime(2000, 01, 31),
-               UserId = adminId
            });
 
             modelBuilder.Entity<Product>().HasData(
@@ -96,12 +95,12 @@ namespace eRentSolution.Data.Extentions
                Id = 1,
                DateCreated = DateTime.Now,
                ViewCount = 0,
-               Name = "Áo sơ mi nam trắng Việt Tiến",
-               SeoAlias = "ao-so-mi-nam-trang-viet-tien",
-               SeoDescription = "Áo sơ mi nam trắng Việt Tiến",
-               SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
-               Details = "Áo sơ mi nam trắng Việt Tiến",
-               Description = "Áo sơ mi nam trắng Việt Tiến"
+               Name = "HomeStay Thanh Loi",
+               SeoAlias = "HomeStay-thanh-loi",
+               SeoDescription = "HomeStay-thanh-loi",
+               SeoTitle = "HomeStay-thanh-loi",
+               Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
+               Description = "HomeStay Thanh Loi tại pờ tít"
            });
             modelBuilder.Entity<ProductDetail>().HasData(
            new ProductDetail()
@@ -111,8 +110,44 @@ namespace eRentSolution.Data.Extentions
                OriginalPrice = 100000,
                Price = 200000,
                Stock = 0,
-               Name = "Size 38",
+               Name = "Phòng 1 chổ nằm",
                ProductId = 1,
+           });
+            modelBuilder.Entity<UserAction>().HasData(
+           new UserAction()
+           {
+               Id = 1,
+               ActionName = "CreateProduct"
+           },
+           new UserAction()
+           {
+               Id = 2,
+               ActionName = "UpdateProduct"
+           }, 
+           new UserAction()
+           {
+               Id = 3,
+               ActionName = "HideProduct"
+           },
+           new UserAction()
+           {
+               Id = 4,
+               ActionName = "UpdateStockProduct"
+           },
+           new UserAction()
+           {
+               Id = 5,
+               ActionName = "UpdatePriceProduct"
+           }
+           );
+            modelBuilder.Entity<Censor>().HasData(
+           new Censor()
+           {
+               ActionId = 1,
+               Date = DateTime.Now,
+               UserInfoId = adminId,
+               ProductId = 1,
+               Id = 1
            });
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
             {

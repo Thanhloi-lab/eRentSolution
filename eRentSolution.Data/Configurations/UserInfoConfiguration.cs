@@ -7,12 +7,12 @@ using System.Text;
 
 namespace eRentSolution.Data.Configurations
 {
-    public class PersonConfiguration : IEntityTypeConfiguration<Person>
+    public class UserInfoConfiguration : IEntityTypeConfiguration<UserInfo>
     {
-        public void Configure(EntityTypeBuilder<Person> builder)
+        public void Configure(EntityTypeBuilder<UserInfo> builder)
         {
             builder.ToTable("UserInfos");
-            builder.HasKey(x => x.Id);
+            builder.HasKey(x => x.UserId);
 
             builder.Property(x => x.FirstName).HasMaxLength(200).IsRequired();
             builder.Property(x => x.LastName).HasMaxLength(200).IsRequired();

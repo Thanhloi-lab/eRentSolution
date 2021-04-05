@@ -262,10 +262,46 @@ namespace eRentSolution.AdminApp.Controllers
             }
             return roleAssignRequest;
         }
+        [HttpGet]
+        public async Task<IActionResult> PageActivityLog(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new UserActivityLogRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+            ViewBag.keyword = keyword;
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
+            var data = await _userApiClient.GetPageActivities(request);
+            return View(data);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ActivityLog(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new UserActivityLogRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                Id = Guid.Parse(userId)
+            };
+            ViewBag.keyword = keyword;
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
+            var data = await _userApiClient.GetUserActivities(request);
+            return View(data);
+        }
         public IActionResult Forbidden()
         {
             TempData["FailResult"] = "You are not allow to access this action";
             return RedirectToAction("Index");
         }
+
     }
 }

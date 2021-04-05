@@ -18,5 +18,7 @@ namespace eRentSolution.Integration
         Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request);
         Task<bool> Delete(Guid id);
         Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
+        Task<PagedResult<ActivityLogViewModel>> GetUserActivities(UserActivityLogRequest request);
+        Task<PagedResult<ActivityLogViewModel>> GetPageActivities(UserActivityLogRequest request);
     }
 }

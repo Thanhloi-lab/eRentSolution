@@ -138,17 +138,17 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Key = "HomeTitle",
-                            Value = "This is home page of eShopSolution"
+                            Value = "This is home page of eRentSolution"
                         },
                         new
                         {
                             Key = "HomeKeyword",
-                            Value = "This is keyword of eShopSolution"
+                            Value = "This is keyword of eRentSolution"
                         },
                         new
                         {
                             Key = "HomeDescription",
-                            Value = "This is description of eShopSolution"
+                            Value = "This is description of eRentSolution"
                         });
                 });
 
@@ -179,7 +179,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "939cd2b0-5316-4f96-bc32-d31065c9334c",
+                            ConcurrencyStamp = "b45a759a-7f7b-4230-940f-c52d370aeb36",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -187,7 +187,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "3d6b62a0-7db8-4bd6-a70c-31f83dc217c0",
+                            ConcurrencyStamp = "aef36558-99a2-478f-ba32-67ee7d1dbcfc",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -256,18 +256,18 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e6282284-0535-4141-8c0c-e18baf47e49e",
+                            ConcurrencyStamp = "78f60099-6951-4603-afe3-3fbdc8f3a81c",
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
-                            NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHPCp9DBoyeMb6foiDnfJgcdI6ChqH+3pJDVneLbKfjLUaXjwyW1rORgvIZRYocbhg==",
+                            NormalizedUserName = "thanhloi",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBjTv4bj84tlSjBzaXaepl1aRWhcNOOgA7YMu4YUNvv7LaY89zvrDz99+08t/5dJ/g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
-                            Status = 0,
+                            Status = 1,
                             TwoFactorEnabled = false,
-                            UserName = "admin"
+                            UserName = "thanhloi"
                         });
                 });
 
@@ -321,10 +321,10 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             IsShowOnHome = true,
-                            Name = "Áo nam",
-                            SeoAlias = "ao-nam",
-                            SeoDescription = "Sản phẩm áo thời trang nam",
-                            SeoTitle = "Sản phẩm áo thời trang nam",
+                            Name = "HomeStay",
+                            SeoAlias = "homestay",
+                            SeoDescription = "Loại hình nhà cho thuê và ở chung với chủ nhà.",
+                            SeoTitle = "Nhà cho thuê ở cùng chủ hộ",
                             SortOrder = 1,
                             Status = 1
                         },
@@ -332,10 +332,10 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 2,
                             IsShowOnHome = true,
-                            Name = "Áo nữ",
-                            SeoAlias = "ao-nu",
-                            SeoDescription = "Sản phẩm áo thời trang nữ",
-                            SeoTitle = "Sản phẩm áo thời trang nữ",
+                            Name = "Khách sạn",
+                            SeoAlias = "khach-san",
+                            SeoDescription = "Cho thuê, mướn phòng khách sạn",
+                            SeoTitle = "Khách sạn",
                             SortOrder = 2,
                             Status = 1
                         });
@@ -353,21 +353,34 @@ namespace eRentSolution.Data.Migrations
                     b.Property<int>("ActionId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("UserInfoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ActionId");
 
-                    b.HasIndex("PersonId");
-
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("UserInfoId");
+
                     b.ToTable("Censors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActionId = 1,
+                            Date = new DateTime(2021, 4, 5, 18, 18, 50, 860, DateTimeKind.Local).AddTicks(2124),
+                            ProductId = 1,
+                            UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
+                        });
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Contact", b =>
@@ -404,47 +417,6 @@ namespace eRentSolution.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Contacts");
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.Person", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Dob")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserInfos");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FirstName = "Lợi",
-                            LastName = "Cao Thành",
-                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
-                        });
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
@@ -506,13 +478,13 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 3, 17, 37, 33, 234, DateTimeKind.Local).AddTicks(4652),
-                            Description = "Áo sơ mi nam trắng Việt Tiến",
-                            Details = "Áo sơ mi nam trắng Việt Tiến",
-                            Name = "Áo sơ mi nam trắng Việt Tiến",
-                            SeoAlias = "ao-so-mi-nam-trang-viet-tien",
-                            SeoDescription = "Áo sơ mi nam trắng Việt Tiến",
-                            SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
+                            DateCreated = new DateTime(2021, 4, 5, 18, 18, 50, 855, DateTimeKind.Local).AddTicks(7382),
+                            Description = "HomeStay Thanh Loi tại pờ tít",
+                            Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
+                            Name = "HomeStay Thanh Loi",
+                            SeoAlias = "HomeStay-thanh-loi",
+                            SeoDescription = "HomeStay-thanh-loi",
+                            SeoTitle = "HomeStay-thanh-loi",
                             Status = 0,
                             ViewCount = 0
                         });
@@ -569,9 +541,9 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 3, 17, 37, 33, 236, DateTimeKind.Local).AddTicks(1605),
+                            DateCreated = new DateTime(2021, 4, 5, 18, 18, 50, 858, DateTimeKind.Local).AddTicks(8042),
                             IsThumbnail = false,
-                            Name = "Size 38",
+                            Name = "Phòng 1 chổ nằm",
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             ProductId = 1,
@@ -745,6 +717,65 @@ namespace eRentSolution.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AdminActions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActionName = "CreateProduct"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ActionName = "UpdateProduct"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ActionName = "HideProduct"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ActionName = "UpdateStockProduct"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ActionName = "UpdatePriceProduct"
+                        });
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserInfos");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
+                            Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Lợi",
+                            LastName = "Cao Thành"
+                        });
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Censor", b =>
@@ -755,34 +786,23 @@ namespace eRentSolution.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eRentSolution.Data.Entities.Person", "Person")
-                        .WithMany("Censors")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("eRentSolution.Data.Entities.Product", "Product")
                         .WithMany("Censors")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AdminAction");
-
-                    b.Navigation("Person");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.Person", b =>
-                {
-                    b.HasOne("eRentSolution.Data.Entities.AppUser", "AppUser")
-                        .WithOne("Person")
-                        .HasForeignKey("eRentSolution.Data.Entities.Person", "UserId")
+                    b.HasOne("eRentSolution.Data.Entities.UserInfo", "UserInfo")
+                        .WithMany("Censors")
+                        .HasForeignKey("UserInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AppUser");
+                    b.Navigation("AdminAction");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("UserInfo");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.ProductDetail", b =>
@@ -837,6 +857,17 @@ namespace eRentSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
+                {
+                    b.HasOne("eRentSolution.Data.Entities.AppUser", "AppUser")
+                        .WithOne("Person")
+                        .HasForeignKey("eRentSolution.Data.Entities.UserInfo", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("eRentSolution.Data.Entities.AppUser", b =>
                 {
                     b.Navigation("Person");
@@ -845,11 +876,6 @@ namespace eRentSolution.Data.Migrations
             modelBuilder.Entity("eRentSolution.Data.Entities.Category", b =>
                 {
                     b.Navigation("ProductInCategories");
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.Person", b =>
-                {
-                    b.Navigation("Censors");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
@@ -869,6 +895,11 @@ namespace eRentSolution.Data.Migrations
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.UserAction", b =>
+                {
+                    b.Navigation("Censors");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
                 {
                     b.Navigation("Censors");
                 });

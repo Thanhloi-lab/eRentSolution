@@ -18,7 +18,7 @@ namespace eRentSolution.Data.Configurations
 
             builder.HasOne(x => x.Product).WithMany(x => x.Censors).HasForeignKey(x => x.ProductId);
             builder.HasOne(x => x.AdminAction).WithMany(x => x.Censors).HasForeignKey(x => x.ActionId);
-            builder.HasOne(x => x.Person).WithMany(x => x.Censors).HasForeignKey(x => x.PersonId);
+            builder.HasOne(x => x.UserInfo).WithMany(x => x.Censors).HasForeignKey(x => x.UserInfoId);
         }
     }
 }

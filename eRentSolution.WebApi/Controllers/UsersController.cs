@@ -96,5 +96,21 @@ namespace eRentSolution.BackendApi.Controllers
             var result = await _userService.ResetPassword(request);
             return Ok(result);
         }
+        [HttpGet("activity-log")]
+        public async Task<IActionResult> GetUserActivity([FromQuery] UserActivityLogRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(request);
+            var result = await _userService.GetUserActivities(request);
+            return Ok(result);
+        }
+        [HttpGet("page-activity-log")]
+        public async Task<IActionResult> GetPageActivity([FromQuery] UserActivityLogRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(request);
+            var result = await _userService.GetPageUserActivities(request);
+            return Ok(result);
+        }
     }
 }

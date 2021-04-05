@@ -5,9 +5,8 @@ using System.Text;
 
 namespace eRentSolution.Data.Entities
 {
-    public class Person
+    public class UserInfo
     {
-        public int Id { get; set; }
         public Guid UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

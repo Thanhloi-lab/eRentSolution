@@ -42,7 +42,7 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<int> Create(ProductCreateRequest request, int userInfoId)
+        public async Task<int> Create(ProductCreateRequest request, Guid userInfoId)
         {
             var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var product = new Product()
@@ -73,7 +73,7 @@ namespace eRentSolution.Application.Catalog.Products
                     new Censor()
                     {
                         ActionId = action.Id,
-                        PersonId = userInfoId,
+                        UserInfoId = userInfoId,
                         Date = DateTime.Now
                     }
                 }
@@ -98,7 +98,7 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return product.Id;
         }
-        public async Task<bool> Delete(int productId, int userInfoId)
+        public async Task<bool> Delete(int productId, Guid userInfoId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
@@ -126,7 +126,7 @@ namespace eRentSolution.Application.Catalog.Products
             else
                 return false;
         }
-        public async Task<bool> Hide(int productId, int userInfoId)
+        public async Task<bool> Hide(int productId, Guid userInfoId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
@@ -138,7 +138,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                PersonId = userInfoId,
+                UserInfoId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.Now
             };
@@ -152,7 +152,7 @@ namespace eRentSolution.Application.Catalog.Products
             else
                 return false;
         }
-        public async Task<bool> UpdatePrice(int productDetailId ,decimal newPrice, int userInfoId)
+        public async Task<bool> UpdatePrice(int productDetailId ,decimal newPrice, Guid userInfoId)
         {
             //var product = await _context.Products.FindAsync(productId);
             //if (product == null)
@@ -171,7 +171,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                PersonId = userInfoId,
+                UserInfoId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.Now
             };
@@ -179,7 +179,7 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> UpdateStock(int productDetailId, int addedQuantity, int userInfoId)
+        public async Task<bool> UpdateStock(int productDetailId, int addedQuantity, Guid userInfoId)
         {
             var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
             if (productDetail == null)
@@ -193,7 +193,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                PersonId = userInfoId,
+                UserInfoId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.Now
 
@@ -202,7 +202,7 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> Update(ProductUpdateRequest request, int userInfoId, int productId)
+        public async Task<bool> Update(ProductUpdateRequest request, Guid userInfoId, int productId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
@@ -229,7 +229,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                PersonId = userInfoId,
+                UserInfoId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.Now
             };

@@ -17,7 +17,7 @@ namespace eRentSolution.Data.Configurations
             
             builder.Property(x => x.Status).IsRequired().HasDefaultValue(Status.Active);
 
-            builder.HasOne(x => x.Person).WithOne(x => x.AppUser).HasForeignKey<Person>(x => x.UserId);
+            builder.HasOne(x => x.Person).WithOne(x => x.AppUser).HasForeignKey<UserInfo>(x => x.UserId);
         }
     }
 }
