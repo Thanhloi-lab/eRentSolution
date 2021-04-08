@@ -16,6 +16,8 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public string Name { set; get; }
         [Display(Name = "Lượt xem")]
         public int ViewCount { set; get; }
+        [Display(Name = "Tồn kho")]
+        public int Stock { set; get; }
         [Display(Name = "Ngày tạo")]
         public DateTime DateCreated { set; get; }
         [Display(Name = "Xuất hiện trên trang chủ")]

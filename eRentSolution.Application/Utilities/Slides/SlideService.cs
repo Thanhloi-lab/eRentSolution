@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eRentSolution.Application.Utilities.Slides
 {
-    public class SlideSerivce : ISlideService
+    public class SlideService : ISlideService
     {
         private readonly eRentDbContext _context;
 
-        public SlideSerivce(eRentDbContext context)
+        public SlideService(eRentDbContext context)
         {
             _context = context;
         }

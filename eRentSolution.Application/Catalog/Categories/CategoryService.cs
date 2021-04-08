@@ -46,7 +46,7 @@ namespace eRentSolution.Application.Catalog.Categories
         public async Task<CategoryViewModel> GetById(int id)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-            if (category != null)
+            if (category == null)
                 return null;
             return new CategoryViewModel()
             {

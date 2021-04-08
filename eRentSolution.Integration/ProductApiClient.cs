@@ -85,8 +85,9 @@ namespace eRentSolution.Integration
 
         public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
         {
-            var result = await GetPageAsync<PagedResult<ProductViewModel>>($"/api/products/feature?pageindex={request.PageIndex}&pagesize={request.PageSize}");
-            return result.ResultObject;
+            var result = await GetAsync<PagedResult<ProductViewModel>>($"/api/products/feature?pageindex={request.PageIndex}" +
+                $"&pagesize={request.PageSize}&keyword={request.Keyword}&categoryId={request.CategoryId}");
+            return result;
         }
 
         public async Task<List<ProductViewModel>> GetLastestProducts(int take)

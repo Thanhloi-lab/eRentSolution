@@ -303,7 +303,12 @@ namespace eRentSolution.Application.Catalog.Products
             }).ToListAsync();
             foreach (var item in products)
             {
-                item.ProductDetailViewModels = await GetDetailsByProductId(item.Id);
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails;
+                foreach (var productDetail in productDetails)
+                {
+                    item.Stock += productDetail.Stock;
+                }
             }
             var page = new PagedResult<ProductViewModel>()
             {
@@ -321,6 +326,9 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 throw new eRentException($"Cannot find a product: { product.Id}");
             }
+
+            var productDetails = await GetDetailsByProductId(product.Id);
+
             var productViewModel = new ProductViewModel()
             {
                 DateCreated = product.DateCreated,
@@ -332,9 +340,15 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoDescription = product.SeoDescription,
                 SeoTitle = product.SeoTitle,
                 ViewCount = product.ViewCount,
-                ProductDetailViewModels = await GetDetailsByProductId(id),
+                ProductDetailViewModels = productDetails,
                 Status = product.Status
             };
+
+            foreach (var productDetail in productDetails)
+            {
+                productViewModel.Stock += productDetail.Stock;
+            }
+
             return productViewModel;
         }
         public async Task<List<ProductDetailViewModel>> GetDetailsByProductId(int productId)
@@ -382,7 +396,7 @@ namespace eRentSolution.Application.Catalog.Products
         {
             var image = await _context.ProductImages.FindAsync(imageId);
             if (image == null)
-                throw new eRentException($"Cannot find a product: { image.Id}");
+                throw new eRentException($"Cannot find a product: { imageId}");
 
             var productViewModel = new ProductImageViewModel()
             {
@@ -391,11 +405,29 @@ namespace eRentSolution.Application.Catalog.Products
                 FileSize = image.FileSize,
                 DateCreated = image.DateCreated,
                 IsDefault = image.IsDefault,
-                ProductId = image.ProductDetailId,
+                ProductDetailId = image.ProductDetailId,
                 Id = image.Id,
                 SortOrder = image.SortOrder
             };
             return productViewModel;
+        }
+        public async Task<List<ProductImageViewModel>> GetListImage(int productId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null) throw new eRentException($"Cannot find a product: { productId}");
+            var productDetail = await _context.ProductDetails.FirstOrDefaultAsync(x => x.ProductId == productId);
+            return await _context.ProductImages.Where(x => x.ProductDetailId == productDetail.Id)
+                    .Select(i => new ProductImageViewModel()
+                    {
+                        Caption = i.Caption,
+                        ImagePath = i.ImagePath,
+                        FileSize = i.FileSize,
+                        DateCreated = i.DateCreated,
+                        IsDefault = i.IsDefault,
+                        ProductDetailId = productDetail.Id,
+                        Id = i.Id,
+                        SortOrder = i.SortOrder
+                    }).ToListAsync();
         }
         // No Done
         public async Task<int> AddImages(ProductImageCreateRequest request)
@@ -434,25 +466,6 @@ namespace eRentSolution.Application.Catalog.Products
             _context.ProductImages.Update(productImage);
             return await _context.SaveChangesAsync();
         }
-        // No Done
-        public async Task<List<ProductImageViewModel>> GetListImage(int productId)
-        {
-            var product = await _context.Products.FindAsync(productId);
-            if (product == null)
-                throw new eRentException($"Cannot find a product: { product.Id}");
-            return await _context.ProductImages.Where(x => x.ProductDetailId == productId)
-                    .Select(i => new ProductImageViewModel()
-                    {
-                        Caption = i.Caption,
-                        ImagePath = i.ImagePath,
-                        FileSize = i.FileSize,
-                        DateCreated = i.DateCreated,
-                        IsDefault = i.IsDefault,
-                        ProductId = i.ProductDetailId,
-                        Id = i.Id,
-                        SortOrder = i.SortOrder
-                    }).ToListAsync();
-        }
 
         //--------FILE--------
         private async Task<string> SaveFile(IFormFile file)
@@ -468,14 +481,91 @@ namespace eRentSolution.Application.Catalog.Products
             throw new NotImplementedException();
         }
 
-        public Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
+        public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
         {
-            throw new NotImplementedException();
+            //1. Select join
+            var query = from p in _context.Products
+                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
+
+                        where p.IsFeatured == true
+                        select new { p, pd };
+
+
+            var products = await query.OrderByDescending(x => x.p.DateCreated)
+                .Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new ProductViewModel()
+                {
+                    Id = x.p.Id,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.p.Description,
+                    Details = x.p.Details,
+                    Name = x.p.Name,
+                    SeoAlias = x.p.SeoAlias,
+                    SeoDescription = x.p.SeoDescription,
+                    SeoTitle = x.p.SeoTitle,
+                    ViewCount = x.p.ViewCount,
+                    Status = x.p.Status
+                }).ToListAsync();
+
+            foreach (var item in products)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails;
+                foreach (var productDetail in productDetails)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+
+            int totalRow = await query.CountAsync();
+            var pageResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = products,
+                PageSize = request.PageSize,
+                PageIndex = request.PageIndex
+            };
+            return pageResult;
         }
 
-        public Task<List<ProductViewModel>> GetLastestProducts(int take)
+        public async Task<List<ProductViewModel>> GetLastestProducts(int take)
         {
-            throw new NotImplementedException();
+            //1. Select join
+            var query = from p in _context.Products
+                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                        select new { p, pd };//, pic};
+
+            var products = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
+                .Select(x => new ProductViewModel()
+                {
+
+                    Id = x.p.Id,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.p.Description,
+                    Details = x.p.Details,
+                    Name = x.p.Name,
+                    SeoAlias = x.p.SeoAlias,
+                    SeoDescription = x.p.SeoDescription,
+                    SeoTitle = x.p.SeoTitle,
+                    ViewCount = x.p.ViewCount,
+                    Status = x.p.Status
+                }).Distinct().ToListAsync();
+
+            foreach (var item in products)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails;
+                foreach (var productDetail in productDetails)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+            return products;
         }
     }
 }

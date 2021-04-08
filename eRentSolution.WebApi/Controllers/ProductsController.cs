@@ -2,11 +2,8 @@
 using eRentSolution.ViewModels.Catalog.Categories;
 using eRentSolution.ViewModels.Catalog.ProductImages;
 using eRentSolution.ViewModels.Catalog.Products;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eRentSolution.BackendApi.Controllers
@@ -146,15 +143,16 @@ namespace eRentSolution.BackendApi.Controllers
             return Ok(Image);
         }
         [HttpGet("imgs/{productId}")]
-        public async Task<IActionResult> GetImageByProductId(int imageId)
+        public async Task<IActionResult> GetImageByProductId(int productId)
         {
-            var Image = await _productService.GetImageById(imageId);
+            var Image = await _productService.GetListImage(productId);
             if (Image == null)
             {
                 return BadRequest("Cannot find Image");
             }
             return Ok(Image);
         }
+
         [HttpPost("add-img")]
         public async Task<IActionResult> AddImages([FromForm] ProductImageCreateRequest request)
         {
