@@ -1,8 +1,117 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model HomeViewModel
+@using eRentSolution.ViewModels.Catalog.Products;
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@{ ViewData["Title"] = "Home Page"; }
+
+@section slider{
+    <div id="carouselBlk">
+        <div id="myCarousel" class="carousel slide">
+            <div class="carousel-inner">
+                @if (Model.Slides != null)
+                {
+                    @for (int index = 0; index < Model.Slides.Count; index++)
+                    {
+                        var slide = Model.Slides[index];
+                        <div class="item @(index == 0 ? "active" : "")">
+                            <div class="container">
+                                <a href="/@slide.Url"><img style="width:100%" src="@slide.FilePath" alt="@slide.Name" /></a>
+                                <div class="carousel-caption">
+                                    <h4>@slide.Name</h4>
+                                    <p>@slide.Description</p>
+                                </div>
+                            </div>
+                        </div>
+                     }
+                }
+
+            </div>
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
+        </div>
+    </div>
+}
+<div class="well well-small">
+    <h4><localize>Featured Products</localize> <small class="pull-right">@Model.FeaturedProducts.Items.Count Featured product</small></h4>
+    <div class="row-fluid">
+        <div id="featured" class="carousel slide">
+            <div class="carousel-inner">
+                @{ List<List<ProductViewModel>> featuredProducts = new List<List<ProductViewModel>>();
+                    List<ProductViewModel> featuredPart = new List<ProductViewModel>(); }
+
+                @for (int index = 0; index < Model.FeaturedProducts.Items.Count; index++)
+                {
+                    featuredPart.Add(Model.FeaturedProducts.Items[index]);
+                    if (featuredPart.Count == 4)
+                    {
+                        featuredProducts.Add(featuredPart);
+                        if (index == Model.FeaturedProducts.Items.Count - 1)
+                            break;
+                        featuredPart = new List<ProductViewModel>();
+                    }
+                    if (index == Model.FeaturedProducts.Items.Count - 1)
+                    {
+                        featuredProducts.Add(featuredPart);
+                    }
+
+                }
+                @for (int index = 0; index < featuredProducts.Count; index++)
+                {
+                    <div class="item @(index == 0 ? "active" : "")">
+                        <ul class="thumbnails">
+                            @foreach (var item in featuredProducts[index])
+                            {
+                                var url = $"/Products/{item.Id}";
+                                <li class="span3">
+                                    <div class="thumbnail">
+                                        <i class="tag"></i>
+                                        <a href="@url"><img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name"></a>
+                                        <div class="caption">
+                                            <h5>@item.Name</h5>
+                                            <h4><a class="btn" href="" localize-content>VIEW</a> <span class="pull-right">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</span></h4>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+            <a class="left carousel-control" href="#featured" data-slide="prev">
+                &lsaquo;
+                @{if (Model.FeaturedProducts.PageIndex > 1)
+                        Model.FeaturedProducts.PageIndex--;
+                }
+            </a>
+            <a class="right carousel-control" href="#featured" data-slide="next">
+                &rsaquo;
+                @{if (Model.FeaturedProducts.PageIndex < Model.FeaturedProducts.PageCount)
+                        Model.FeaturedProducts.PageIndex++;
+                }
+            </a>
+
+        </div>
+    </div>
 </div>
+<h4>Latest Products </h4>
+<ul class="thumbnails">
+
+    @foreach (var item in Model.LastestProducts)
+    {
+        var url = $"/Products/{item.Id}";
+        <li class="span3">
+            <div class="thumbnail">
+                <a href="@url"><img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name" /></a>
+                <div class="caption">
+                    <h5>@item.Name</h5>
+                    <p>@item.Description</p>
+                    <h4 style="text-align:center">
+                        <a class="btn" href="#"><i class="icon-zoom-in"></i></a>
+                        <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a>
+                        <a class="btn btn-primary" href="#">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</a>
+                    </h4>
+                </div>
+            </div>
+        </li>
+    }
+</ul>

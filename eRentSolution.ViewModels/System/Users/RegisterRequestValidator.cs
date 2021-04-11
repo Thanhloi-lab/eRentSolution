@@ -16,12 +16,13 @@ namespace eRentSolution.ViewModels.System.Users
 
             RuleFor(x => x.Dob).GreaterThan(DateTime.Now.AddYears(-150)).WithMessage("Noone can live over 150 bro!!")
                 .LessThan(DateTime.Now).WithMessage("Birthday cannot be greater than now");
-            RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Phonenumber is required.");
+            RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Phonenumber is required.")
+                .Matches(@"^\d{10}$").WithMessage("Phonenumber format is not match. Phonenumber must be 10 digits");;
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required.")
                 .Matches(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").WithMessage("Email format is not match.");
             RuleFor(x => x.UserName).NotEmpty().WithMessage("Username is required.");
             RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required.")
-                .MinimumLength(6).WithMessage("Password is at least 6 characters.");
+                .MinimumLength(6).WithMessage("Password is at least 8 characters.");
             RuleFor(x => x).Custom((request, context) => {
                 if (request.Password != request.ConfirmPassword)
                 {

@@ -26,13 +26,13 @@ namespace eRentSolution.Admin.Controllers
 
         public IActionResult Index()
         {
-            var token = _httpContextAccessor.HttpContext.Request.Cookies["Token"];
+            var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
             if(token ==null)
             {
                 return RedirectToAction("Index", "Login");
             }
             else
-                _httpContextAccessor.HttpContext.Session.SetString(SystemConstant.AppSettings.Token, token);
+                _httpContextAccessor.HttpContext.Session.SetString(SystemConstant.AppSettings.TokenAdmin, token);
             return View();
         }
 

@@ -13,7 +13,7 @@ namespace eRentSolution.AdminApp.Controllers
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var session = context.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
+            var session = context.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
             if(session == null)
             {
                 context.Result = new RedirectToActionResult("Index", "Home", null);

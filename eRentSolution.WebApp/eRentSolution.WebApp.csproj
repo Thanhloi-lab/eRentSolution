@@ -4,4 +4,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.9.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eRentSolution.Constant\eRentSolution.Utilities.csproj" />
+    <ProjectReference Include="..\eRentSolution.Integration\eRentSolution.Integration.csproj" />
+    <ProjectReference Include="..\eRentSolution.ViewModels\eRentSolution.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

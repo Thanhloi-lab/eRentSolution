@@ -9,10 +9,13 @@ namespace eRentSolution.Utilities.Constants
         public const string MainConnectionString = "eRentSolutionDatabase";
         public class AppSettings
         {
-            public const string Token = "Token";
+            public const string TokenAdmin = "Token";
+            public const string TokenWebApp = "TokenWebApp";
             public const string CurrentUserId = "CurrentUserId";
             public const string AdminRole = "Admin";
             public const string UserAdminRole = "UserAdmin";
+            public const string PasswordReseted = "123456aS`";
+            public const string NameIdentifierClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
         }
 
         public class ProductSettings

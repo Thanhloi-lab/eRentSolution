@@ -8,6 +8,6 @@ namespace eRentSolution.Integration
 {
     public interface ISlideApiClient
     {
-        Task<List<SlideViewModel>> GetAll();
+        Task<List<SlideViewModel>> GetAll(string tokenName);
     }
 }

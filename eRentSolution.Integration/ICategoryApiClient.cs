@@ -8,8 +8,8 @@ namespace eRentSolution.Integration
 {
     public interface ICategoryApiClient
     {
-        Task<List<CategoryViewModel>> GetAll();
-        Task<CategoryViewModel> GetById(int id);
-        Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId);
+        Task<List<CategoryViewModel>> GetAll(string tokenName);
+        Task<CategoryViewModel> GetById(int id, string tokenName);
+        Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId, string tokenName);
     }
 }

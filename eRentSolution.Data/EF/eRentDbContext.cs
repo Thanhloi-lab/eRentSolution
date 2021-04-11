@@ -29,7 +29,7 @@ namespace eRentSolution.Data.EF
             modelBuilder.ApplyConfiguration(new AdminActionConfiguration());
             modelBuilder.ApplyConfiguration(new SlideConfiguration());
             modelBuilder.ApplyConfiguration(new CensorConfiguration());
-            modelBuilder.ApplyConfiguration(new PersonConfiguration());
+            modelBuilder.ApplyConfiguration(new UserInfoConfiguration());
             modelBuilder.ApplyConfiguration(new ProductDetailConfiguration());
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
@@ -53,6 +53,6 @@ namespace eRentSolution.Data.EF
         public DbSet<Censor> Censors { get; set; }
         public DbSet<Slide> Slides { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
-        public DbSet<Person> Persons { get; set; }
+        public DbSet<UserInfo> UserInfos { get; set; }
     }
 }

@@ -23,6 +23,7 @@ namespace eRentSolution.AdminApp.Controllers
         private readonly IRoleApiClient _roleApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string userId;
+        private readonly string token;
         public UserController(IUserApiClient userApiClient,
             IConfiguration configuration,
             IRoleApiClient roleApiClient,
@@ -32,7 +33,8 @@ namespace eRentSolution.AdminApp.Controllers
             _configuration = configuration;
             _roleApiClient = roleApiClient;
             _httpContextAccessor = httpContextAccessor;
-            userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin) ;
         }
 
         public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)
@@ -48,13 +50,13 @@ namespace eRentSolution.AdminApp.Controllers
             {
                 ViewBag.success = TempData["Result"];
             }
-            var data = await _userApiClient.GetUsersPaging(request);
+            var data = await _userApiClient.GetUsersPaging(request, SystemConstant.AppSettings.TokenAdmin);
             return View(data);
         }
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            Response.Cookies.Delete(SystemConstant.AppSettings.Token);
+            Response.Cookies.Delete(SystemConstant.AppSettings.TokenAdmin);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("index", "login");
         }
@@ -82,14 +84,13 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var reusult = User.IsInRole(SystemConstant.AppSettings.AdminRole);
-            if (User.IsInRole(SystemConstant.AppSettings.AdminRole) == false 
-                && !id.ToString().Equals(userId))
+            //var reusult = User.IsInRole(SystemConstant.AppSettings.AdminRole);
+            if (!id.ToString().Equals(userId))
             {
                 TempData["FailResult"] = "You cannot update others user";
                 return View(id);
             }
-            var target = await _userApiClient.GetById(id);
+            var target = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             if (target != null)
             {
                 var user = target;
@@ -111,7 +112,7 @@ namespace eRentSolution.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _userApiClient.Update(request.Id, request);
+            var result = await _userApiClient.Update(request.Id, request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed)
             {
                 TempData["result"] = "Update user successful";
@@ -121,9 +122,57 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request);
         }
         [HttpGet]
+        public IActionResult ChangePassword(Guid id)
+        {
+            return View(new UserUpdatePasswordRequest()
+            {
+                Id = id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(UserUpdatePasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.UpdatePassword(request, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Update password successful";
+                return RedirectToAction("index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpGet]
+        public IActionResult ResetPassword(Guid id)
+        {
+            return View(new UserResetPasswordRequest()
+            {
+                Id = id,
+                Token = token,
+                NewPassword = SystemConstant.AppSettings.PasswordReseted
+            });
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(UserResetPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.ResetPassword(request, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Update password successful";
+                return RedirectToAction("index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var result = await _userApiClient.GetById(id);
+            var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             return View(result);
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
@@ -135,7 +184,7 @@ namespace eRentSolution.AdminApp.Controllers
                 TempData["FailResult"] = "You cannot delete yourself";
                 return View(id);
             }
-            var user = await _userApiClient.GetById(id);
+            var user = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             
             return View(new UserDeleteRequest()
             {
@@ -149,7 +198,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = await _userApiClient.Delete(request.Id);
+            var result = await _userApiClient.Delete(request.Id, SystemConstant.AppSettings.TokenAdmin);
             if (result)
             {
                 TempData["result"] = "Xóa người dùng thành công";
@@ -172,7 +221,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var user = await _userApiClient.GetById(request.Id);
+            var user = await _userApiClient.GetById(request.Id, SystemConstant.AppSettings.TokenAdmin);
             bool isYourself = false;
             if (request.Id.ToString().Equals(userId))
             {
@@ -186,7 +235,7 @@ namespace eRentSolution.AdminApp.Controllers
                     return View(request);
                 }
             }
-            var result = await _userApiClient.RoleAssign(request.Id, request);
+            var result = await _userApiClient.RoleAssign(request.Id, request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed)
             {
                 TempData["result"] = "Assign role successfully";
@@ -199,8 +248,8 @@ namespace eRentSolution.AdminApp.Controllers
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         private async Task<RoleAssignRequest> GetRoleAssignRequest(Guid id)
         {
-            var userObj = await _userApiClient.GetById(id);
-            var roleObj = await _roleApiClient.GetAll();
+            var userObj = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            var roleObj = await _roleApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
             var roleAssignRequest = new RoleAssignRequest();
             foreach (var role in roleObj)
             {
@@ -213,10 +262,46 @@ namespace eRentSolution.AdminApp.Controllers
             }
             return roleAssignRequest;
         }
+        [HttpGet]
+        public async Task<IActionResult> PageActivityLog(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new UserActivityLogRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+            ViewBag.keyword = keyword;
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
+            var data = await _userApiClient.GetPageActivities(request, SystemConstant.AppSettings.TokenAdmin);
+            return View(data);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ActivityLog(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new UserActivityLogRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                Id = Guid.Parse(userId)
+            };
+            ViewBag.keyword = keyword;
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
+            var data = await _userApiClient.GetUserActivities(request, SystemConstant.AppSettings.TokenAdmin);
+            return View(data);
+        }
         public IActionResult Forbidden()
         {
             TempData["FailResult"] = "You are not allow to access this action";
             return RedirectToAction("Index");
         }
+
     }
 }

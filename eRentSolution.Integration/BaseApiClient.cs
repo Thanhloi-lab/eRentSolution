@@ -27,9 +27,9 @@ namespace eRentSolution.Integration
             _httpContextAccessor = httpContextAccessor;
         }
 
-        protected async Task<List<T>> GetListAsync<T>(string url)
+        protected async Task<List<T>> GetListAsync<T>(string url, string tokenName)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
+            var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
@@ -44,9 +44,9 @@ namespace eRentSolution.Integration
             return JsonConvert.DeserializeObject<List<T>>(body);
 
         }
-        protected async Task<T> GetAsync<T>(string url)
+        protected async Task<T> GetAsync<T>(string url, string tokenName)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
+            var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
@@ -60,9 +60,9 @@ namespace eRentSolution.Integration
             }
             return JsonConvert.DeserializeObject<T>(body);
         }
-        protected async Task<ApiResult<T>> GetPageAsync<T>(string url)
+        protected async Task<ApiResult<T>> GetPageAsync<T>(string url, string tokenName)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
+            var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
@@ -77,9 +77,9 @@ namespace eRentSolution.Integration
 
             return JsonConvert.DeserializeObject<ApiErrorResult<T>>(body);
         }
-        protected async Task<bool> DeleteAsync<T>(string url)
+        protected async Task<bool> DeleteAsync<T>(string url, string tokenName)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
+            var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
@@ -109,9 +109,9 @@ namespace eRentSolution.Integration
             }
             return JsonConvert.DeserializeObject<ApiErrorResult<T>>(body);
         }
-        protected async Task<ApiResult<T>> PutAsync<T>(string url, object obj)
+        protected async Task<ApiResult<T>> PutAsync<T>(string url, object obj, string tokenName)
         {
-            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.Token);
+            var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
