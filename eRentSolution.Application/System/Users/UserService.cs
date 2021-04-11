@@ -55,7 +55,7 @@ namespace eRentSolution.Application.System.Users
             }
                 
 
-            var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true);
+            var result = await _signInManager.PasswordSignInAsync(user, request.Password + user.DateChangePassword, request.RememberMe, true);
             if(!result.Succeeded)
                 return new ApiErrorResult<string>("Username or password incorrect");
             
@@ -77,7 +77,7 @@ namespace eRentSolution.Application.System.Users
             var token = new JwtSecurityToken(_configuration["Tokens:Issuer"],
               _configuration["Tokens:Audience"],
               claims,
-              expires: DateTime.Now.AddDays(30),
+              expires: DateTime.UtcNow.AddDays(30),
               signingCredentials: credentials);
             return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
 
@@ -210,6 +210,7 @@ namespace eRentSolution.Application.System.Users
                 UserName = request.UserName,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
+                DateChangePassword = DateTime.UtcNow,
                 Person = new UserInfo()
                 {
                     Dob = request.Dob,
@@ -217,7 +218,7 @@ namespace eRentSolution.Application.System.Users
                     LastName = request.LastName
                 }
             };
-            var result = await _userManager.CreateAsync(user, request.Password);
+            var result = await _userManager.CreateAsync(user, request.Password + user.DateChangePassword);
             if (result.Succeeded)
                 return new ApiSuccessResult<bool>();
 

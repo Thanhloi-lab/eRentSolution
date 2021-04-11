@@ -18,9 +18,9 @@ namespace eRentSolution.Integration
         {
         }
 
-        public async Task<List<RoleViewModel>> GetAll()
+        public async Task<List<RoleViewModel>> GetAll(string tokenName)
         {
-            var result = await GetListAsync<RoleViewModel>($"api/roles");
+            var result = await GetListAsync<RoleViewModel>($"api/roles", tokenName);
             return result;
         }
     }

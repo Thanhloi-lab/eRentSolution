@@ -34,7 +34,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var token = _httpContextAccessor.HttpContext.Request.Cookies["Token"];
+            var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
 
             if (token != null)
             {
@@ -49,13 +49,13 @@ namespace eRentSolution.AdminApp.Controllers
                 {
                     IsPersistent = true,
                 };
-                HttpContext.Session.SetString(SystemConstant.AppSettings.Token, token);
+                HttpContext.Session.SetString(SystemConstant.AppSettings.TokenAdmin, token);
                 await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
 
-                Response.Cookies.Append("Token", token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+                Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
                 return RedirectToAction("Index", "Home");
             }
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -80,12 +80,12 @@ namespace eRentSolution.AdminApp.Controllers
                 IsPersistent = request.RememberMe,
                 ExpiresUtc = DateTimeOffset.Now.AddDays(30)
             };
-            HttpContext.Session.SetString(SystemConstant.AppSettings.Token, result.ResultObject);
+            HttpContext.Session.SetString(SystemConstant.AppSettings.TokenAdmin, result.ResultObject);
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
-            Response.Cookies.Append("Token", result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+            Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
 

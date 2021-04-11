@@ -18,21 +18,21 @@ namespace eRentSolution.Integration
         {
         }
 
-        public async Task<List<CategoryViewModel>> GetAll()
+        public async Task<List<CategoryViewModel>> GetAll(string tokenName)
         {
-            var result = await GetListAsync<CategoryViewModel>($"api/categories");
+            var result = await GetListAsync<CategoryViewModel>($"api/categories", tokenName);
             return result;
         }
 
-        public async Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId)
+        public async Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId, string tokenName)
         {
-            var result = await GetListAsync<CategoryViewModel>($"api/categories/productcategories/{productId}");
+            var result = await GetListAsync<CategoryViewModel>($"api/categories/productcategories/{productId}", tokenName);
             return result;
         }
 
-        public async Task<CategoryViewModel> GetById(int id)
+        public async Task<CategoryViewModel> GetById(int id, string tokenName)
         {
-            var result = await GetAsync<CategoryViewModel>($"api/categories/{id}");
+            var result = await GetAsync<CategoryViewModel>($"api/categories/{id}", tokenName);
             return result;
         }
     }

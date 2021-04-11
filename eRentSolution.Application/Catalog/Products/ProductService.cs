@@ -48,7 +48,7 @@ namespace eRentSolution.Application.Catalog.Products
             var product = new Product()
             {
                 Name = request.Name,
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow,
                 Description = request.Description,
                 Details = request.Details,
 
@@ -60,7 +60,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     new ProductDetail()
                     {
-                        DateCreated = DateTime.Now,
+                        DateCreated = DateTime.UtcNow,
                         Price = request.Price,
                         OriginalPrice = request.OriginalPrice,
                         Stock = request.Stock,
@@ -74,7 +74,7 @@ namespace eRentSolution.Application.Catalog.Products
                     {
                         ActionId = action.Id,
                         UserInfoId = userInfoId,
-                        Date = DateTime.Now
+                        Date = DateTime.UtcNow
                     }
                 }
             };
@@ -86,7 +86,7 @@ namespace eRentSolution.Application.Catalog.Products
                     new ProductImage()
                     {
                         Caption = "Thumbnail image",
-                        DateCreated = DateTime.Now,
+                        DateCreated = DateTime.UtcNow,
                         FileSize = request.ThumbnailImage.Length,
                         ImagePath = await this.SaveFile(request.ThumbnailImage),
                         IsDefault = true,
@@ -140,7 +140,7 @@ namespace eRentSolution.Application.Catalog.Products
                 ActionId = action.Id,
                 UserInfoId = userInfoId,
                 ProductId = product.Id,
-                Date = DateTime.Now
+                Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
 
@@ -173,7 +173,7 @@ namespace eRentSolution.Application.Catalog.Products
                 ActionId = action.Id,
                 UserInfoId = userInfoId,
                 ProductId = product.Id,
-                Date = DateTime.Now
+                Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
@@ -195,7 +195,7 @@ namespace eRentSolution.Application.Catalog.Products
                 ActionId = action.Id,
                 UserInfoId = userInfoId,
                 ProductId = product.Id,
-                Date = DateTime.Now
+                Date = DateTime.UtcNow
 
             };
             await _context.Censors.AddAsync(censor);
@@ -231,7 +231,7 @@ namespace eRentSolution.Application.Catalog.Products
                 ActionId = action.Id,
                 UserInfoId = userInfoId,
                 ProductId = product.Id,
-                Date = DateTime.Now
+                Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
@@ -437,7 +437,7 @@ namespace eRentSolution.Application.Catalog.Products
             var productImage = new ProductImage()
             {
                 Caption = request.Caption == null ? "Non-caption" : request.Caption,
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow,
                 IsDefault = request.IsDefault,
                 SortOrder = request.SortOrder,
                 ProductDetailId = request.ProductId

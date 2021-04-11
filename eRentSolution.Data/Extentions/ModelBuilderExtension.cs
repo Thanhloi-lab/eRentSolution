@@ -77,7 +77,8 @@ namespace eRentSolution.Data.Extentions
                 EmailConfirmed = true,
                 PasswordHash = hasher.HashPassword(null, "123456aS`"),
                 SecurityStamp = string.Empty,
-                Status = Status.Active
+                Status = Status.Active,
+                DateChangePassword = DateTime.UtcNow
             });
 
             modelBuilder.Entity<UserInfo>().HasData(
@@ -93,7 +94,7 @@ namespace eRentSolution.Data.Extentions
            new Product()
            {
                Id = 1,
-               DateCreated = DateTime.Now,
+               DateCreated = DateTime.UtcNow,
                ViewCount = 0,
                Name = "HomeStay Thanh Loi",
                SeoAlias = "HomeStay-thanh-loi",
@@ -106,7 +107,7 @@ namespace eRentSolution.Data.Extentions
            new ProductDetail()
            {
                Id = 1,
-               DateCreated = DateTime.Now,
+               DateCreated = DateTime.UtcNow,
                OriginalPrice = 100000,
                Price = 200000,
                Stock = 0,
@@ -144,7 +145,7 @@ namespace eRentSolution.Data.Extentions
            new Censor()
            {
                ActionId = 1,
-               Date = DateTime.Now,
+               Date = DateTime.UtcNow,
                UserInfoId = adminId,
                ProductId = 1,
                Id = 1

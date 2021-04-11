@@ -1,4 +1,5 @@
 ﻿using eRentSolution.Integration;
+using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Products;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -47,10 +48,10 @@ namespace eRentSolution.AdminApp.Controllers
                 ViewBag.success = TempData["result"];
             }
 
-            var products = await _productApiClient.GetPagings(request);
+            var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Keyword = keyword;
 
-            var categories = await _categoryApiClient.GetAll();
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Categories = categories.Select(x => new SelectListItem()
             {
                 Text = x.Name,
@@ -62,7 +63,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var result = await _productApiClient.GetById(id);
+            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
             return View(result);
         }
         [HttpGet]
@@ -77,7 +78,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId));
+            var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (result)
             {
                 TempData["result"] = "Tạo mới sản phẩm thành công";
@@ -90,7 +91,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await _productApiClient.GetById(id);
+            var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
             var productViewModel = new ProductUpdateRequest()
             {
                 Id = id,
@@ -111,7 +112,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = await _productApiClient.UpdateProduct(request, Guid.Parse(userId));
+            var result = await _productApiClient.UpdateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (result)
             {
                 TempData["result"] = "Chỉnh sửa sản phẩm thành công";
@@ -133,7 +134,7 @@ namespace eRentSolution.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _productApiClient.DeleteProduct(request.Id, Guid.Parse(userId));
+            var result = await _productApiClient.DeleteProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             
             if (result)
             {

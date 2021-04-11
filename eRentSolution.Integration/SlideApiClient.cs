@@ -18,9 +18,9 @@ namespace eRentSolution.Integration
         {
 
         }
-        public async Task<List<SlideViewModel>> GetAll()
+        public async Task<List<SlideViewModel>> GetAll(string tokenName)
         {
-            return await GetListAsync<SlideViewModel>("/api/Slides");
+            return await GetListAsync<SlideViewModel>("/api/Slides", tokenName);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using eRentSolution.Integration;
+using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Categories;
 using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.WebApp.Models;
@@ -23,8 +24,8 @@ namespace eRentSolution.WebApp.Controllers
 
         public async Task<IActionResult> Detail(int id, string languageId)
         {
-            var product = await _productApiClient.GetById(id);
-            var categories = await _categoryApiClient.GetAllCategoryByProductId(id);
+            var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var categories = await _categoryApiClient.GetAllCategoryByProductId(id, SystemConstant.AppSettings.TokenWebApp);
             if (categories == null)
             {
                 categories = new List<CategoryViewModel>();
@@ -54,11 +55,11 @@ namespace eRentSolution.WebApp.Controllers
                 CategoryId = id,
                 PageIndex = page,
                 PageSize = pageSize
-            });
+            }, SystemConstant.AppSettings.TokenWebApp);
             products.Items = await GetProductImages(products.Items);
             return View(new ProductCategoryViewModel()
             {
-                Category = await _categoryApiClient.GetById(id),
+                Category = await _categoryApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp),
                 Products = products
             });
         }
@@ -66,7 +67,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             foreach (var item in products)
             {
-                var images = await _productApiClient.GetListImages(item.Id);
+                var images = await _productApiClient.GetListImages(item.Id, SystemConstant.AppSettings.TokenWebApp);
                 if (images != null)
                 {
                     if (images.Count > 0)

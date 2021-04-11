@@ -1,4 +1,4 @@
-﻿
+﻿@using eRentSolution.Utilities.Constants;
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 <!DOCTYPE html>
 <html lang="en">
@@ -43,15 +43,6 @@
                 {
                     <div class="span6">Welcome!<strong> Guest!</strong></div>
                 }
-                <div class="span6">
-                    <div class="pull-right">
-                        <a href="/cart">
-                            <span class="btn btn-mini btn-primary">
-                                <i class="icon-shopping-cart icon-white"></i> [ <span id="lbl_number_items_header">0</span> ] Itemes in your cart
-                            </span>
-                        </a>
-                    </div>
-                </div>
             </div>
             <!-- Navbar ================================================== -->
             <div id="logoArea" class="navbar">
@@ -83,14 +74,14 @@
                             {
                                 <form action="/Account/Logout" method="post">
                                     <button type="submit" style="padding-right:0;margin-top:10px;margin-bottom:0px;background:transparent;border:none;">
-                                        <span class="btn btn-large btn-success"><localize>Logout</localize></span>
+                                        <span class="btn btn-large btn-success">Logout</span>
                                     </button>
                                 </form>
                             }
                             else
                             {
                                 <a href="/Account/Login" style="padding-right:0">
-                                    <span class="btn btn-large btn-success"><localize>Login</localize></span>
+                                    <span class="btn btn-large btn-success">Login</span>
                                 </a>
                             }
                         </li>

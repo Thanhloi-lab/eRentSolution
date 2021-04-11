@@ -10,14 +10,14 @@ namespace eRentSolution.Integration
 {
     public interface IProductApiClient
     {
-        Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request);
-        Task<bool> CreateProduct(ProductCreateRequest request, Guid userInfoId);
-        Task<bool> UpdateProduct(ProductUpdateRequest request, Guid userInfoId);
-        Task<bool> DeleteProduct(int id, Guid userInfoId);
-        Task<ApiResult<bool>> CategoryAssign(int productId, CategoryAssignRequest request);
-        Task<ProductViewModel> GetById(int productId);
-        Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request);
-        Task<List<ProductViewModel>> GetLastestProducts(int take);
-        Task<List<ProductImageViewModel>> GetListImages(int productId);
+        Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request, string tokenName);
+        Task<bool> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName);
+        Task<bool> UpdateProduct(ProductUpdateRequest request, Guid userInfoId, string tokenName);
+        Task<bool> DeleteProduct(int id, Guid userInfoId, string tokenName);
+        Task<ApiResult<bool>> CategoryAssign(int productId, CategoryAssignRequest request, string tokenName);
+        Task<ProductViewModel> GetById(int productId, string tokenName);
+        Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName);
+        Task<List<ProductViewModel>> GetLastestProducts(int take, string tokenName);
+        Task<List<ProductImageViewModel>> GetListImages(int productId, string tokenName);
     }
 }

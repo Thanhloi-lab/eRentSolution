@@ -14,5 +14,6 @@ namespace eRentSolution.Data.Entities
         //public List<Censor> Censors { get; set; }
         public UserInfo Person { get; set; }
         public Status Status { get; set; }
+        public DateTime DateChangePassword { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace eRentSolution.Integration
 {
     public interface IRoleApiClient
     {
-        Task<List<RoleViewModel>> GetAll();
+        Task<List<RoleViewModel>> GetAll(string tokenName);
     }
 }

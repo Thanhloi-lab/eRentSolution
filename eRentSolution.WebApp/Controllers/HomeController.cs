@@ -36,9 +36,9 @@ namespace eRentSolution.WebApp.Controllers
             };
             var viewModel = new HomeViewModel
             {
-                Slides = await _slideApiClient.GetAll(),
-                FeaturedProducts = await _productApiClient.GetFeaturedProducts(request),
-                LastestProducts = await _productApiClient.GetLastestProducts(SystemConstant.ProductSettings.NumberOfLastestProducts)
+                Slides = await _slideApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp),
+                FeaturedProducts = await _productApiClient.GetFeaturedProducts(request, SystemConstant.AppSettings.TokenWebApp),
+                LastestProducts = await _productApiClient.GetLastestProducts(SystemConstant.ProductSettings.NumberOfLastestProducts, SystemConstant.AppSettings.TokenWebApp)
             };
             viewModel.FeaturedProducts.Items = await GetProductImages(viewModel.FeaturedProducts.Items);
             viewModel.LastestProducts = await GetProductImages(viewModel.LastestProducts);
@@ -48,7 +48,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             foreach (var item in products)
             {
-                var images = await _productApiClient.GetListImages(item.Id);
+                var images = await _productApiClient.GetListImages(item.Id, SystemConstant.AppSettings.TokenWebApp);
                 if (images != null)
                 {
                     if (images.Count > 0)

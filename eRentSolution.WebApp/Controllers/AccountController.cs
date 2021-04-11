@@ -38,14 +38,14 @@ namespace eRentSolution.WebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login()
         {
-            var token = _httpContextAccessor.HttpContext.Request.Cookies["Token"];
+            var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
 
             if (token != null)
             {
                 var userPrincipal = this.ValidateToken(token);
                 if (userPrincipal == null)
                 {
-                    Response.Cookies.Delete("Token");
+                    Response.Cookies.Delete(SystemConstant.AppSettings.TokenWebApp);
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     return RedirectToAction("index", "login");
                 }
@@ -53,13 +53,13 @@ namespace eRentSolution.WebApp.Controllers
                 {
                     IsPersistent = true,
                 };
-                HttpContext.Session.SetString(SystemConstant.AppSettings.Token, token);
+                HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, token);
                 await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
 
-                Response.Cookies.Append("Token", token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+                Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
                 return RedirectToAction("Index", "Home");
             }
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -85,12 +85,12 @@ namespace eRentSolution.WebApp.Controllers
                 IsPersistent = request.RememberMe,
                 ExpiresUtc = DateTimeOffset.Now.AddDays(30)
             };
-            HttpContext.Session.SetString(SystemConstant.AppSettings.Token, result.ResultObject);
+            HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, result.ResultObject);
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
-            Response.Cookies.Append("Token", result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+            Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
 
@@ -120,9 +120,9 @@ namespace eRentSolution.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            Response.Cookies.Delete(SystemConstant.AppSettings.Token);
+            Response.Cookies.Delete(SystemConstant.AppSettings.TokenWebApp);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("index", "login");
+            return RedirectToAction("index", "home");
         }
         [HttpGet]
         public IActionResult Register()
@@ -155,12 +155,12 @@ namespace eRentSolution.WebApp.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30),
                 IsPersistent = false
             };
-            HttpContext.Session.SetString(SystemConstant.AppSettings.Token, loginResult.ResultObject);
+            HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, loginResult.ResultObject);
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
-            Response.Cookies.Append("Token", loginResult.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+            Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, loginResult.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
     }
