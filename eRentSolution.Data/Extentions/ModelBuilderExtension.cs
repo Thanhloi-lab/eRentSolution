@@ -65,7 +65,7 @@ namespace eRentSolution.Data.Extentions
                 NormalizedName = "useradmin",
                 Description = "User admin role"
             });
-
+            DateTime now = DateTime.UtcNow;
             var hasher = new PasswordHasher<AppUser>();
             modelBuilder.Entity<AppUser>().HasData(new AppUser
             {
@@ -75,10 +75,11 @@ namespace eRentSolution.Data.Extentions
                 Email = "caothanhloi@gmail.com",
                 NormalizedEmail = "caothanhloi@gmail.com",
                 EmailConfirmed = true,
-                PasswordHash = hasher.HashPassword(null, "123456aS`"),
+                DateChangePassword = now,
+                PasswordHash = hasher.HashPassword(null, "123456aS`" + now),
                 SecurityStamp = string.Empty,
                 Status = Status.Active,
-                DateChangePassword = DateTime.UtcNow
+                
             });
 
             modelBuilder.Entity<UserInfo>().HasData(

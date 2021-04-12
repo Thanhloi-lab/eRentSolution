@@ -11,7 +11,5 @@ namespace eRentSolution.ViewModels.Utilities.Slides
         public string Description { set; get; }
         public IFormFile ImageFile { get; set; }
         public int ProductId { get; set; }
-        public string Url { get; set; }
-        public int SortOrder { get; set; }
     }
 }

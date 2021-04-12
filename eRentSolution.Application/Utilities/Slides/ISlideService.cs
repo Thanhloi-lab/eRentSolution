@@ -1,4 +1,5 @@
-﻿using eRentSolution.ViewModels.Utilities.Slides;
+﻿using eRentSolution.ViewModels.Common;
+using eRentSolution.ViewModels.Utilities.Slides;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,8 +10,10 @@ namespace eRentSolution.Application.Utilities.Slides
     public interface ISlideService
     {
         Task<List<SlideViewModel>> GetAll();
-        Task<bool> AddSlide(int productId);
-        Task<bool> DeleteSlide(int slideId);
-        Task<bool> UpdateSlide(int slideId);
+        Task<SlideViewModel> GetById(int slideId);
+        Task<int> AddSlide(SlideCreateRequest request, Guid userInfoId);
+        Task<bool> DeleteSlide(SlideDeleteRequest request, Guid userInfoId);
+        Task<bool> UpdateSlide(SlideUpdateRequest request, Guid userInfoId);
+        Task<PagedResult<SlideViewModel>> GetAllPaging(GetSlidePagingRequest request);
     }
 }

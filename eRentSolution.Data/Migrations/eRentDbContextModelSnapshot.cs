@@ -179,7 +179,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "b45a759a-7f7b-4230-940f-c52d370aeb36",
+                            ConcurrencyStamp = "bf6ee790-51ca-4e27-b4f7-ebe9d588b4e8",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -187,7 +187,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "aef36558-99a2-478f-ba32-67ee7d1dbcfc",
+                            ConcurrencyStamp = "fb24c2fa-c5a9-42fe-b260-bd145afc5aaa",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -205,6 +205,9 @@ namespace eRentSolution.Data.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateChangePassword")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -256,13 +259,14 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "78f60099-6951-4603-afe3-3fbdc8f3a81c",
+                            ConcurrencyStamp = "5d0cb8e9-a920-4b31-b328-ae53f68c8134",
+                            DateChangePassword = new DateTime(2021, 4, 11, 12, 56, 19, 806, DateTimeKind.Utc).AddTicks(2919),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBjTv4bj84tlSjBzaXaepl1aRWhcNOOgA7YMu4YUNvv7LaY89zvrDz99+08t/5dJ/g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBbx94yxwhc9V7/KqW947ujgOd+aqj5g/FDB1itkWMrtmJswYfbHjfnFfPcgPJxDEg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,
@@ -377,7 +381,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 4, 5, 18, 18, 50, 860, DateTimeKind.Local).AddTicks(2124),
+                            Date = new DateTime(2021, 4, 11, 12, 56, 19, 833, DateTimeKind.Utc).AddTicks(6308),
                             ProductId = 1,
                             UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
@@ -478,7 +482,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 5, 18, 18, 50, 855, DateTimeKind.Local).AddTicks(7382),
+                            DateCreated = new DateTime(2021, 4, 11, 12, 56, 19, 832, DateTimeKind.Utc).AddTicks(1068),
                             Description = "HomeStay Thanh Loi tại pờ tít",
                             Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
                             Name = "HomeStay Thanh Loi",
@@ -541,7 +545,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 5, 18, 18, 50, 858, DateTimeKind.Local).AddTicks(8042),
+                            DateCreated = new DateTime(2021, 4, 11, 12, 56, 19, 832, DateTimeKind.Utc).AddTicks(7285),
                             IsThumbnail = false,
                             Name = "Phòng 1 chổ nằm",
                             OriginalPrice = 100000m,

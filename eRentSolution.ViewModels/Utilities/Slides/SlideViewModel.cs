@@ -12,7 +12,7 @@ namespace eRentSolution.ViewModels.Utilities.Slides
         public string Description { set; get; }
         public string Url { set; get; }
         public int ProductId { get; set; }
-        public int SortOrder { get; set; }
+        public string ProductName { get; set; }
         public string FilePath { get; set; }
     }
 }
