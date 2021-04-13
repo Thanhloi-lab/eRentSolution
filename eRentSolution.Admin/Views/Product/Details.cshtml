@@ -7,10 +7,10 @@
 
 
 <div class="container-fluid">
-    <h1 class="mt-4">Chi tiết</h1>
+    <h1 class="mt-4">Chi tiết sản phẩm</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a class="nav-link" asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Chi tiết</li>
+        <li class="breadcrumb-item active">Chi tiết sản phẩm</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -37,12 +37,25 @@
                     </dt>
                     @if (Model.Categories != null)
                     {
+
                         for (int i = 0; i < Model.Categories.Count; i++)
                         {
                             <dd class="col-sm-10">
                                 @Html.DisplayFor(model => Model.Categories[i])
                             </dd>
                         }
+                        if (Model.Categories.Count == 0)
+                        {
+                            <dd class="col-sm-10">
+                                N/A
+                            </dd>
+                        }
+                    }
+                    else
+                    {
+                        <dd class="col-sm-10">
+                            N/A
+                        </dd>
                     }
                     <dt class="col-sm-6">
                         @Html.DisplayNameFor(model => model.IsFeatured)
