@@ -20,7 +20,7 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public int Stock { set; get; }
         [Display(Name = "Ngày tạo")]
         public DateTime DateCreated { set; get; }
-        [Display(Name = "Xuất hiện trên trang chủ")]
+        [Display(Name = "Sản phẩm nổi bật")]
         public bool? IsFeatured { get; set; }
         [Display(Name = "Hình ảnh đại diện")]
         public string ThumbnailImage { get; set; }

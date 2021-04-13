@@ -1,4 +1,5 @@
-﻿@*@model eRentSolution.ViewModels.Utilities.Slides.SlideDeleteRequest
+﻿@model eRentSolution.ViewModels.Utilities.Slides.SlideViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 
 @{
     ViewData["Title"] = "Details";
@@ -14,61 +15,55 @@
     </ol>
     <div class="card mb-4">
         <div class="card-header">
-            <a class="btn btn-success" asp-action="Index" asp-controller="User">Về danh sách</a>
+            <a class="btn btn-success" asp-action="Index" asp-controller="Slide">Về danh sách</a>
         </div>
 
         <div class="card-body">
             <div class="row-cols-md-2">
                 <dl class="row">
-                    <dt class="col-sm-12">
+                    <dt class="col-sm-6">
+                        @Html.DisplayNameFor(model => model.FilePath)
+                    </dt>
+                    <dd class="col-sm-10">
+                        <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.FilePath" alt="@Model.Name"></a>
+                    </dd>
+                    <dt class="col-sm-6">
                         @Html.DisplayNameFor(model => model.Id)
                     </dt>
-                    <dd class="col-sm-12">
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Id)
+                    </dd>
+                    <dt class="col-sm-6">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </dt>
+                    <dd class="col-sm-10">
                         @Html.DisplayFor(model => model.Name)
                     </dd>
-
-                    <dd class="col-sm-12">
-                        @Html.DisplayFor(model => model.ViewCount)
+                    <dt class="col-sm-6">
+                        @Html.DisplayNameFor(model => model.ProductId)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.ProductId)
                     </dd>
-                    <dd class="col-sm-12">
-                        @Html.DisplayFor(model => model.Categories)
+                    <dt class="col-sm-6">
+                        @Html.DisplayNameFor(model => model.ProductName)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.ProductName)
                     </dd>
-                    <dt class="col-sm-12">
-                        @Html.DisplayNameFor(model => model.IsFeatured)
+                    <dt class="col-sm-6">
+                        @Html.DisplayNameFor(model => model.Url)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Url)
+                    </dd>
+                    <dt class="col-sm-6">
+                        @Html.DisplayNameFor(model => model.Description)
                     </dt>
                     <dd class="col-sm-10">
                         @Html.DisplayFor(model => model.Description)
                     </dd>
-                    <dt class="col-sm-12" class="row-cols-sm-6">
-                        @Html.DisplayNameFor(model => model.Details)
-                    </dt>
-                    <dd class="col-sm-12">
-                        @Html.DisplayFor(model => model.DateCreated)
-                    </dd>
-                    <dt class="col-sm-12">
-                        @Html.DisplayNameFor(model => model.SeoAlias)
-                    </dt>
-                    <dd class="col-sm-12">
-                        @Html.DisplayFor(model => model.SeoDescription)
-                    </dd>
-                    <dt class="col-sm-12">
-                        @Html.DisplayNameFor(model => model.SeoAlias)
-                    </dt>
-                    <dd class="col-sm-10" class="row-cols-sm-6">
-                        @Html.DisplayFor(model => model.ThumbnailImage)
-                    </dd>
-                    @foreach (var item in Model.ProductDetailViewModels)
-                    {
-                        <dt class="col-sm-12">
-                            @Html.DisplayNameFor(model => item.Price)
-                        </dt>
-                        <dd class="col-sm-12">
-                            @Html.DisplayFor(model => item.OriginalPrice)
-                        </dd>
-                        <dd class="col-sm-12">
-                            @Html.DisplayFor(model => item.Stock)
-                        </dd>
-                    }
+
                 </dl>
             </div>
         </div>
@@ -77,4 +72,4 @@
 <div>
     @Html.ActionLink("Edit", "Edit", new { Model.Id }) |
     <a asp-action="Index">Back to List</a>
-</div>*@
+</div>

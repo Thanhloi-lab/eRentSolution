@@ -377,9 +377,17 @@ namespace eRentSolution.Application.Catalog.Products
                 ViewCount = product.ViewCount,
                 ProductDetailViewModels = productDetails,
                 Status = product.Status,
-                Categories = categories
+                Categories = categories,
             };
-
+            var productImages = await GetListImage(product.Id);
+            foreach (var item in productImages)
+            {
+                if (item.IsDefault)
+                {
+                    productViewModel.ThumbnailImage = item.ImagePath;
+                    break;
+                }
+            }
             foreach (var productDetail in productDetails)
             {
                 productViewModel.Stock += productDetail.Stock;

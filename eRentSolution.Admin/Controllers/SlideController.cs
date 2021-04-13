@@ -118,11 +118,11 @@ namespace eRentSolution.AdminApp.Controllers
             TempData["failResult"] = "Xóa slide không thành công";
             return View(request.Id);
         }
-        //[HttpGet]
-        //public async Task<IActionResult> Details(int id)
-        //{
-        //    var result = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
-        //    return View(result);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var result = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            return View(result);
+        }
     }
 }
