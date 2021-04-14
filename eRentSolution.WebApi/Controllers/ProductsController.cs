@@ -74,10 +74,30 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok();
         }
-        [HttpDelete("{userInfoId}/{id}")]
-        public async Task<IActionResult> Delete(int id, Guid userInfoId)
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var isSuccessful = await _productService.Delete(id, userInfoId);
+            var isSuccessful = await _productService.Delete(id);
+            if (isSuccessful == false)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+        [HttpDelete("hide/{userInfoId}/{id}")]
+        public async Task<IActionResult> Hide(int id, Guid userInfoId)
+        {
+            var isSuccessful = await _productService.Hide(id, userInfoId);
+            if (isSuccessful == false)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+        [HttpDelete("show/{userInfoId}/{id}")]
+        public async Task<IActionResult> Show(int id, Guid userInfoId)
+        {
+            var isSuccessful = await _productService.Show(id, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();

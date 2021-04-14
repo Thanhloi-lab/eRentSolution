@@ -44,7 +44,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<int> Create(ProductCreateRequest request, Guid userInfoId)
         {
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var product = new Product()
             {
                 Name = request.Name,
@@ -98,7 +98,7 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return product.Id;
         }
-        public async Task<bool> Delete(int productId, Guid userInfoId)
+        public async Task<bool> Delete(int productId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
@@ -134,7 +134,8 @@ namespace eRentSolution.Application.Catalog.Products
                 throw new eRentException($"Cannot find a product: { product.Id}");
             }
 
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.HideProduct);
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.HideProduct);
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -147,6 +148,36 @@ namespace eRentSolution.Application.Catalog.Products
             product.Status = Data.Enums.Status.InActive;
 
             var result = await _context.SaveChangesAsync();
+            if (result != 0)
+                return true;
+            else
+                return false;
+        }
+        public async Task<bool> Show(int productId, Guid userInfoId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                throw new eRentException($"Cannot find a product: { product.Id}");
+            }
+            product.Status = Data.Enums.Status.Active;
+
+            var result = await _context.SaveChangesAsync();
+            if(result >0)
+            {
+                var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ShowProduct);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    UserInfoId = userInfoId,
+                    ProductId = product.Id,
+                    Date = DateTime.UtcNow
+                };
+                await _context.Censors.AddAsync(censor);
+                result = await _context.SaveChangesAsync();
+            }
+
             if (result != 0)
                 return true;
             else
@@ -167,7 +198,7 @@ namespace eRentSolution.Application.Catalog.Products
             productDetail.Price = newPrice;
 
             var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdatePriceProduct);
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdatePriceProduct);
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -189,7 +220,7 @@ namespace eRentSolution.Application.Catalog.Products
             productDetail.Stock += addedQuantity;
 
             var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateStockProduct);
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateStockProduct);
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -225,7 +256,7 @@ namespace eRentSolution.Application.Catalog.Products
                     _context.ProductImages.Update(thumbnailImage);
                 }
             }
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProduct);
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProduct);
             var censor = new Censor()
             {
                 ActionId = action.Id,

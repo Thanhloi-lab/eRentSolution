@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using eRentSolution.ViewModels.Common;
+using eRentSolution.Utilities.Constants;
 
 namespace eRentSolution.Application.Utilities.Slides
 {
@@ -19,7 +20,7 @@ namespace eRentSolution.Application.Utilities.Slides
     {
         private readonly eRentDbContext _context;
         private readonly IStorageService _storageService;
-        private string productUrlPattern = "https://localhost:5003/products/";
+        private string productUrlPattern = SystemConstant.BackendApiProductUrl;
 
         public SlideService(eRentDbContext context, IStorageService storageService)
         {
@@ -29,6 +30,9 @@ namespace eRentSolution.Application.Utilities.Slides
 
         public async Task<int> AddSlide(SlideCreateRequest request, Guid userInfoId)
         {
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateSlide);
+            
             var product = await _context.Products.FindAsync(request.ProductId);
             if(product==null)
                 return -1;
@@ -39,12 +43,52 @@ namespace eRentSolution.Application.Utilities.Slides
                 ImagePath = await this.SaveFile(request.ImageFile),
                 ProductId = request.ProductId,
                 Url = productUrlPattern + request.ProductId,
+                Status = Data.Enums.Status.Active
             };
             await _context.Slides.AddAsync(slide);
+            var result = await _context.SaveChangesAsync();
+            if (result >0)
+            {
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    UserInfoId = userInfoId,
+                    Date = DateTime.UtcNow,
+                    ProductId = product.Id
+                };
+                await _context.Censors.AddAsync(censor);
+            }
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteSlide(SlideDeleteRequest request, Guid userInfoId)
+        public async Task<bool> HideSlide(SlideStatusRequest request, Guid userInfoId)
+        {
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.HideSlide);
+            
+            var slide = await _context.Slides.FindAsync(request.Id);
+            if (slide == null)
+                return false;
+
+            slide.Status = Data.Enums.Status.InActive;
+            var result = await _context.SaveChangesAsync();
+            
+           //var product = await  _context.Products.FirstOrDefaultAsync(x => x.Id == slide.ProductId);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                Date = DateTime.UtcNow,
+                ProductId = slide.ProductId
+            };
+            await _context.Censors.AddAsync(censor);
+            await _context.SaveChangesAsync();
+            if (result>0)
+                return true;
+            return false;
+        }
+
+        public async Task<bool> DeleteSlide(SlideStatusRequest request, Guid userInfoId)
         {
             var slide = await _context.Slides.FindAsync(request.Id);
             if (slide == null)
@@ -52,20 +96,33 @@ namespace eRentSolution.Application.Utilities.Slides
 
             await _storageService.DeleteFileAsync(slide.ImagePath);
             _context.Slides.Remove(slide);
-            await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync();
+            if(result >0)
+            {
+                var action =await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteSlide);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    UserInfoId = userInfoId,
+                    Date = DateTime.UtcNow,
+                    ProductId = slide.ProductId
+                };
+                await _context.Censors.AddAsync(censor);
+                await _context.SaveChangesAsync();
+            }
             return true;
         }
 
         public async Task<List<SlideViewModel>> GetAll()
         {
-            var slides = await _context.Slides.Select(x => new SlideViewModel()
+            var slides = await _context.Slides.Where(x=>x.Status == Data.Enums.Status.Active).Select(x => new SlideViewModel()
             {
                 Id = x.Id,
                 Description = x.Description,
                 FilePath = x.ImagePath,
                 Name = x.Name,
                 ProductId = x.ProductId,
-                Url = x.Url
+                Url = x.Url,
             }).ToListAsync();
             foreach (var item in slides)
             {
@@ -78,13 +135,29 @@ namespace eRentSolution.Application.Utilities.Slides
         public async Task<PagedResult<SlideViewModel>> GetAllPaging(GetSlidePagingRequest request)
         {
             var query = from s in _context.Slides
-                        join p in _context.Products on s.ProductId equals p.Id
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
-                        from c in picc.DefaultIfEmpty()
-                        select new { s, p, pic };
-            if (request.CategoryId != null && request.CategoryId != 0)
-                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+                        join p in _context.Products on s.ProductId equals p.Id //into sp
+                        //from p in sp.DefaultIfEmpty()
+                        //join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        //join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        //from c in picc.DefaultIfEmpty()
+                        
+                        select new { s, p};
+
+            if (request.Keyword != null)
+            {
+                if (request.Keyword != null)
+                {
+                    query = query.Where(x => x.s.Name.Contains(request.Keyword) ||
+                                            x.p.Name.Contains(request.Keyword));
+                }
+            }
+            if(request.Status!=null && request.Status.HasValue)
+            {
+                if(request.Status==0)
+                    query = query.Where(x => x.s.Status == Data.Enums.Status.InActive);
+                else
+                    query = query.Where(x => x.s.Status == Data.Enums.Status.Active);
+            }
 
             int totalRow = await query.CountAsync();
             var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new SlideViewModel()
@@ -95,7 +168,8 @@ namespace eRentSolution.Application.Utilities.Slides
                 FilePath = x.s.ImagePath,
                 ProductId = x.p.Id,
                 Url = productUrlPattern + x.s.Id,
-                ProductName = x.p.Name
+                ProductName = x.p.Name,
+                Status = x.s.Status
             }).ToListAsync();
 
             List<SlideViewModel> slides = new List<SlideViewModel>();
@@ -145,6 +219,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 Url = slide.Url,
                 Name = slide.Name,
                 ProductId = slide.ProductId,
+                Status = slide.Status
             };
             var product = await _context.Products.FindAsync(slideViewModel.ProductId);
             slideViewModel.ProductName = product.Name;
@@ -153,21 +228,64 @@ namespace eRentSolution.Application.Utilities.Slides
 
         public async Task<bool> UpdateSlide(SlideUpdateRequest request, Guid userInfoId)
         {
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateSlide);
+
             var slide = await _context.Slides.FindAsync(request.Id);
             if (slide == null)
                 return false;
             slide.Description = request.Description;
-            //slide.ImagePath = await _storageService.SaveFile(request.ImageFile);
             slide.Name = request.Name;
-            await _context.SaveChangesAsync();
-            return true;
+            
+            //var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == slide.ProductId);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                Date = DateTime.UtcNow,
+                ProductId = slide.ProductId
+            };
+            await _context.Censors.AddAsync(censor);
+            
+            var result = await _context.SaveChangesAsync();
+            if (result > 0) 
+                return true;
+            return false;
         }
+
         private async Task<string> SaveFile(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
+        }
+
+        public async Task<bool> ShowSlide(SlideStatusRequest request, Guid userInfoId)
+        {
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ShowSlide);
+
+            var slide = await _context.Slides.FindAsync(request.Id);
+            if (slide == null)
+                return false;
+
+            slide.Status = Data.Enums.Status.Active;
+            var result = await _context.SaveChangesAsync();
+
+            //var product = await  _context.Products.FirstOrDefaultAsync(x => x.Id == slide.ProductId);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                Date = DateTime.UtcNow,
+                ProductId = slide.ProductId
+            };
+            await _context.Censors.AddAsync(censor);
+            await _context.SaveChangesAsync();
+            if (result > 0)
+                return true;
+            return false;
         }
     }
 }

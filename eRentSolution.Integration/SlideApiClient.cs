@@ -54,9 +54,21 @@ namespace eRentSolution.Integration
             var response = await client.PostAsync($"api/slides/{userInfoId}/create/{request.ProductId}", requestContent);
             return response.IsSuccessStatusCode;
         }
-        public async Task<bool> DeleteSlide(SlideDeleteRequest request, string tokenName, Guid userInfoId)
+        public async Task<bool> DeleteSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
         {
             var result = await DeleteAsync<bool>($"/api/Slides/{userInfoId}/delete/{request.Id}", tokenName);
+            return result;
+
+        }
+        public async Task<bool> HideSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
+        {
+            var result = await DeleteAsync<bool>($"/api/Slides/{userInfoId}/hide/{request.Id}", tokenName);
+            return result;
+
+        }
+        public async Task<bool> ShowSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
+        {
+            var result = await DeleteAsync<bool>($"/api/Slides/{userInfoId}/show/{request.Id}", tokenName);
             return result;
 
         }
@@ -84,8 +96,7 @@ namespace eRentSolution.Integration
             var result = await GetAsync<PagedResult<SlideViewModel>>(
                 $"/api/Slides/paging?pageIndex={request.PageIndex}" +
                 $"&pageSize={request.PageSize}" +
-                $"&keyword={request.Keyword}" +
-                $"&categoryId={request.CategoryId}", tokenName);
+                $"&keyword={request.Keyword}&status={request.Status}", tokenName);
             return result;
         }
         public async Task<SlideViewModel> GetById(int SlideId, string tokenName)

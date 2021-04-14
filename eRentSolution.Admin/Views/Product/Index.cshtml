@@ -68,9 +68,6 @@
                                 Tên sản phẩm
                             </th>
                             <th>
-                                Giá gốc
-                            </th>
-                            <th>
                                 Giá hiện tại
                             </th>
                             <th>
@@ -79,6 +76,9 @@
                             <th>
                                 Số lượt xem
                             </th>
+                            <th>
+                                Tình trạng
+                            </th>
 
                             <th></th>
                         </tr>
@@ -86,33 +86,53 @@
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-                            <tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Stock)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ViewCount)
+                            </td>
+
+                            @if (item.Status == eRentSolution.Data.Enums.Status.Active)
+                            {
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].OriginalPrice)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Stock)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ViewCount)
+                                    Hoạt động
                                 </td>
                                 <td>
                                     @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
                                     @Html.ActionLink("Xem", "Details", new { item.Id }) |
                                     @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                                    @Html.ActionLink("Ẩn", "Hide", new { item.Id })|
                                     @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
                                     @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
                                 </td>
-                            </tr>
+                            }
+                            else
+                            {
+                                <td>
+                                    Không hoạt động
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                    @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                                    @Html.ActionLink("Hiện", "Show", new { item.Id })|
+                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
+                                    @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
+                                </td>
+                            }
+
+                        </tr>
                         }
                     </tbody>
                 </table>

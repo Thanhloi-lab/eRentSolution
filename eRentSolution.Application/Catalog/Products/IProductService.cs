@@ -13,7 +13,9 @@ namespace eRentSolution.Application.Catalog.Products
     {
         Task<int> Create(ProductCreateRequest request, Guid userInfoId);
         Task<bool> Update(ProductUpdateRequest request, Guid userInfoId, int productId);
-        Task<bool> Delete(int productId, Guid userInfoId);
+        Task<bool> Hide(int productId, Guid userInfoId);
+        Task<bool> Show(int productId, Guid userInfoId);
+        Task<bool> Delete(int productId);
         Task<bool> UpdatePrice(int productId, decimal newPrice, Guid userInfoId);
         Task<bool> UpdateStock(int productId, int addedQuantity, Guid userInfoId);
         Task<bool> AddViewcount(int productId);

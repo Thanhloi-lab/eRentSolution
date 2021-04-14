@@ -134,16 +134,16 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            return View(new ProductDeleteRequest() { 
+            return View(new ProductStatusRequest() { 
                 Id = id
             });
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(ProductDeleteRequest request)
+        public async Task<IActionResult> Delete(ProductStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _productApiClient.DeleteProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            var result = await _productApiClient.DeleteProduct(request.Id, SystemConstant.AppSettings.TokenAdmin);
             
             if (result)
             {
@@ -151,6 +151,52 @@ namespace eRentSolution.AdminApp.Controllers
                 return RedirectToAction("Index");
             }
             TempData["failResult"] = "Xóa sản phẩm không thành công";
+            return View(request.Id);
+        }
+        [HttpGet]
+        public IActionResult Hide(int id)
+        {
+            return View(new ProductStatusRequest()
+            {
+                Id = id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Hide(ProductStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _productApiClient.HideProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            if (result)
+            {
+                TempData["result"] = "Ẩn sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+            TempData["failResult"] = "Ẩn sản phẩm không thành công";
+            return View(request.Id);
+        }
+        [HttpGet]
+        public IActionResult Show(int id)
+        {
+            return View(new ProductStatusRequest()
+            {
+                Id = id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Show(ProductStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _productApiClient.ShowProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            if (result)
+            {
+                TempData["result"] = "Hiện sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+            TempData["failResult"] = "Hiện sản phẩm không thành công";
             return View(request.Id);
         }
         [HttpGet]

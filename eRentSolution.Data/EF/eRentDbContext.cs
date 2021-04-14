@@ -26,7 +26,7 @@ namespace eRentSolution.Data.EF
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
-            modelBuilder.ApplyConfiguration(new AdminActionConfiguration());
+            modelBuilder.ApplyConfiguration(new UserActionConfiguration());
             modelBuilder.ApplyConfiguration(new SlideConfiguration());
             modelBuilder.ApplyConfiguration(new CensorConfiguration());
             modelBuilder.ApplyConfiguration(new UserInfoConfiguration());
@@ -49,7 +49,7 @@ namespace eRentSolution.Data.EF
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
-        public DbSet<UserAction> AdminActions { get; set; }
+        public DbSet<UserAction> UserActions { get; set; }
         public DbSet<Censor> Censors { get; set; }
         public DbSet<Slide> Slides { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }

@@ -1,15 +1,15 @@
 ﻿@model eRentSolution.ViewModels.Utilities.Slides.SlideStatusRequest
 
 @{
-    ViewData["Title"] = "Xóa sản phẩm";
+    ViewData["Title"] = "Hiện sản phẩm trình chiếu";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container-fluid">
-    <h1 class="mt-4">Xóa</h1>
+    <h1 class="mt-4">Hiện sản phẩm trình chiếu</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a class="nav-link" asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Xóa</li>
+        <li class="breadcrumb-item active">Hiện sản phẩm trình chiếu</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -26,9 +26,9 @@
                         @Html.DisplayFor(model => model.Id)
                     </dd>
                 </dl>
-                <form asp-action="Delete">
+                <form asp-action="Show">
                     <input asp-for="Id" type="hidden" input />
-                    <input type="submit" value="Delete" class="btn btn-danger" />
+                    <input type="submit" value="Show" class="btn btn-danger" />
                 </form>
 
             </div>

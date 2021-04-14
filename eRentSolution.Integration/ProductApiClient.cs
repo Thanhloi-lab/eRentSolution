@@ -71,12 +71,21 @@ namespace eRentSolution.Integration
 
         }
 
-        public async Task<bool> DeleteProduct(int productId, Guid userInfoId, string tokenName)
+        public async Task<bool> DeleteProduct(int productId, string tokenName)
         {
-            var result = await DeleteAsync<bool>($"/api/products/{userInfoId}/{productId}", tokenName);
+            var result = await DeleteAsync<bool>($"/api/products/delete/{productId}", tokenName);
             return result;
         }
-
+        public async Task<bool> HideProduct(int productId, Guid userInfoId, string tokenName)
+        {
+            var result = await DeleteAsync<bool>($"/api/products/hide/{userInfoId}/{productId}", tokenName);
+            return result;
+        }
+        public async Task<bool> ShowProduct(int productId, Guid userInfoId, string tokenName)
+        {
+            var result = await DeleteAsync<bool>($"/api/products/show/{userInfoId}/{productId}", tokenName);
+            return result;
+        }
         public async Task<ProductViewModel> GetById(int productId, string tokenName)
         {
             var result = await GetAsync<ProductViewModel>($"/api/products/{productId}", tokenName);

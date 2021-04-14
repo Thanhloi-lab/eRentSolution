@@ -7,6 +7,7 @@ namespace eRentSolution.Utilities.Constants
     public class SystemConstant
     {
         public const string MainConnectionString = "eRentSolutionDatabase";
+        public const string BackendApiProductUrl = "https://localhost:5003/products/";
         public class AppSettings
         {
             public const string TokenAdmin = "Token";
@@ -25,11 +26,23 @@ namespace eRentSolution.Utilities.Constants
         }
         public class ActionSettings
         {
-            public const string HideProduct = "HideProduct";
-            public const string UpdateProduct = "UpdateProduct";
-            public const string UpdatePriceProduct = "UpdatePriceProduct";
-            public const string UpdateStockProduct = "UpdateStockProduct";
-            public const string CreateProduct = "CreateProduct";
+            public const string HideProduct = "Ẩn sản phẩm";
+            public const string UpdateProduct = "Chỉnh sửa sản phẩm";
+            public const string UpdatePriceProduct = "Chỉnh sửa giá";
+            public const string UpdateStockProduct = "Chỉnh sửa tồn kho";
+            public const string CreateProduct = "Tạo sản phẩm";
+            public const string ShowProduct = "Hiện sản phẩm";
+
+            public const string HideSlide = "Ẩn sản phẩm trình chiếu";
+            public const string UpdateSlide = "Chỉnh sửa sản phẩm trình chiếu";
+            public const string CreateSlide = "Tạo sản phẩm trình chiếu";
+            public const string DeleteSlide = "Xóa sản phẩm trình chiếu";
+            public const string ShowSlide = "Hiện sản phẩm trình chiếu";
+
+            public const string HideFeatureProduct = "Ẩn sản phẩm nổi bật";
+            public const string CreateFeatureProduct = "Tạo sản phẩm nổi bật";
+            public const string DeleteFeatureProduct = "Xóa sản phẩm nổi bật";
+            public const string ShowFeatureProduct = "Hiện sản phẩm nổi bật";
         }
     }
 }

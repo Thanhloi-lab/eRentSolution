@@ -8,6 +8,6 @@ namespace eRentSolution.ViewModels.Utilities.Slides
     public class GetSlidePagingRequest : PagingRequestBase
     {
         public string Keyword { get; set; }
-        public int? CategoryId { get; set; }
+        public int? Status { get; set; }
     }
 }

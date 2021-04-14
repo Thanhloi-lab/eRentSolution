@@ -1,4 +1,5 @@
-﻿using eRentSolution.Integration;
+﻿using eRentSolution.Data.Enums;
+using eRentSolution.Integration;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Utilities.Slides;
 using Microsoft.AspNetCore.Authorization;
@@ -34,14 +35,15 @@ namespace eRentSolution.AdminApp.Controllers
             userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string keyword, int? status, int pageIndex = 1, int pageSize = 10)
         {
             var request = new GetSlidePagingRequest()
             {
                 Keyword = keyword,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                CategoryId = categoryId
+                //CategoryId = categoryId
+                Status = status
             };
 
             if (TempData["result"] != null)
@@ -52,13 +54,32 @@ namespace eRentSolution.AdminApp.Controllers
             var slides = await _slideApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Keyword = keyword;
 
-            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
-            ViewBag.Categories = categories.Select(x => new SelectListItem()
+            var viewBagStatus = new List<SelectListItem>()
             {
-                Text = x.Name,
-                Value = x.Id.ToString(),
-                Selected = categoryId.HasValue && categoryId.Value == x.Id
-            });
+                new SelectListItem()
+                {
+                    Text = "Hoạt động",
+                    Value = "1",
+                    Selected = status.HasValue && status.Value.ToString() == "1"
+                },
+                new SelectListItem()
+                {
+                    Text = "Không Hoạt động",
+                    Value = "0",
+                    Selected = status.HasValue && status.Value.ToString() == "0"
+                }
+            };
+            //var dropDown = new List<string>();
+            //dropDown.Add("Hoạt động");
+            //dropDown.Add("Không hoạt động");
+
+            //ViewBag.Status = dropDown.Select(x => new SelectListItem()
+            //{
+            //    Text = x,
+            //    Value = Status.Active.ToString(),
+            //    Selected = status.HasValue && status.ToString() == x
+            //});
+            ViewBag.Status = viewBagStatus;
             return View(slides);
         }
         [HttpGet]
@@ -98,13 +119,13 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            return View(new SlideDeleteRequest()
+            return View(new SlideStatusRequest()
             {
-                Id = id
+                Id = id,
             });
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(SlideDeleteRequest request)
+        public async Task<IActionResult> Delete(SlideStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -116,6 +137,52 @@ namespace eRentSolution.AdminApp.Controllers
                 return RedirectToAction("Index");
             }
             TempData["failResult"] = "Xóa slide không thành công";
+            return View(request.Id);
+        }
+        [HttpGet]
+        public IActionResult Hide(int id)
+        {
+            return View(new SlideStatusRequest()
+            {
+                Id = id,
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Hide(SlideStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _slideApiClient.HideSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+
+            if (result)
+            {
+                TempData["result"] = "Ẩn slide thành công";
+                return RedirectToAction("Index");
+            }
+            TempData["failResult"] = "Ẩn slide không thành công";
+            return View(request.Id);
+        }
+        [HttpGet]
+        public IActionResult Show(int id)
+        {
+            return View(new SlideStatusRequest()
+            {
+                Id = id,
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Show(SlideStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _slideApiClient.ShowSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+
+            if (result)
+            {
+                TempData["result"] = "Hiện sản phẩm trình chiếu thành công";
+                return RedirectToAction("Index");
+            }
+            TempData["failResult"] = "Hiện sản phẩm trình chiếu không thành công";
             return View(request.Id);
         }
         [HttpGet]

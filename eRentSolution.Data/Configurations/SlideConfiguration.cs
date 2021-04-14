@@ -1,4 +1,5 @@
 ﻿using eRentSolution.Data.Entities;
+using eRentSolution.Data.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -20,6 +21,7 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.Description).HasMaxLength(200).IsRequired();
             builder.Property(x => x.Url).HasMaxLength(200).IsRequired();
             builder.Property(x => x.ImagePath).HasMaxLength(200).IsRequired();
+            builder.Property(x => x.Status).HasDefaultValue(Status.Active).IsRequired();
             builder.HasOne(x => x.Product).WithMany(x => x.Slides).HasForeignKey(x => x.ProductId);
         }
     }

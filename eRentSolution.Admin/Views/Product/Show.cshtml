@@ -1,4 +1,4 @@
-﻿@model eRentSolution.ViewModels.Utilities.Slides.SlideStatusRequest
+﻿@model eRentSolution.ViewModels.Catalog.Products.ProductStatusRequest
 
 @{
     ViewData["Title"] = "Xóa sản phẩm";
@@ -13,7 +13,7 @@
     </ol>
     <div class="card mb-4">
         <div class="card-header">
-            <a class="btn btn-success" asp-action="Index" asp-controller="Slide">Về danh sách</a>
+            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
         </div>
 
         <div class="card-body">
@@ -26,11 +26,10 @@
                         @Html.DisplayFor(model => model.Id)
                     </dd>
                 </dl>
-                <form asp-action="Delete">
+                <form asp-action="Show">
                     <input asp-for="Id" type="hidden" input />
-                    <input type="submit" value="Delete" class="btn btn-danger" />
+                    <input type="submit" value="Show" class="btn btn-danger" />
                 </form>
-
             </div>
         </div>
     </div>

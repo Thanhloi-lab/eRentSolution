@@ -25,13 +25,13 @@
                     <a class="btn btn-success" asp-action="Index" asp-controller="Product">Tạo mới</a>
                 </div>
                 <div class="col-md-6 col-xs-12">
-                    <form asp-action="SlideIndex" method="get">
+                    <form asp-action="Index" method="get">
                         <div class="row">
                             <div class="col-md-5">
                                 <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
                             </div>
                             <div class="col-md-4">
-                                <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
+                                <select name="status" onchange="this.form.submit()" asp-items="@ViewBag.Status" class="form-control">
                                     <option>--Chọn danh mục--</option>
                                 </select>
                             </div>
@@ -73,31 +73,60 @@
                             <th>
                                 Tên sản phẩm
                             </th>
+                            <th>
+                                Tình trạng
+                            </th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-                            <tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ProductName)
+                            </td>
+                            @if (item.Status == eRentSolution.Data.Enums.Status.Active)
+                            {
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
+                                    Hoạt động
                                 </td>
+                            }
+                            else
+                            {
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
+                                    Không hoạt động
                                 </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProductId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProductName)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                    @Html.ActionLink("Xem", "Details", new { item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
-                                </td>
-                            </tr>
+                            }
+                            @if (item.Status == eRentSolution.Data.Enums.Status.Active)
+                            {
+                            <td>
+                                @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                                @Html.ActionLink("Ẩn", "Hide", new { item.Id })
+                            </td>
+                            }
+                            else
+                            {
+                            <td>
+                                @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                @Html.ActionLink("Xóa", "Delete", new { item.Id })|
+                                @Html.ActionLink("Hiện", "Show", new { item.Id })
+
+                            </td>
+                            }
+                        </tr>
                         }
                     </tbody>
                 </table>

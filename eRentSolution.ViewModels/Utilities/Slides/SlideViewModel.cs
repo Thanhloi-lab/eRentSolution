@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using eRentSolution.Data.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,5 +15,6 @@ namespace eRentSolution.ViewModels.Utilities.Slides
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string FilePath { get; set; }
+        public Status Status { get; set; }
     }
 }

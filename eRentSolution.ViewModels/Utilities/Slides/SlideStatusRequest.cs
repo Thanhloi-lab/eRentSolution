@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace eRentSolution.ViewModels.Catalog.Products
+namespace eRentSolution.ViewModels.Utilities.Slides
 {
-    public class ProductDeleteRequest
+    public class SlideStatusRequest
     {
         public int Id { get; set; }
     }

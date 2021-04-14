@@ -1,4 +1,4 @@
-﻿@model eRentSolution.ViewModels.Catalog.Products.ProductDeleteRequest
+﻿@model eRentSolution.ViewModels.Catalog.Products.ProductStatusRequest
 
 @{
     ViewData["Title"] = "Xóa sản phẩm";
@@ -26,6 +26,8 @@
                         @Html.DisplayFor(model => model.Id)
                     </dd>
                 </dl>
+                
+
                 <form asp-action="Delete">
                     <input asp-for="Id" type="hidden" input />
                     <input type="submit" value="Delete" class="btn btn-danger" />
