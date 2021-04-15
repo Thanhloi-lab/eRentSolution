@@ -473,6 +473,7 @@ namespace eRentSolution.Application.Catalog.Products
         {
             var query =from pd in _context.ProductDetails
                         join p in _context.Products on pd.ProductId equals p.Id
+                       where pd.ProductId == productId
                         select new { pd };
             var productDetail = await query.Select(x => new ProductDetailViewModel()
             {

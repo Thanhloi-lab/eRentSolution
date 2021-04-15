@@ -11,19 +11,103 @@ a.navbar-brand {
 a {
   color: #0366d6;
 }
+.new-product-percent {
+    background: url("icon-saleoff.png") no-repeat scroll center center transparent;
+    position: absolute;
+    width: 48px;
+    height: 51px;
+    bottom: 35px;
+    right: 22px;
+    text-align: center;
+    vertical-align: middle;
+    color: #180733;
+    font-size: 16px;
+    padding-top: 14px;
+}
+.product-row-price-hover {
+    background: none repeat scroll 0 0 rgba(121, 117, 101, 0.8);
+    bottom: -100px;
+    color: #fff !important;
+    font-size: 13px;
+    left: 0;
+    padding: 10px;
+    position: absolute;
+    transition: bottom 0.5s ease 0s;
+    width: 100%;
+}
+@media (max-width:767px) {
+    .product-row-img {
+        height: auto;
+    }
 
+    .padding-none:nth-child(5n+1) {
+        padding-left: 0px !important;
+    }
+
+    .padding-none:nth-child(5n+5) {
+        padding-right: 0px !important;
+    }
+}
+@media (max-width: 767px) {
+    .row.content-product-list .col-xs-12 {
+        width: 50% !important;
+        padding-right: 0px !important;
+        padding-left: 0px !important;
+    }
+
+    div#collection.container {
+        padding-right: 0px !important;
+        padding-left: 0px !important;
+    }
+
+    .row .padding-none:nth-child(5n+1) {
+        padding-right: 0px !important;
+        padding-left: 0px !important;
+    }
+
+    .row .product-row-thumbnail {
+        max-height: 211px;
+        max-width: 196px;
+    }
+}
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
-
+.product-row-info {
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.product-row-name {
+    height: 35px;
+    font-size: 14px;
+    margin: 10px;
+}
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
-
+.product-row-sale {
+    font-size: 20px;
+    color: #ed0000;
+    font-weight: 700;
+}
+#cat_product {
+    padding-top: 15px !important;
+}
+.clr, .clearfix {
+    clear: both;
+    height: 0;
+}
+.product-row {
+    background-color: #FFF;
+    margin-bottom: 30px;
+    border: 1px solid #FFF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 html {

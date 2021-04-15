@@ -14,52 +14,88 @@
         <div class="card-header">
             <a class="btn btn-success" asp-action="Index" asp-controller="User">Về danh sách</a>
         </div>
-
         <div class="card-body">
-            <div class="col-md-12">
-                <dl class="row">
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.FirstName)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.FirstName)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.LastName)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.LastName)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.PhoneNumber)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.PhoneNumber)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.UserName)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.UserName)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Email)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Email)
-                    </dd>
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Dob)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Dob)
-                    </dd>
-                </dl>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Thuộc tính
+                            </th>
+                            <th>
+                                Mô tả
+
+
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.FirstName)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.LastName)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Dob)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Dob)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Email)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.PhoneNumber)
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
             </div>
-            <form asp-action="Edit" method="get">
-                <input asp-for="Id" type="hidden" input />
-                <input type="submit" value="Edit" class="btn btn-danger" />
-            </form>
         </div>
+        <form asp-action="Edit" method="get" style="padding: 0 20px 20px 20px;">
+            <input asp-for="Id" type="hidden" input />
+            <input type="submit" value="Edit" class="btn btn-danger" />
+        </form>
+
     </div>
+   
 </div>
+   
+

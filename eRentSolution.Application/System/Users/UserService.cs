@@ -342,9 +342,18 @@ namespace eRentSolution.Application.System.Users
                         join p in _context.Products on c.ProductId equals p.Id
                         where p.Status == Data.Enums.Status.Active
                         select new { ui, a, p, c };
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.ui.LastName.Contains(request.Keyword)
+                            || x.p.Name.Contains(request.Keyword)
+                            || x.a.ActionName.Contains(request.Keyword));
+            }
 
             var totalRow = await query.CountAsync();
-            var data = await query.Select(x => new ActivityLogViewModel()
+
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new ActivityLogViewModel()
             {
                 ActionName = x.a.ActionName,
                 Date = x.c.Date,

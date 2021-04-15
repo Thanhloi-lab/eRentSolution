@@ -27,7 +27,7 @@ namespace eRentSolution.Admin
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/login/index";
+                    options.LoginPath = "/login";
                     options.AccessDeniedPath = "/user/Forbidden";
                 });
 
