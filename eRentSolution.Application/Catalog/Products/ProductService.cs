@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using eRentSolution.ViewModels.Catalog.Categories;
 using eRentSolution.ViewModels.Catalog.ProductDetails;
 using eRentSolution.Utilities.Constants;
+using eRentSolution.Data.Enums;
 
 namespace eRentSolution.Application.Catalog.Products
 {
@@ -233,9 +234,9 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> Update(ProductUpdateRequest request, Guid userInfoId, int productId)
+        public async Task<bool> Update(ProductUpdateRequest request, Guid userInfoId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.Products.FindAsync(request.Id);
             if (product == null)
             {
                 return false;
@@ -246,6 +247,7 @@ namespace eRentSolution.Application.Catalog.Products
             product.SeoAlias = request.SeoAlias;
             product.SeoTitle = request.SeoTitle;
             product.SeoDescription = request.SeoDescription;
+            product.IsFeatured = request.IsFeatured;
             if (request.ThumbnailImage != null)
             {
                 var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductDetailId == request.Id);
@@ -267,6 +269,46 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.Censors.AddAsync(censor);
             await _context.SaveChangesAsync();
             return true;
+        }
+        public async Task<ApiResult<bool>> CreateFeature(int productId, Guid userInfoId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return new ApiErrorResult<bool>($"Sản phẩm id:{productId} không tồn tại");
+            }
+            product.IsFeatured = Status.Active;
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateFeatureProduct);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                ProductId = product.Id,
+                Date = DateTime.UtcNow
+            };
+            await _context.Censors.AddAsync(censor);
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>(true);
+        }
+        public async Task<ApiResult<bool>> DeleteFeature(int productId, Guid userInfoId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return new ApiErrorResult<bool>($"Sản phẩm id:{productId} không tồn tại");
+            }
+            product.IsFeatured = Status.InActive;
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteFeatureProduct);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                ProductId = product.Id,
+                Date = DateTime.UtcNow
+            };
+            await _context.Censors.AddAsync(censor);
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>(true);
         }
         //Fixed
         //Lay theo categoryid nen khong can left join
@@ -409,6 +451,7 @@ namespace eRentSolution.Application.Catalog.Products
                 ProductDetailViewModels = productDetails,
                 Status = product.Status,
                 Categories = categories,
+                IsFeatured = product.IsFeatured
             };
             var productImages = await GetListImage(product.Id);
             foreach (var item in productImages)
@@ -478,7 +521,7 @@ namespace eRentSolution.Application.Catalog.Products
             var query = from p in _context.Products
                         join pd in _context.ProductDetails on p.Id equals pd.ProductId
 
-                        where p.IsFeatured == true
+                        where p.IsFeatured == Status.Active
                         select new { p, pd };
 
 

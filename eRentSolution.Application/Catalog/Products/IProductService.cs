@@ -12,12 +12,14 @@ namespace eRentSolution.Application.Catalog.Products
     public interface IProductService
     {
         Task<int> Create(ProductCreateRequest request, Guid userInfoId);
-        Task<bool> Update(ProductUpdateRequest request, Guid userInfoId, int productId);
+        Task<bool> Update(ProductUpdateRequest request, Guid userInfoId);
         Task<bool> Hide(int productId, Guid userInfoId);
         Task<bool> Show(int productId, Guid userInfoId);
         Task<bool> Delete(int productId);
         Task<bool> UpdatePrice(int productId, decimal newPrice, Guid userInfoId);
         Task<bool> UpdateStock(int productId, int addedQuantity, Guid userInfoId);
+        Task<ApiResult<bool>> CreateFeature(int productId, Guid userInfoId);
+        Task<ApiResult<bool>> DeleteFeature(int productId, Guid userInfoId);
         Task<bool> AddViewcount(int productId);
         Task<ProductViewModel> GetById(int id);
         Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);

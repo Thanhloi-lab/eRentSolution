@@ -16,6 +16,8 @@ namespace eRentSolution.Integration
         Task<bool> HideProduct(int id, Guid userInfoId, string tokenName);
         Task<bool> ShowProduct(int productId, Guid userInfoId, string tokenName);
         Task<bool> DeleteProduct(int id, string tokenName);
+        Task<bool> CreateFeature(FeatureProductRequest request, string tokenName, Guid userInfoId);
+        Task<bool> DeleteFeature(FeatureProductRequest request, string tokenName, Guid userInfoId);
         Task<ApiResult<bool>> CategoryAssign(int productId, CategoryAssignRequest request, string tokenName);
         Task<ProductViewModel> GetById(int productId, string tokenName);
         Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName);

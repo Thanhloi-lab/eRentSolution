@@ -20,7 +20,7 @@ namespace eRentSolution.Data.Entities
         public int ViewCount { set; get; }
         public DateTime DateCreated { set; get; }
         public Status Status { get; set; }
-        public bool? IsFeatured { get; set; }
+        public Status? IsFeatured { get; set; }
         public List<ProductInCategory> ProductInCategories { get; set; }
         
         public List<Censor> Censors { get; set; }

@@ -21,7 +21,7 @@ namespace eRentSolution.ViewModels.Catalog.Products
         [Display(Name = "Ngày tạo")]
         public DateTime DateCreated { set; get; }
         [Display(Name = "Sản phẩm nổi bật")]
-        public bool? IsFeatured { get; set; }
+        public Status? IsFeatured { get; set; }
         [Display(Name = "Hình ảnh đại diện")]
         public string ThumbnailImage { get; set; }
 

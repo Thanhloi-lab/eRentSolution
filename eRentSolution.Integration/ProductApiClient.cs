@@ -5,11 +5,13 @@ using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace eRentSolution.Integration
@@ -136,6 +138,7 @@ namespace eRentSolution.Integration
             }
 
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name.ToString()), "name");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.IsFeatured.ToString()) ? "" : request.IsFeatured.ToString()), "isFeatured");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Description) ? "" : request.Description.ToString()), "description");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Details) ? "" : request.Details.ToString()), "details");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoDescription) ? "" : request.SeoDescription.ToString()), "seoDescription");
@@ -150,6 +153,31 @@ namespace eRentSolution.Integration
         {
             var result = await GetListAsync<ProductImageViewModel>($"/api/products/imgs/{productId}", tokenName);
             return result;
+        }
+
+        public async Task<bool> CreateFeature(FeatureProductRequest request, string tokenName, Guid userInfoId)
+        {
+            //var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
+            //var client = _httpClientFactory.CreateClient();
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
+            //client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+
+            //var json = JsonConvert.SerializeObject(request);
+            //var httpContext = new StringContent(json, Encoding.UTF8, "application/json");
+
+            //var respond = await client.PutAsync($"/api/products/{userInfoId}/createfeature/{request.ProductId}", httpContext);
+            //var body = await respond.Content.ReadAsStringAsync();
+            //if (respond.IsSuccessStatusCode)
+            //    return true;
+            //return false;
+            var result = await PutAsync<bool>($"/api/products/{userInfoId}/createfeature/{request.ProductId}", request, tokenName);
+            return result.ResultObject;
+        }
+
+        public async Task<bool> DeleteFeature(FeatureProductRequest request, string tokenName, Guid userInfoId)
+        {
+            var result = await PutAsync<bool>($"/api/products/{userInfoId}/deletefeature/{request.ProductId}", request, tokenName);
+            return result.ResultObject;
         }
     }
 }

@@ -26,6 +26,7 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.Details).IsRequired().HasMaxLength(2000);
             builder.Property(x => x.Details).HasMaxLength(500);
             builder.Property(x => x.Status).IsRequired().HasDefaultValue(Status.Active);
+            builder.Property(x => x.IsFeatured).IsRequired().HasDefaultValue(Status.InActive);
         }
     }
 }

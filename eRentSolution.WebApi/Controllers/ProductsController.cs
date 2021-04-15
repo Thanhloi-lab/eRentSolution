@@ -57,12 +57,33 @@ namespace eRentSolution.BackendApi.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, Guid userInfoId, [FromRoute]int productId)
         {
-            var isSuccessful = await _productService.Update(request, userInfoId, productId);
+            request.Id = productId;
+            var isSuccessful = await _productService.Update(request, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
             }
             return Ok();
+        }
+        [HttpPut("{userInfoId}/createfeature/{productId}")]
+        public async Task<IActionResult> CreateFeature(Guid userInfoId, int productId)
+        {
+            var result = await _productService.CreateFeature(productId, userInfoId);
+            if (result.IsSuccessed == false)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
+        }
+        [HttpPut("{userInfoId}/deletefeature/{productId}")]
+        public async Task<IActionResult> DeleteFeature(Guid userInfoId, int productId)
+        {
+            var result = await _productService.DeleteFeature(productId, userInfoId);
+            if (result.IsSuccessed == false)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
         }
         [HttpPut("{productId}")]
         public async Task<IActionResult> AddViewcount(int productId)
