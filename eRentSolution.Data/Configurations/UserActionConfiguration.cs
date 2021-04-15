@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace eRentSolution.Data.Configurations
 {
-    public class AdminActionConfiguration : IEntityTypeConfiguration<UserAction>
+    public class UserActionConfiguration : IEntityTypeConfiguration<UserAction>
     {
         public void Configure(EntityTypeBuilder<UserAction> builder)
         {
-            builder.ToTable("AdminActions");
+            builder.ToTable("UserActions");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).UseIdentityColumn();

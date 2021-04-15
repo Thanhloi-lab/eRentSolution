@@ -44,7 +44,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<int> Create(ProductCreateRequest request, Guid userInfoId)
         {
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var product = new Product()
             {
                 Name = request.Name,
@@ -98,7 +98,7 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return product.Id;
         }
-        public async Task<bool> Delete(int productId, Guid userInfoId)
+        public async Task<bool> Delete(int productId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
@@ -134,7 +134,8 @@ namespace eRentSolution.Application.Catalog.Products
                 throw new eRentException($"Cannot find a product: { product.Id}");
             }
 
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.HideProduct);
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.HideProduct);
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -147,6 +148,36 @@ namespace eRentSolution.Application.Catalog.Products
             product.Status = Data.Enums.Status.InActive;
 
             var result = await _context.SaveChangesAsync();
+            if (result != 0)
+                return true;
+            else
+                return false;
+        }
+        public async Task<bool> Show(int productId, Guid userInfoId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                throw new eRentException($"Cannot find a product: { product.Id}");
+            }
+            product.Status = Data.Enums.Status.Active;
+
+            var result = await _context.SaveChangesAsync();
+            if(result >0)
+            {
+                var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ShowProduct);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    UserInfoId = userInfoId,
+                    ProductId = product.Id,
+                    Date = DateTime.UtcNow
+                };
+                await _context.Censors.AddAsync(censor);
+                result = await _context.SaveChangesAsync();
+            }
+
             if (result != 0)
                 return true;
             else
@@ -167,7 +198,7 @@ namespace eRentSolution.Application.Catalog.Products
             productDetail.Price = newPrice;
 
             var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdatePriceProduct);
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdatePriceProduct);
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -189,7 +220,7 @@ namespace eRentSolution.Application.Catalog.Products
             productDetail.Stock += addedQuantity;
 
             var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateStockProduct);
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateStockProduct);
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -225,7 +256,7 @@ namespace eRentSolution.Application.Catalog.Products
                     _context.ProductImages.Update(thumbnailImage);
                 }
             }
-            var action = await _context.AdminActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProduct);
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProduct);
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -281,14 +312,19 @@ namespace eRentSolution.Application.Catalog.Products
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                                 //&& pd.IsThumbnail == true
-                        select new { p, c };//, pd};
+                            //&& pd.IsThumbnail == true
+                        select new { p, c, pic};//, pd};
 
             if (request.Keyword != null)
             {
                 query = query.Where(x => x.p.Name.Contains(request.Keyword));
             }
-            var products = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
+            if (request.CategoryId != null && request.CategoryId != 0)
+            {
+                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+            }
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
             {
                 Id = x.p.Id,
                 DateCreated = x.p.DateCreated,
@@ -301,6 +337,30 @@ namespace eRentSolution.Application.Catalog.Products
                 ViewCount = x.p.ViewCount,
                 Status = x.p.Status
             }).ToListAsync();
+
+            List<ProductViewModel> products = new List<ProductViewModel>();
+            if (totalRow > 1)
+            {
+                for (int i = 0; i < data.Count - 1; i++)
+                {
+                    if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
+                    {
+                        totalRow--;
+                    }
+                    else
+                    {
+                        products.Add(data.ElementAt(i));
+                    }
+                    if (i == data.Count - 2)
+                    {
+                        products.Add(data.ElementAt(i + 1));
+                    }
+                }
+            }
+            else if (totalRow == 1)
+            {
+                products.Add(data.ElementAt(0));
+            }
             foreach (var item in products)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
@@ -310,6 +370,7 @@ namespace eRentSolution.Application.Catalog.Products
                     item.Stock += productDetail.Stock;
                 }
             }
+            
             var page = new PagedResult<ProductViewModel>()
             {
                 Items = products,
@@ -323,9 +384,14 @@ namespace eRentSolution.Application.Catalog.Products
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
-            {
                 throw new eRentException($"Cannot find a product: { product.Id}");
-            }
+
+            
+
+            var categories = await (from c in _context.Categories
+                                    join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
+                                    where pic.ProductId == id
+                                    select c.Name).ToListAsync();
 
             var productDetails = await GetDetailsByProductId(product.Id);
 
@@ -341,9 +407,18 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoTitle = product.SeoTitle,
                 ViewCount = product.ViewCount,
                 ProductDetailViewModels = productDetails,
-                Status = product.Status
+                Status = product.Status,
+                Categories = categories,
             };
-
+            var productImages = await GetListImage(product.Id);
+            foreach (var item in productImages)
+            {
+                if (item.IsDefault)
+                {
+                    productViewModel.ThumbnailImage = item.ImagePath;
+                    break;
+                }
+            }
             foreach (var productDetail in productDetails)
             {
                 productViewModel.Stock += productDetail.Stock;
@@ -368,7 +443,120 @@ namespace eRentSolution.Application.Catalog.Products
             }).ToListAsync();
             return productDetail;
         }
+        public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return new ApiErrorResult<bool>($"Sản phẩm id:{id} không tồn tại");
+            }
 
+            foreach (var category in request.Categories)
+            {
+                var productInCategory = await _context.ProductInCategories
+                    .FirstOrDefaultAsync(x => x.CategoryId == int.Parse(category.Id) && x.ProductId == id);
+
+                if (productInCategory != null && category.Selected == false)
+                {
+                    _context.ProductInCategories.Remove(productInCategory);
+                }
+                if (productInCategory == null && category.Selected == true)
+                {
+                    await _context.ProductInCategories.AddAsync(new ProductInCategory()
+                    {
+                        CategoryId = int.Parse(category.Id),
+                        ProductId = id,
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
+        }
+        public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
+        {
+            //1. Select join
+            var query = from p in _context.Products
+                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
+
+                        where p.IsFeatured == true
+                        select new { p, pd };
+
+
+            var products = await query.OrderByDescending(x => x.p.DateCreated)
+                .Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new ProductViewModel()
+                {
+                    Id = x.p.Id,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.p.Description,
+                    Details = x.p.Details,
+                    Name = x.p.Name,
+                    SeoAlias = x.p.SeoAlias,
+                    SeoDescription = x.p.SeoDescription,
+                    SeoTitle = x.p.SeoTitle,
+                    ViewCount = x.p.ViewCount,
+                    Status = x.p.Status
+                }).ToListAsync();
+
+            foreach (var item in products)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails;
+                foreach (var productDetail in productDetails)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+
+            int totalRow = await query.CountAsync();
+            var pageResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = products,
+                PageSize = request.PageSize,
+                PageIndex = request.PageIndex
+            };
+            return pageResult;
+        }
+        public async Task<List<ProductViewModel>> GetLastestProducts(int take)
+        {
+            //1. Select join
+            var query = from p in _context.Products
+                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                        select new { p, pd };//, pic};
+
+            var products = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
+                .Select(x => new ProductViewModel()
+                {
+
+                    Id = x.p.Id,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.p.Description,
+                    Details = x.p.Details,
+                    Name = x.p.Name,
+                    SeoAlias = x.p.SeoAlias,
+                    SeoDescription = x.p.SeoDescription,
+                    SeoTitle = x.p.SeoTitle,
+                    ViewCount = x.p.ViewCount,
+                    Status = x.p.Status
+                }).Distinct().ToListAsync();
+
+            foreach (var item in products)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails;
+                foreach (var productDetail in productDetails)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+            return products;
+        }
 
         //----------------Images-------
         // No Done
@@ -475,97 +663,6 @@ namespace eRentSolution.Application.Catalog.Products
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
-
-        public Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
-        {
-            //1. Select join
-            var query = from p in _context.Products
-                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
-
-                        where p.IsFeatured == true
-                        select new { p, pd };
-
-
-            var products = await query.OrderByDescending(x => x.p.DateCreated)
-                .Skip((request.PageIndex - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(x => new ProductViewModel()
-                {
-                    Id = x.p.Id,
-                    DateCreated = x.p.DateCreated,
-                    Description = x.p.Description,
-                    Details = x.p.Details,
-                    Name = x.p.Name,
-                    SeoAlias = x.p.SeoAlias,
-                    SeoDescription = x.p.SeoDescription,
-                    SeoTitle = x.p.SeoTitle,
-                    ViewCount = x.p.ViewCount,
-                    Status = x.p.Status
-                }).ToListAsync();
-
-            foreach (var item in products)
-            {
-                var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails;
-                foreach (var productDetail in productDetails)
-                {
-                    item.Stock += productDetail.Stock;
-                }
-            }
-
-            int totalRow = await query.CountAsync();
-            var pageResult = new PagedResult<ProductViewModel>()
-            {
-                TotalRecords = totalRow,
-                Items = products,
-                PageSize = request.PageSize,
-                PageIndex = request.PageIndex
-            };
-            return pageResult;
-        }
-
-        public async Task<List<ProductViewModel>> GetLastestProducts(int take)
-        {
-            //1. Select join
-            var query = from p in _context.Products
-                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
-                        from pic in ppic.DefaultIfEmpty()
-                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
-                        from c in picc.DefaultIfEmpty()
-                        select new { p, pd };//, pic};
-
-            var products = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
-                .Select(x => new ProductViewModel()
-                {
-
-                    Id = x.p.Id,
-                    DateCreated = x.p.DateCreated,
-                    Description = x.p.Description,
-                    Details = x.p.Details,
-                    Name = x.p.Name,
-                    SeoAlias = x.p.SeoAlias,
-                    SeoDescription = x.p.SeoDescription,
-                    SeoTitle = x.p.SeoTitle,
-                    ViewCount = x.p.ViewCount,
-                    Status = x.p.Status
-                }).Distinct().ToListAsync();
-
-            foreach (var item in products)
-            {
-                var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails;
-                foreach (var productDetail in productDetails)
-                {
-                    item.Stock += productDetail.Stock;
-                }
-            }
-            return products;
-        }
+        
     }
 }

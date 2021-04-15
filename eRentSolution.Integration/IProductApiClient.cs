@@ -13,7 +13,9 @@ namespace eRentSolution.Integration
         Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request, string tokenName);
         Task<bool> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName);
         Task<bool> UpdateProduct(ProductUpdateRequest request, Guid userInfoId, string tokenName);
-        Task<bool> DeleteProduct(int id, Guid userInfoId, string tokenName);
+        Task<bool> HideProduct(int id, Guid userInfoId, string tokenName);
+        Task<bool> ShowProduct(int productId, Guid userInfoId, string tokenName);
+        Task<bool> DeleteProduct(int id, string tokenName);
         Task<ApiResult<bool>> CategoryAssign(int productId, CategoryAssignRequest request, string tokenName);
         Task<ProductViewModel> GetById(int productId, string tokenName);
         Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName);

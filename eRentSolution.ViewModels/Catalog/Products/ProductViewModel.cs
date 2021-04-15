@@ -20,7 +20,7 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public int Stock { set; get; }
         [Display(Name = "Ngày tạo")]
         public DateTime DateCreated { set; get; }
-        [Display(Name = "Xuất hiện trên trang chủ")]
+        [Display(Name = "Sản phẩm nổi bật")]
         public bool? IsFeatured { get; set; }
         [Display(Name = "Hình ảnh đại diện")]
         public string ThumbnailImage { get; set; }
@@ -37,8 +37,9 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public string SeoTitle { set; get; }
         [Display(Name = "Từ khóa")]
         public string SeoAlias { get; set; }
-        [Display(Name = "Những danh mục")]
+        [Display(Name = "Trạng thái")]
         public Status Status { get; set; }
+        [Display(Name = "Những danh mục")]
         public List<string> Categories { get; set; } = new List<string>();
         public List<ProductDetailViewModel> ProductDetailViewModels { get; set; } = new List<ProductDetailViewModel>();
     }

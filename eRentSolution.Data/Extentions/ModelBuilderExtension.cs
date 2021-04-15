@@ -65,7 +65,7 @@ namespace eRentSolution.Data.Extentions
                 NormalizedName = "useradmin",
                 Description = "User admin role"
             });
-
+            DateTime now = DateTime.UtcNow;
             var hasher = new PasswordHasher<AppUser>();
             modelBuilder.Entity<AppUser>().HasData(new AppUser
             {
@@ -75,10 +75,11 @@ namespace eRentSolution.Data.Extentions
                 Email = "caothanhloi@gmail.com",
                 NormalizedEmail = "caothanhloi@gmail.com",
                 EmailConfirmed = true,
-                PasswordHash = hasher.HashPassword(null, "123456aS`"),
+                DateChangePassword = now,
+                PasswordHash = hasher.HashPassword(null, "123456aS`" + now),
                 SecurityStamp = string.Empty,
                 Status = Status.Active,
-                DateChangePassword = DateTime.UtcNow
+                
             });
 
             modelBuilder.Entity<UserInfo>().HasData(
@@ -118,27 +119,77 @@ namespace eRentSolution.Data.Extentions
            new UserAction()
            {
                Id = 1,
-               ActionName = "CreateProduct"
+               ActionName = "Tạo sản phẩm"
            },
            new UserAction()
            {
                Id = 2,
-               ActionName = "UpdateProduct"
+               ActionName = "Chỉnh sửa sản phẩm"
            }, 
            new UserAction()
            {
                Id = 3,
-               ActionName = "HideProduct"
+               ActionName = "Ẩn sản phẩm"
            },
            new UserAction()
            {
                Id = 4,
-               ActionName = "UpdateStockProduct"
+               ActionName = "Chỉnh sửa tồn kho"
            },
            new UserAction()
            {
                Id = 5,
-               ActionName = "UpdatePriceProduct"
+               ActionName = "Chỉnh sửa giá"
+           },
+           new UserAction()
+           {
+               Id = 6,
+               ActionName = "Ẩn sản phẩm trình chiếu"
+           },
+           new UserAction()
+           {
+               Id = 7,
+               ActionName = "Chỉnh sửa sản phẩm trình chiếu"
+           },
+           new UserAction()
+           {
+               Id = 8,
+               ActionName = "Tạo sản phẩm trình chiếu"
+           },
+           new UserAction()
+           {
+               Id = 9,
+               ActionName = "Ẩn sản phẩm nổi bật"
+           },
+           new UserAction()
+           {
+               Id = 10,
+               ActionName = "Tạo sản phẩm nổi bật"
+           },
+           new UserAction()
+           {
+               Id = 11,
+               ActionName = "Xóa sản phẩm trình chiếu"
+           },
+           new UserAction()
+           {
+               Id = 12,
+               ActionName = "Hiện sản phẩm nổi bật"
+           },
+           new UserAction()
+           {
+               Id = 13,
+               ActionName = "Xóa sản phẩm nổi bật"
+           },
+           new UserAction()
+           {
+               Id = 14,
+               ActionName = "Hiện sản phẩm trình chiếu"
+           },
+           new UserAction()
+           {
+               Id = 15,
+               ActionName = "Hiện sản phẩm"
            }
            );
             modelBuilder.Entity<Censor>().HasData(

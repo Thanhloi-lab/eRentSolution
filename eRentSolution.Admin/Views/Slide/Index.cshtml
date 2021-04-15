@@ -1,5 +1,5 @@
 ﻿@using eRentSolution.ViewModels.Common;
-@model PagedResult<eRentSolution.ViewModels.Catalog.Products.ProductViewModel>
+@model PagedResult<eRentSolution.ViewModels.Utilities.Slides.SlideViewModel>
 
 @{
     ViewData["Title"] = "Danh sách sản phẩm";
@@ -22,7 +22,7 @@
         <div class=" card-header">
             <div class="row">
                 <div class="col-md-6 col-xs-12">
-                    <a class="btn btn-success" asp-action="Create" asp-controller="Product">Tạo mới</a>
+                    <a class="btn btn-success" asp-action="Index" asp-controller="Product">Tạo mới</a>
                 </div>
                 <div class="col-md-6 col-xs-12">
                     <form asp-action="Index" method="get">
@@ -31,13 +31,13 @@
                                 <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
                             </div>
                             <div class="col-md-4">
-                                <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
+                                <select name="status" onchange="this.form.submit()" asp-items="@ViewBag.Status" class="form-control">
                                     <option>--Chọn danh mục--</option>
                                 </select>
                             </div>
                             <div class="cold-md-3">
                                 <button type="submit" class="btn btn-primary">Tìm</button>
-                                <button type="button" onclick="window.location.href='/Product/Index'" class="btn btn-dark">Reset</button>
+                                <button type="button" onclick="window.location.href='/Product/SlideIndex'" class="btn btn-dark">Reset</button>
                             </div>
                         </div>
                     </form>
@@ -62,24 +62,20 @@
                     <thead>
                         <tr>
                             <th>
+                                Mã slide
+                            </th>
+                            <th>
+                                Tên slide
+                            </th>
+                            <th>
                                 Mã sản phẩm
                             </th>
                             <th>
                                 Tên sản phẩm
                             </th>
                             <th>
-                                Giá hiện tại
-                            </th>
-                            <th>
-                                Số lượng
-                            </th>
-                            <th>
-                                Số lượt xem
-                            </th>
-                            <th>
                                 Tình trạng
                             </th>
-
                             <th></th>
                         </tr>
                     </thead>
@@ -94,27 +90,15 @@
                                 @Html.DisplayFor(modelItem => item.Name)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)
+                                @Html.DisplayFor(modelItem => item.ProductId)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Stock)
+                                @Html.DisplayFor(modelItem => item.ProductName)
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ViewCount)
-                            </td>
-
                             @if (item.Status == eRentSolution.Data.Enums.Status.Active)
                             {
                                 <td>
                                     Hoạt động
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                    @Html.ActionLink("Xem", "Details", new { item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
-                                    @Html.ActionLink("Ẩn", "Hide", new { item.Id })|
-                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
-                                    @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
                                 </td>
                             }
                             else
@@ -122,16 +106,26 @@
                                 <td>
                                     Không hoạt động
                                 </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                    @Html.ActionLink("Xem", "Details", new { item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
-                                    @Html.ActionLink("Hiện", "Show", new { item.Id })|
-                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
-                                    @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
-                                </td>
                             }
+                            @if (item.Status == eRentSolution.Data.Enums.Status.Active)
+                            {
+                            <td>
+                                @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                                @Html.ActionLink("Ẩn", "Hide", new { item.Id })
+                            </td>
+                            }
+                            else
+                            {
+                            <td>
+                                @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                @Html.ActionLink("Xóa", "Delete", new { item.Id })|
+                                @Html.ActionLink("Hiện", "Show", new { item.Id })
 
+                            </td>
+                            }
                         </tr>
                         }
                     </tbody>

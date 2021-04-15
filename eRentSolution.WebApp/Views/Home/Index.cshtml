@@ -15,7 +15,7 @@
                         var slide = Model.Slides[index];
                         <div class="item @(index == 0 ? "active" : "")">
                             <div class="container">
-                                <a href="/@slide.Url"><img style="width:100%" src="@slide.FilePath" alt="@slide.Name" /></a>
+                                <a href="@slide.Url"><img style="width:100%" src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" /></a>
                                 <div class="carousel-caption">
                                     <h4>@slide.Name</h4>
                                     <p>@slide.Description</p>

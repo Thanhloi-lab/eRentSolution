@@ -1,6 +1,11 @@
 ﻿using eRentSolution.Integration;
 using eRentSolution.Utilities.Constants;
+using eRentSolution.ViewModels.Catalog.Categories;
 using eRentSolution.ViewModels.Catalog.Products;
+using eRentSolution.ViewModels.Common;
+using eRentSolution.ViewModels.System.Users;
+using eRentSolution.ViewModels.Utilities.Slides;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,27 +18,31 @@ using System.Threading.Tasks;
 
 namespace eRentSolution.AdminApp.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProductApiClient _productApiClient;
         private readonly IConfiguration _configuration;
         private readonly ICategoryApiClient _categoryApiClient;
+        private readonly ISlideApiClient _slideApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string userId;
         //private readonly string userInfoId;
         public ProductController(IProductApiClient productApiClient,
             IConfiguration configuration,
             ICategoryApiClient categoryApiClient,
+            ISlideApiClient slideApiClient,
             IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
+            _slideApiClient = slideApiClient;
             userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //userInfoId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Actor).Value;
         }
 
-        public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 3)
+        public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
         {
             var request = new GetProductPagingRequest()
             {
@@ -78,7 +87,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
             if (result)
             {
                 TempData["result"] = "Tạo mới sản phẩm thành công";
@@ -91,7 +100,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             var productViewModel = new ProductUpdateRequest()
             {
                 Id = id,
@@ -112,7 +121,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            var result = await _productApiClient.UpdateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            var result = await _productApiClient.UpdateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
             if (result)
             {
                 TempData["result"] = "Chỉnh sửa sản phẩm thành công";
@@ -125,16 +134,16 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            return View(new ProductDeleteRequest() { 
+            return View(new ProductStatusRequest() { 
                 Id = id
             });
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(ProductDeleteRequest request)
+        public async Task<IActionResult> Delete(ProductStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _productApiClient.DeleteProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            var result = await _productApiClient.DeleteProduct(request.Id, SystemConstant.AppSettings.TokenAdmin);
             
             if (result)
             {
@@ -144,5 +153,116 @@ namespace eRentSolution.AdminApp.Controllers
             TempData["failResult"] = "Xóa sản phẩm không thành công";
             return View(request.Id);
         }
+        [HttpGet]
+        public IActionResult Hide(int id)
+        {
+            return View(new ProductStatusRequest()
+            {
+                Id = id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Hide(ProductStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _productApiClient.HideProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            if (result)
+            {
+                TempData["result"] = "Ẩn sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+            TempData["failResult"] = "Ẩn sản phẩm không thành công";
+            return View(request.Id);
+        }
+        [HttpGet]
+        public IActionResult Show(int id)
+        {
+            return View(new ProductStatusRequest()
+            {
+                Id = id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Show(ProductStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _productApiClient.ShowProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            if (result)
+            {
+                TempData["result"] = "Hiện sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+            TempData["failResult"] = "Hiện sản phẩm không thành công";
+            return View(request.Id);
+        }
+        [HttpGet]
+        public IActionResult CreateSlide(int id)
+        {
+            return View(new SlideCreateRequest()
+            {
+                ProductId = id
+            }) ;
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateSlide([FromForm]SlideCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _slideApiClient.CreateSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+            if (result)
+            {
+                TempData["result"] = "Tạo mới slide thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Tạo mới slide thất bại");
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CategoryAssign(int id)
+        {
+            var categoryAssignRequest = await GetCategoryAssignRequest(id);
+            return View(categoryAssignRequest);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CategoryAssign(CategoryAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.CategoryAssign(request.Id, request, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Assign role successfully";
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", result.Message);
+            var categoryAssign = GetCategoryAssignRequest(request.Id);
+            return View(categoryAssign);
+        }
+        private async Task<CategoryAssignRequest> GetCategoryAssignRequest(int id)
+        {
+            var productObj = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            var categoryObj = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            var categoryAssignRequest = new CategoryAssignRequest();
+            foreach (var category in categoryObj)
+            {
+                categoryAssignRequest.Categories.Add(new SelectItem()
+                {
+                    Id = category.Id.ToString(),
+                    Name = category.Name,
+                    Selected = productObj.Categories.Contains(category.Name)
+                });
+            }
+
+            return categoryAssignRequest;
+        }
+        
     }
 }

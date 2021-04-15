@@ -109,6 +109,7 @@ namespace eRentSolution.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    DateChangePassword = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -404,8 +405,8 @@ namespace eRentSolution.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "b45a759a-7f7b-4230-940f-c52d370aeb36", "Administrator role", "Admin", "admin" },
-                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "aef36558-99a2-478f-ba32-67ee7d1dbcfc", "User admin role", "UserAdmin", "useradmin" }
+                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "bf6ee790-51ca-4e27-b4f7-ebe9d588b4e8", "Administrator role", "Admin", "admin" },
+                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "fb24c2fa-c5a9-42fe-b260-bd145afc5aaa", "User admin role", "UserAdmin", "useradmin" }
                 });
 
             migrationBuilder.InsertData(
@@ -415,8 +416,8 @@ namespace eRentSolution.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "AppUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "78f60099-6951-4603-afe3-3fbdc8f3a81c", "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAEBjTv4bj84tlSjBzaXaepl1aRWhcNOOgA7YMu4YUNvv7LaY89zvrDz99+08t/5dJ/g==", null, false, "", 1, false, "thanhloi" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateChangePassword", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "5d0cb8e9-a920-4b31-b328-ae53f68c8134", new DateTime(2021, 4, 11, 12, 56, 19, 806, DateTimeKind.Utc).AddTicks(2919), "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAEBbx94yxwhc9V7/KqW947ujgOd+aqj5g/FDB1itkWMrtmJswYfbHjfnFfPcgPJxDEg==", null, false, "", 1, false, "thanhloi" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -430,12 +431,12 @@ namespace eRentSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "DateCreated", "Description", "Details", "IsFeatured", "Name", "SeoAlias", "SeoDescription", "SeoTitle" },
-                values: new object[] { 1, new DateTime(2021, 4, 5, 18, 18, 50, 855, DateTimeKind.Local).AddTicks(7382), "HomeStay Thanh Loi tại pờ tít", "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m", null, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi" });
+                values: new object[] { 1, new DateTime(2021, 4, 11, 12, 56, 19, 832, DateTimeKind.Utc).AddTicks(1068), "HomeStay Thanh Loi tại pờ tít", "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m", null, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi" });
 
             migrationBuilder.InsertData(
                 table: "ProductDetails",
                 columns: new[] { "Id", "DateCreated", "Name", "OriginalPrice", "Price", "ProductId" },
-                values: new object[] { 1, new DateTime(2021, 4, 5, 18, 18, 50, 858, DateTimeKind.Local).AddTicks(8042), "Phòng 1 chổ nằm", 100000m, 200000m, 1 });
+                values: new object[] { 1, new DateTime(2021, 4, 11, 12, 56, 19, 832, DateTimeKind.Utc).AddTicks(7285), "Phòng 1 chổ nằm", 100000m, 200000m, 1 });
 
             migrationBuilder.InsertData(
                 table: "ProductInCategories",
@@ -450,7 +451,7 @@ namespace eRentSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Censors",
                 columns: new[] { "Id", "ActionId", "Date", "ProductId", "UserInfoId" },
-                values: new object[] { 1, 1, new DateTime(2021, 4, 5, 18, 18, 50, 860, DateTimeKind.Local).AddTicks(2124), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
+                values: new object[] { 1, 1, new DateTime(2021, 4, 11, 12, 56, 19, 833, DateTimeKind.Utc).AddTicks(6308), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Censors_ActionId",
