@@ -75,7 +75,7 @@ namespace eRentSolution.WebApp
             {
                 endpoints.MapControllerRoute(
                     name: "Product Category",
-                    pattern: "categories/{id}", new
+                    pattern: "categories/{categoryId}", new
                     {
                         controller = "Product",
                         action = "Category",

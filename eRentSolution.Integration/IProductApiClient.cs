@@ -1,4 +1,5 @@
 ﻿using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.ProductDetails;
 using eRentSolution.ViewModels.Catalog.ProductImages;
 using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.ViewModels.Common;
@@ -23,5 +24,8 @@ namespace eRentSolution.Integration
         Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName);
         Task<List<ProductViewModel>> GetLastestProducts(int take, string tokenName);
         Task<List<ProductImageViewModel>> GetListImages(int productId, string tokenName);
+        Task<PagedResult<ProductViewModel>> GetPageProductsByUserId(GetProductPagingRequest request, Guid userId, string tokenName);
+        Task<bool> UpdateDetail(ProductDetailUpdateRequest request, Guid userId, string tokenName);
+        Task<bool> IsMyProduct(int productId, Guid userId, string tokenName);
     }
 }

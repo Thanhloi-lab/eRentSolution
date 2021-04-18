@@ -247,7 +247,6 @@ namespace eRentSolution.Application.Catalog.Products
             product.SeoAlias = request.SeoAlias;
             product.SeoTitle = request.SeoTitle;
             product.SeoDescription = request.SeoDescription;
-            product.IsFeatured = request.IsFeatured;
             if (request.ThumbnailImage != null)
             {
                 var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductDetailId == request.Id);
@@ -267,7 +266,8 @@ namespace eRentSolution.Application.Catalog.Products
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-            await _context.SaveChangesAsync();
+
+            var result = await _context.SaveChangesAsync();
             return true;
         }
         public async Task<ApiResult<bool>> CreateFeature(int productId, Guid userInfoId)
@@ -601,6 +601,123 @@ namespace eRentSolution.Application.Catalog.Products
             }
             return products;
         }
+        public async Task<PagedResult<ProductViewModel>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId)
+        {
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            var query = from p in _context.Products
+                        join cen in _context.Censors on p.Id equals cen.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                        where cen.UserInfoId == userId && p.Status == Status.Active
+                             && cen.ActionId == action.Id
+                        select new { p, c, pic };
+
+            if (request.Keyword != null)
+            {
+                query = query.Where(x => x.p.Name.Contains(request.Keyword));
+            }
+            if (request.CategoryId != null && request.CategoryId != 0)
+            {
+                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+            }
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
+            {
+                Id = x.p.Id,
+                DateCreated = x.p.DateCreated,
+                Description = x.p.Description,
+                Details = x.p.Details,
+                Name = x.p.Name,
+                SeoAlias = x.p.SeoAlias,
+                SeoDescription = x.p.SeoDescription,
+                SeoTitle = x.p.SeoTitle,
+                ViewCount = x.p.ViewCount,
+                Status = x.p.Status
+            }).ToListAsync();
+
+            List<ProductViewModel> products = new List<ProductViewModel>();
+            if (totalRow > 1)
+            {
+                for (int i = 0; i < data.Count - 1; i++)
+                {
+                    if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
+                    {
+                        totalRow--;
+                    }
+                    else
+                    {
+                        products.Add(data.ElementAt(i));
+                    }
+                    if (i == data.Count - 2)
+                    {
+                        products.Add(data.ElementAt(i + 1));
+                    }
+                }
+            }
+            else if (totalRow == 1)
+            {
+                products.Add(data.ElementAt(0));
+            }
+            foreach (var item in products)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails;
+                foreach (var productDetail in productDetails)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+
+            var page = new PagedResult<ProductViewModel>()
+            {
+                Items = products,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalRecords = products.Count
+            };
+            return page;
+        }
+
+        public async Task<bool> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId)
+        {
+            var productDetail = await _context.ProductDetails.FindAsync(request.Id);
+            if (productDetail == null)
+            {
+                return false;
+            }
+            productDetail.Name = request.ProductDetailName;
+            //productDetail.Price = request.Price;
+            //productDetail.Stock = request.Stock;
+            if (request.NewImage != null)
+            {
+                var image = await _context.ProductImages
+                    .FirstOrDefaultAsync(i => i.ImagePath == request.OldImagePath && i.ProductDetailId == request.Id);
+                if (image != null)
+                {
+                    image.FileSize = request.NewImage.Length;
+                    image.ImagePath = await this.SaveFile(request.NewImage);
+                    _context.ProductImages.Update(image);
+                    var result = await _context.SaveChangesAsync();
+                    if (result > 0)
+                    {
+                        await RemoveImages(image.Id);
+                    }
+                }
+            }
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProductDetail);
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                ProductId = productDetail.Id,
+                Date = DateTime.UtcNow
+            };
+            await _context.Censors.AddAsync(censor);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         //----------------Images-------
         // No Done
@@ -690,10 +807,10 @@ namespace eRentSolution.Application.Catalog.Products
             if (productImage == null) throw new eRentException($"Cannot find a image: {request.ImageId}");
             productImage.Caption = request.Caption;
             productImage.SortOrder = request.SortOrder;
-            if (request.imageFile != null)
+            if (request.ImageFile != null)
             {
-                productImage.ImagePath = await this.SaveFile(request.imageFile);
-                productImage.FileSize = request.imageFile.Length;
+                productImage.ImagePath = await this.SaveFile(request.ImageFile);
+                productImage.FileSize = request.ImageFile.Length;
             }
             _context.ProductImages.Update(productImage);
             return await _context.SaveChangesAsync();
@@ -707,6 +824,19 @@ namespace eRentSolution.Application.Catalog.Products
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
-        
+
+        public async Task<bool> IsMyProduct(Guid userId, int productId)
+        {
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            var query = from p in _context.Products
+                        join cen in _context.Censors on p.Id equals cen.ProductId
+                        where cen.UserInfoId == userId && p.Status == Status.Active
+                             && cen.ActionId == action.Id && p.Id == productId
+                        select new { p};
+            if (query.Count() > 0)
+                return true;
+            else
+                return false;
+        }
     }
 }

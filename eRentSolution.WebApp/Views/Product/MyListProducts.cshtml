@@ -1,0 +1,104 @@
+﻿@using eRentSolution.ViewModels.Common;
+@model PagedResult<eRentSolution.ViewModels.Catalog.Products.ProductViewModel>
+
+@{
+    ViewData["Title"] = "MyListProducts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>MyListProducts</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Tên sản phẩm: 
+            </th>
+            <th>
+                Số lượt xem:
+            </th>
+            <th>
+                Tồn kho:  
+            </th>
+            <th>
+                Ngày tạo: 
+            </th>
+            <th>
+                Sản phẩm nổi bật?: 
+            </th>
+            <th>
+                Ảnh đại diện
+            </th>
+            <th>
+                Mổ tả
+            </th>
+            <th>
+                Chi tiết
+            </th>
+            <th>
+                Mô tả tìm kiếm: 
+            </th>
+            <th>
+                Chủ đề tim kiếm: 
+            </th>
+            <th>
+                Chữ viết tiềm kiếm: 
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ViewCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Stock)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateCreated)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsFeatured)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ThumbnailImage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SeoDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SeoTitle)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SeoAlias)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("MyProductDetail", "MyProductDetail", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

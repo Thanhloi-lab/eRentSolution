@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -44,6 +44,8 @@
     <None Include="wwwroot\assets\demo\chart-pie-demo.js" />
     <None Include="wwwroot\assets\demo\datatables-demo.js" />
     <None Include="wwwroot\assets\img\error-404-monochrome.svg" />
+    <None Include="wwwroot\assets\img\log.svg" />
+    <None Include="wwwroot\assets\img\register.svg" />
     <None Include="wwwroot\js\scripts.js" />
     <None Include="wwwroot\js\site.js" />
   </ItemGroup>

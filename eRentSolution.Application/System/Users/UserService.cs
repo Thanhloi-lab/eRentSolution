@@ -45,7 +45,7 @@ namespace eRentSolution.Application.System.Users
                 return new ApiErrorResult<string>("Username or password incorrect");
 
             if (user.Status == Data.Enums.Status.InActive)
-                return new ApiErrorResult<string>("Account was locked");
+                return new ApiErrorResult<string>("Account was banned");
 
             var roles = await _userManager.GetRolesAsync(user);
             if(isAdminPage)
@@ -298,10 +298,12 @@ namespace eRentSolution.Application.System.Users
             {
                 new ApiErrorResult<bool>("Update unsuccessful");
             }
+            user.DateChangePassword = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
             var removeResult = await _userManager.RemovePasswordAsync(user);
             if (removeResult.Succeeded)
             {
-                var result = await _userManager.AddPasswordAsync(user, request.NewPassword);
+                var result = await _userManager.AddPasswordAsync(user, request.NewPassword + user.DateChangePassword);
                 return new ApiSuccessResult<bool>();
             }
             return new ApiErrorResult<bool>("Update unsuccessful");

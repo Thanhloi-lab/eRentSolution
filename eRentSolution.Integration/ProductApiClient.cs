@@ -1,5 +1,6 @@
 ﻿using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.ProductDetails;
 using eRentSolution.ViewModels.Catalog.ProductImages;
 using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.ViewModels.Common;
@@ -179,5 +180,28 @@ namespace eRentSolution.Integration
             var result = await PutAsync<bool>($"/api/products/{userInfoId}/deletefeature/{request.ProductId}", request, tokenName);
             return result.ResultObject;
         }
+
+        public async Task<PagedResult<ProductViewModel>> GetPageProductsByUserId(GetProductPagingRequest request, Guid userId, string tokenName)
+        {
+            var result = await GetAsync<PagedResult<ProductViewModel>>(
+                $"/api/products/{userId}/GetPageProductByUserId?pageIndex={request.PageIndex}" +
+                $"&pageSize={request.PageSize}" +
+                $"&keyword={request.Keyword}" +
+                $"&categoryId={request.CategoryId}", tokenName);
+            return result;
+        }
+
+        public async Task<bool> UpdateDetail(ProductDetailUpdateRequest request, Guid userId, string tokenName)
+        {
+            var result = await DeleteAsync<bool>($"/api/products/updateDetail/{userId}/{request.Id}", tokenName);
+            return result;
+        }
+
+        public async Task<bool> IsMyProduct(int productId, Guid userId, string tokenName)
+        {
+            var result = await GetAsync<bool>($"/api/products/isMyProduct/{userId}/{productId}", tokenName);
+            return result;
+        }
+
     }
 }

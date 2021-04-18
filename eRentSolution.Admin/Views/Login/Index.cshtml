@@ -92,7 +92,7 @@
     <script src="https://kit.fontawesome.com/64d58efce2.js"
             crossorigin="anonymous"></script>
     
-    <title>Đăng nhập & đăng ký</title>
+    <title>Sign in & Sign up Form</title>
     <link rel="stylesheet" href="./style2.css" />
 </head>
     <body>
@@ -111,8 +111,8 @@
                             <input asp-for="Password" type="password" placeholder="Password" />
                         </div>
                         <input type="submit" value="Login" class="btn solid" />
-                        <p class="social-text">Or Sign in with social platforms</p>
-                        <div class="social-media">
+                        @*<p class="social-text">Or Sign in with social platforms</p>*@
+                        @*<div class="social-media">
                             <a href="#" class="social-icon">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
@@ -125,13 +125,42 @@
                             <a href="#" class="social-icon">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                        </div>
+                        </div>*@
                     </form>
                     <form action="#" class="sign-up-form">
                         <h2 class="title">Sign up</h2>
-                        <div class="alert-info">
-                            Liên hệ với admin để đăng ký
+                        <h4 class="social-text">Contact with admin to sign up</h4>
+                        <p class="social-text">Tên: Lợi</p>
+                        <p class="social-text">SĐT: 0123456789</p>
+
+                        @*<div class="input-field">
+                           <i class="fas fa-user"></i>
+                           <input type="text" placeholder="Username" />
+                        </div>*@
+                        @*<div class="input-field">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" placeholder="Email" />
                         </div>
+                        <div class="input-field">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" placeholder="Password" />
+                        </div>
+                        <input type="submit" class="btn" value="Sign up" />*@
+                        @*<p class="social-text">Or Sign up with social platforms</p>*@
+                        @*<div class="social-media">
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-google"></i>
+                            </a>
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </div>*@
                     </form>
                 </div>
             </div>
