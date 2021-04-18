@@ -32,6 +32,35 @@ namespace eRentSolution.WebApp.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
         [AllowAnonymous]
+        public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
+        {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var request = new GetProductPagingRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                CategoryId = categoryId
+            };
+
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["result"];
+            }
+
+            var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
+            ViewBag.Keyword = keyword;
+
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            ViewBag.Categories = categories.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+                Selected = categoryId.HasValue && categoryId.Value == x.Id
+            });
+            return View(products);
+        }
+        [AllowAnonymous]
         public async Task<IActionResult> Detail(int id)
         {
             var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
