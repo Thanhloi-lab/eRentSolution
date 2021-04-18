@@ -1,10 +1,52 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Login\Index.cshtml" />
+    <None Include="Views\Product\CategoryAssign.cshtml" />
+    <None Include="Views\Product\Create.cshtml" />
+    <None Include="Views\Product\CreateSlide.cshtml" />
+    <None Include="Views\Product\Delete.cshtml" />
+    <None Include="Views\Product\Details.cshtml" />
+    <None Include="Views\Product\Edit.cshtml" />
+    <None Include="Views\Product\Hide.cshtml" />
+    <None Include="Views\Product\Index.cshtml" />
+    <None Include="Views\Product\Show.cshtml" />
+    <None Include="Views\Shared\Components\Pager\Default.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\Slide\Delete.cshtml" />
+    <None Include="Views\Slide\Details.cshtml" />
+    <None Include="Views\Slide\Edit.cshtml" />
+    <None Include="Views\Slide\Hide.cshtml" />
+    <None Include="Views\Slide\Index.cshtml" />
+    <None Include="Views\Slide\Show.cshtml" />
+    <None Include="Views\User\ActivityLog.cshtml" />
+    <None Include="Views\User\ChangePassword.cshtml" />
+    <None Include="Views\User\Create.cshtml" />
+    <None Include="Views\User\Delete.cshtml" />
+    <None Include="Views\User\Details.cshtml" />
+    <None Include="Views\User\Edit.cshtml" />
+    <None Include="Views\User\Index.cshtml" />
+    <None Include="Views\User\PageActivityLog.cshtml" />
+    <None Include="Views\User\ResetPassword.cshtml" />
+    <None Include="Views\User\RoleAssign.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\assets\demo\chart-area-demo.js" />
+    <None Include="wwwroot\assets\demo\chart-bar-demo.js" />
+    <None Include="wwwroot\assets\demo\chart-pie-demo.js" />
+    <None Include="wwwroot\assets\demo\datatables-demo.js" />
+    <None Include="wwwroot\assets\img\error-404-monochrome.svg" />
+    <None Include="wwwroot\assets\img\log.svg" />
+    <None Include="wwwroot\assets\img\register.svg" />
+    <None Include="wwwroot\js\scripts.js" />
     <None Include="wwwroot\js\site.js" />
   </ItemGroup>
 

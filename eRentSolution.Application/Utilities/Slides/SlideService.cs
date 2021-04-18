@@ -140,7 +140,7 @@ namespace eRentSolution.Application.Utilities.Slides
                         //join pic in _context.ProductInCategories on p.Id equals pic.ProductId
                         //join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         //from c in picc.DefaultIfEmpty()
-                        
+                        where s.Status == Data.Enums.Status.Active
                         select new { s, p};
 
             if (request.Keyword != null)

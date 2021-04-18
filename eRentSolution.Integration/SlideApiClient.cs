@@ -62,14 +62,14 @@ namespace eRentSolution.Integration
         }
         public async Task<bool> HideSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
         {
-            var result = await DeleteAsync<bool>($"/api/Slides/{userInfoId}/hide/{request.Id}", tokenName);
-            return result;
+            var result = await PutAsync<bool>($"/api/Slides/{userInfoId}/hide/{request.Id}", request, tokenName);
+            return result.ResultObject;
 
         }
         public async Task<bool> ShowSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
         {
-            var result = await DeleteAsync<bool>($"/api/Slides/{userInfoId}/show/{request.Id}", tokenName);
-            return result;
+            var result = await PutAsync<bool>($"/api/Slides/{userInfoId}/show/{request.Id}", request, tokenName);
+            return result.ResultObject;
 
         }
         public async Task<bool> UpdateSlide(SlideUpdateRequest request, string tokenName, Guid userInfoId)

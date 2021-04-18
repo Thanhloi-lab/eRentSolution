@@ -110,7 +110,8 @@ namespace eRentSolution.AdminApp.Controllers
                 SeoAlias = product.SeoAlias,
                 SeoDescription = product.SeoDescription,
                 SeoTitle = product.SeoTitle,
-                ThumbnailImage = null
+                ThumbnailImage = null,
+                IsFeatured = product.IsFeatured
             };
             return View(productViewModel);
         }
@@ -263,6 +264,43 @@ namespace eRentSolution.AdminApp.Controllers
 
             return categoryAssignRequest;
         }
-        
+        [HttpPost]
+        public async Task<IActionResult> CreateFeature(int id)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var request = new FeatureProductRequest()
+            {
+                ProductId = id
+            };
+            var result = await _productApiClient.CreateFeature(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+            if (result)
+            {
+                TempData["result"] = "Thêm sản sản phẩm nổi bật thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Thêm sản sản phẩm nổi bật thất bại");
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteFeature(int id)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var request = new FeatureProductRequest()
+            {
+                ProductId = id
+            };
+            var result = await _productApiClient.DeleteFeature(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+            if (result)
+            {
+                TempData["result"] = "Xóa sản sản phẩm nổi bật thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Xóa sản sản phẩm nổi bật thất bại");
+            return RedirectToAction("Index");
+        }
     }
 }

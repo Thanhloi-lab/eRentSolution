@@ -17,59 +17,105 @@
         <div class="card-header">
             <a class="btn btn-success" asp-action="Index" asp-controller="Slide">Về danh sách</a>
         </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            Thuộc tính
+                        </th>
+                        <th>
+                            Mô tả
+                    </tr>
+                </thead>
 
-        <div class="card-body">
-            <div class="row-cols-md-2">
-                <dl class="row">
-                    <dt class="col-sm-6">
-                        @Html.DisplayNameFor(model => model.FilePath)
-                    </dt>
-                    <dd class="col-sm-10">
-                        <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.FilePath" alt="@Model.Name"></a>
-                    </dd>
-                    <dt class="col-sm-6">
-                        @Html.DisplayNameFor(model => model.Id)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Id)
-                    </dd>
-                    <dt class="col-sm-6">
-                        @Html.DisplayNameFor(model => model.Name)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Name)
-                    </dd>
-                    <dt class="col-sm-6">
-                        @Html.DisplayNameFor(model => model.ProductId)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.ProductId)
-                    </dd>
-                    <dt class="col-sm-6">
-                        @Html.DisplayNameFor(model => model.ProductName)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.ProductName)
-                    </dd>
-                    <dt class="col-sm-6">
-                        @Html.DisplayNameFor(model => model.Url)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Url)
-                    </dd>
-                    <dt class="col-sm-6">
-                        @Html.DisplayNameFor(model => model.Description)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Description)
-                    </dd>
+                <tbody>
 
-                </dl>
-            </div>
+                    <tr>
+                        <td>
+                            Hình ảnh
+                        </td>
+                        <td>
+                            <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.FilePath" alt="@Model.Name" style="width: 100px;height:50px;object-fit:cover"></a>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(model => model.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Id)
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Name)
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(model => model.ProductId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.ProductId)
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(model => model.ProductName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.ProductName)
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(model => model.Url)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Url)
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody>
+
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Description)
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
         </div>
     </div>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { Model.Id }) |
-    <a asp-action="Index">Back to List</a>
+    <form asp-action="Edit" method="get" style="padding: 0 20px 20px 0;">
+        <input asp-for="Id" type="hidden" input />
+        <input type="submit" value="Edit" class="btn btn-danger" />
+    </form>
+   
 </div>

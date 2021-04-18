@@ -32,6 +32,7 @@ namespace eRentSolution.Utilities.Constants
             public const string UpdateStockProduct = "Chỉnh sửa tồn kho";
             public const string CreateProduct = "Tạo sản phẩm";
             public const string ShowProduct = "Hiện sản phẩm";
+            public const string UpdateProductDetail = "Chỉnh sửa sản phẩm con";
 
             public const string HideSlide = "Ẩn sản phẩm trình chiếu";
             public const string UpdateSlide = "Chỉnh sửa sản phẩm trình chiếu";
@@ -39,10 +40,8 @@ namespace eRentSolution.Utilities.Constants
             public const string DeleteSlide = "Xóa sản phẩm trình chiếu";
             public const string ShowSlide = "Hiện sản phẩm trình chiếu";
 
-            public const string HideFeatureProduct = "Ẩn sản phẩm nổi bật";
             public const string CreateFeatureProduct = "Tạo sản phẩm nổi bật";
             public const string DeleteFeatureProduct = "Xóa sản phẩm nổi bật";
-            public const string ShowFeatureProduct = "Hiện sản phẩm nổi bật";
         }
     }
 }

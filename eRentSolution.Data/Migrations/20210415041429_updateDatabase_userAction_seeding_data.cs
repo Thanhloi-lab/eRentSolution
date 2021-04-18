@@ -3,23 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace eRentSolution.Data.Migrations
 {
-    public partial class db : Migration
+    public partial class updateDatabase_userAction_seeding_data : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "AdminActions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ActionName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdminActions", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "AppConfigs",
                 columns: table => new
@@ -196,7 +183,7 @@ namespace eRentSolution.Data.Migrations
                     ViewCount = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
-                    IsFeatured = table.Column<bool>(type: "bit", nullable: true)
+                    IsFeatured = table.Column<int>(type: "int", nullable: false, defaultValue: 0)
                 },
                 constraints: table =>
                 {
@@ -222,6 +209,19 @@ namespace eRentSolution.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Promotions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserActions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ActionName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserActions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -306,7 +306,7 @@ namespace eRentSolution.Data.Migrations
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     SortOrder = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
                 },
                 constraints: table =>
                 {
@@ -334,15 +334,15 @@ namespace eRentSolution.Data.Migrations
                 {
                     table.PrimaryKey("PK_Censors", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Censors_AdminActions_ActionId",
-                        column: x => x.ActionId,
-                        principalTable: "AdminActions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Censors_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Censors_UserActions_ActionId",
+                        column: x => x.ActionId,
+                        principalTable: "UserActions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -379,18 +379,6 @@ namespace eRentSolution.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AdminActions",
-                columns: new[] { "Id", "ActionName" },
-                values: new object[,]
-                {
-                    { 1, "CreateProduct" },
-                    { 2, "UpdateProduct" },
-                    { 3, "HideProduct" },
-                    { 4, "UpdateStockProduct" },
-                    { 5, "UpdatePriceProduct" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "AppConfigs",
                 columns: new[] { "Key", "Value" },
                 values: new object[,]
@@ -405,8 +393,8 @@ namespace eRentSolution.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "bf6ee790-51ca-4e27-b4f7-ebe9d588b4e8", "Administrator role", "Admin", "admin" },
-                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "fb24c2fa-c5a9-42fe-b260-bd145afc5aaa", "User admin role", "UserAdmin", "useradmin" }
+                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "a776acd6-1c47-47be-9896-1a619013ac53", "Administrator role", "Admin", "admin" },
+                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "a73dde6f-8098-4d70-b84d-977511c231a6", "User admin role", "UserAdmin", "useradmin" }
                 });
 
             migrationBuilder.InsertData(
@@ -417,7 +405,7 @@ namespace eRentSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AppUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateChangePassword", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "5d0cb8e9-a920-4b31-b328-ae53f68c8134", new DateTime(2021, 4, 11, 12, 56, 19, 806, DateTimeKind.Utc).AddTicks(2919), "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAEBbx94yxwhc9V7/KqW947ujgOd+aqj5g/FDB1itkWMrtmJswYfbHjfnFfPcgPJxDEg==", null, false, "", 1, false, "thanhloi" });
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "30632708-21a4-4ba1-8070-51f5ac3b655d", new DateTime(2021, 4, 15, 4, 14, 28, 12, DateTimeKind.Utc).AddTicks(9220), "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAEN3QP2cKkH6sdqyevwhrgref5qB/oJ4m85/qcTR8wJrXYpQdVV0DTrGdEmQwtC7kwg==", null, false, "", 1, false, "thanhloi" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -431,12 +419,34 @@ namespace eRentSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Products",
                 columns: new[] { "Id", "DateCreated", "Description", "Details", "IsFeatured", "Name", "SeoAlias", "SeoDescription", "SeoTitle" },
-                values: new object[] { 1, new DateTime(2021, 4, 11, 12, 56, 19, 832, DateTimeKind.Utc).AddTicks(1068), "HomeStay Thanh Loi tại pờ tít", "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m", null, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi" });
+                values: new object[] { 1, new DateTime(2021, 4, 15, 4, 14, 28, 38, DateTimeKind.Utc).AddTicks(7661), "HomeStay Thanh Loi tại pờ tít", "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m", 0, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi" });
+
+            migrationBuilder.InsertData(
+                table: "UserActions",
+                columns: new[] { "Id", "ActionName" },
+                values: new object[,]
+                {
+                    { 13, "Xóa sản phẩm nổi bật" },
+                    { 12, "Hiện sản phẩm nổi bật" },
+                    { 11, "Xóa sản phẩm trình chiếu" },
+                    { 10, "Tạo sản phẩm nổi bật" },
+                    { 9, "Ẩn sản phẩm nổi bật" },
+                    { 8, "Tạo sản phẩm trình chiếu" },
+                    { 3, "Ẩn sản phẩm" },
+                    { 6, "Ẩn sản phẩm trình chiếu" },
+                    { 5, "Chỉnh sửa giá" },
+                    { 4, "Chỉnh sửa tồn kho" },
+                    { 14, "Hiện sản phẩm trình chiếu" },
+                    { 2, "Chỉnh sửa sản phẩm" },
+                    { 1, "Tạo sản phẩm" },
+                    { 7, "Chỉnh sửa sản phẩm trình chiếu" },
+                    { 15, "Hiện sản phẩm" }
+                });
 
             migrationBuilder.InsertData(
                 table: "ProductDetails",
                 columns: new[] { "Id", "DateCreated", "Name", "OriginalPrice", "Price", "ProductId" },
-                values: new object[] { 1, new DateTime(2021, 4, 11, 12, 56, 19, 832, DateTimeKind.Utc).AddTicks(7285), "Phòng 1 chổ nằm", 100000m, 200000m, 1 });
+                values: new object[] { 1, new DateTime(2021, 4, 15, 4, 14, 28, 39, DateTimeKind.Utc).AddTicks(5790), "Phòng 1 chổ nằm", 100000m, 200000m, 1 });
 
             migrationBuilder.InsertData(
                 table: "ProductInCategories",
@@ -451,7 +461,7 @@ namespace eRentSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Censors",
                 columns: new[] { "Id", "ActionId", "Date", "ProductId", "UserInfoId" },
-                values: new object[] { 1, 1, new DateTime(2021, 4, 11, 12, 56, 19, 833, DateTimeKind.Utc).AddTicks(6308), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
+                values: new object[] { 1, 1, new DateTime(2021, 4, 15, 4, 14, 28, 40, DateTimeKind.Utc).AddTicks(3872), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Censors_ActionId",
@@ -531,7 +541,7 @@ namespace eRentSolution.Data.Migrations
                 name: "Slides");
 
             migrationBuilder.DropTable(
-                name: "AdminActions");
+                name: "UserActions");
 
             migrationBuilder.DropTable(
                 name: "UserInfos");

@@ -102,7 +102,8 @@ namespace eRentSolution.Data.Extentions
                SeoDescription = "HomeStay-thanh-loi",
                SeoTitle = "HomeStay-thanh-loi",
                Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
-               Description = "HomeStay Thanh Loi tại pờ tít"
+               Description = "HomeStay Thanh Loi tại pờ tít",
+               IsFeatured = Status.InActive
            });
             modelBuilder.Entity<ProductDetail>().HasData(
            new ProductDetail()

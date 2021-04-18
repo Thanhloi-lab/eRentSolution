@@ -179,7 +179,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "bf6ee790-51ca-4e27-b4f7-ebe9d588b4e8",
+                            ConcurrencyStamp = "a776acd6-1c47-47be-9896-1a619013ac53",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -187,7 +187,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "fb24c2fa-c5a9-42fe-b260-bd145afc5aaa",
+                            ConcurrencyStamp = "a73dde6f-8098-4d70-b84d-977511c231a6",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -259,14 +259,14 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5d0cb8e9-a920-4b31-b328-ae53f68c8134",
-                            DateChangePassword = new DateTime(2021, 4, 11, 12, 56, 19, 806, DateTimeKind.Utc).AddTicks(2919),
+                            ConcurrencyStamp = "30632708-21a4-4ba1-8070-51f5ac3b655d",
+                            DateChangePassword = new DateTime(2021, 4, 15, 4, 14, 28, 12, DateTimeKind.Utc).AddTicks(9220),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBbx94yxwhc9V7/KqW947ujgOd+aqj5g/FDB1itkWMrtmJswYfbHjfnFfPcgPJxDEg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEN3QP2cKkH6sdqyevwhrgref5qB/oJ4m85/qcTR8wJrXYpQdVV0DTrGdEmQwtC7kwg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,
@@ -381,7 +381,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 4, 11, 12, 56, 19, 833, DateTimeKind.Utc).AddTicks(6308),
+                            Date = new DateTime(2021, 4, 15, 4, 14, 28, 40, DateTimeKind.Utc).AddTicks(3872),
                             ProductId = 1,
                             UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
@@ -445,8 +445,10 @@ namespace eRentSolution.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<bool?>("IsFeatured")
-                        .HasColumnType("bit");
+                    b.Property<int>("IsFeatured")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -482,9 +484,10 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 11, 12, 56, 19, 832, DateTimeKind.Utc).AddTicks(1068),
+                            DateCreated = new DateTime(2021, 4, 15, 4, 14, 28, 38, DateTimeKind.Utc).AddTicks(7661),
                             Description = "HomeStay Thanh Loi tại pờ tít",
                             Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
+                            IsFeatured = 0,
                             Name = "HomeStay Thanh Loi",
                             SeoAlias = "HomeStay-thanh-loi",
                             SeoDescription = "HomeStay-thanh-loi",
@@ -545,7 +548,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 11, 12, 56, 19, 832, DateTimeKind.Utc).AddTicks(7285),
+                            DateCreated = new DateTime(2021, 4, 15, 4, 14, 28, 39, DateTimeKind.Utc).AddTicks(5790),
                             IsThumbnail = false,
                             Name = "Phòng 1 chổ nằm",
                             OriginalPrice = 100000m,
@@ -690,7 +693,9 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -720,33 +725,83 @@ namespace eRentSolution.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdminActions");
+                    b.ToTable("UserActions");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            ActionName = "CreateProduct"
+                            ActionName = "Tạo sản phẩm"
                         },
                         new
                         {
                             Id = 2,
-                            ActionName = "UpdateProduct"
+                            ActionName = "Chỉnh sửa sản phẩm"
                         },
                         new
                         {
                             Id = 3,
-                            ActionName = "HideProduct"
+                            ActionName = "Ẩn sản phẩm"
                         },
                         new
                         {
                             Id = 4,
-                            ActionName = "UpdateStockProduct"
+                            ActionName = "Chỉnh sửa tồn kho"
                         },
                         new
                         {
                             Id = 5,
-                            ActionName = "UpdatePriceProduct"
+                            ActionName = "Chỉnh sửa giá"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ActionName = "Ẩn sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ActionName = "Chỉnh sửa sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ActionName = "Tạo sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ActionName = "Ẩn sản phẩm nổi bật"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ActionName = "Tạo sản phẩm nổi bật"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ActionName = "Xóa sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ActionName = "Hiện sản phẩm nổi bật"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ActionName = "Xóa sản phẩm nổi bật"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ActionName = "Hiện sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            ActionName = "Hiện sản phẩm"
                         });
                 });
 

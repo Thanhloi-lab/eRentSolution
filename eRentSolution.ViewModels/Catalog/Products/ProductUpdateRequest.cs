@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using eRentSolution.Data.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,5 +16,6 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public string SeoTitle { set; get; }
         public string SeoAlias { get; set; }
         public IFormFile ThumbnailImage { get; set; }
+        public Status? IsFeatured { get; set; }
     }
 }

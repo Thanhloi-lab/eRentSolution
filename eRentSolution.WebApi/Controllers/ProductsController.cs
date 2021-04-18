@@ -17,17 +17,16 @@ namespace eRentSolution.BackendApi.Controllers
         {
             _productService = productService;
         }
-
-        //[HttpGet("GetAllByCategoryId")]
-        //public async Task<IActionResult> Get([FromQuery] GetProductPagingByCategoryIdRequest request)
-        //{
-        //    var product = await _productService.GetAllPagingByCategoryId(request);
-        //    return Ok(product);
-        //}
         [HttpGet("paging")]
         public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPagingRequest request)
         {
             var product = await _productService.GetAllPaging(request);
+            return Ok(product);
+        }
+        [HttpGet("{userId}/GetPageProductByUserId")]
+        public async Task<IActionResult> GetPageProductByUserId([FromQuery] GetProductPagingRequest request, Guid userId)
+        {
+            var product = await _productService.GetPageProductByUserID(request, userId);
             return Ok(product);
         }
         [HttpGet("{id}")]
@@ -57,12 +56,33 @@ namespace eRentSolution.BackendApi.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, Guid userInfoId, [FromRoute]int productId)
         {
-            var isSuccessful = await _productService.Update(request, userInfoId, productId);
+            request.Id = productId;
+            var isSuccessful = await _productService.Update(request, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
             }
             return Ok();
+        }
+        [HttpPut("{userInfoId}/createfeature/{productId}")]
+        public async Task<IActionResult> CreateFeature(Guid userInfoId, int productId)
+        {
+            var result = await _productService.CreateFeature(productId, userInfoId);
+            if (result.IsSuccessed == false)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
+        }
+        [HttpPut("{userInfoId}/deletefeature/{productId}")]
+        public async Task<IActionResult> DeleteFeature(Guid userInfoId, int productId)
+        {
+            var result = await _productService.DeleteFeature(productId, userInfoId);
+            if (result.IsSuccessed == false)
+            {
+                return BadRequest();
+            }
+            return Ok(result);
         }
         [HttpPut("{productId}")]
         public async Task<IActionResult> AddViewcount(int productId)
@@ -104,20 +124,20 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok();
         }
-        [HttpPut("price/{userInfoId}/{id}/{newPrice}")]
-        public async Task<IActionResult> UpdatePrice(int id, decimal newPrice, Guid userInfoId)
+        [HttpPut("price/{userInfoId}/{productDetailId}/{newPrice}")]
+        public async Task<IActionResult> UpdatePrice(int productDetailId, decimal newPrice, Guid userInfoId)
         {
-            var isSuccessful = await _productService.UpdatePrice(id, newPrice, userInfoId);
+            var isSuccessful = await _productService.UpdatePrice(productDetailId, newPrice, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
             }
             return Ok();
         }
-        [HttpPut("stock/{userInfoId}/{id}/{addedQuantity}")]
-        public async Task<IActionResult> UpdateStock(int id, int addedQuantity, Guid userInfoId)
+        [HttpPut("stock/{userInfoId}/{productDetailId}/{addedQuantity}")]
+        public async Task<IActionResult> UpdateStock(int productDetailId, int addedQuantity, Guid userInfoId)
         {
-            var isSuccessful = await _productService.UpdateStock(id, addedQuantity, userInfoId);
+            var isSuccessful = await _productService.UpdateStock(productDetailId, addedQuantity, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
@@ -149,7 +169,15 @@ namespace eRentSolution.BackendApi.Controllers
             var products = await _productService.GetLastestProducts(take);
             return Ok(products);
         }
+        [HttpGet("isMyProduct/{userId}/{productId}")]
+        public async Task<IActionResult> IsMyProduct(int productId, Guid userId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            var result = await _productService.IsMyProduct(userId, productId);
+            return Ok(result);
+        }
 
         // ============== IMAGE===========
         [HttpGet("img/{imageId}")]

@@ -45,7 +45,7 @@ namespace eRentSolution.Application.System.Users
                 return new ApiErrorResult<string>("Username or password incorrect");
 
             if (user.Status == Data.Enums.Status.InActive)
-                return new ApiErrorResult<string>("Account was locked");
+                return new ApiErrorResult<string>("Account was banned");
 
             var roles = await _userManager.GetRolesAsync(user);
             if(isAdminPage)
@@ -298,10 +298,12 @@ namespace eRentSolution.Application.System.Users
             {
                 new ApiErrorResult<bool>("Update unsuccessful");
             }
+            user.DateChangePassword = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
             var removeResult = await _userManager.RemovePasswordAsync(user);
             if (removeResult.Succeeded)
             {
-                var result = await _userManager.AddPasswordAsync(user, request.NewPassword);
+                var result = await _userManager.AddPasswordAsync(user, request.NewPassword + user.DateChangePassword);
                 return new ApiSuccessResult<bool>();
             }
             return new ApiErrorResult<bool>("Update unsuccessful");
@@ -342,9 +344,18 @@ namespace eRentSolution.Application.System.Users
                         join p in _context.Products on c.ProductId equals p.Id
                         where p.Status == Data.Enums.Status.Active
                         select new { ui, a, p, c };
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.ui.LastName.Contains(request.Keyword)
+                            || x.p.Name.Contains(request.Keyword)
+                            || x.a.ActionName.Contains(request.Keyword));
+            }
 
             var totalRow = await query.CountAsync();
-            var data = await query.Select(x => new ActivityLogViewModel()
+
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new ActivityLogViewModel()
             {
                 ActionName = x.a.ActionName,
                 Date = x.c.Date,

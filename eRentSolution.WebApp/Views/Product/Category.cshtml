@@ -41,7 +41,7 @@
             var url = $"/Products/{item.Id}";
             <div class="row">
                 <div class="span2">
-                    <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name" />
+                    <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name" style="width: 100%; height: 300px; object-fit: cover;/>
                 </div>
                 <div class="span4">
                     @if (item.Stock > 0)
@@ -72,7 +72,7 @@
                             <input type="checkbox">  Adds product to compair
                         </label><br />
 
-                        <a href="product_details.html" class="btn btn-large btn-primary"> Add to <i class=" icon-shopping-cart"></i></a>
+                        <a href="product_details.html" class="btn btn-large btn-primary"> Xem</a>
                         <a href="product_details.html" class="btn btn-large"><i class="icon-zoom-in"></i></a>
 
                     </form>
@@ -91,13 +91,13 @@
 
                 <li class="span3">
                     <div class="thumbnail">
-                        <a href="@url"><img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name" /></a>
+                        <a href="@url"><img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name" style="width: 260px; height: 146px; object-fit: cover" /></a>
                         <div class="caption">
-                            <h5>@item.Name</h5>
-                            <p>
+                            <h5 style="white-space:nowrap; overflow: hidden; text-overflow:ellipsis; text-align: center">@item.Name</h5>
+                            <p style="white-space:nowrap; overflow: hidden; text-overflow:ellipsis; text-align: center">
                                 @item.Description
                             </p>
-                            <h4 style="text-align:center"><a class="btn" href="@url"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">&ETH;@item.ProductDetailViewModels.ElementAt(0).Price</a></h4>
+                            <h4 style="text-align:center"><a class="btn" href="@url"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Xem</a> <a class="btn btn-primary" href="#">@item.ProductDetailViewModels.ElementAt(0).Price &ETH;</a></h4>
                         </div>
                     </div>
                 </li>

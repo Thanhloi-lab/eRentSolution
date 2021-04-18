@@ -62,6 +62,20 @@
                         <input type="submit" value="Cập nhật" class="btn btn-primary" />
                     </div>
                 </form>
+                @if (Model.IsFeatured == eRentSolution.Data.Enums.Status.InActive)
+                {
+                    <form asp-action="CreateFeature">
+                        <input asp-for="Id" type="hidden" input />
+                        <input type="submit" value="Thêm vào sản phẩm nổi bật" class="btn btn-danger" />
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="DeleteFeature">
+                        <input asp-for="Id" type="hidden" input />
+                        <input type="submit" value="Xóa khỏi sản phẩm nổi bật" class="btn btn-danger" />
+                    </form>
+                }
             </div>
         </div>
     </div>

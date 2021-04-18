@@ -13,6 +13,9 @@
         }, 2000);
     </script>
 }
+<head>
+     <link href="./style3.css" rel="stylesheet" /> 
+</head>
 <div class="container-fluid">
     <h1 class="mt-4">Danh sách người dùng</h1>
     <ol class="breadcrumb mb-4">
@@ -23,7 +26,10 @@
         <div class=" card-header">
             <div class="row">
                 <div class="col-md-6 col-xs-12">
-                    <a class="btn btn-success" asp-action="Create" asp-controller="User">Tạo mới</a>
+                    <a class="btn-1" asp-action="create" asp-controller="user">
+                        <span>Tạo mới</span>
+                    </a>
+                    @*<a class="btn btn-success" asp-action="create" asp-controller="user">tạo mới</a>*@
                 </div>
                 <div class="col-md-6 col-xs-12">
                     <form asp-action="Index" method="get">
@@ -32,11 +38,13 @@
                                 <input type="text" value=@ViewBag.keyword name="keyword" class="form-control" />
                             </div>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-primary">Tìm</button>
-                                <button type="button" onclick="window.location.href='/User/index'" class="btn btn-dark">Reset</button>
+                                <button type="submit" class="btn btn-primary">tìm</button>
+                                <button type="button" onclick="window.location.href='/user/index'" class="btn btn-dark">reset</button>
                             </div>
-                        </div>
+                                
+                            </div>
                     </form>
+                   
                 </div>
             </div>
         </div>
