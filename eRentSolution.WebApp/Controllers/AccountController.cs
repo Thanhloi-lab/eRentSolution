@@ -65,7 +65,6 @@ namespace eRentSolution.WebApp.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginRequest request)
         {
@@ -93,7 +92,6 @@ namespace eRentSolution.WebApp.Controllers
             Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
-
         private ClaimsPrincipal ValidateToken(string jwtToken)
         {
             IdentityModelEventSource.ShowPII = true;

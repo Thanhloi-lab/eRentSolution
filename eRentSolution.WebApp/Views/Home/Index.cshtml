@@ -4,114 +4,127 @@
 
 @{ ViewData["Title"] = "Home Page"; }
 
-@section slider{
-    <div id="carouselBlk">
-        <div id="myCarousel" class="carousel slide">
-            <div class="carousel-inner">
-                @if (Model.Slides != null)
-                {
-                    @for (int index = 0; index < Model.Slides.Count; index++)
-                    {
-                        var slide = Model.Slides[index];
-                        <div class="item @(index == 0 ? "active" : "")">
-                            <div class="container">
-                               <a href="@slide.Url"><img style="width: 100%; height: 450px; object-fit: cover;" src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" /></a>
-                                <div class="carousel-caption">
-                                    <h4>@slide.Name</h4>
-                                    <p>@slide.Description</p>
-                                </div>
-                            </div>
-                        </div>
-                     }
-                }
 
-            </div>
-            <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-            <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
+@section slider{
+    <div class="box-slider">
+        <div class="owl-carousel owl-theme slider">
+            @if (Model.Slides != null)
+            {
+@for (int index = 0; index < Model.Slides.Count; index++)
+{
+    var slide = Model.Slides[index];
+<div class="item">
+    <img src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" />
+</div>}}
+
         </div>
     </div>
 }
-<div class="well well-small">
-    <h4><localize>Featured Products</localize> <small class="pull-right">@Model.FeaturedProducts.Items.Count Featured product</small></h4>
-    <div class="row-fluid">
-        <div id="featured" class="carousel slide">
-            <div class="carousel-inner">
-                @{ List<List<ProductViewModel>> featuredProducts = new List<List<ProductViewModel>>();
-                    List<ProductViewModel> featuredPart = new List<ProductViewModel>(); }
+@*<div class="well well-small">
+        <h4><localize>Featured Products</localize> <small class="pull-right">@Model.FeaturedProducts.Items.Count Featured product</small></h4>
+        <div class="row-fluid">
+            <div id="featured" class="carousel slide">
+                <div class="carousel-inner">
+                    @{ List<List<ProductViewModel>> featuredProducts = new List<List<ProductViewModel>>();
+                        List<ProductViewModel> featuredPart = new List<ProductViewModel>(); }
 
-                @for (int index = 0; index < Model.FeaturedProducts.Items.Count; index++)
-                {
-                    featuredPart.Add(Model.FeaturedProducts.Items[index]);
-                    if (featuredPart.Count == 4)
+                    @for (int index = 0; index < Model.FeaturedProducts.Items.Count; index++)
                     {
-                        featuredProducts.Add(featuredPart);
+                        featuredPart.Add(Model.FeaturedProducts.Items[index]);
+                        if (featuredPart.Count == 4)
+                        {
+                            featuredProducts.Add(featuredPart);
+                            if (index == Model.FeaturedProducts.Items.Count - 1)
+                                break;
+                            featuredPart = new List<ProductViewModel>();
+                        }
                         if (index == Model.FeaturedProducts.Items.Count - 1)
-                            break;
-                        featuredPart = new List<ProductViewModel>();
+                        {
+                            featuredProducts.Add(featuredPart);
+                        }
+
                     }
-                    if (index == Model.FeaturedProducts.Items.Count - 1)
+                    @for (int index = 0; index < featuredProducts.Count; index++)
                     {
-                        featuredProducts.Add(featuredPart);
-                    }
-
-                }
-                @for (int index = 0; index < featuredProducts.Count; index++)
-                {
-                    <div class="item @(index == 0 ? "active" : "")">
-                        <ul class="thumbnails">
-                            @foreach (var item in featuredProducts[index])
-                            {
-                                var url = $"/Products/{item.Id}";
-                                <li class="span3">
-                                    <div class="thumbnail">
-                                        <i class="tag"></i>
-                                        <a href="@url"><img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name"></a>
-                                        <div class="caption">
-                                            <h5>@item.Name</h5>
-                                            <h4><a class="btn" href="" localize-content>VIEW</a> <span class="pull-right">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</span></h4>
+                        <div class="item @(index == 0 ? "active" : "")">
+                            <ul class="thumbnails">
+                                @foreach (var item in featuredProducts[index])
+                                {
+                                    var url = $"/Products/{item.Id}";
+                                    <li class="span3">
+                                        <div class="thumbnail">
+                                            <i class="tag"></i>
+                                            <a href="@url"><img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name"></a>
+                                            <div class="caption">
+                                                <h5>@item.Name</h5>
+                                                <h4><a class="btn" href="" localize-content>VIEW</a> <span class="pull-right">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</span></h4>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                }
-            </div>
-            <a class="left carousel-control" href="#featured" data-slide="prev">
-                &lsaquo;
-                @{if (Model.FeaturedProducts.PageIndex > 1)
-                        Model.FeaturedProducts.PageIndex--;
-                }
-            </a>
-            <a class="right carousel-control" href="#featured" data-slide="next">
-                &rsaquo;
-                @{if (Model.FeaturedProducts.PageIndex < Model.FeaturedProducts.PageCount)
-                        Model.FeaturedProducts.PageIndex++;
-                }
-            </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </div>
+                <a class="left carousel-control" href="#featured" data-slide="prev">
+                    &lsaquo;
+                    @{if (Model.FeaturedProducts.PageIndex > 1)
+                            Model.FeaturedProducts.PageIndex--;
+                    }
+                </a>
+                <a class="right carousel-control" href="#featured" data-slide="next">
+                    &rsaquo;
+                    @{if (Model.FeaturedProducts.PageIndex < Model.FeaturedProducts.PageCount)
+                            Model.FeaturedProducts.PageIndex++;
+                    }
+                </a>
 
+            </div>
         </div>
+    </div>*@
+
+<div class="box-product">
+    <p class="category__heading">Tin đăng cho bạn</p>
+
+    <div class="box-flex">
+        @foreach (var item in Model.LastestProducts)
+        {
+            var url = $"/Products/{item.Id}";
+            <div class="box-full-flex">
+                <div class="box-item">
+                    <div style="position: relative; class="box-item__photo">
+                        <a  href="roomdetails.html">
+                            <a href="@url"> <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="" class="box-item__img"></a>
+                            <img class="icon-heart" width="20px;" src="https://static.chotot.com/storage/chotot-icons/next/save-ad.svg" alt="photos">
+                        </a>
+                    </div>
+                    <div class="box-item__caption">
+                        <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
+                        <p class="box-item__size">18 m²</p>
+                        <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
+                        <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+
     </div>
 </div>
-<h4>Latest Products </h4>
-<ul class="thumbnails">
+<script>
+    $('.owl-carousel').owlCarousel({
+        loop: true,
+        margin: 10,
+        dots: true,
 
-    @foreach (var item in Model.LastestProducts)
-    {
-        var url = $"/Products/{item.Id}";
-    <li class="span3">
-        <div class="thumbnail">
-            <a href="@url"><img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name" style="width: 300px; height: 200px; object-fit: cover;" /></a>
-            <div class="caption">
-                <h5 style="white-space: nowrap; text-overflow: ellipsis; width: 100%; overflow: hidden; text-align: center;">@item.Name</h5>
-                <p style="white-space: nowrap; text-overflow: ellipsis; width: 100%; overflow: hidden; text-align: center;">@item.Description</p>
-                <h4 style="text-align:center">
-                    <del>@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</del>
-                    <br>
-                    <span class="product-row-sale">@item.ProductDetailViewModels.ElementAt(0).Price&#8363 </span>
-                </h4>
-            </div>
-        </div>
-     </li>
-    }
-</ul>
+        autoplay: true,
+        autoplayTimeout: 3000,
+        responsive: {
+
+            1000: {
+                items: 1
+            }
+        }
+    })
+
+</script>

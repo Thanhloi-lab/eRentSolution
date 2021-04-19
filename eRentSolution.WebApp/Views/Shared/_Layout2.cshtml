@@ -9,7 +9,9 @@
     <meta name="description" content="@ViewData["Description"]">
     <meta name="author" content="">
 
-
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,700&display=swap&subset=vietnamese" rel="stylesheet">
@@ -17,14 +19,13 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
- 
 </head>
 <body>
     <header class="header">
         <div class="header__no-search">
             <div class="header__logo">
                 <a href="/Home/index"> <img src="https://static.chotot.com/storage/marketplace/transparent_logo.png" alt="logo" class="header__logo-img"></a>
-               
+
             </div>
             <div class="header__nav">
                 <ul class="header__list">
@@ -84,9 +85,12 @@
                                     </a>
                                 </li>
                                 <li class="dropdown-menu-item">
-                                    <form method="post" asp-controller="account" asp-action="Logout" class="dropdown-menu-link">
-                                        <button type="submit" class="dropdown-item">Đăng xuất</button>
-                                    </form>
+                                    <a href="#" class="dropdown-menu-link">
+                                        <div>
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </div>
+                                        <span>Logout</span>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -105,24 +109,12 @@
                     </button>
                 </a>
             </div>
-            @if (!User.Identity.IsAuthenticated)
-            {
-                <div class="header__box-login">
-                    <a href="/Account/login">
-                        <svg class="appWrapper-Header-icon login-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><g class="svg-stroke" fill="none" fill-rule="evenodd" stroke="#000" stroke-width="1.2"><circle cx="15" cy="15" r="14.4"></circle><circle cx="15" cy="12" r="4.5"></circle><path d="M25.442 24.63c-1.453-4.536-5.579-7.807-10.442-7.807-4.932 0-9.106 3.365-10.502 8"></path></g></svg>
-                        <span>Đăng nhập</span>
-                    </a>
-                </div>
-            }
-            else
-            {
-                <div class="header__box-login" mothod="post">
-                    <form asp-action="logout" asp-controller="account" method="post">
-                        <svg class="appWrapper-Header-icon login-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><g class="svg-stroke" fill="none" fill-rule="evenodd" stroke="#000" stroke-width="1.2"><circle cx="15" cy="15" r="14.4"></circle><circle cx="15" cy="12" r="4.5"></circle><path d="M25.442 24.63c-1.453-4.536-5.579-7.807-10.442-7.807-4.932 0-9.106 3.365-10.502 8"></path></g></svg>
-                        <span>Đăng xuất</span>
-                    </form>
-                </div>
-            }
+            <div class="header__box-login">
+                <a href="/Account/Login">
+                    <svg class="appWrapper-Header-icon login-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><g class="svg-stroke" fill="none" fill-rule="evenodd" stroke="#000" stroke-width="1.2"><circle cx="15" cy="15" r="14.4"></circle><circle cx="15" cy="12" r="4.5"></circle><path d="M25.442 24.63c-1.453-4.536-5.579-7.807-10.442-7.807-4.932 0-9.106 3.365-10.502 8"></path></g></svg>
+                    <span>Đăng nhập</span>
+                </a>
+            </div>
             <div class="header__box-upload">
                 <a href="">
                     <i class="header__box-upload-icon fas fa-upload"></i>
@@ -132,15 +124,14 @@
             </div>
         </div>
     </header>
-    <div style=" background-image: url(http://static.chotot.com/storage/banner/Theming-1920x1080_v4.jpg); background-repeat: no-repeat; background-attachment: fixed; background-size: cover; margin: 0; padding: 0; border: none; width:100%; height:100%">
-        @RenderSection("slider", required: false)
-                    <!-- Sidebar ================================================== -->
-                    @await Component.InvokeAsync("SideBar")
-                    <!-- Sidebar end=============================================== -->        
-                        @RenderBody()   
-    </div>
+
+    @RenderSection("slider", required: false)
+    <!-- Sidebar ================================================== -->
+   
+    <!-- Sidebar end=============================================== -->
+    @RenderBody()
+
     <!-- Header End====================================================================== -->
-  
     <!-- Footer ================================================================== -->
     <footer class="footer">
         <div class="grid">
@@ -234,35 +225,35 @@
         </div>
     </footer>
 </body>
- <script>
+<script>
 
-     window.onclick = function (event) {
-         openCloseDropdown(event)
-     }
+    window.onclick = function (event) {
+        openCloseDropdown(event)
+    }
 
-     function closeAllDropdown() {
-         var dropdowns = document.getElementsByClassName('dropdown-expand')
-         for (var i = 0; i < dropdowns.length; i++) {
-             dropdowns[i].classList.remove('dropdown-expand')
-         }
-     }
+    function closeAllDropdown() {
+        var dropdowns = document.getElementsByClassName('dropdown-expand')
+        for (var i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].classList.remove('dropdown-expand')
+        }
+    }
 
-     function openCloseDropdown(event) {
-         if (!event.target.matches('.dropdown-toggle')) {
-             // 
-             // Close dropdown when click out of dropdown menu
-             // 
-             closeAllDropdown()
-         } else {
-             var toggle = event.target.dataset.toggle
-             var content = document.getElementById(toggle)
-             if (content.classList.contains('dropdown-expand')) {
-                 closeAllDropdown()
-             } else {
-                 closeAllDropdown()
-                 content.classList.add('dropdown-expand')
-             }
-         }
-     }
- </script>
+    function openCloseDropdown(event) {
+        if (!event.target.matches('.dropdown-toggle')) {
+            //
+            // Close dropdown when click out of dropdown menu
+            //
+            closeAllDropdown()
+        } else {
+            var toggle = event.target.dataset.toggle
+            var content = document.getElementById(toggle)
+            if (content.classList.contains('dropdown-expand')) {
+                closeAllDropdown()
+            } else {
+                closeAllDropdown()
+                content.classList.add('dropdown-expand')
+            }
+        }
+    }
+</script>
 </html>
