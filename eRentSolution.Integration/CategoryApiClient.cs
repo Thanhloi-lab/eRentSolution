@@ -1,6 +1,8 @@
 ﻿using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,10 +64,23 @@ namespace eRentSolution.Integration
                 ByteArrayContent bytes = new ByteArrayContent(data);
                 requestContent.Add(bytes, "imageFile", request.ImageFile.FileName);
             }
-            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.CategoryId.ToString()) ? "" : request.CategoryId.ToString()), "id");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.CategoryId.ToString()) ? "" : request.CategoryId.ToString()), "categoryId");
 
-            var result = await client.PutAsync($"/api/users/UpdateAvatar", requestContent);
-            return result.IsSuccessStatusCode;
+            var result = await client.PutAsync($"/api/categories/UpdateImage", requestContent);
+            var body = await result.Content.ReadAsStringAsync();
+            if (result.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<bool>(body);
+            }
+            return false;
+        }
+        public async Task<PagedResult<CategoryViewModel>> GetPagings(GetCategoryPagingRequest request, string tokenName)
+        {
+            var result = await GetAsync<PagedResult<CategoryViewModel>>(
+                $"/api/categories/paging?pageIndex={request.PageIndex}" +
+                $"&pageSize={request.PageSize}" +
+                $"&keyword={request.Keyword}", tokenName);
+            return result;
         }
     }
 }

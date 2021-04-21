@@ -1,0 +1,36 @@
+﻿@model eRentSolution.ViewModels.Catalog.Categories.CategoryImageUpdateRequest
+
+@{
+    ViewData["Title"] = "EditImage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>EditImage</h1>
+
+<h4>CategoryImageUpdateRequest</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditImage" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <input asp-for="CategoryId" class="form-control" />
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label">Ảnh đại diện</label>
+                <input asp-for="ImageFile" type="file" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

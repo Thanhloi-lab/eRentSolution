@@ -1,4 +1,5 @@
 ﻿using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,5 +13,6 @@ namespace eRentSolution.Integration
         Task<CategoryViewModel> GetById(int id, string tokenName);
         Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId, string tokenName);
         Task<bool> UpdateImage(CategoryImageUpdateRequest request, string tokenName);
+        Task<PagedResult<CategoryViewModel>> GetPagings(GetCategoryPagingRequest request, string tokenName);
     }
 }

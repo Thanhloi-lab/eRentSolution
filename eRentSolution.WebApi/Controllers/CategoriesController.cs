@@ -40,12 +40,19 @@ namespace eRentSolution.BackendApi.Controllers
             var categories = await _categoryService.GetAllCategoryByProductId(productId);
             return Ok(categories);
         }
-        [HttpPut("updateAvatar")]
+        [HttpPut("UpdateImage")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateImage([FromForm] CategoryImageUpdateRequest request)
         {
             var products = await _categoryService.UpdateImage(request);
             return Ok(products);
+        }
+
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetCategoryPagingRequest request)
+        {
+            var product = await _categoryService.GetAllPaging(request);
+            return Ok(product);
         }
     }
 }

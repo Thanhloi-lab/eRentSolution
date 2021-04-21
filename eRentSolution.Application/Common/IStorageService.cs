@@ -10,6 +10,7 @@ namespace eRentSolution.Application.Common
     {
         string GetFileUrl(string fileName);
         Task SaveFileAsync(Stream mediaBinaryStream, string fileName);
+        void DeleteFile(string fileName);
         Task DeleteFileAsync(string fileName);
     }
 }

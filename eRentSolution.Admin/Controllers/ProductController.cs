@@ -38,7 +38,8 @@ namespace eRentSolution.AdminApp.Controllers
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
             _slideApiClient = slideApiClient;
-            userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _httpContextAccessor = httpContextAccessor;
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             //userInfoId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Actor).Value;
         }
 

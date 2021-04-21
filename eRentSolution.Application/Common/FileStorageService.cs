@@ -16,14 +16,6 @@ namespace eRentSolution.Application.Common
         {
             _userContentFolder = Path.Combine(webHostInviroment.WebRootPath, USER_CONTENT_FOLDER_NAME);
         }
-        public async Task DeleteFileAsync(string fileName)
-        {
-            var filePath = Path.Combine(_userContentFolder, fileName);
-            if (File.Exists(filePath))
-            {
-                await Task.Run(() => File.Delete(filePath));
-            }
-        }
         public string GetFileUrl(string fileName)
         {
             return $"/{USER_CONTENT_FOLDER_NAME}/{fileName}";
@@ -37,6 +29,29 @@ namespace eRentSolution.Application.Common
             }
             var output = new FileStream(filePath, FileMode.Create);
             await mediaBinaryStream.CopyToAsync(output);
+        }
+
+        public void DeleteFile(string fileName)
+        {
+            var filePath = Path.Combine(_userContentFolder, fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
+
+        public async Task DeleteFileAsync(string fileName)
+        {
+            var filePath = Path.Combine(_userContentFolder, fileName);
+            //FileInfo info = new FileInfo(filePath);//get info file
+            //                                           //the problem ocurred because this, 
+            //FileStream s = new FileStream(filePath, FileMode.Open); //openning stream, them file in use by a process
+            //s.Close();
+            //s.Dispose();
+            if (File.Exists(filePath))
+            {
+                await Task.Run(() => File.Delete(filePath));
+            }
         }
     }
 }

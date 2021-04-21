@@ -34,7 +34,7 @@ namespace eRentSolution.AdminApp.Controllers
             _roleApiClient = roleApiClient;
             _httpContextAccessor = httpContextAccessor;
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin) ;
+            token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
         }
 
         public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)

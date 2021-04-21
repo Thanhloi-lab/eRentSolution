@@ -2,6 +2,7 @@
 using eRentSolution.Data.EF;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -52,6 +53,33 @@ namespace eRentSolution.Application.Catalog.Categories
             }).ToListAsync();
         }
 
+        public async Task<PagedResult<CategoryViewModel>> GetAllPaging(GetCategoryPagingRequest request)
+        {
+            var query = from c in _context.Categories
+                        select new { c };
+            if (request.Keyword != null)
+            {
+                query = query.Where(x => x.c.Name.Contains(request.Keyword));
+            }
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new CategoryViewModel()
+            {
+                Id = x.c.Id,
+                Name = x.c.Name,
+                Image = x.c.ImagePath,
+                ParentId = x.c.ParentId == null ? -1 : x.c.ParentId
+            }).ToListAsync();
+
+            var page = new PagedResult<CategoryViewModel>()
+            {
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalRecords = data.Count
+            };
+            return page;
+        }
+
         public async Task<CategoryViewModel> GetById(int id)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
@@ -69,18 +97,20 @@ namespace eRentSolution.Application.Catalog.Categories
         public async Task<bool> UpdateImage(CategoryImageUpdateRequest request)
         {
             var category = await _context.Categories.FindAsync(request.CategoryId);
-            if(category!=null)
+            if (request.ImageFile != null)
             {
-                if(request.ImageFile!=null)
-                {
-                    if (category.ImagePath != SystemConstant.DefaultCategory)
-                        await _storageService.DeleteFileAsync(category.ImagePath);
-                    category.ImagePath = await this.SaveFile(request.ImageFile);
-                }
+                if (category.ImagePath != SystemConstant.DefaultAvatar && category.ImagePath != null)
+                     await _storageService.DeleteFileAsync(category.ImagePath);
+                category.ImagePath = await this.SaveFile(request.ImageFile);
             }
+
             var result = await _context.SaveChangesAsync();
             if (result > 0)
+            {
+                await _context.SaveChangesAsync();
                 return true;
+            }
+
             return false;
         }
         private async Task<string> SaveFile(IFormFile file)
