@@ -112,13 +112,48 @@ namespace eRentSolution.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _userApiClient.Update(request.Id, request, SystemConstant.AppSettings.TokenAdmin);
+            var result = await _userApiClient.Update(request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed)
             {
                 TempData["result"] = "Update user successful";
                 return RedirectToAction("index");
             }
-            ModelState.AddModelError("", result.Message);
+            ModelState.AddModelError("", result.ToString());
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditAvatar(Guid id)
+        {
+            //var reusult = User.IsInRole(SystemConstant.AppSettings.AdminRole);
+            if (!id.ToString().Equals(userId))
+            {
+                TempData["FailResult"] = "You cannot update others user";
+                return View(id);
+            }
+            var target = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (target != null)
+            {
+                var user = target;
+                var updateRequest = new UserAvatarUpdateRequest()
+                {
+                    Id = user.Id,
+                };
+                return View(updateRequest);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditAvatar(UserAvatarUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.UpdateAvatar(request, SystemConstant.AppSettings.TokenAdmin);
+            if (result)
+            {
+                TempData["result"] = "Update user successful";
+                return RedirectToAction("index");
+            }
+            ModelState.AddModelError("", result.ToString());
             return View(request);
         }
         [HttpGet]
@@ -235,7 +270,8 @@ namespace eRentSolution.AdminApp.Controllers
                     return View(request);
                 }
             }
-            var result = await _userApiClient.RoleAssign(request.Id, request, SystemConstant.AppSettings.TokenAdmin);
+            
+            var result = await _userApiClient.RoleAssign(request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed)
             {
                 TempData["result"] = "Assign role successfully";

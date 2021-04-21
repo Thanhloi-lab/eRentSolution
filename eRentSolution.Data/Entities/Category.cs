@@ -16,6 +16,8 @@ namespace eRentSolution.Data.Entities
         public string SeoDescription { set; get; }
         public string SeoTitle { set; get; }
         public string SeoAlias { set; get; }
+        public string ImagePath { get; set; }
+        public long ImageSize { get; set; }
         public List<ProductInCategory> ProductInCategories { get; set; }
     }
 }

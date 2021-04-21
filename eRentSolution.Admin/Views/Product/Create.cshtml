@@ -71,6 +71,11 @@
                         <span asp-validation-for="SeoDescription" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="Address" class="control-label">Mô tả tìm kiếm</label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="ThumbnailImage" class="control-label">Ảnh đại diện</label>
                         <input asp-for="ThumbnailImage" type="file" class="form-control" />
                         <span asp-validation-for="ThumbnailImage" class="text-danger"></span>

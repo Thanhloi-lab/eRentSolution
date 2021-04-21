@@ -52,7 +52,7 @@ namespace eRentSolution.Application.Catalog.Products
                 DateCreated = DateTime.UtcNow,
                 Description = request.Description,
                 Details = request.Details,
-
+                Address = request.Address,
                 ViewCount = 0,
                 SeoAlias = request.SeoAlias,
                 SeoDescription = request.SeoDescription,
@@ -86,12 +86,10 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     new ProductImage()
                     {
-                        Caption = "Thumbnail image",
+                        Caption = "Image of " + product.Name,
                         DateCreated = DateTime.UtcNow,
                         FileSize = request.ThumbnailImage.Length,
                         ImagePath = await this.SaveFile(request.ThumbnailImage),
-                        IsDefault = true,
-                        SortOrder = 1
                     }
                 };
             }
@@ -247,16 +245,7 @@ namespace eRentSolution.Application.Catalog.Products
             product.SeoAlias = request.SeoAlias;
             product.SeoTitle = request.SeoTitle;
             product.SeoDescription = request.SeoDescription;
-            if (request.ThumbnailImage != null)
-            {
-                var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductDetailId == request.Id);
-                if (thumbnailImage != null)
-                {
-                    thumbnailImage.FileSize = request.ThumbnailImage.Length;
-                    thumbnailImage.ImagePath = await this.SaveFile(request.ThumbnailImage);
-                    _context.ProductImages.Update(thumbnailImage);
-                }
-            }
+            product.Address = request.Address;
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProduct);
             var censor = new Censor()
             {
@@ -377,7 +366,8 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoDescription = x.p.SeoDescription,
                 SeoTitle = x.p.SeoTitle,
                 ViewCount = x.p.ViewCount,
-                Status = x.p.Status
+                Status = x.p.Status,
+                Address = x.p.Address
             }).ToListAsync();
 
             List<ProductViewModel> products = new List<ProductViewModel>();
@@ -451,7 +441,8 @@ namespace eRentSolution.Application.Catalog.Products
                 ProductDetailViewModels = productDetails,
                 Status = product.Status,
                 Categories = categories,
-                IsFeatured = product.IsFeatured
+                IsFeatured = product.IsFeatured,
+                Address = product.Address
             };
             var productImages = await GetListImage(product.Id);
             foreach (var item in productImages)
@@ -540,7 +531,8 @@ namespace eRentSolution.Application.Catalog.Products
                     SeoDescription = x.p.SeoDescription,
                     SeoTitle = x.p.SeoTitle,
                     ViewCount = x.p.ViewCount,
-                    Status = x.p.Status
+                    Status = x.p.Status,
+                    Address = x.p.Address
                 }).ToListAsync();
 
             foreach (var item in products)
@@ -587,7 +579,8 @@ namespace eRentSolution.Application.Catalog.Products
                     SeoDescription = x.p.SeoDescription,
                     SeoTitle = x.p.SeoTitle,
                     ViewCount = x.p.ViewCount,
-                    Status = x.p.Status
+                    Status = x.p.Status, 
+                    Address = x.p.Address
                 }).Distinct().ToListAsync();
 
             foreach (var item in products)
@@ -634,7 +627,8 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoDescription = x.p.SeoDescription,
                 SeoTitle = x.p.SeoTitle,
                 ViewCount = x.p.ViewCount,
-                Status = x.p.Status
+                Status = x.p.Status,
+                Address = x.p.Address
             }).ToListAsync();
 
             List<ProductViewModel> products = new List<ProductViewModel>();
@@ -679,7 +673,6 @@ namespace eRentSolution.Application.Catalog.Products
             };
             return page;
         }
-
         public async Task<bool> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId)
         {
             var productDetail = await _context.ProductDetails.FindAsync(request.Id);
@@ -690,22 +683,6 @@ namespace eRentSolution.Application.Catalog.Products
             productDetail.Name = request.ProductDetailName;
             //productDetail.Price = request.Price;
             //productDetail.Stock = request.Stock;
-            if (request.NewImage != null)
-            {
-                var image = await _context.ProductImages
-                    .FirstOrDefaultAsync(i => i.ImagePath == request.OldImagePath && i.ProductDetailId == request.Id);
-                if (image != null)
-                {
-                    image.FileSize = request.NewImage.Length;
-                    image.ImagePath = await this.SaveFile(request.NewImage);
-                    _context.ProductImages.Update(image);
-                    var result = await _context.SaveChangesAsync();
-                    if (result > 0)
-                    {
-                        await RemoveImages(image.Id);
-                    }
-                }
-            }
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProductDetail);
             var censor = new Censor()
             {
@@ -721,24 +698,12 @@ namespace eRentSolution.Application.Catalog.Products
 
         //----------------Images-------
         // No Done
-        public async Task<int> RemoveImages(int imageId)
+        public async Task<int> RemoveImage(int imageId)
         {
             var productImage = await _context.ProductImages.FindAsync(imageId);
             if (productImage == null) throw new eRentException($"Cannot find a img : {imageId}");
 
-            var productDetail = await _context.ProductDetails.FindAsync(productImage.ProductDetailId);
-            if (productDetail == null) throw new eRentException($"Cannot find a product: { productImage.ProductDetailId}");
-
-            if (productImage.IsDefault == true && productDetail.ProductImages.Count != 1)
-            {
-                var ortherImage = _context.ProductImages.FirstOrDefault(x => x.ProductDetailId == productImage.ProductDetailId && x.Id != imageId);
-                ortherImage.IsDefault = true;
-                _context.ProductImages.Update(ortherImage);
-            }
             await _storageService.DeleteFileAsync(productImage.ImagePath);
-            productDetail.ProductImages.Remove(productImage);
-
-
             return await _context.SaveChangesAsync();
         }
         public async Task<ProductImageViewModel> GetImageById(int imageId)
@@ -753,10 +718,8 @@ namespace eRentSolution.Application.Catalog.Products
                 ImagePath = image.ImagePath,
                 FileSize = image.FileSize,
                 DateCreated = image.DateCreated,
-                IsDefault = image.IsDefault,
                 ProductDetailId = image.ProductDetailId,
                 Id = image.Id,
-                SortOrder = image.SortOrder
             };
             return productViewModel;
         }
@@ -772,14 +735,12 @@ namespace eRentSolution.Application.Catalog.Products
                         ImagePath = i.ImagePath,
                         FileSize = i.FileSize,
                         DateCreated = i.DateCreated,
-                        IsDefault = i.IsDefault,
                         ProductDetailId = productDetail.Id,
                         Id = i.Id,
-                        SortOrder = i.SortOrder
                     }).ToListAsync();
         }
         // No Done
-        public async Task<int> AddImages(ProductImageCreateRequest request)
+        public async Task<int> AddImage(ProductImageCreateRequest request, int productDetailId)
         {
             var product = await _context.Products.FindAsync(request.ProductId);
             if (product == null) throw new eRentException($"Cannot find a product: { request.ProductId }");
@@ -787,8 +748,6 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 Caption = request.Caption == null ? "Non-caption" : request.Caption,
                 DateCreated = DateTime.UtcNow,
-                IsDefault = request.IsDefault,
-                SortOrder = request.SortOrder,
                 ProductDetailId = request.ProductId
             };
             if (request.ImageFile != null)
@@ -797,18 +756,17 @@ namespace eRentSolution.Application.Catalog.Products
                 productImage.FileSize = request.ImageFile.Length;
             }
             _context.ProductImages.Add(productImage);
-            await _context.SaveChangesAsync();
+             await _context.SaveChangesAsync();
             return productImage.Id;
         }
         // No Done
-        public async Task<int> UpdateImages( ProductImageUpdateRequest request)
+        public async Task<int> UpdateImage( ProductImageUpdateRequest request)
         {
             var productImage = await _context.ProductImages.FindAsync(request.ImageId);
             if (productImage == null) throw new eRentException($"Cannot find a image: {request.ImageId}");
-            productImage.Caption = request.Caption;
-            productImage.SortOrder = request.SortOrder;
             if (request.ImageFile != null)
             {
+                await _storageService.DeleteFileAsync(productImage.ImagePath);
                 productImage.ImagePath = await this.SaveFile(request.ImageFile);
                 productImage.FileSize = request.ImageFile.Length;
             }

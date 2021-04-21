@@ -1,9 +1,14 @@
-﻿using eRentSolution.Data.EF;
+﻿using eRentSolution.Application.Common;
+using eRentSolution.Data.EF;
+using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Categories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,10 +17,12 @@ namespace eRentSolution.Application.Catalog.Categories
     public class CategoryService : ICategoryService
     {
         private readonly eRentDbContext _context;
+        private readonly IStorageService _storageService;
 
-        public CategoryService(eRentDbContext context)
+        public CategoryService(eRentDbContext context, IStorageService storageService)
         {
             _context = context;
+            _storageService = storageService;
         }
 
         public async Task<List<CategoryViewModel>> GetAll()
@@ -24,7 +31,8 @@ namespace eRentSolution.Application.Catalog.Categories
             {
                 Id = x.Id,
                 Name = x.Name,
-                ParentId = x.ParentId
+                ParentId = x.ParentId,
+                 Image = x.ImagePath
             }).ToListAsync();
         }
 
@@ -39,7 +47,8 @@ namespace eRentSolution.Application.Catalog.Categories
             {
                 Id = x.c.Id,
                 Name = x.c.Name,
-                ParentId = x.c.ParentId
+                ParentId = x.c.ParentId, 
+                Image=x.c.ImagePath
             }).ToListAsync();
         }
 
@@ -52,8 +61,34 @@ namespace eRentSolution.Application.Catalog.Categories
             {
                 Id = category.Id,
                 Name = category.Name,
-                ParentId = category.ParentId
+                ParentId = category.ParentId,
+                Image = category.ImagePath
             };
+        }
+
+        public async Task<bool> UpdateImage(CategoryImageUpdateRequest request)
+        {
+            var category = await _context.Categories.FindAsync(request.CategoryId);
+            if(category!=null)
+            {
+                if(request.ImageFile!=null)
+                {
+                    if (category.ImagePath != SystemConstant.DefaultCategory)
+                        await _storageService.DeleteFileAsync(category.ImagePath);
+                    category.ImagePath = await this.SaveFile(request.ImageFile);
+                }
+            }
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return true;
+            return false;
+        }
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
+            return fileName;
         }
     }
 }

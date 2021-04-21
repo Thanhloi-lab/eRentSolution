@@ -110,7 +110,7 @@ namespace eRentSolution.AdminApp.Controllers
                 SeoAlias = product.SeoAlias,
                 SeoDescription = product.SeoDescription,
                 SeoTitle = product.SeoTitle,
-                ThumbnailImage = null,
+                Address = product.Address,
                 IsFeatured = product.IsFeatured
             };
             return View(productViewModel);

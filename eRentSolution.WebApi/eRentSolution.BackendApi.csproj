@@ -15,8 +15,4 @@
     <ProjectReference Include="..\eRentSolution.Application\eRentSolution.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\user-content\" />
-  </ItemGroup>
-
 </Project>

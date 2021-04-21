@@ -15,5 +15,7 @@ namespace eRentSolution.Data.Entities
         public UserInfo Person { get; set; }
         public Status Status { get; set; }
         public DateTime DateChangePassword { get; set; }
+        public string AvatarFilePath { get; set; }
+        public long AvatarFileSize { get; set; }
     }
 }

@@ -20,5 +20,6 @@ namespace eRentSolution.Application.System.Users
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetPageUserActivities(UserActivityLogRequest request);
         Task<ApiResult<bool>> Delete(Guid id);
+        Task<ApiResult<bool>> UpdateAvatar(UserAvatarUpdateRequest request);
     }
 }

@@ -1,4 +1,5 @@
 ﻿@model eRentSolution.ViewModels.System.Users.UserViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{
     ViewData["Title"] = "Thông tin người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -83,7 +84,18 @@
                             </td>
                         </tr>
                     </tbody>
+                    <tbody>
 
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.AvatarFilePath)
+
+                            </td>
+                            <td>
+                                <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.AvatarFilePath" alt="N/A" style="width: 100px; height: 50px; object-fit: cover;"></a>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -93,7 +105,7 @@
         </form>
 
     </div>
-   
+
 </div>
-   
+
 

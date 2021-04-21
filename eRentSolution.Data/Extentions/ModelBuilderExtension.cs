@@ -103,8 +103,9 @@ namespace eRentSolution.Data.Extentions
                SeoTitle = "HomeStay-thanh-loi",
                Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
                Description = "HomeStay Thanh Loi tại pờ tít",
-               IsFeatured = Status.InActive
-           });
+               IsFeatured = Status.InActive,
+               Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3"
+           }) ;
             modelBuilder.Entity<ProductDetail>().HasData(
            new ProductDetail()
            {

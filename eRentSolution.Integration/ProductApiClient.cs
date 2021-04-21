@@ -37,7 +37,6 @@ namespace eRentSolution.Integration
             var result = await PutAsync<bool>($"/api/products/{productId}/categories", request, tokenName);
             return result;
         }
-
         public async Task<bool> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
@@ -62,6 +61,7 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(request.OriginalPrice.ToString()), "originalPrice");
             requestContent.Add(new StringContent(request.Stock.ToString()), "stock");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name.ToString()), "name");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Address) ? "" : request.Address.ToString()), "address");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Description) ? "" : request.Description.ToString()), "description");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Details) ? "" : request.Details.ToString()), "details");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoDescription) ? "" : request.SeoDescription.ToString()), "seoDescription");
@@ -73,7 +73,6 @@ namespace eRentSolution.Integration
             return response.IsSuccessStatusCode;
 
         }
-
         public async Task<bool> DeleteProduct(int productId, string tokenName)
         {
             var result = await DeleteAsync<bool>($"/api/products/delete/{productId}", tokenName);
@@ -94,20 +93,17 @@ namespace eRentSolution.Integration
             var result = await GetAsync<ProductViewModel>($"/api/products/{productId}", tokenName);
             return result;
         }
-
         public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName)
         {
             var result = await GetAsync<PagedResult<ProductViewModel>>($"/api/products/feature?pageindex={request.PageIndex}" +
                 $"&pagesize={request.PageSize}&keyword={request.Keyword}&categoryId={request.CategoryId}", tokenName);
             return result;
         }
-
         public async Task<List<ProductViewModel>> GetLastestProducts(int take, string tokenName)
         {
             var result = await GetListAsync<ProductViewModel>($"/api/products/lastest/{take}", tokenName);
             return result;
         }
-        
         public async Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request, string tokenName)
         {
             var result = await GetAsync<PagedResult<ProductViewModel>>(
@@ -117,7 +113,6 @@ namespace eRentSolution.Integration
                 $"&categoryId={request.CategoryId}", tokenName);
             return result;
         }
-
         public async Task<bool> UpdateProduct(ProductUpdateRequest request, Guid userInfoId, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
@@ -127,18 +122,19 @@ namespace eRentSolution.Integration
 
             var requestContent = new MultipartFormDataContent();
 
-            if (request.ThumbnailImage != null)
-            {
-                byte[] data;
-                using (var br = new BinaryReader(request.ThumbnailImage.OpenReadStream()))
-                {
-                    data = br.ReadBytes((int)request.ThumbnailImage.OpenReadStream().Length);
-                }
-                ByteArrayContent bytes = new ByteArrayContent(data);
-                requestContent.Add(bytes, "ThumbnailImage", request.ThumbnailImage.FileName);
-            }
+            //if (request.ThumbnailImage != null)
+            //{
+            //    byte[] data;
+            //    using (var br = new BinaryReader(request.ThumbnailImage.OpenReadStream()))
+            //    {
+            //        data = br.ReadBytes((int)request.ThumbnailImage.OpenReadStream().Length);
+            //    }
+            //    ByteArrayContent bytes = new ByteArrayContent(data);
+            //    requestContent.Add(bytes, "ThumbnailImage", request.ThumbnailImage.FileName);
+            //}
 
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name.ToString()), "name");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Address) ? "" : request.Address.ToString()), "address");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.IsFeatured.ToString()) ? "" : request.IsFeatured.ToString()), "isFeatured");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Description) ? "" : request.Description.ToString()), "description");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Details) ? "" : request.Details.ToString()), "details");
@@ -149,13 +145,11 @@ namespace eRentSolution.Integration
             var response = await client.PutAsync($"api/products/{userInfoId}/{request.Id}", requestContent);
             return response.IsSuccessStatusCode;
         }
-
         public async Task<List<ProductImageViewModel>> GetListImages(int productId, string tokenName)
         {
             var result = await GetListAsync<ProductImageViewModel>($"/api/products/imgs/{productId}", tokenName);
             return result;
         }
-
         public async Task<bool> CreateFeature(FeatureProductRequest request, string tokenName, Guid userInfoId)
         {
             //var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
@@ -174,13 +168,11 @@ namespace eRentSolution.Integration
             var result = await PutAsync<bool>($"/api/products/{userInfoId}/createfeature/{request.ProductId}", request, tokenName);
             return result.ResultObject;
         }
-
         public async Task<bool> DeleteFeature(FeatureProductRequest request, string tokenName, Guid userInfoId)
         {
             var result = await PutAsync<bool>($"/api/products/{userInfoId}/deletefeature/{request.ProductId}", request, tokenName);
             return result.ResultObject;
         }
-
         public async Task<PagedResult<ProductViewModel>> GetPageProductsByUserId(GetProductPagingRequest request, Guid userId, string tokenName)
         {
             var result = await GetAsync<PagedResult<ProductViewModel>>(
@@ -190,13 +182,11 @@ namespace eRentSolution.Integration
                 $"&categoryId={request.CategoryId}", tokenName);
             return result;
         }
-
         public async Task<bool> UpdateDetail(ProductDetailUpdateRequest request, Guid userId, string tokenName)
         {
             var result = await DeleteAsync<bool>($"/api/products/updateDetail/{userId}/{request.Id}", tokenName);
             return result;
         }
-
         public async Task<bool> IsMyProduct(int productId, Guid userId, string tokenName)
         {
             var result = await GetAsync<bool>($"/api/products/isMyProduct/{userId}/{productId}", tokenName);

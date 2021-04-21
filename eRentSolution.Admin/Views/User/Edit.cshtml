@@ -50,6 +50,10 @@
                         <input type="submit" value="Lưu lại" class="btn btn-primary" />
                     </div>
                 </form>
+                <form asp-action="Edit" method="get" style="padding: 0 20px 20px 20px;">
+                    <input asp-for="Id" type="hidden" input />
+                    <input type="submit" value="EditAvatar" class="btn btn-danger" />
+                </form>
             </div>
         </div>
     </div>

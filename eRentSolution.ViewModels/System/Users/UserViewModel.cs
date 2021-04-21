@@ -18,6 +18,8 @@ namespace eRentSolution.ViewModels.System.Users
         public string PhoneNumber { get; set; }
         [Display(Name = "Email")]
         public string Email { get; set; }
+        [Display(Name = "Ảnh đại diện")]
+        public string AvatarFilePath { get; set; }
         [Display(Name = "Ngày sinh")]
         [DataType(DataType.Date)]
         public DateTime Dob { get; set; }

@@ -166,7 +166,6 @@ namespace eRentSolution.WebApp.Controllers
                 SeoAlias = product.SeoAlias,
                 SeoDescription = product.SeoDescription,
                 SeoTitle = product.SeoTitle,
-                ThumbnailImage = null,
                 IsFeatured = product.IsFeatured
             };
             return View(productViewModel);

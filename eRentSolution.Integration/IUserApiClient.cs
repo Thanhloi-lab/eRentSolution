@@ -13,11 +13,12 @@ namespace eRentSolution.Integration
         public Task<PagedResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request, string tokenName);
         public Task<ApiResult<bool>> RegisterUser(UserRegisterRequest registerRequest);
         Task<UserViewModel> GetById(Guid id, string tokenName);
-        Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request, string tokenName);
+        Task<ApiResult<bool>> Update( UserUpdateRequest request, string tokenName);
+        Task<bool> UpdateAvatar(UserAvatarUpdateRequest request, string tokenName);
         Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request, string tokenName);
         Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request, string tokenName);
         Task<bool> Delete(Guid id, string tokenName);
-        Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request, string tokenName);
+        Task<ApiResult<bool>> RoleAssign(RoleAssignRequest request, string tokenName);
         Task<PagedResult<ActivityLogViewModel>> GetUserActivities(UserActivityLogRequest request, string tokenName);
         Task<PagedResult<ActivityLogViewModel>> GetPageActivities(UserActivityLogRequest request, string tokenName);
     }

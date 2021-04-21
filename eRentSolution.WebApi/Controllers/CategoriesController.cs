@@ -1,4 +1,6 @@
 ﻿using eRentSolution.Application.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -37,6 +39,13 @@ namespace eRentSolution.BackendApi.Controllers
         {
             var categories = await _categoryService.GetAllCategoryByProductId(productId);
             return Ok(categories);
+        }
+        [HttpPut("updateAvatar")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateImage([FromForm] CategoryImageUpdateRequest request)
+        {
+            var products = await _categoryService.UpdateImage(request);
+            return Ok(products);
         }
     }
 }

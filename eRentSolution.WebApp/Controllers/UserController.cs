@@ -69,7 +69,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _userApiClient.Update(request.Id, request, SystemConstant.AppSettings.TokenAdmin);
+            var result = await _userApiClient.Update(request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed)
             {
                 TempData["result"] = "Chỉnh sửa thành công";
