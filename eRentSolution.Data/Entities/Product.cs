@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eRentSolution.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,13 +14,15 @@ namespace eRentSolution.Data.Entities
         public string SeoDescription { set; get; }
         public string SeoTitle { set; get; }
         public string SeoAlias { get; set; }
-        public decimal Price { set; get; }
-        public decimal OriginalPrice { set; get; }
-        public int Stock { set; get; }
+        public string Address { get; set; }
         public int ViewCount { set; get; }
         public DateTime DateCreated { set; get; }
+        public Status Status { get; set; }
+        public Status? IsFeatured { get; set; }
+
         public List<ProductInCategory> ProductInCategories { get; set; }
-        public List<ProductImage> ProductImages { get; set; }
-        public AppUser AppUser { get; set; }
+        public List<Censor> Censors { get; set; }
+        public List<Slide> Slides { get; set; }
+        public List<ProductDetail> ProductDetails { get; set; }
     }
 }

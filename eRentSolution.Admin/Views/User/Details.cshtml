@@ -1,0 +1,111 @@
+﻿@model eRentSolution.ViewModels.System.Users.UserViewModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@{
+    ViewData["Title"] = "Thông tin người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Chi tiết</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a class="nav-link" asp-action="index" asp-controller="home">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Chi tiết</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <a class="btn btn-success" asp-action="Index" asp-controller="User">Về danh sách</a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Thuộc tính
+                            </th>
+                            <th>
+                                Mô tả
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.FirstName)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.LastName)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Dob)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Dob)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Email)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.PhoneNumber)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.AvatarFilePath)
+
+                            </td>
+                            <td>
+                                <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.AvatarFilePath" alt="N/A" style="width: 100px; height: 50px; object-fit: cover;"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <form asp-action="Edit" method="get" style="padding: 0 20px 20px 20px;">
+            <input asp-for="Id" type="hidden" input />
+            <input type="submit" value="Edit" class="btn btn-danger" />
+        </form>
+
+    </div>
+
+</div>
+
+

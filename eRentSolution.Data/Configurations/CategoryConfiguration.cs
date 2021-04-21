@@ -23,6 +23,7 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.SeoAlias).IsRequired().HasMaxLength(200);
             builder.Property(x => x.SeoDescription).HasMaxLength(500);
             builder.Property(x => x.SeoTitle).HasMaxLength(200);
+            builder.Property(x => x.ImagePath).HasMaxLength(200);
         }
     }
 }

@@ -1,0 +1,119 @@
+
+
+.btn-1{
+    width: 100px;
+    height: 40px;
+    color: black;
+    border-radius: 4px;
+    transition: ease-out 0.3s;
+   
+    border: 3px solid #42FBF2;
+    position: relative;
+    z-index: 1;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-1:hover{
+    color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-1:before{
+    transition: 0.5s all ease;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    right: 50%;
+    bottom: 0;
+    opacity: 0;
+    content: "";
+    background-color: #42FBF2;
+}
+.btn-1:hover:before{
+    transition: 0.5s all ease;
+    left: 0;
+    right: 0;
+    opacity: 1;
+    z-index: -1;
+}
+.btn-1 span{
+    font-size: 14px;
+    font-weight: 700;
+    
+}
+
+.btn-edit{
+    padding: 16px 26px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background-color: rgb(255,0,68);
+    transition:  0.5s all ease;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 0 #f9e506;
+    font-size: 2rem;
+    
+
+}
+.btn-edit:hover{
+    box-shadow: inset 300px 0 0 0 #06f91a;
+}
+.box {
+    max-width: 400px;
+    width: 100%;
+}
+
+    .box .search-box {
+        position: relative;
+        height: 50px;
+        max-width: 50px;
+        margin: auto;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+#check:checked ~ .search-box {
+    max-width: 380px;
+}
+
+.search-box input {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border-radius: 25px;
+    background: #fff;
+    outline: none;
+    border: none;
+    padding-left: 20px;
+    font-size: 18px;
+}
+
+.search-box .icon {
+    position: absolute;
+    right: -2px;
+    top: 0;
+    width: 50px;
+    background: #FFF;
+    height: 100%;
+    text-align: center;
+    line-height: 50px;
+    color: #FF676D;
+    font-size: 20px;
+    border-radius: 25px;
+}
+
+#check:checked ~ .search-box .icon {
+    background: #FF676D;
+    color: #FFF;
+    width: 60px;
+    border-radius: 0 25px 25px 0;
+}
+
+#check {
+    display: none;
+}
+  
+  

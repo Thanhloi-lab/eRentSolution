@@ -138,17 +138,17 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Key = "HomeTitle",
-                            Value = "This is home page of eShopSolution"
+                            Value = "This is home page of eRentSolution"
                         },
                         new
                         {
                             Key = "HomeKeyword",
-                            Value = "This is keyword of eShopSolution"
+                            Value = "This is keyword of eRentSolution"
                         },
                         new
                         {
                             Key = "HomeDescription",
-                            Value = "This is description of eShopSolution"
+                            Value = "This is description of eRentSolution"
                         });
                 });
 
@@ -179,10 +179,18 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "2ad40f93-7d5d-49a7-843c-842cfc89958f",
+                            ConcurrencyStamp = "0aa778a1-bdd9-4d43-ad05-94a53a36ef61",
                             Description = "Administrator role",
-                            Name = "admin",
+                            Name = "Admin",
                             NormalizedName = "admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
+                            ConcurrencyStamp = "c67e2c66-f506-4f80-9ea7-4b31feadbc96",
+                            Description = "User admin role",
+                            Name = "UserAdmin",
+                            NormalizedName = "useradmin"
                         });
                 });
 
@@ -195,10 +203,17 @@ namespace eRentSolution.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("AvatarFilePath")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("AvatarFileSize")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Dob")
+                    b.Property<DateTime>("DateChangePassword")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -206,16 +221,6 @@ namespace eRentSolution.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -241,6 +246,11 @@ namespace eRentSolution.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -256,20 +266,20 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "51d2063b-81bd-4bb6-97a3-2029cc326e65",
-                            Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            AvatarFileSize = 0L,
+                            ConcurrencyStamp = "1b0e7e66-527d-497a-9c17-9d2c8a77cb55",
+                            DateChangePassword = new DateTime(2021, 4, 21, 6, 35, 19, 122, DateTimeKind.Utc).AddTicks(6236),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
-                            FirstName = "Lợi",
-                            LastName = "Cao Thành",
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
-                            NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJmUsbvKMXL/0TOPprG+5/czeZuFrOSxgsNLwYFUvYAUufyoAG52EuO6e9b1Rpk+ag==",
+                            NormalizedUserName = "thanhloi",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEFe+tHjT7elCg1DhtF36tM8rp6pWTE2/o4nQD8Mo7nqQZY507pVXGBnGahQ5znGPg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
+                            Status = 1,
                             TwoFactorEnabled = false,
-                            UserName = "admin"
+                            UserName = "thanhloi"
                         });
                 });
 
@@ -281,6 +291,13 @@ namespace eRentSolution.Data.Migrations
                         .HasAnnotation("SqlServer:IdentityIncrement", 1)
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ImagePath")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("ImageSize")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsShowOnHome")
                         .HasColumnType("bit");
@@ -322,24 +339,68 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
+                            ImageSize = 0L,
                             IsShowOnHome = true,
-                            Name = "Áo nam",
-                            SeoAlias = "ao-nam",
-                            SeoDescription = "Sản phẩm áo thời trang nam",
-                            SeoTitle = "Sản phẩm áo thời trang nam",
+                            Name = "HomeStay",
+                            SeoAlias = "homestay",
+                            SeoDescription = "Loại hình nhà cho thuê và ở chung với chủ nhà.",
+                            SeoTitle = "Nhà cho thuê ở cùng chủ hộ",
                             SortOrder = 1,
                             Status = 1
                         },
                         new
                         {
                             Id = 2,
+                            ImageSize = 0L,
                             IsShowOnHome = true,
-                            Name = "Áo nữ",
-                            SeoAlias = "ao-nu",
-                            SeoDescription = "Sản phẩm áo thời trang nữ",
-                            SeoTitle = "Sản phẩm áo thời trang nữ",
+                            Name = "Khách sạn",
+                            SeoAlias = "khach-san",
+                            SeoDescription = "Cho thuê, mướn phòng khách sạn",
+                            SeoTitle = "Khách sạn",
                             SortOrder = 2,
                             Status = 1
+                        });
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.Censor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserInfoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActionId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserInfoId");
+
+                    b.ToTable("Censors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActionId = 1,
+                            Date = new DateTime(2021, 4, 21, 6, 35, 19, 150, DateTimeKind.Utc).AddTicks(5452),
+                            ProductId = 1,
+                            UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
                 });
 
@@ -388,29 +449,33 @@ namespace eRentSolution.Data.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("AppUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Details")
+                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("IsFeatured")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<decimal>("OriginalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("SeoAlias")
                         .IsRequired()
@@ -423,10 +488,10 @@ namespace eRentSolution.Data.Migrations
                     b.Property<string>("SeoTitle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Stock")
+                    b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasDefaultValue(1);
 
                     b.Property<int>("ViewCount")
                         .ValueGeneratedOnAdd()
@@ -435,25 +500,85 @@ namespace eRentSolution.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
-
                     b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 3, 16, 12, 10, 33, 761, DateTimeKind.Local).AddTicks(6168),
-                            Description = "Áo sơ mi nam trắng Việt Tiến",
-                            Details = "Áo sơ mi nam trắng Việt Tiến",
-                            Name = "Áo sơ mi nam trắng Việt Tiến",
+                            Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
+                            DateCreated = new DateTime(2021, 4, 21, 6, 35, 19, 148, DateTimeKind.Utc).AddTicks(5843),
+                            Description = "HomeStay Thanh Loi tại pờ tít",
+                            Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
+                            IsFeatured = 0,
+                            Name = "HomeStay Thanh Loi",
+                            SeoAlias = "HomeStay-thanh-loi",
+                            SeoDescription = "HomeStay-thanh-loi",
+                            SeoTitle = "HomeStay-thanh-loi",
+                            Status = 0,
+                            ViewCount = 0
+                        });
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.ProductDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsThumbnail")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("OriginalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<int>("Stock")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DateCreated = new DateTime(2021, 4, 21, 6, 35, 19, 149, DateTimeKind.Utc).AddTicks(7577),
+                            IsThumbnail = false,
+                            Name = "Phòng 1 chổ nằm",
                             OriginalPrice = 100000m,
                             Price = 200000m,
-                            SeoAlias = "ao-so-mi-nam-trang-viet-tien",
-                            SeoDescription = "Áo sơ mi nam trắng Việt Tiến",
-                            SeoTitle = "Áo sơ mi nam trắng Việt Tiến",
-                            Stock = 0,
-                            ViewCount = 0
+                            ProductId = 1,
+                            Status = 0,
+                            Stock = 0
                         });
                 });
 
@@ -480,18 +605,12 @@ namespace eRentSolution.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SortOrder")
+                    b.Property<int>("ProductDetailId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductDetailId");
 
                     b.ToTable("ProductImages");
                 });
@@ -560,24 +679,228 @@ namespace eRentSolution.Data.Migrations
                     b.ToTable("Promotions");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.Slide", b =>
                 {
-                    b.HasOne("eRentSolution.Data.Entities.AppUser", "AppUser")
-                        .WithMany("Products")
-                        .HasForeignKey("AppUserId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Navigation("AppUser");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Slides");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductImage", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.UserAction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ActionName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserActions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActionName = "Tạo sản phẩm"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ActionName = "Chỉnh sửa sản phẩm"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ActionName = "Ẩn sản phẩm"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ActionName = "Chỉnh sửa tồn kho"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ActionName = "Chỉnh sửa giá"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ActionName = "Ẩn sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ActionName = "Chỉnh sửa sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            ActionName = "Tạo sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            ActionName = "Ẩn sản phẩm nổi bật"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            ActionName = "Tạo sản phẩm nổi bật"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            ActionName = "Xóa sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            ActionName = "Hiện sản phẩm nổi bật"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            ActionName = "Xóa sản phẩm nổi bật"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            ActionName = "Hiện sản phẩm trình chiếu"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            ActionName = "Hiện sản phẩm"
+                        });
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserInfos");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
+                            Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Lợi",
+                            LastName = "Cao Thành"
+                        });
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.Censor", b =>
+                {
+                    b.HasOne("eRentSolution.Data.Entities.UserAction", "AdminAction")
+                        .WithMany("Censors")
+                        .HasForeignKey("ActionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eRentSolution.Data.Entities.Product", "Product")
+                        .WithMany("Censors")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eRentSolution.Data.Entities.UserInfo", "UserInfo")
+                        .WithMany("Censors")
+                        .HasForeignKey("UserInfoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdminAction");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("UserInfo");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.ProductDetail", b =>
                 {
                     b.HasOne("eRentSolution.Data.Entities.Product", "Product")
-                        .WithMany("ProductImages")
+                        .WithMany("ProductDetails")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.ProductImage", b =>
+                {
+                    b.HasOne("eRentSolution.Data.Entities.ProductDetail", "ProductDetail")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductDetail");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.ProductInCategory", b =>
@@ -599,9 +922,31 @@ namespace eRentSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("eRentSolution.Data.Entities.Slide", b =>
+                {
+                    b.HasOne("eRentSolution.Data.Entities.Product", "Product")
+                        .WithMany("Slides")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
+                {
+                    b.HasOne("eRentSolution.Data.Entities.AppUser", "AppUser")
+                        .WithOne("Person")
+                        .HasForeignKey("eRentSolution.Data.Entities.UserInfo", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+                });
+
             modelBuilder.Entity("eRentSolution.Data.Entities.AppUser", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Category", b =>
@@ -611,9 +956,28 @@ namespace eRentSolution.Data.Migrations
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
                 {
-                    b.Navigation("ProductImages");
+                    b.Navigation("Censors");
+
+                    b.Navigation("ProductDetails");
 
                     b.Navigation("ProductInCategories");
+
+                    b.Navigation("Slides");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.ProductDetail", b =>
+                {
+                    b.Navigation("ProductImages");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.UserAction", b =>
+                {
+                    b.Navigation("Censors");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
+                {
+                    b.Navigation("Censors");
                 });
 #pragma warning restore 612, 618
         }

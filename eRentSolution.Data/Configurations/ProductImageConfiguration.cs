@@ -16,7 +16,7 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.ImagePath).HasMaxLength(200).IsRequired();
             builder.Property(x => x.Id).UseIdentityColumn();
 
-            builder.HasOne(x => x.Product).WithMany(x => x.ProductImages).HasForeignKey(x => x.ProductId);
+            builder.HasOne(x => x.ProductDetail).WithMany(x => x.ProductImages).HasForeignKey(x => x.ProductDetailId);
         }
     }
 }

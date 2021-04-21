@@ -1,0 +1,35 @@
+﻿@model List<eRentSolution.ViewModels.Catalog.Categories.CategoryViewModel>
+
+<div class="box-category">
+    <p class="category__heading">Khám phá danh mục</p>
+    <div class="category-slider ">
+        @{ var parents = Model.Where(x => x.ParentId == null); }
+        @for (int i = 0; i < parents.Count(); i++)
+        {
+            var parent = parents.ElementAt(i);
+            var childrens = Model.Where(x => x.ParentId == parent.Id);
+            if (childrens.Any())
+            {
+
+@foreach (var item in childrens)
+{
+<div class="category-item">
+    <a href="/Categories/@item.Id">
+        <img src="https://static.chotot.com/storage/chapy-pro/newcats/v8/1000.png" alt="">
+        <span>@item.Name</span>
+    </a>
+</div>} }
+                else
+                {
+<div class="category-item">
+    <a href="/Categories/@parent.Id">
+        <img src="https://static.chotot.com/storage/chapy-pro/newcats/v8/1000.png" alt="">
+        <span>@parent.Name</span>
+    </a>
+</div>}
+            }
+
+
+
+    </div>
+</div>

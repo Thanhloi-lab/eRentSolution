@@ -1,5 +1,7 @@
 ﻿
+using eRentSolution.Data.Entities;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace eRentSolution.ViewModels.Catalog.Products
 {
@@ -14,6 +16,8 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public string SeoDescription { set; get; }
         public string SeoTitle { set; get; }
         public string SeoAlias { get; set; }
+        public string SubProductName { get; set; }
+        public string Address { get; set; }
         public IFormFile ThumbnailImage { get; set; }
     }
 }

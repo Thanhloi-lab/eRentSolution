@@ -4,4 +4,126 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Views\Account\Login.cshtml" />
+    <None Include="Views\Account\Register.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Product\Category.cshtml" />
+    <None Include="Views\Product\Create.cshtml" />
+    <None Include="Views\Product\Delete.cshtml" />
+    <None Include="Views\Product\Detail.cshtml" />
+    <None Include="Views\Product\Edit.cshtml" />
+    <None Include="Views\Product\Index.cshtml" />
+    <None Include="Views\Product\MyListProducts.cshtml" />
+    <None Include="Views\Product\MyProductDetail.cshtml" />
+    <None Include="Views\Shared\Components\Pager\Default.cshtml" />
+    <None Include="Views\Shared\Components\SideBar\Default.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\User\Details.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\js\site.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
+    <None Include="wwwroot\lib\bootstrap\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\LICENSE" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\LICENSE.md" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+    <None Include="wwwroot\themes\font\fontawesome-webfont.svg" />
+    <None Include="wwwroot\themes\js\bootshop.js" />
+    <None Include="wwwroot\themes\js\bootstrap.min.js" />
+    <None Include="wwwroot\themes\js\google-code-prettify\prettify.js" />
+    <None Include="wwwroot\themes\js\jquery.js" />
+    <None Include="wwwroot\themes\js\jquery.lightbox-0.5.js" />
+    <None Include="wwwroot\themes\js\less.js" />
+    <None Include="wwwroot\themes\less\accordion.less" />
+    <None Include="wwwroot\themes\less\alerts.less" />
+    <None Include="wwwroot\themes\less\amelia.less" />
+    <None Include="wwwroot\themes\less\amelia\bootswatch.less" />
+    <None Include="wwwroot\themes\less\amelia\variables.less" />
+    <None Include="wwwroot\themes\less\bootshop.less" />
+    <None Include="wwwroot\themes\less\bootshop\main.less" />
+    <None Include="wwwroot\themes\less\bootshop\variables.less" />
+    <None Include="wwwroot\themes\less\bootstrap.less" />
+    <None Include="wwwroot\themes\less\breadcrumbs.less" />
+    <None Include="wwwroot\themes\less\button-groups.less" />
+    <None Include="wwwroot\themes\less\buttons.less" />
+    <None Include="wwwroot\themes\less\carousel.less" />
+    <None Include="wwwroot\themes\less\classified.less" />
+    <None Include="wwwroot\themes\less\close.less" />
+    <None Include="wwwroot\themes\less\code.less" />
+    <None Include="wwwroot\themes\less\component-animations.less" />
+    <None Include="wwwroot\themes\less\dropdowns.less" />
+    <None Include="wwwroot\themes\less\font-awesome-ie7.less" />
+    <None Include="wwwroot\themes\less\font-awesome.less" />
+    <None Include="wwwroot\themes\less\forms.less" />
+    <None Include="wwwroot\themes\less\grid.less" />
+    <None Include="wwwroot\themes\less\hero-unit.less" />
+    <None Include="wwwroot\themes\less\labels-badges.less" />
+    <None Include="wwwroot\themes\less\layouts.less" />
+    <None Include="wwwroot\themes\less\mixins.less" />
+    <None Include="wwwroot\themes\less\modals.less" />
+    <None Include="wwwroot\themes\less\navbar.less" />
+    <None Include="wwwroot\themes\less\navs.less" />
+    <None Include="wwwroot\themes\less\pager.less" />
+    <None Include="wwwroot\themes\less\pagination.less" />
+    <None Include="wwwroot\themes\less\popovers.less" />
+    <None Include="wwwroot\themes\less\progress-bars.less" />
+    <None Include="wwwroot\themes\less\reset.less" />
+    <None Include="wwwroot\themes\less\responsive-1200px-min.less" />
+    <None Include="wwwroot\themes\less\responsive-767px-max.less" />
+    <None Include="wwwroot\themes\less\responsive-768px-979px.less" />
+    <None Include="wwwroot\themes\less\responsive-navbar.less" />
+    <None Include="wwwroot\themes\less\responsive-utilities.less" />
+    <None Include="wwwroot\themes\less\responsive.less" />
+    <None Include="wwwroot\themes\less\scaffolding.less" />
+    <None Include="wwwroot\themes\less\simplex.less" />
+    <None Include="wwwroot\themes\less\simplex\bootswatch.less" />
+    <None Include="wwwroot\themes\less\simplex\variables.less" />
+    <None Include="wwwroot\themes\less\sprites.less" />
+    <None Include="wwwroot\themes\less\tables.less" />
+    <None Include="wwwroot\themes\less\thumbnails.less" />
+    <None Include="wwwroot\themes\less\tooltip.less" />
+    <None Include="wwwroot\themes\less\type.less" />
+    <None Include="wwwroot\themes\less\utilities.less" />
+    <None Include="wwwroot\themes\less\variables.less" />
+    <None Include="wwwroot\themes\less\wells.less" />
+    <None Include="wwwroot\themes\switch\theamswitcher.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.9.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\eRentSolution.Constant\eRentSolution.Utilities.csproj" />
+    <ProjectReference Include="..\eRentSolution.Integration\eRentSolution.Integration.csproj" />
+    <ProjectReference Include="..\eRentSolution.ViewModels\eRentSolution.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>
