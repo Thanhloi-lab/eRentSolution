@@ -200,12 +200,11 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok(Image);
         }
-
-        [HttpPost("add-img")]
-        public async Task<IActionResult> AddImages([FromForm] ProductImageCreateRequest request)
+        [HttpPost("add-img/{productDetailId}")]
+        public async Task<IActionResult> AddImage([FromForm] ProductImageCreateRequest request, int productDetailId)
         {
             //     var productId = await _productService.Create(request);
-            var imageId = await _productService.AddImages(request);
+            var imageId = await _productService.AddImage(request, productDetailId);
             if (imageId == 0)
             {
                 return BadRequest();
@@ -215,9 +214,9 @@ namespace eRentSolution.BackendApi.Controllers
             return CreatedAtAction(nameof(GetImageById), new { id = imageId }, image);
         }
         [HttpDelete("img/{imageID}")]
-        public async Task<IActionResult> RemoveImages(int imageID)
+        public async Task<IActionResult> RemoveImage(int imageID)
         {
-            var result = await _productService.RemoveImages(imageID);
+            var result = await _productService.RemoveImage(imageID);
             if (result == 0)
             {
                 return BadRequest();
@@ -225,9 +224,9 @@ namespace eRentSolution.BackendApi.Controllers
             return Ok();
         }
         [HttpPut("update-img")]
-        public async Task<IActionResult> UpdateImages([FromForm] ProductImageUpdateRequest request)
+        public async Task<IActionResult> UpdateImage([FromForm] ProductImageUpdateRequest request)
         {
-            var result = await _productService.UpdateImages(request);
+            var result = await _productService.UpdateImage(request);
             if (result == 0)
             {
                 return BadRequest();

@@ -179,7 +179,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "a776acd6-1c47-47be-9896-1a619013ac53",
+                            ConcurrencyStamp = "0aa778a1-bdd9-4d43-ad05-94a53a36ef61",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -187,7 +187,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "a73dde6f-8098-4d70-b84d-977511c231a6",
+                            ConcurrencyStamp = "c67e2c66-f506-4f80-9ea7-4b31feadbc96",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -202,6 +202,13 @@ namespace eRentSolution.Data.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("AvatarFilePath")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("AvatarFileSize")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
@@ -259,14 +266,15 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "30632708-21a4-4ba1-8070-51f5ac3b655d",
-                            DateChangePassword = new DateTime(2021, 4, 15, 4, 14, 28, 12, DateTimeKind.Utc).AddTicks(9220),
+                            AvatarFileSize = 0L,
+                            ConcurrencyStamp = "1b0e7e66-527d-497a-9c17-9d2c8a77cb55",
+                            DateChangePassword = new DateTime(2021, 4, 21, 6, 35, 19, 122, DateTimeKind.Utc).AddTicks(6236),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEN3QP2cKkH6sdqyevwhrgref5qB/oJ4m85/qcTR8wJrXYpQdVV0DTrGdEmQwtC7kwg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEFe+tHjT7elCg1DhtF36tM8rp6pWTE2/o4nQD8Mo7nqQZY507pVXGBnGahQ5znGPg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,
@@ -283,6 +291,13 @@ namespace eRentSolution.Data.Migrations
                         .HasAnnotation("SqlServer:IdentityIncrement", 1)
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ImagePath")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("ImageSize")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsShowOnHome")
                         .HasColumnType("bit");
@@ -324,6 +339,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
+                            ImageSize = 0L,
                             IsShowOnHome = true,
                             Name = "HomeStay",
                             SeoAlias = "homestay",
@@ -335,6 +351,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 2,
+                            ImageSize = 0L,
                             IsShowOnHome = true,
                             Name = "Khách sạn",
                             SeoAlias = "khach-san",
@@ -381,7 +398,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 4, 15, 4, 14, 28, 40, DateTimeKind.Utc).AddTicks(3872),
+                            Date = new DateTime(2021, 4, 21, 6, 35, 19, 150, DateTimeKind.Utc).AddTicks(5452),
                             ProductId = 1,
                             UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
@@ -431,6 +448,11 @@ namespace eRentSolution.Data.Migrations
                         .HasAnnotation("SqlServer:IdentityIncrement", 1)
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
@@ -484,7 +506,8 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 15, 4, 14, 28, 38, DateTimeKind.Utc).AddTicks(7661),
+                            Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
+                            DateCreated = new DateTime(2021, 4, 21, 6, 35, 19, 148, DateTimeKind.Utc).AddTicks(5843),
                             Description = "HomeStay Thanh Loi tại pờ tít",
                             Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
                             IsFeatured = 0,
@@ -548,7 +571,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 15, 4, 14, 28, 39, DateTimeKind.Utc).AddTicks(5790),
+                            DateCreated = new DateTime(2021, 4, 21, 6, 35, 19, 149, DateTimeKind.Utc).AddTicks(7577),
                             IsThumbnail = false,
                             Name = "Phòng 1 chổ nằm",
                             OriginalPrice = 100000m,
@@ -582,13 +605,7 @@ namespace eRentSolution.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
                     b.Property<int>("ProductDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

@@ -24,9 +24,11 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public Status? IsFeatured { get; set; }
         [Display(Name = "Hình ảnh đại diện")]
         public string ThumbnailImage { get; set; }
+        [Display(Name = "Địa chỉ")]
+        public string Address { set; get; }
 
         // Entity ProductDetail
-        
+
         [Display(Name = "Mô tả")]
         public string Description { set; get; }
         [Display(Name = "Chi tiết")]

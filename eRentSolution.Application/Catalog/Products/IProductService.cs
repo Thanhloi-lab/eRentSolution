@@ -29,9 +29,9 @@ namespace eRentSolution.Application.Catalog.Products
         Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request);
         Task<PagedResult<ProductViewModel>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId);
         Task<List<ProductViewModel>> GetLastestProducts( int take);
-        Task<int> AddImages( ProductImageCreateRequest request);
-        Task<int> RemoveImages(int imageId);
-        Task<int> UpdateImages( ProductImageUpdateRequest request);
+        Task<int> AddImage( ProductImageCreateRequest request, int productDetailId);
+        Task<int> RemoveImage(int imageId);
+        Task<int> UpdateImage( ProductImageUpdateRequest request);
         Task<List<ProductImageViewModel>> GetListImage(int productId);
         Task<ProductImageViewModel> GetImageById(int imageId);
         Task<bool> IsMyProduct(Guid userId, int productId);

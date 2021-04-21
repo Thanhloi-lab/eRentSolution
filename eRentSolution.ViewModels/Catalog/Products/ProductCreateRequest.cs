@@ -17,6 +17,7 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public string SeoTitle { set; get; }
         public string SeoAlias { get; set; }
         public string SubProductName { get; set; }
+        public string Address { get; set; }
         public IFormFile ThumbnailImage { get; set; }
     }
 }

@@ -1,8 +1,10 @@
-﻿using eRentSolution.Data.EF;
+﻿using eRentSolution.Application.Common;
+using eRentSolution.Data.EF;
 using eRentSolution.Data.Entities;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Common;
 using eRentSolution.ViewModels.System.Users;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +12,9 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,18 +28,21 @@ namespace eRentSolution.Application.System.Users
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly eRentDbContext _context;
+        private readonly IStorageService _storageService;
 
         public UserService(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             RoleManager<AppRole> roleManager,
             IConfiguration configuration,
-            eRentDbContext context)
+            eRentDbContext context,
+            IStorageService storageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _context = context;
+            _storageService = storageService;
         }
 
         public async Task<ApiResult<string>> Authenticate(UserLoginRequest request, bool isAdminPage)
@@ -89,7 +96,10 @@ namespace eRentSolution.Application.System.Users
                 return new ApiErrorResult<bool>("User is not exist");
             if(user.Id.ToString().Equals(SystemConstant.AppSettings.CurrentUserId))
                 return new ApiErrorResult<bool>("Cannot delete current login account");
-            var result = await _userManager.DeleteAsync(user);
+            //var result = await _userManager.DeleteAsync(user);
+
+            user.Status = Data.Enums.Status.InActive;
+            var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
                 return new ApiSuccessResult<bool>();
             return new ApiErrorResult<bool>("Delete user unsuccessful");
@@ -111,7 +121,8 @@ namespace eRentSolution.Application.System.Users
                 LastName = person.LastName,
                 UserName = user.UserName,
                 Roles = roles,
-                Id = id
+                Id = id, 
+                AvatarFilePath = user.AvatarFilePath
             };
             return new ApiSuccessResult<UserViewModel>(userViewModel);
         }
@@ -177,7 +188,8 @@ namespace eRentSolution.Application.System.Users
                     Dob = x.p.Dob,
                     Email = x.u.Email,
                     LastName = x.p.LastName,
-                    UserName = x.u.UserName
+                    UserName = x.u.UserName,
+                    AvatarFilePath = x.u.AvatarFilePath
                 }).ToListAsync();
 
             //foreach (var item in data)
@@ -273,6 +285,25 @@ namespace eRentSolution.Application.System.Users
                 return new ApiSuccessResult<bool>();
             }
                 
+            return new ApiErrorResult<bool>("Update unsuccessful");
+        }
+        public async Task<ApiResult<bool>> UpdateAvatar(UserAvatarUpdateRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            if(request.AvatarFile!=null)
+            {
+                if(user.AvatarFilePath != SystemConstant.DefaultAvatar && user.AvatarFilePath!=null)
+                    await _storageService.DeleteFileAsync(user.AvatarFilePath);
+                user.AvatarFilePath = await this.SaveFile(request.AvatarFile);
+            }
+            
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                await _context.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }
+
             return new ApiErrorResult<bool>("Update unsuccessful");
         }
         public async Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request)
@@ -371,6 +402,13 @@ namespace eRentSolution.Application.System.Users
                 PageSize = request.PageSize
             };
             return new ApiSuccessResult<PagedResult<ActivityLogViewModel>>(pageResult);
+        }
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
+            return fileName;
         }
     }
 }

@@ -112,5 +112,12 @@ namespace eRentSolution.BackendApi.Controllers
             var result = await _userService.GetPageUserActivities(request);
             return Ok(result);
         }
+        [HttpPut("updateAvatar")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateImage([FromForm] UserAvatarUpdateRequest request)
+        {
+            var products = await _userService.UpdateAvatar(request);
+            return Ok(products);
+        }
     }
 }

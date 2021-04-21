@@ -11,5 +11,6 @@ namespace eRentSolution.Integration
         Task<List<CategoryViewModel>> GetAll(string tokenName);
         Task<CategoryViewModel> GetById(int id, string tokenName);
         Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId, string tokenName);
+        Task<bool> UpdateImage(CategoryImageUpdateRequest request, string tokenName);
     }
 }

@@ -8,6 +8,8 @@ namespace eRentSolution.Utilities.Constants
     {
         public const string MainConnectionString = "eRentSolutionDatabase";
         public const string BackendApiProductUrl = "https://localhost:5003/products/";
+        public const string DefaultAvatar = "default_avatar.png";
+        public const string DefaultCategory = "default_category.jpg";
         public class AppSettings
         {
             public const string TokenAdmin = "Token";
