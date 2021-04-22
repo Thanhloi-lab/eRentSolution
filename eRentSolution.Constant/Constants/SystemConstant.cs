@@ -10,6 +10,8 @@ namespace eRentSolution.Utilities.Constants
         public const string BackendApiProductUrl = "https://localhost:5003/products/";
         public const string DefaultAvatar = "default_avatar.png";
         public const string DefaultCategory = "default_category.jpg";
+        public const long DefaultAvatarSize = 15131;
+        public const long DefaultCategorySize = 3021;
         public class AppSettings
         {
             public const string TokenAdmin = "Token";

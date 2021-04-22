@@ -232,7 +232,13 @@ namespace eRentSolution.Application.System.Users
             };
             var result = await _userManager.CreateAsync(user, request.Password + user.DateChangePassword);
             if (result.Succeeded)
+            {
+                user.AvatarFilePath = SystemConstant.DefaultAvatar;
+                user.AvatarFileSize = SystemConstant.DefaultAvatarSize;
+                await _userManager.UpdateAsync(user);
                 return new ApiSuccessResult<bool>();
+            }    
+                
 
             return new ApiErrorResult<bool>("Fail to create account");
         }
@@ -290,10 +296,16 @@ namespace eRentSolution.Application.System.Users
         public async Task<ApiResult<bool>> UpdateAvatar(UserAvatarUpdateRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.Id.ToString());
+            int isDeleteSuccess = 0;
             if(request.AvatarFile!=null)
             {
                 if(user.AvatarFilePath != SystemConstant.DefaultAvatar && user.AvatarFilePath!=null)
-                    await _storageService.DeleteFileAsync(user.AvatarFilePath);
+                {
+                    isDeleteSuccess =  _storageService.DeleteFile(user.AvatarFilePath);
+                }
+                if (isDeleteSuccess == -1)
+                    new ApiErrorResult<bool>("Update unsuccessful");
+
                 user.AvatarFilePath = await this.SaveFile(request.AvatarFile);
             }
             

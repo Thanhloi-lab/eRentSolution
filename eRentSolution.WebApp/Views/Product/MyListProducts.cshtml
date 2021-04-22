@@ -1,105 +1,103 @@
 ﻿@using eRentSolution.ViewModels.Common;
 @model PagedResult<eRentSolution.ViewModels.Catalog.Products.ProductViewModel>
 
-@{
-    ViewData["Title"] = "MyListProducts";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<h1>MyListProducts</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+@{ ViewData["Title"] = "MyListProducts";
+                Layout = "~/Views/Shared/_Layout3.cshtml"; }
+<div style="display:flex;justify-content:center;align-items:center;width:100vw;height:100%;flex-direction:column; margin: 20px 0 20px 0;">
+    <h1>Danh sách phòng</h1>
+    <table id="customers">
         <tr>
-            <th>
-                Tên sản phẩm:
-            </th>
-            <th>
-                Số lượt xem:
-            </th>
-            <th>
-                Tồn kho:
-            </th>
-            <th>
-                Ngày tạo:
-            </th>
-            <th>
-                Sản phẩm nổi bật?:
-            </th>
-            <th>
-                Ảnh đại diện
-            </th>
-            <th>
-                Mổ tả
-            </th>
-            <th>
-                Chi tiết
-            </th>
-            <th>
-                Mô tả tìm kiếm:
-            </th>
-            <th>
-                Chủ đề tim kiếm:
-            </th>
-            <th>
-                Chữ viết tiềm kiếm:
-            </th>
-            <th>
-                Trạng thái
-            </th>
+            <th>Mẫ số</th>
+            <th>Tên sản phẩm</th>
+            <th>Giá</th>
+            <th>Địa chỉ</th>
+            <th>Số lượt xem</th>
+            <th>Số lượng</th>
+            <th>Sản phẩm nổi bật ?</th>
+            <th>Tình trạng</th>
             <th></th>
         </tr>
-    </thead>
-    <tbody>
         @foreach (var item in Model.Items)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ViewCount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Stock)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateCreated)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsFeatured)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ThumbnailImage)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Details)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SeoDescription)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SeoTitle)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SeoAlias)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("MyProductDetail", "MyProductDetail", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<tr>
+
+    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+    <td>@Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)</td>
+    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+    <td>@Html.DisplayFor(modelItem => item.ViewCount)</td>
+    <td>@Html.DisplayFor(modelItem => item.Stock)</td>
+    <td>@Html.DisplayFor(modelItem => item.IsFeatured)</td>
+    <td>@Html.DisplayFor(modmodelItemel => item.Status)</td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+        @Html.ActionLink("MyProductDetail", "MyProductDetail", new { id = item.Id }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+    </td>
+</tr>
+}
+
+
+    </table>
+    <div style="margin-top:20px;">
+        
+            <a class="btn success" asp-action="Create">Tạo mới</a>
+       
+    </div>
+</div>
 @await Component.InvokeAsync("Pager", Model)
+<style>
+    #customers {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 80%;
+    }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+    .btn {
+        border: 2px solid black;
+        background-color: white;
+        color: black;
+        padding: 7px 14px;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none
+    }
+
+    /* Green */
+    .success {
+        border-color: #4CAF50;
+        color: green;
+    }
+
+        .success:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+    h1 {
+        text-align: center;
+        text-transform: uppercase;
+        color: #4CAF50;
+    }
+</style>

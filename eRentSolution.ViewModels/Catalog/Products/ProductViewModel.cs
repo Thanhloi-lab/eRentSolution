@@ -31,8 +31,6 @@ namespace eRentSolution.ViewModels.Catalog.Products
 
         [Display(Name = "Mô tả")]
         public string Description { set; get; }
-        [Display(Name = "Chi tiết")]
-        public string Details { set; get; }
         [Display(Name = "Chi tiết-tìm kiếm")]
         public string SeoDescription { set; get; }
         [Display(Name = "Tiêu đề-tìm kiếm")]

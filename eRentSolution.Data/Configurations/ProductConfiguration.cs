@@ -23,8 +23,8 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
             builder.Property(x => x.SeoAlias).IsRequired().HasMaxLength(200);
             builder.Property(x => x.Description).IsRequired().HasMaxLength(2000);
-            builder.Property(x => x.Details).IsRequired().HasMaxLength(2000);
-            builder.Property(x => x.Details).HasMaxLength(500);
+            //builder.Property(x => x.Details).IsRequired().HasMaxLength(2000);
+            //builder.Property(x => x.Details).HasMaxLength(500);
             builder.Property(x => x.Status).IsRequired().HasDefaultValue(Status.Active);
             builder.Property(x => x.IsFeatured).IsRequired().HasDefaultValue(Status.InActive);
             builder.Property(x => x.Address).HasMaxLength(300).IsRequired();

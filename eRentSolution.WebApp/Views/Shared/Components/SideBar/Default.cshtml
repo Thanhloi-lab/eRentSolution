@@ -1,5 +1,5 @@
 ﻿@model List<eRentSolution.ViewModels.Catalog.Categories.CategoryViewModel>
-
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 <div class="box-category">
     <p class="category__heading">Khám phá danh mục</p>
     <div class="category-slider ">
@@ -10,26 +10,25 @@
             var childrens = Model.Where(x => x.ParentId == parent.Id);
             if (childrens.Any())
             {
-
-@foreach (var item in childrens)
-{
-<div class="category-item">
-    <a href="/Categories/@item.Id">
-        <img src="https://static.chotot.com/storage/chapy-pro/newcats/v8/1000.png" alt="">
-        <span>@item.Name</span>
-    </a>
-</div>} }
-                else
+                @foreach (var item in childrens)
                 {
-<div class="category-item">
-    <a href="/Categories/@parent.Id">
-        <img src="https://static.chotot.com/storage/chapy-pro/newcats/v8/1000.png" alt="">
-        <span>@parent.Name</span>
-    </a>
-</div>}
+                <div class="category-item">
+                    <a href="/Categories/@item.Id">
+                        <img src=@Configuration["BaseAddress"]/user-content/@item.Image alt=@item.Name>
+                        <span>@item.Name</span>
+                    </a>
+                </div>
+                } 
             }
-
-
-
+            else
+            {
+                <div class="category-item">
+                    <a href="/Categories/@parent.Id">
+                        <img src=@Configuration["BaseAddress"]/user-content/@parent.Image alt=@parent.Name>
+                        <span>@parent.Name</span>
+                    </a>
+                </div>
+            }
+        }
     </div>
 </div>

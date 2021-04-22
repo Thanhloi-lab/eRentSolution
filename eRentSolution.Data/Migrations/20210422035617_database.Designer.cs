@@ -10,8 +10,8 @@ using eRentSolution.Data.EF;
 namespace eRentSolution.Data.Migrations
 {
     [DbContext(typeof(eRentDbContext))]
-    [Migration("20210421045629_user_and_category_image")]
-    partial class user_and_category_image
+    [Migration("20210422035617_database")]
+    partial class database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -181,7 +181,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "a80a03c2-86a5-4e2f-b601-045d5c4ff3ea",
+                            ConcurrencyStamp = "28ec0373-fc2c-41ff-97fa-f0039253b6d6",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -189,7 +189,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "e230ebe6-793c-4cf9-a7f6-747f1d70aae0",
+                            ConcurrencyStamp = "f49ec332-12b4-42a6-aa0d-fa5ab4f6bc2b",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -268,15 +268,16 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            AvatarFileSize = 0L,
-                            ConcurrencyStamp = "02d8b747-afc1-4af0-8a10-674cd6059b35",
-                            DateChangePassword = new DateTime(2021, 4, 21, 4, 56, 28, 339, DateTimeKind.Utc).AddTicks(8502),
+                            AvatarFilePath = "default_avatar.png",
+                            AvatarFileSize = 15131L,
+                            ConcurrencyStamp = "a38c4112-7c63-43f5-9087-1207dcf4c05c",
+                            DateChangePassword = new DateTime(2021, 4, 22, 3, 56, 16, 759, DateTimeKind.Utc).AddTicks(6760),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPguN9468AS5s10jQ0l7bpdVAIoUuJkloVzZN8neGqLu5KeOx+YB68ZulGTDh3Egpw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIxZWQ/SzsorE1vazA78mpP2czSzAepIV2Fhje5G47HrSRqkanveXMaEDZVdnaQR4Q==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,
@@ -341,7 +342,8 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ImageSize = 0L,
+                            ImagePath = "default_category.jpg",
+                            ImageSize = 3021L,
                             IsShowOnHome = true,
                             Name = "HomeStay",
                             SeoAlias = "homestay",
@@ -353,7 +355,8 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 2,
-                            ImageSize = 0L,
+                            ImagePath = "default_category.jpg",
+                            ImageSize = 3021L,
                             IsShowOnHome = true,
                             Name = "Khách sạn",
                             SeoAlias = "khach-san",
@@ -400,7 +403,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 4, 21, 4, 56, 28, 378, DateTimeKind.Utc).AddTicks(6586),
+                            Date = new DateTime(2021, 4, 22, 3, 56, 16, 788, DateTimeKind.Utc).AddTicks(5547),
                             ProductId = 1,
                             UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
@@ -465,9 +468,7 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Details")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("IsFeatured")
                         .ValueGeneratedOnAdd()
@@ -509,9 +510,8 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
-                            DateCreated = new DateTime(2021, 4, 21, 4, 56, 28, 376, DateTimeKind.Utc).AddTicks(7775),
+                            DateCreated = new DateTime(2021, 4, 22, 3, 56, 16, 786, DateTimeKind.Utc).AddTicks(7579),
                             Description = "HomeStay Thanh Loi tại pờ tít",
-                            Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
                             IsFeatured = 0,
                             Name = "HomeStay Thanh Loi",
                             SeoAlias = "HomeStay-thanh-loi",
@@ -534,10 +534,13 @@ namespace eRentSolution.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsThumbnail")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.Property<string>("Detail")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -563,6 +566,9 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
@@ -573,14 +579,16 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 21, 4, 56, 28, 377, DateTimeKind.Utc).AddTicks(7602),
-                            IsThumbnail = false,
+                            DateCreated = new DateTime(2021, 4, 22, 3, 56, 16, 787, DateTimeKind.Utc).AddTicks(5876),
+                            Detail = "2 nvs .....",
+                            Length = 10,
                             Name = "Phòng 1 chổ nằm",
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             ProductId = 1,
                             Status = 0,
-                            Stock = 0
+                            Stock = 0,
+                            Width = 5
                         });
                 });
 
@@ -608,12 +616,11 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("ProductDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

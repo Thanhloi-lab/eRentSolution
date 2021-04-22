@@ -142,7 +142,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result)
             {
                 TempData["result"] = "Tạo mới sản phẩm thành công";
-                return RedirectToAction("Index");
+                return RedirectToAction("MyListProducts");
             }
 
             ModelState.AddModelError("", "Tạo mới sản phẩm thất bại");
@@ -162,7 +162,7 @@ namespace eRentSolution.WebApp.Controllers
                 Id = id,
                 Name = product.Name,
                 Description = product.Description,
-                Details = product.Details,
+                //Details = product.Details,
                 SeoAlias = product.SeoAlias,
                 SeoDescription = product.SeoDescription,
                 SeoTitle = product.SeoTitle,

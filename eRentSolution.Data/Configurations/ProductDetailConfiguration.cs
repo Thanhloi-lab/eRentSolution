@@ -20,7 +20,9 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.Stock).IsRequired().HasDefaultValue(0);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
             builder.Property(x => x.Status).IsRequired().HasDefaultValue(Status.Active);
-            builder.Property(x => x.IsThumbnail).HasDefaultValue("false").IsRequired();
+            builder.Property(x => x.Detail).HasMaxLength(1000).IsRequired();
+            builder.Property(x => x.Width).IsRequired();
+            builder.Property(x => x.Length).IsRequired();
 
             builder.HasOne(x => x.Product).WithMany(x => x.ProductDetails).HasForeignKey(x => x.ProductId);
         }

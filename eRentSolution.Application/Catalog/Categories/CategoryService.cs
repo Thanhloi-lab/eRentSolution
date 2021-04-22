@@ -97,11 +97,15 @@ namespace eRentSolution.Application.Catalog.Categories
         public async Task<bool> UpdateImage(CategoryImageUpdateRequest request)
         {
             var category = await _context.Categories.FindAsync(request.CategoryId);
+            int isDeleteSuccess = 0;
             if (request.ImageFile != null)
             {
                 if (category.ImagePath != SystemConstant.DefaultAvatar && category.ImagePath != null)
-                     await _storageService.DeleteFileAsync(category.ImagePath);
+                      isDeleteSuccess = _storageService.DeleteFile(category.ImagePath);
+                if (isDeleteSuccess == -1)
+                    return false;
                 category.ImagePath = await this.SaveFile(request.ImageFile);
+                category.ImageSize = request.ImageFile.Length;
             }
 
             var result = await _context.SaveChangesAsync();

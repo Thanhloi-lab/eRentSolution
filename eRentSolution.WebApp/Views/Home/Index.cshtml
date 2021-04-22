@@ -6,83 +6,70 @@
 
 
 @section slider{
-    <div class="box-slider">
-        <div class="owl-carousel owl-theme slider">
+    <div style="height:350px" class="box-slider">
+        <div style="margin:0;"  class="slide-owl owl-carousel owl-theme slider">
             @if (Model.Slides != null)
             {
-@for (int index = 0; index < Model.Slides.Count; index++)
-{
-    var slide = Model.Slides[index];
-<div class="item">
-    <img src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" />
-</div>}}
+                @for (int index = 0; index < Model.Slides.Count; index++)
+                {
+                    var slide = Model.Slides[index];
+                    <div class="item">
+                        <img style="height:320px; object-fit:cover;" src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" />
+                    </div>
+                }
+            }
 
         </div>
     </div>
 }
-@*<div class="well well-small">
-        <h4><localize>Featured Products</localize> <small class="pull-right">@Model.FeaturedProducts.Items.Count Featured product</small></h4>
-        <div class="row-fluid">
-            <div id="featured" class="carousel slide">
-                <div class="carousel-inner">
-                    @{ List<List<ProductViewModel>> featuredProducts = new List<List<ProductViewModel>>();
-                        List<ProductViewModel> featuredPart = new List<ProductViewModel>(); }
 
-                    @for (int index = 0; index < Model.FeaturedProducts.Items.Count; index++)
-                    {
-                        featuredPart.Add(Model.FeaturedProducts.Items[index]);
-                        if (featuredPart.Count == 4)
-                        {
-                            featuredProducts.Add(featuredPart);
-                            if (index == Model.FeaturedProducts.Items.Count - 1)
-                                break;
-                            featuredPart = new List<ProductViewModel>();
-                        }
-                        if (index == Model.FeaturedProducts.Items.Count - 1)
-                        {
-                            featuredProducts.Add(featuredPart);
-                        }
+<div class="box-product">
+    <p class="category__heading">Tin đăng nổi bật</p>
+    <div class="product-slide carousel-nav-center owl-carousel">
+        @{ List<List<ProductViewModel>> featuredProducts = new List<List<ProductViewModel>>();
+            List<ProductViewModel> featuredPart = new List<ProductViewModel>(); }
 
-                    }
-                    @for (int index = 0; index < featuredProducts.Count; index++)
-                    {
-                        <div class="item @(index == 0 ? "active" : "")">
-                            <ul class="thumbnails">
-                                @foreach (var item in featuredProducts[index])
-                                {
-                                    var url = $"/Products/{item.Id}";
-                                    <li class="span3">
-                                        <div class="thumbnail">
-                                            <i class="tag"></i>
-                                            <a href="@url"><img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="@item.Name"></a>
-                                            <div class="caption">
-                                                <h5>@item.Name</h5>
-                                                <h4><a class="btn" href="" localize-content>VIEW</a> <span class="pull-right">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</span></h4>
-                                            </div>
-                                        </div>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    }
+        @for (int index = 0; index < Model.FeaturedProducts.Items.Count; index++)
+        {
+            featuredPart.Add(Model.FeaturedProducts.Items[index]);
+            if (featuredPart.Count == 4)
+            {
+                featuredProducts.Add(featuredPart);
+                if (index == Model.FeaturedProducts.Items.Count - 1)
+                    break;
+                featuredPart = new List<ProductViewModel>();
+            }
+            if (index == Model.FeaturedProducts.Items.Count - 1)
+            {
+                featuredProducts.Add(featuredPart);
+            }
+
+        }
+        @for (int index = 0; index < featuredProducts.Count; index++)
+        {
+    @foreach (var item in featuredProducts[index])
+    {
+        var url = $"/Products/{item.Id}";
+        <div class="box-full-flex">
+            <div class="box-item">
+                <div style="position:relative;" class="box-item__photo">
+                    <a href="roomdetails.html">
+                        <a href="@url"> <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="" class="box-item__img"></a>
+                        <img class="icon-heart" style="width:20px;" src="https://static.chotot.com/storage/chotot-icons/next/save-ad.svg" alt="photos">
+                    </a>
                 </div>
-                <a class="left carousel-control" href="#featured" data-slide="prev">
-                    &lsaquo;
-                    @{if (Model.FeaturedProducts.PageIndex > 1)
-                            Model.FeaturedProducts.PageIndex--;
-                    }
-                </a>
-                <a class="right carousel-control" href="#featured" data-slide="next">
-                    &rsaquo;
-                    @{if (Model.FeaturedProducts.PageIndex < Model.FeaturedProducts.PageCount)
-                            Model.FeaturedProducts.PageIndex++;
-                    }
-                </a>
-
+                <div class="box-item__caption">
+                    <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
+                    <p class="box-item__size">18 m²</p>
+                    <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
+                    <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
+                </div>
             </div>
         </div>
-    </div>*@
-
+    }
+        }
+    </div>
+</div>
 <div class="box-product">
     <p class="category__heading">Tin đăng cho bạn</p>
 
@@ -90,10 +77,10 @@
         @foreach (var item in Model.LastestProducts)
         {
             var url = $"/Products/{item.Id}";
-            <div class="box-full-flex">
+            <div class="box-full-flex loadmore">
                 <div class="box-item">
                     <div style="position: relative; class="box-item__photo">
-                        <a  href="roomdetails.html">
+                        <a href="roomdetails.html">
                             <a href="@url"> <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="" class="box-item__img"></a>
                             <img class="icon-heart" width="20px;" src="https://static.chotot.com/storage/chotot-icons/next/save-ad.svg" alt="photos">
                         </a>
@@ -108,15 +95,17 @@
             </div>
         }
 
-
     </div>
+    <button class="btn-loadmore">Load More</button>
 </div>
+
 <script>
-    $('.owl-carousel').owlCarousel({
+    let navText = ["<i class='bx bx-chevron-left'></i>", "<i class='bx bx-chevron-right'></i>"]
+    $('.slide-owl').owlCarousel({
         loop: true,
         margin: 10,
         dots: true,
-
+   
         autoplay: true,
         autoplayTimeout: 3000,
         responsive: {
@@ -126,5 +115,95 @@
             }
         }
     })
+    $('.product-slide').owlCarousel({
+        items: 2,
+        dots: false,
+        nav: true,
+        navText: navText,
+       
+        responsive: {
+            500: {
+                items: 2
+            },
+            1280: {
+                items: 5
+            },
+            1600: {
+                items: 6
+            }
+        }
+    })
+    
+    $(".loadmore").slice(0, 5).show()
+        $(".btn-loadmore").on("click", function () {
+            $(".loadmore:hidden").slice(0, 5).slideDown()
+            if ($(".loadmore:hidden").length == 0) {
+                $(".btn-loadmore").fadeOut('slow')
+            }
+        })
 
+  
 </script>
+
+<style>
+    
+    .carousel-nav-center {
+        position: relative;
+    }
+
+        .carousel-nav-center .owl-nav button i {
+            font-size: 4rem;
+        }
+
+        .carousel-nav-center .owl-nav button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .carousel-nav-center .owl-nav .owl-prev {
+            position: absolute;
+            left: -9px;
+            top:144px;
+        }
+
+        .carousel-nav-center .owl-nav .owl-next {
+            position: absolute;
+            right: -9px;
+            top:144px;
+        }
+
+    .owl-nav button {
+        border: none;
+        outline: none;
+    }
+
+        .owl-nav button i {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+        }
+
+        .owl-nav button:hover i {
+            color: #c0392b;
+            
+        }
+    .bx-chevron-left:before {
+        content: "\e9af";
+    }
+    .bx-chevron-right:before {
+        content: "\e9b2";
+    }
+    .bx {
+        font-family: 'boxicons' !important;
+        font-weight: normal;
+        font-style: normal;
+        font-variant: normal;
+        line-height: 1;
+        display: inline-block;
+        text-transform: none;
+        speak: none;
+        -webkit-font-smoothing: antialiased;
+        color:#fff;
+    }
+   
+</style>

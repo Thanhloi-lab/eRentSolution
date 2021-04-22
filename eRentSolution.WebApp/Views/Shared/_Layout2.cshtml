@@ -9,6 +9,7 @@
     <meta name="description" content="@ViewData["Description"]">
     <meta name="author" content="">
 
+   
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -84,14 +85,30 @@
                                         <span>Projects</span>
                                     </a>
                                 </li>
-                                <li class="dropdown-menu-item">
-                                    <a href="#" class="dropdown-menu-link">
-                                        <div>
-                                            <i class="fas fa-sign-out-alt"></i>
-                                        </div>
-                                        <span>Logout</span>
-                                    </a>
-                                </li>
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                    <li class="dropdown-menu-item">
+                        <a style=" class="dropdown-menu-link">
+                            <form method="post" asp-controller="account" asp-action="Logout" class="dropdown-menu-link">
+                                <button type="submit" class="dropdown-item" style="width: 100%; border:none; outline:none; color:black;background-color:#fff;  padding:10px 80px; margin-left:6px; ">Đăng xuất</button>
+                            </form>
+                        </a>
+
+                    </li>
+                }
+                else
+                {
+                    <li class="dropdown-menu-item">
+                        <a href="/Account/Register" class="dropdown-menu-link">
+                            <div>
+                                <i class="fas fa-spinner"></i>
+                            </div>
+                            <span>Đăng ký</span>
+                        </a>
+
+                    </li>
+                }
+
                             </ul>
                         </div>
                     </li>
@@ -109,12 +126,22 @@
                     </button>
                 </a>
             </div>
-            <div class="header__box-login">
-                <a href="/Account/Login">
-                    <svg class="appWrapper-Header-icon login-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><g class="svg-stroke" fill="none" fill-rule="evenodd" stroke="#000" stroke-width="1.2"><circle cx="15" cy="15" r="14.4"></circle><circle cx="15" cy="12" r="4.5"></circle><path d="M25.442 24.63c-1.453-4.536-5.579-7.807-10.442-7.807-4.932 0-9.106 3.365-10.502 8"></path></g></svg>
-                    <span>Đăng nhập</span>
-                </a>
-            </div>
+            @if (!User.Identity.IsAuthenticated)
+            {
+    <div class="header__box-login">
+        <a href="/Account/login">
+            <svg class="appWrapper-Header-icon login-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><g class="svg-stroke" fill="none" fill-rule="evenodd" stroke="#000" stroke-width="1.2"><circle cx="15" cy="15" r="14.4"></circle><circle cx="15" cy="12" r="4.5"></circle><path d="M25.442 24.63c-1.453-4.536-5.579-7.807-10.442-7.807-4.932 0-9.106 3.365-10.502 8"></path></g></svg>
+            <span>Đăng nhập</span>
+        </a>
+    </div> }
+else
+{
+    <div class="header__box-login">
+        <a href="/User/Details/@User.Claims.FirstOrDefault(x=>x.Type == SystemConstant.AppSettings.NameIdentifierClaimType).Value">
+            <svg class="appWrapper-Header-icon login-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><g class="svg-stroke" fill="none" fill-rule="evenodd" stroke="#000" stroke-width="1.2"><circle cx="15" cy="15" r="14.4"></circle><circle cx="15" cy="12" r="4.5"></circle><path d="M25.442 24.63c-1.453-4.536-5.579-7.807-10.442-7.807-4.932 0-9.106 3.365-10.502 8"></path></g></svg>
+            <span>@User.Identity.Name</span>
+        </a>
+    </div>}
             <div class="header__box-upload">
                 <a href="">
                     <i class="header__box-upload-icon fas fa-upload"></i>

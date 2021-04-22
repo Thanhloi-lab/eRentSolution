@@ -179,7 +179,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "0aa778a1-bdd9-4d43-ad05-94a53a36ef61",
+                            ConcurrencyStamp = "28ec0373-fc2c-41ff-97fa-f0039253b6d6",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -187,7 +187,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "c67e2c66-f506-4f80-9ea7-4b31feadbc96",
+                            ConcurrencyStamp = "f49ec332-12b4-42a6-aa0d-fa5ab4f6bc2b",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -266,15 +266,16 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
                             AccessFailedCount = 0,
-                            AvatarFileSize = 0L,
-                            ConcurrencyStamp = "1b0e7e66-527d-497a-9c17-9d2c8a77cb55",
-                            DateChangePassword = new DateTime(2021, 4, 21, 6, 35, 19, 122, DateTimeKind.Utc).AddTicks(6236),
+                            AvatarFilePath = "default_avatar.png",
+                            AvatarFileSize = 15131L,
+                            ConcurrencyStamp = "a38c4112-7c63-43f5-9087-1207dcf4c05c",
+                            DateChangePassword = new DateTime(2021, 4, 22, 3, 56, 16, 759, DateTimeKind.Utc).AddTicks(6760),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEFe+tHjT7elCg1DhtF36tM8rp6pWTE2/o4nQD8Mo7nqQZY507pVXGBnGahQ5znGPg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIxZWQ/SzsorE1vazA78mpP2czSzAepIV2Fhje5G47HrSRqkanveXMaEDZVdnaQR4Q==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 1,
@@ -339,7 +340,8 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ImageSize = 0L,
+                            ImagePath = "default_category.jpg",
+                            ImageSize = 3021L,
                             IsShowOnHome = true,
                             Name = "HomeStay",
                             SeoAlias = "homestay",
@@ -351,7 +353,8 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 2,
-                            ImageSize = 0L,
+                            ImagePath = "default_category.jpg",
+                            ImageSize = 3021L,
                             IsShowOnHome = true,
                             Name = "Khách sạn",
                             SeoAlias = "khach-san",
@@ -398,7 +401,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 4, 21, 6, 35, 19, 150, DateTimeKind.Utc).AddTicks(5452),
+                            Date = new DateTime(2021, 4, 22, 3, 56, 16, 788, DateTimeKind.Utc).AddTicks(5547),
                             ProductId = 1,
                             UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
@@ -463,9 +466,7 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("nvarchar(2000)");
 
                     b.Property<string>("Details")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("IsFeatured")
                         .ValueGeneratedOnAdd()
@@ -507,9 +508,8 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
-                            DateCreated = new DateTime(2021, 4, 21, 6, 35, 19, 148, DateTimeKind.Utc).AddTicks(5843),
+                            DateCreated = new DateTime(2021, 4, 22, 3, 56, 16, 786, DateTimeKind.Utc).AddTicks(7579),
                             Description = "HomeStay Thanh Loi tại pờ tít",
-                            Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
                             IsFeatured = 0,
                             Name = "HomeStay Thanh Loi",
                             SeoAlias = "HomeStay-thanh-loi",
@@ -532,10 +532,13 @@ namespace eRentSolution.Data.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsThumbnail")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.Property<string>("Detail")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -561,6 +564,9 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
@@ -571,14 +577,16 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 21, 6, 35, 19, 149, DateTimeKind.Utc).AddTicks(7577),
-                            IsThumbnail = false,
+                            DateCreated = new DateTime(2021, 4, 22, 3, 56, 16, 787, DateTimeKind.Utc).AddTicks(5876),
+                            Detail = "2 nvs .....",
+                            Length = 10,
                             Name = "Phòng 1 chổ nằm",
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             ProductId = 1,
                             Status = 0,
-                            Stock = 0
+                            Stock = 0,
+                            Width = 5
                         });
                 });
 
@@ -604,6 +612,11 @@ namespace eRentSolution.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("ProductDetailId")
                         .HasColumnType("int");

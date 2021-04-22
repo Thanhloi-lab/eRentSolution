@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace eRentSolution.Application.Common
@@ -31,27 +32,32 @@ namespace eRentSolution.Application.Common
             await mediaBinaryStream.CopyToAsync(output);
         }
 
-        public void DeleteFile(string fileName)
-        {
-            var filePath = Path.Combine(_userContentFolder, fileName);
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-        }
 
-        public async Task DeleteFileAsync(string fileName)
+        public int DeleteFile(string fileName)
         {
             var filePath = Path.Combine(_userContentFolder, fileName);
-            //FileInfo info = new FileInfo(filePath);//get info file
-            //                                           //the problem ocurred because this, 
-            //FileStream s = new FileStream(filePath, FileMode.Open); //openning stream, them file in use by a process
-            //s.Close();
-            //s.Dispose();
-            if (File.Exists(filePath))
+
+            int numberOfRetries = 30;
+            int delayOnRetry = 1000;
+            for(int i=1; i<numberOfRetries; ++i)
             {
-                await Task.Run(() => File.Delete(filePath));
+                try
+                {
+                    //if (File.Exists(filePath))
+                    //{
+                    //    await Task.Run(() => File.Delete(filePath));
+                    //}
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                    return 1;
+                }catch(Exception e) when (i<=numberOfRetries)
+                {
+                    Thread.Sleep(delayOnRetry);
+                }
             }
+            return -1;
         }
     }
 }

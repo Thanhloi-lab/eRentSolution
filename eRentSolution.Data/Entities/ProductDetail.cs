@@ -12,8 +12,10 @@ namespace eRentSolution.Data.Entities
         public string Name { set; get; }
         public decimal Price { set; get; }
         public decimal OriginalPrice { set; get; }
+        public string Detail { get; set; }
+        public int Width { get; set; }
+        public int Length { get; set; }
         public int Stock { set; get; }
-        public bool IsThumbnail { get; set; }
         public Product Product { get; set; }
         public DateTime DateCreated { set; get; }
         public Status Status { get; set; }

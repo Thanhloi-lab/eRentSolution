@@ -234,12 +234,17 @@ body{
     display: flex;
     flex-wrap: wrap;
 }
-.box-full-flex{
+.box-full-flex {
     width: 192px;
     height: 324px;
     border: 1px solid rgb(244, 244, 244);
+    position: relative;
+    
 }
-.box-full-flex:hover{
+.loadmore{
+    display:none;
+}
+.box-full-flex:hover {
     box-shadow: 0 1px 7px 0 rgb(0 0 0 / 30%);
 }
 .box-item{
@@ -338,11 +343,6 @@ body{
     position: relative;
     padding: 20px 20px 0 20px;
   }
-.slider-photo{
-    width: 618px;
-    height: 463px;
-    object-fit: cover;
-}
   
   /* Hide the images by default */
   .mySlides {
@@ -417,7 +417,7 @@ body{
   }
   .box-photo-slider{
       background-color: white;
-      margin: 10px 266px 0 266px;
+      margin: 10px 0 0 266px;
 
   }
   .box-description{
@@ -472,7 +472,7 @@ body{
   }
   .box-description__s{
       font-size: 1.4rem;
-      margin-left: 200px;
+      margin-left: 183px;
   }
 
   /*============== FORM DANG KI DANG NHAP===============*/
@@ -876,4 +876,223 @@ body{
 }
 .icon-heart:hover{
     cursor:pointer;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+a.text-danger:hover, a.text-danger:focus {
+    color: #a71d2a !important;
+}
+.icon-detail {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.box-container {
+    display: flex;
+}
+
+.box-sidebar {
+    background-color: #eee;
+    margin-top: 10px;
+    border-top: 1px solid #dddcdc;
+    height: 250px;
+}
+
+.box-wrapper-img {
+    width: 50px;
+    height: 50px;
+}
+
+    .box-wrapper-img img {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        border: 2px solid #e5e5e5;
+        margin: -2px;
+    }
+
+.box-wrapper-info {
+    display: flex;
+    margin-top: 20px;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+.box-wrapper-name-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .box-wrapper-name-top button {
+        color: #fe9900;
+        border: 1px solid #fe9900;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color .2s ease-in-out;
+        font-size: 10px;
+        width: max-content;
+        border-radius: 20px;
+        padding: 7px 10px;
+        height: fit-content;
+        margin-right: 20px;
+        outline:none;
+    }
+
+        .box-wrapper-name-top button:hover {
+            background-color: #e2e6ea;
+        }
+
+    .box-wrapper-name-top span {
+        font-size: 1.4rem;
+        color: black;
+        font-weight: 500;
+        margin-right: 100px;
+        margin-left: 10px;
+    }
+
+.box-wrapper-name-bottom {
+    color: #9b9b9b;
+    margin-top: 2px;
+    margin-left: 8px;
+    display: flex;
+}
+
+    .box-wrapper-name-bottom span {
+        font-size: 1.2rem;
+        margin-left: 4px;
+    }
+
+.dot {
+    font-size: 3rem;
+}
+
+.box-wrapper-info1 {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 10px;
+    text-align: center;
+    align-items: center;
+    font-size: 12px;
+    color: #9b9b9b;
+    border-bottom: 1px solid #dddcdc;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.box-wrapper-item1 {
+    flex: 1;
+    font-size: 1.4rem;
+}
+
+.separete {
+    border-left: 2px solid #cacaca;
+    height: 20px;
+    width: 1px;
+}
+
+.box-wrapper-item2 {
+    flex: 1;
+    font-size: 1.4rem;
+}
+
+.box-showphone {
+    width: 318px;
+    height: 42px;
+    display: block;
+    margin: 20px 15px 0 15px;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 8px 10px;
+    line-height: 1.42857;
+    border-radius: 4px;
+    user-select: none;
+    font-size: 1.6rem;
+    transition: background-color 200ms ease-in-out 0s;
+    color: rgb(255, 255, 255);
+    background-color: rgb(51, 168, 55);
+    font-weight: 500;
+}
+
+.box-showphone__img {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.box-sdt {
+    font-size: 1.6rem;
+    color: black;
+    margin-left: 103px;
+    padding: 4px 8px;
+    border: 1px solid black;
+    border-radius: 2px;
+    display: none;
+}
+.slider-photo{
+    height:463px;
+    width: 578px;
+    object-fit:cover;
+}
+.btn-loadmore {
+    padding: .7rem 2rem;
+    background: royalblue;
+    border: none;
+    color: #FFF;
+    margin: 20px auto;
+    display: block;
+    font-size: 1.3rem;
+    cursor: pointer;
+    outline: none;
+    transition: .3s;
+    
+}
+.btn-loadmore:hover {
+    opacity: .8;
+}
+.box-select {
+    background-color: white;
+    margin: 20px 266px 0 266px;
+}
+
+.box-filter {
+    display: flex;
+}
+
+#province {
+    margin-left: 20px;
+}
+
+#province, #district {
+    height: 40px;
+    width: 200px;
+    outline: none;
+    font-size: 1.4rem;
+    text-align: center;
+    border: 3px solid #f9c431;
+    margin-bottom: 20px;
+}
+
+.btn-filter {
+    height: 40px;
+    outline: none;
+    border: 3px solid #f9c431;
+    font-size: 1.6rem;
+    color: white;
+    background-color: #0071c2;
+    padding: 5px 25px;
+    border-radius: 2px;
 }

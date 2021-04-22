@@ -94,7 +94,7 @@ namespace eRentSolution.Application.Utilities.Slides
             if (slide == null)
                 return false;
 
-            await _storageService.DeleteFileAsync(slide.ImagePath);
+             _storageService.DeleteFile(slide.ImagePath);
             _context.Slides.Remove(slide);
             var result = await _context.SaveChangesAsync();
             if(result >0)

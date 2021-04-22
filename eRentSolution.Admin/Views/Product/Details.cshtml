@@ -64,15 +64,17 @@
 
                                 for (int i = 0; i < Model.Categories.Count; i++)
                                 {
-                                <td>
-                                    @Html.DisplayFor(model => Model.Categories[i])
-                                </td> 
+                                    <td>
+                                        @Html.DisplayFor(model => Model.Categories[i])
+                                    </td>
+
                                 }
                                 if (Model.Categories.Count == 0)
                                 {
                                     <td>
                                         N/A
-                                    </td> 
+                                    </td>
+
                                 }
                             }
                             else
@@ -111,18 +113,6 @@
 
                         <tr>
                             <td>
-                                @Html.DisplayNameFor(model => model.Details)
-
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => model.Details)
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody>
-
-                        <tr>
-                            <td>
                                 @Html.DisplayNameFor(model => model.DateCreated)
 
                             </td>
@@ -144,7 +134,6 @@
                         </tr>
                     </tbody>
                     <tbody>
-
                         <tr>
                             <td>
                                 @Html.DisplayNameFor(model => model.Stock)
@@ -158,7 +147,16 @@
                     @foreach (var item in Model.ProductDetailViewModels)
                     {
                         <tbody>
-
+                            <tr>
+                                <td>
+                                    @Html.DisplayNameFor(model => item.Detail)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.Detail)
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody>
                             <tr>
                                 <td>
                                     @Html.DisplayNameFor(model => item.Price)
@@ -168,10 +166,9 @@
                                     @Html.DisplayFor(model => item.Price)
                                 </td>
                             </tr>
-                           
-                        </tbody>
-                         <tbody>
 
+                        </tbody>
+                        <tbody>
                             <tr>
                                 <td>
                                     @Html.DisplayNameFor(model => item.OriginalPrice)
@@ -181,9 +178,41 @@
                                     @Html.DisplayFor(model => item.OriginalPrice)
                                 </td>
                             </tr>
-                           
                         </tbody>
-                       
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DisplayNameFor(model => item.Width)
+
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.Width)
+                                </td>
+                            </tr>
+
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DisplayNameFor(model => item.Length)
+
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.Length)
+                                </td>
+                            </tr>
+
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    Diện tích
+                                </td>
+                                <td>
+                                    @(item.Width * item.Length)
+                                </td>
+                            </tr>
+                        </tbody>
                         break;
                     }
                 </table>

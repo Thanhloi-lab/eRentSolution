@@ -28,7 +28,9 @@ namespace eRentSolution.Data.Extentions
                     Name = "HomeStay",
                     SeoAlias = "homestay",
                     SeoDescription = "Loại hình nhà cho thuê và ở chung với chủ nhà.",
-                    SeoTitle = "Nhà cho thuê ở cùng chủ hộ"
+                    SeoTitle = "Nhà cho thuê ở cùng chủ hộ",
+                    ImagePath = "default_category.jpg",
+                    ImageSize = 3021
                 },
                  new Category()
                  {
@@ -40,8 +42,10 @@ namespace eRentSolution.Data.Extentions
                      Name = "Khách sạn",
                      SeoAlias = "khach-san",
                      SeoDescription = "Cho thuê, mướn phòng khách sạn",
-                     SeoTitle = "Khách sạn"
-                 });
+                     SeoTitle = "Khách sạn",
+                     ImagePath = "default_category.jpg",
+                     ImageSize = 3021
+                 }) ;
 
             
             modelBuilder.Entity<ProductInCategory>().HasData(
@@ -79,8 +83,9 @@ namespace eRentSolution.Data.Extentions
                 PasswordHash = hasher.HashPassword(null, "123456aS`" + now),
                 SecurityStamp = string.Empty,
                 Status = Status.Active,
-                
-            });
+                AvatarFilePath = "default_avatar.png",
+                AvatarFileSize = 15131
+            }) ;
 
             modelBuilder.Entity<UserInfo>().HasData(
            new UserInfo()
@@ -101,7 +106,7 @@ namespace eRentSolution.Data.Extentions
                SeoAlias = "HomeStay-thanh-loi",
                SeoDescription = "HomeStay-thanh-loi",
                SeoTitle = "HomeStay-thanh-loi",
-               Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
+               //Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
                Description = "HomeStay Thanh Loi tại pờ tít",
                IsFeatured = Status.InActive,
                Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3"
@@ -116,7 +121,10 @@ namespace eRentSolution.Data.Extentions
                Stock = 0,
                Name = "Phòng 1 chổ nằm",
                ProductId = 1,
-           });
+               Detail = "2 nvs .....",
+               Width = 5,
+               Length = 10
+           }) ;
             modelBuilder.Entity<UserAction>().HasData(
            new UserAction()
            {

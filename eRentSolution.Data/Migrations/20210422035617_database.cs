@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace eRentSolution.Data.Migrations
 {
-    public partial class updateDatabase_userAction_seeding_data : Migration
+    public partial class database : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -97,6 +97,8 @@ namespace eRentSolution.Data.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     DateChangePassword = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AvatarFilePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    AvatarFileSize = table.Column<long>(type: "bigint", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -144,7 +146,9 @@ namespace eRentSolution.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     SeoDescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     SeoTitle = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    SeoAlias = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    SeoAlias = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    ImageSize = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -176,10 +180,11 @@ namespace eRentSolution.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
-                    Details = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SeoDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SeoTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SeoAlias = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     ViewCount = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
@@ -254,8 +259,10 @@ namespace eRentSolution.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Detail = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    Length = table.Column<int>(type: "int", nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    IsThumbnail = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
                 },
@@ -362,9 +369,8 @@ namespace eRentSolution.Data.Migrations
                     ProductDetailId = table.Column<int>(type: "int", nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Caption = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    SortOrder = table.Column<int>(type: "int", nullable: false),
                     FileSize = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -393,8 +399,8 @@ namespace eRentSolution.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "a776acd6-1c47-47be-9896-1a619013ac53", "Administrator role", "Admin", "admin" },
-                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "a73dde6f-8098-4d70-b84d-977511c231a6", "User admin role", "UserAdmin", "useradmin" }
+                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "28ec0373-fc2c-41ff-97fa-f0039253b6d6", "Administrator role", "Admin", "admin" },
+                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "f49ec332-12b4-42a6-aa0d-fa5ab4f6bc2b", "User admin role", "UserAdmin", "useradmin" }
                 });
 
             migrationBuilder.InsertData(
@@ -404,22 +410,22 @@ namespace eRentSolution.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "AppUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateChangePassword", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "30632708-21a4-4ba1-8070-51f5ac3b655d", new DateTime(2021, 4, 15, 4, 14, 28, 12, DateTimeKind.Utc).AddTicks(9220), "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAEN3QP2cKkH6sdqyevwhrgref5qB/oJ4m85/qcTR8wJrXYpQdVV0DTrGdEmQwtC7kwg==", null, false, "", 1, false, "thanhloi" });
+                columns: new[] { "Id", "AccessFailedCount", "AvatarFilePath", "AvatarFileSize", "ConcurrencyStamp", "DateChangePassword", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "default_avatar.png", 15131L, "a38c4112-7c63-43f5-9087-1207dcf4c05c", new DateTime(2021, 4, 22, 3, 56, 16, 759, DateTimeKind.Utc).AddTicks(6760), "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAEIxZWQ/SzsorE1vazA78mpP2czSzAepIV2Fhje5G47HrSRqkanveXMaEDZVdnaQR4Q==", null, false, "", 1, false, "thanhloi" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "IsShowOnHome", "Name", "ParentId", "SeoAlias", "SeoDescription", "SeoTitle", "SortOrder", "Status" },
+                columns: new[] { "Id", "ImagePath", "ImageSize", "IsShowOnHome", "Name", "ParentId", "SeoAlias", "SeoDescription", "SeoTitle", "SortOrder", "Status" },
                 values: new object[,]
                 {
-                    { 1, true, "HomeStay", null, "homestay", "Loại hình nhà cho thuê và ở chung với chủ nhà.", "Nhà cho thuê ở cùng chủ hộ", 1, 1 },
-                    { 2, true, "Khách sạn", null, "khach-san", "Cho thuê, mướn phòng khách sạn", "Khách sạn", 2, 1 }
+                    { 1, "default_category.jpg", 3021L, true, "HomeStay", null, "homestay", "Loại hình nhà cho thuê và ở chung với chủ nhà.", "Nhà cho thuê ở cùng chủ hộ", 1, 1 },
+                    { 2, "default_category.jpg", 3021L, true, "Khách sạn", null, "khach-san", "Cho thuê, mướn phòng khách sạn", "Khách sạn", 2, 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "DateCreated", "Description", "Details", "IsFeatured", "Name", "SeoAlias", "SeoDescription", "SeoTitle" },
-                values: new object[] { 1, new DateTime(2021, 4, 15, 4, 14, 28, 38, DateTimeKind.Utc).AddTicks(7661), "HomeStay Thanh Loi tại pờ tít", "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m", 0, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi" });
+                columns: new[] { "Id", "Address", "DateCreated", "Description", "Details", "IsFeatured", "Name", "SeoAlias", "SeoDescription", "SeoTitle" },
+                values: new object[] { 1, "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3", new DateTime(2021, 4, 22, 3, 56, 16, 786, DateTimeKind.Utc).AddTicks(7579), "HomeStay Thanh Loi tại pờ tít", null, 0, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi" });
 
             migrationBuilder.InsertData(
                 table: "UserActions",
@@ -445,8 +451,8 @@ namespace eRentSolution.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "ProductDetails",
-                columns: new[] { "Id", "DateCreated", "Name", "OriginalPrice", "Price", "ProductId" },
-                values: new object[] { 1, new DateTime(2021, 4, 15, 4, 14, 28, 39, DateTimeKind.Utc).AddTicks(5790), "Phòng 1 chổ nằm", 100000m, 200000m, 1 });
+                columns: new[] { "Id", "DateCreated", "Detail", "Length", "Name", "OriginalPrice", "Price", "ProductId", "Width" },
+                values: new object[] { 1, new DateTime(2021, 4, 22, 3, 56, 16, 787, DateTimeKind.Utc).AddTicks(5876), "2 nvs .....", 10, "Phòng 1 chổ nằm", 100000m, 200000m, 1, 5 });
 
             migrationBuilder.InsertData(
                 table: "ProductInCategories",
@@ -461,7 +467,7 @@ namespace eRentSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Censors",
                 columns: new[] { "Id", "ActionId", "Date", "ProductId", "UserInfoId" },
-                values: new object[] { 1, 1, new DateTime(2021, 4, 15, 4, 14, 28, 40, DateTimeKind.Utc).AddTicks(3872), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
+                values: new object[] { 1, 1, new DateTime(2021, 4, 22, 3, 56, 16, 788, DateTimeKind.Utc).AddTicks(5547), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Censors_ActionId",

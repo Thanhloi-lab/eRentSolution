@@ -1,60 +1,105 @@
 ﻿@model eRentSolution.ViewModels.System.Users.UserViewModel
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout3.cshtml"; }
+<div style="display:flex;justify-content:center;align-items:center;width:100vw;height:100%;flex-direction:column; margin: 20px 0 20px 0;">
+    <h1>Thông tin người dùng</h1>
+    <table id="customers">
+        <tr>
+            <th>Thuộc tính</th>
+            <th>Mô tả</th>
 
-<h1>Details</h1>
+        </tr>
+        <tr>
+            <td> @Html.DisplayNameFor(model => model.Id)</td>
+            <td>@Html.DisplayFor(model => model.Id)</td>
 
-<div>
-    <h4>UserViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dob)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dob)
-        </dd>
-    </dl>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.FirstName)</td>
+            <td>@Html.DisplayFor(model => model.FirstName)</td>
+
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.LastName)</td>
+            <td>@Html.DisplayFor(model => model.LastName)</td>
+
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Dob)</td>
+            <td>@Html.DisplayFor(model => model.Dob)</td>
+
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.Email)</td>
+            <td>@Html.DisplayFor(model => model.Email)</td>
+
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.PhoneNumber)</td>
+            <td>@Html.DisplayFor(model => model.PhoneNumber)</td>
+
+        </tr>
+
+    </table>
+
+    <div style="margin-top: 20px;">
+        <a class="btn success" asp-controller="Product" asp-action="MyListProducts">Sản phẩm của tôi</a>
+    </div>
 </div>
-<div>
-    <a class="nav-link" asp-controller="Product" asp-action="MyListProducts">Sản phẩm của tôi</a>
-</div>
+
+
+<style>
+    #customers {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 50%;
+      
+    }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #customers tr:hover {
+            background-color: #ddd;
+        }
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+    .btn {
+        border: 2px solid black;
+        background-color: white;
+        color: black;
+        padding: 7px 14px;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration:none
+    }
+
+    /* Green */
+    .success {
+        border-color: #4CAF50;
+        color: green;
+    }
+
+        .success:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+    h1 {
+        text-align: center;
+        text-transform: uppercase;
+        color: #4CAF50;
+    }
+</style>

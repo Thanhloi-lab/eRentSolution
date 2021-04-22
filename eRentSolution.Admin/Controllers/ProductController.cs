@@ -107,7 +107,7 @@ namespace eRentSolution.AdminApp.Controllers
                 Id = id,
                 Name = product.Name,
                 Description = product.Description,
-                Details = product.Details,
+                //Details = product.Details,
                 SeoAlias = product.SeoAlias,
                 SeoDescription = product.SeoDescription,
                 SeoTitle = product.SeoTitle,
