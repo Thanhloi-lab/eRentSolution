@@ -13,6 +13,7 @@ namespace eRentSolution.Integration
         public Task<PagedResult<UserViewModel>> GetUsersPaging(GetUserPagingRequest request, string tokenName);
         public Task<ApiResult<bool>> RegisterUser(UserRegisterRequest registerRequest);
         Task<UserViewModel> GetById(Guid id, string tokenName);
+        Task<UserViewModel> GetUserByProductId(int productId, string tokenName);
         Task<ApiResult<bool>> Update( UserUpdateRequest request, string tokenName);
         Task<bool> UpdateAvatar(UserAvatarUpdateRequest request, string tokenName);
         Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request, string tokenName);

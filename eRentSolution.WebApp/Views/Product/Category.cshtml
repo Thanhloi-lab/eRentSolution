@@ -1,8 +1,10 @@
 ﻿@using eRentSolution.ViewModels.Catalog.Products
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @model ProductCategoryViewModel
-@{ ViewData["Title"] = Model.Category.Name + (Model.Products.PageIndex == 1 ? "" : "-" + Model.Products.PageIndex);
-                Layout = "~/Views/Shared/_Layout1.cshtml"; }
+@{ 
+    ViewData["Title"] = Model.Category.Name + (Model.Products.PageIndex == 1 ? "" : "-" + Model.Products.PageIndex);
+    Layout = "~/Views/Shared/_Layout1.cshtml"; 
+}
 
 
 

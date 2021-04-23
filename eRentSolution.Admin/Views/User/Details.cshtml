@@ -92,7 +92,7 @@
 
                             </td>
                             <td>
-                                <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.AvatarFilePath" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
+                                <a href="/User/EditAvatar/@Model.Id"><img src="@Configuration["BaseAddress"]/user-content/@Model.AvatarFilePath" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
                             </td>
                         </tr>
                     </tbody>
@@ -103,7 +103,10 @@
             <input asp-for="Id" type="hidden" input />
             <input type="submit" value="Edit" class="btn btn-danger" />
         </form>
-
+        <form asp-action="ChangePassword" method="get" style="padding: 0 20px 20px 20px;">
+            <input asp-for="Id" type="hidden" input />
+            <input type="submit" value="ChangePassword" class="btn btn-danger" />
+        </form>
     </div>
 
 </div>

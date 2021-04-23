@@ -54,5 +54,6 @@ namespace eRentSolution.Data.EF
         public DbSet<Slide> Slides { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
         public DbSet<UserInfo> UserInfos { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
     }
 }

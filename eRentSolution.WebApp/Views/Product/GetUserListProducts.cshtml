@@ -1,0 +1,38 @@
+﻿@using eRentSolution.ViewModels.Catalog.Products
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@model UserListProductsViewModel
+@{ ViewData["Title"] = "Page of " + @Model.Owner.LastName;
+                Layout = "_Layout1"; }
+
+
+
+<div class="box-product">
+    <p class="category__heading">Tin đăng cho bạn</p>
+    <div class="box-flex">
+        @for (int i = 0; i < Model.Products.Items.Count; i++)
+        {
+            ProductViewModel item = Model.Products.Items[i];
+            var url = $"/Products/{item.Id}";
+            <div class="box-full-flex">
+                <div class="box-item">
+                    <div style="position: relative;" class="box-item__photo">
+                        <a href="roomdetails.html">
+                            <a href="@url"> <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="" class="box-item__img"></a>
+                            <img class="icon-heart" width="20px" src="https://static.chotot.com/storage/chotot-icons/next/save-ad.svg" alt="photos">
+                        </a>
+                    </div>
+
+                    <div class="box-item__caption">
+                        <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
+                        <p class="box-item__size">@(item.ProductDetailViewModels.ElementAt(0).Width * item.ProductDetailViewModels.ElementAt(0).Length) m²</p>
+                        <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
+                        <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
+                    </div>
+                </div>
+            </div>}
+    </div>
+</div>
+@await Component.InvokeAsync("Pager", Model.Products);
+
+<br class="clr" />
+

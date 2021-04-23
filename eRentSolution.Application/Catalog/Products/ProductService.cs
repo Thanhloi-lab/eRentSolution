@@ -417,7 +417,7 @@ namespace eRentSolution.Application.Catalog.Products
                 Items = products,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
-                TotalRecords = products.Count
+                TotalRecords = totalRow
             };
             return page;
         }
@@ -684,7 +684,7 @@ namespace eRentSolution.Application.Catalog.Products
                 Items = products,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
-                TotalRecords = products.Count
+                TotalRecords = totalRow
             };
             return page;
         }

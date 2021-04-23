@@ -33,6 +33,7 @@
     <None Include="Views\User\Delete.cshtml" />
     <None Include="Views\User\Details.cshtml" />
     <None Include="Views\User\Edit.cshtml" />
+    <None Include="Views\User\EditAvatar.cshtml" />
     <None Include="Views\User\Index.cshtml" />
     <None Include="Views\User\PageActivityLog.cshtml" />
     <None Include="Views\User\ResetPassword.cshtml" />

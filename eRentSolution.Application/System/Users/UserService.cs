@@ -422,5 +422,29 @@ namespace eRentSolution.Application.System.Users
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
+
+        public async Task<ApiResult<UserViewModel>> GetUserByProductId(int productId)
+        {
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            var query = (from ui in _context.UserInfos
+                       join u in _context.AppUsers on ui.UserId equals u.Id
+                       join c in _context.Censors on ui.UserId equals c.UserInfoId
+                       join a in _context.UserActions on c.ActionId equals a.Id
+                       join p in _context.Products on c.ProductId equals p.Id
+                       where p.Id == productId && a.ActionName == action.ActionName
+                       select new { u, ui }).FirstOrDefault();
+            var user = new UserViewModel()
+            {
+                AvatarFilePath = query.u.AvatarFilePath,
+                Dob = query.ui.Dob,
+                Email = query.u.Email,
+                FirstName = query.ui.FirstName,
+                Id = query.u.Id,
+                LastName = query.ui.LastName,
+                PhoneNumber = query.u.PhoneNumber,
+                UserName = query.u.UserName
+            };
+            return new ApiSuccessResult<UserViewModel>(user);
+        }
     }
 }

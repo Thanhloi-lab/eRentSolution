@@ -110,5 +110,11 @@ namespace eRentSolution.Integration
             var result = await client.PutAsync($"/api/users/UpdateAvatar", requestContent);
             return result.IsSuccessStatusCode;
         }
+
+        public async Task<UserViewModel> GetUserByProductId(int productId, string tokenName)
+        {
+            var result = await GetAsync<UserViewModel>($"/api/users/{productId}/product", tokenName);
+            return result;
+        }
     }
 }

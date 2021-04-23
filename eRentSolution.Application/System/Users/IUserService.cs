@@ -17,6 +17,7 @@ namespace eRentSolution.Application.System.Users
         Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request);
         Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
         Task<ApiResult<UserViewModel>> GetById(Guid id);
+        Task<ApiResult<UserViewModel>> GetUserByProductId(int productId);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetPageUserActivities(UserActivityLogRequest request);
         Task<ApiResult<bool>> Delete(Guid id);

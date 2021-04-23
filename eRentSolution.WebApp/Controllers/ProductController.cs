@@ -21,15 +21,18 @@ namespace eRentSolution.WebApp.Controllers
         public readonly IProductApiClient _productApiClient;
         public readonly ICategoryApiClient _categoryApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        public readonly IUserApiClient _userApiClient;
         private string userId;
 
         public ProductController(IProductApiClient productApiClient
             , ICategoryApiClient categoryApiClient
-            , IHttpContextAccessor httpContextAccessor)
+            , IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient)
         {
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
             _httpContextAccessor = httpContextAccessor;
+            _userApiClient = userApiClient;
         }
         [AllowAnonymous]
         public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
@@ -79,12 +82,13 @@ namespace eRentSolution.WebApp.Controllers
             products.Add(product);
             products = await GetProductImages(products);
             product = products.ElementAt(0);
+            var user = await _userApiClient.GetUserByProductId(product.Id, SystemConstant.AppSettings.TokenWebApp);
             return View(new ProductDetailViewModels()
             {
-                
+                Owner = user,
                 Categories = categories,
                 Product = product
-            });
+            }) ;
         }
         [HttpGet]
         public async Task<IActionResult> MyProductDetail(int id)
@@ -125,6 +129,41 @@ namespace eRentSolution.WebApp.Controllers
                 Selected = categoryId.HasValue && categoryId.Value == x.Id
             });
             return View(products);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUserListProducts(Guid ownerId, string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
+        {
+
+            var request = new GetProductPagingRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                CategoryId = categoryId
+            };
+
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["result"];
+            }
+
+            var products = await _productApiClient.GetPageProductsByUserId(request, ownerId, SystemConstant.AppSettings.TokenWebApp);
+            ViewBag.Keyword = keyword;
+
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            ViewBag.Categories = categories.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+                Selected = categoryId.HasValue && categoryId.Value == x.Id
+            });
+            products.Items = await GetProductImages(products.Items);
+            var user = await _userApiClient.GetById(ownerId, SystemConstant.AppSettings.TokenWebApp);
+            return View(new UserListProductsViewModel() 
+            { 
+                Products = products,
+                Owner = user,
+            });
         }
         [HttpGet]
         public IActionResult Create()

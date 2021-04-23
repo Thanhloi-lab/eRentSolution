@@ -60,7 +60,7 @@
                 </div>
                 <div class="box-item__caption">
                     <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
-                    <p class="box-item__size">18 m²</p>
+                    <p class="box-item__size">@(item.ProductDetailViewModels.ElementAt(0).Width * item.ProductDetailViewModels.ElementAt(0).Length) m²</p>
                     <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
                     <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
                 </div>
@@ -87,7 +87,7 @@
                     </div>
                     <div class="box-item__caption">
                         <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
-                        <p class="box-item__size">18 m²</p>
+                        <p class="box-item__size">@(item.ProductDetailViewModels.ElementAt(0).Width * item.ProductDetailViewModels.ElementAt(0).Length) m²</p>
                         <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
                         <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
                     </div>

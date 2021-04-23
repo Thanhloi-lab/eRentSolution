@@ -101,7 +101,8 @@ namespace eRentSolution.AdminApp.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     PhoneNumber = user.PhoneNumber,
-                    Id = id
+                    Id = id,
+                    UserName = user.UserName
                 };
                 return View(updateRequest);
             }

@@ -112,6 +112,14 @@ namespace eRentSolution.BackendApi.Controllers
             var result = await _userService.GetPageUserActivities(request);
             return Ok(result);
         }
+        [HttpGet("{productId}/product")]
+        public async Task<IActionResult> GetUserByProductId(int productId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(productId);
+            var result = await _userService.GetUserByProductId(productId);
+            return Ok(result.ResultObject);
+        }
         [HttpPut("updateAvatar")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateImage([FromForm] UserAvatarUpdateRequest request)

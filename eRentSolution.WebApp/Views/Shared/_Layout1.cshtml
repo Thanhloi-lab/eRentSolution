@@ -84,28 +84,25 @@
                                 </li>
                                 @if (User.Identity.IsAuthenticated)
                                 {
-                    <li class="dropdown-menu-item">
-                        <a style=" class="dropdown-menu-link">
-                            <form method="post" asp-controller="account" asp-action="Logout" class="dropdown-menu-link">
-                                <button type="submit" class="dropdown-item" style="width: 100%; border:none; outline:none; color:black;background-color:#fff;  padding:10px 80px; margin-left:6px; ">Đăng xuất</button>
-                            </form>
-                        </a>
-
-                    </li>
-                }
-                else
-                {
-                    <li class="dropdown-menu-item">
-                        <a href="/Account/Register" class="dropdown-menu-link">
-                            <div>
-                                <i class="fas fa-spinner"></i>
-                            </div>
-                            <span>Đăng ký</span>
-                        </a>
-
-                    </li>
-                }
-
+                                    <li class="dropdown-menu-item">
+                                        <a style=" class="dropdown-menu-link">
+                                            <form method="post" asp-controller="account" asp-action="Logout" class="dropdown-menu-link">
+                                                <button type="submit" class="dropdown-item" style="width: 100%; border:none; outline:none; color:black;background-color:#fff;  padding:10px 80px; margin-left:6px; ">Đăng xuất</button>
+                                            </form>
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="dropdown-menu-item">
+                                        <a href="/Account/Register" class="dropdown-menu-link">
+                                            <div>
+                                                <i class="fas fa-spinner"></i>
+                                            </div>
+                                            <span>Đăng ký</span>
+                                        </a>
+                                    </li>
+                                }
                             </ul>
                         </div>
                     </li>

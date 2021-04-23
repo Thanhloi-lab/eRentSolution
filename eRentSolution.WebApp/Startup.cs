@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using eRentSolution.Integration;
 using eRentSolution.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
@@ -9,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -48,6 +44,15 @@ namespace eRentSolution.WebApp
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
             services.AddTransient<IUserApiClient, UserApiClient>();
 
+            IMvcBuilder builder = services.AddRazorPages();
+            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+#if DEBUG
+            if (enviroment == Environments.Development)
+            {
+                builder.AddRazorRuntimeCompilation();
+            }
+#endif
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,7 +72,6 @@ namespace eRentSolution.WebApp
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseRouting();
-
             app.UseAuthorization();
             app.UseSession();
 
