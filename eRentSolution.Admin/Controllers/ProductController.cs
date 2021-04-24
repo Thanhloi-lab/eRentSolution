@@ -1,6 +1,8 @@
 ﻿using eRentSolution.Integration;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.ProductDetails;
+using eRentSolution.ViewModels.Catalog.ProductImages;
 using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.ViewModels.Common;
 using eRentSolution.ViewModels.System.Users;
@@ -136,7 +138,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            return View(new ProductStatusRequest() { 
+            return View(new ProductStatusRequest() {
                 Id = id
             });
         }
@@ -146,7 +148,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
             var result = await _productApiClient.DeleteProduct(request.Id, SystemConstant.AppSettings.TokenAdmin);
-            
+
             if (result)
             {
                 TempData["result"] = "Xóa sản phẩm thành công";
@@ -207,11 +209,11 @@ namespace eRentSolution.AdminApp.Controllers
             return View(new SlideCreateRequest()
             {
                 ProductId = id
-            }) ;
+            });
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> CreateSlide([FromForm]SlideCreateRequest request)
+        public async Task<IActionResult> CreateSlide([FromForm] SlideCreateRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -302,6 +304,115 @@ namespace eRentSolution.AdminApp.Controllers
 
             ModelState.AddModelError("", "Xóa sản sản phẩm nổi bật thất bại");
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult AddDetail(int id)
+        {
+            return View(new ProductDetailCreateRequest()
+            {
+                ProductId = id
+            });
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddDetail([FromForm] ProductDetailCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.AddProductDetail(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            if (result)
+            {
+                TempData["result"] = "Tạo mới sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Tạo mới sản phẩm thất bại");
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditDetail(int productDetailId)
+        {
+            var productDetail = await _productApiClient.GetProductDetailById(productDetailId, SystemConstant.AppSettings.TokenAdmin);
+            var productViewModel = new ProductDetailUpdateRequest()
+            {
+                Id = productDetailId,
+                Detail = productDetail.Detail,
+                Length = productDetail.Length,
+                Width = productDetail.Width,
+                ProductDetailName = productDetail.ProductDetailName
+            };
+            return View(productViewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditDetail([FromForm] ProductDetailUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.UpdateDetail(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            if (result)
+            {
+                TempData["result"] = "Chỉnh sửa sản phẩm thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Chỉnh sửa sản phẩm thất bại");
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditImage(int imageId)
+        {
+            var image = await _productApiClient.GetImageById(imageId, SystemConstant.AppSettings.TokenAdmin);
+            var imageUpdateRequest = new ProductImageUpdateRequest()
+            {
+                ImageId = image.Id,
+                OldImageUrl = image.ImagePath
+            };
+            return View(imageUpdateRequest);
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> EditImage([FromForm] ProductImageUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.UpdateImage(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.ResultObject);
+            return View(request);
+        }
+        [HttpGet]
+        public IActionResult AddImage(int productDetailId)
+        {
+            return View(new ProductImageCreateRequest()
+            {
+                ProductDetailId = productDetailId
+            });
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddImage([FromForm] ProductImageCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _productApiClient.AddImage(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.ResultObject);
+            return View(request);
         }
     }
 }

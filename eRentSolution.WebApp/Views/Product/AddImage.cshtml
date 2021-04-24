@@ -1,0 +1,33 @@
+﻿@model eRentSolution.ViewModels.Catalog.ProductImages.ProductImageCreateRequest
+
+@{
+    ViewData["Title"] = "AddImage";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container-contact100">
+    <div class="wrap-contact100">
+        <form asp-action="AddDetail" enctype="multipart/form-data" class="contact100-form validate-form">
+            <span class="contact100-form-title">
+                Tạo hình ảnh
+            </span>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="Caption" class="control-label"></label>
+                <input asp-for="Caption" class="form-control" />
+                <span asp-validation-for="Caption" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="ImageFile" class="control-label">Ảnh đại diện</label>
+                <input asp-for="ImageFile" type="file" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <input asp-for="ProductDetailId" type="hidden" input />
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+

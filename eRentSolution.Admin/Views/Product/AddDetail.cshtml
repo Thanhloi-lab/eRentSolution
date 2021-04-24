@@ -1,0 +1,72 @@
+﻿@model eRentSolution.ViewModels.Catalog.ProductDetails.ProductDetailCreateRequest
+
+@{
+    ViewData["Title"] = "AddDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Tạo mới chi tiết sản phẩm</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Tạo mới chi tiết sản phẩm</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
+        </div>
+
+        <div class="card-body">
+            <div class="col-md-4">
+                <form asp-action="AddDetail" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="ProductDetailName" class="control-label"></label>
+                        <input asp-for="ProductDetailName" class="form-control" />
+                        <span asp-validation-for="ProductDetailName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="OriginalPrice" class="control-label"></label>
+                        <input asp-for="OriginalPrice" class="form-control" />
+                        <span asp-validation-for="OriginalPrice" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Stock" class="control-label"></label>
+                        <input asp-for="Stock" class="form-control" />
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Detail" class="control-label"></label>
+                        <input asp-for="Detail" class="form-control" />
+                        <span asp-validation-for="Detail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Length" class="control-label"></label>
+                        <input asp-for="Length" class="form-control" />
+                        <span asp-validation-for="Length" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Width" class="control-label"></label>
+                        <input asp-for="Width" class="form-control" />
+                        <span asp-validation-for="Width" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Image" class="control-label"></label>
+                        <input asp-for="Image" type="file" class="form-control" />
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input asp-for="ProductId" type="hidden" input />
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

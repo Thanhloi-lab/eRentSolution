@@ -1,0 +1,51 @@
+﻿@model eRentSolution.ViewModels.Catalog.ProductDetails.ProductDetailUpdateRequest
+
+@{
+    ViewData["Title"] = "EditDetail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Cập nhật chi tiết sản phẩm</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Cập nhật chi tiết sản phẩm</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
+        </div>
+        <div class="col-md-4">
+            <form asp-action="EditDetail" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="ProductDetailName" class="control-label"></label>
+                    <input asp-for="ProductDetailName" class="form-control" />
+                    <span asp-validation-for="ProductDetailName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Detail" class="control-label"></label>
+                    <input asp-for="Detail" class="form-control" />
+                    <span asp-validation-for="Detail" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Width" class="control-label"></label>
+                    <input asp-for="Width" class="form-control" />
+                    <span asp-validation-for="Width" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Length" class="control-label"></label>
+                    <input asp-for="Length" class="form-control" />
+                    <span asp-validation-for="Length" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="Id" type="hidden" input />
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

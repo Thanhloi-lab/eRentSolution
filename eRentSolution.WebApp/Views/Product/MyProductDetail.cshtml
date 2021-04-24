@@ -1,5 +1,5 @@
 ﻿@model eRentSolution.ViewModels.Catalog.Products.ProductViewModel
-
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{ ViewData["Title"] = "MyProductDetail";
                 Layout = "~/Views/Shared/_Layout3.cshtml"; }
 
@@ -40,7 +40,6 @@
         <tr>
             <td>@Html.DisplayNameFor(model => model.Stock)</td>
             <td>@Html.DisplayFor(model => model.Stock)</td>
-
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.DateCreated)</td>
@@ -57,6 +56,61 @@
             <td>@Html.DisplayFor(model => model.Status)</td>
 
         </tr>
+    </table>
+
+    <table id="customers">
+        <tr>
+            <th>Thuộc tính</th>
+            <th>Mô tả</th>
+        </tr>
+        @foreach (var item in Model.ProductDetailViewModels)
+        {
+             <tr>
+                <td>@Html.DisplayNameFor(model => model.ProductDetailViewModels.ElementAt(0).ProductDetailName)</td>
+                <td>@Html.DisplayFor(model => item.ProductDetailName)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ProductDetailViewModels.ElementAt(0).Stock)</td>
+                <td>@Html.DisplayFor(model => item.Stock)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ProductDetailViewModels.ElementAt(0).Price)</td>
+                <td>@Html.DisplayFor(model => item.Price)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ProductDetailViewModels.ElementAt(0).OriginalPrice)</td>
+                <td>@Html.DisplayFor(model => item.OriginalPrice)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ProductDetailViewModels.ElementAt(0).DateCreated)</td>
+                <td>@Html.DisplayFor(model => item.DateCreated)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ProductDetailViewModels.ElementAt(0).Detail)</td>
+                <td>@Html.DisplayFor(model => item.Detail)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ProductDetailViewModels.ElementAt(0).Images)</td>
+                <td>
+                    @foreach (var image in item.Images)
+                    {
+                        <a href="#"> <img src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="" class="box-item__img"></a>
+                        <form asp-action="EditImage" method="get" style="padding: 0 20px 20px 20px;">
+                            <input asp-for="@image.Id" name="imageId" type="hidden" input />
+                            <input type="submit" value="Chỉnh sửa hình ảnh" class="btn btn-danger" />
+                        </form>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <form asp-action="EditDetail" method="get" style="padding: 0 20px 20px 20px;">
+                        <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+                        <input type="submit" value="Chỉnh sửa chi tiết" class="btn btn-danger" />
+                    </form>
+                </td>
+            </tr>
+        }
     </table>
     <div style="margin-top: 20px;">
         @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |*@

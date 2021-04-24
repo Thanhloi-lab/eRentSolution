@@ -19,30 +19,26 @@
         </tr>
         @foreach (var item in Model.Items)
         {
-<tr>
-
-    <td>@Html.DisplayFor(modelItem => item.Id)</td>
-    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-    <td>@Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)</td>
-    <td>@Html.DisplayFor(modelItem => item.Description)</td>
-    <td>@Html.DisplayFor(modelItem => item.ViewCount)</td>
-    <td>@Html.DisplayFor(modelItem => item.Stock)</td>
-    <td>@Html.DisplayFor(modelItem => item.IsFeatured)</td>
-    <td>@Html.DisplayFor(modmodelItemel => item.Status)</td>
-    <td>
-        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-        @Html.ActionLink("MyProductDetail", "MyProductDetail", new { id = item.Id }) |
-        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-    </td>
-</tr>
-}
-
-
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.ViewCount)</td>
+                <td>@Html.DisplayFor(modelItem => item.Stock)</td>
+                <td>@Html.DisplayFor(modelItem => item.IsFeatured)</td>
+                <td>@Html.DisplayFor(modmodelItemel => item.Status)</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("MyProductDetail", "MyProductDetail", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })|
+                    @Html.ActionLink("AddDetail", "AddDetail", new { id = item.Id })
+                </td>
+            </tr>
+        }
     </table>
     <div style="margin-top:20px;">
-        
-            <a class="btn success" asp-action="Create">Tạo mới</a>
-       
+         <a class="btn success" asp-action="Create">Tạo mới</a>
     </div>
 </div>
 @await Component.InvokeAsync("Pager", Model)

@@ -1,0 +1,55 @@
+﻿@model eRentSolution.ViewModels.Catalog.ProductImages.ProductImageUpdateRequest
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@{
+    ViewData["Title"] = "EditImage";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Cập nhật hình ảnh</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Cập nhật hình ảnh</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
+        </div>
+        <div class="col-md-4">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ImageId)
+                        </th>
+                        <th>
+                            @Html.DisplayFor(model => model.ImageId)
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.OldImageUrl)
+                        </th>
+                        <th>
+                            <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.OldImageUrl" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <form asp-action="EditImage" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="ImageFile" class="control-label">Ảnh đại diện</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input asp-for="ImageId" type="hidden" input />
+                    <input asp-for="OldImageUrl" type="hidden" input />
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

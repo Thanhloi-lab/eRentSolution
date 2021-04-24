@@ -1,0 +1,62 @@
+﻿@model eRentSolution.ViewModels.Catalog.ProductDetails.ProductDetailCreateRequest
+
+@{
+    ViewData["Title"] = "AddDetail";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
+}
+
+<div class="container-contact100">
+    <div class="wrap-contact100">
+        <form asp-action="AddDetail" enctype="multipart/form-data" class="contact100-form validate-form">
+            <span class="contact100-form-title">
+                Tạo sản phẩm
+            </span>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="ProductDetailName" class="control-label"></label>
+                <input asp-for="ProductDetailName" class="form-control" />
+                <span asp-validation-for="ProductDetailName" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="OriginalPrice" class="control-label"></label>
+                <input asp-for="OriginalPrice" class="form-control" />
+                <span asp-validation-for="OriginalPrice" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="Stock" class="control-label"></label>
+                <input asp-for="Stock" class="form-control" />
+                <span asp-validation-for="Stock" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="Detail" class="control-label"></label>
+                <input asp-for="Detail" class="form-control" />
+                <span asp-validation-for="Detail" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="Length" class="control-label"></label>
+                <input asp-for="Length" class="form-control" />
+                <span asp-validation-for="Length" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="Width" class="control-label"></label>
+                <input asp-for="Width" class="form-control" />
+                <span asp-validation-for="Width" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <label asp-for="Image" class="control-label"></label>
+                <input asp-for="Image" type="file" class="form-control" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <input asp-for="ProductId" type="hidden" input />
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+

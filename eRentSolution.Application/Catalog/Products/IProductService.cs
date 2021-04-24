@@ -14,7 +14,6 @@ namespace eRentSolution.Application.Catalog.Products
     {
         Task<int> Create(ProductCreateRequest request, Guid userInfoId);
         Task<bool> Update(ProductUpdateRequest request, Guid userInfoId);
-        Task<bool> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId);
         Task<bool> Hide(int productId, Guid userInfoId);
         Task<bool> Show(int productId, Guid userInfoId);
         Task<bool> Delete(int productId);
@@ -29,12 +28,15 @@ namespace eRentSolution.Application.Catalog.Products
         Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request);
         Task<PagedResult<ProductViewModel>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId);
         Task<List<ProductViewModel>> GetLastestProducts( int take);
-        Task<int> AddImage( ProductImageCreateRequest request, int productDetailId);
+        Task<ApiResult<string>> AddImage( ProductImageCreateRequest request, Guid userId);
         Task<int> RemoveImage(int imageId);
-        Task<int> UpdateImage( ProductImageUpdateRequest request);
+        Task<ApiResult<string>> UpdateImage( ProductImageUpdateRequest request, Guid userId);
         Task<List<ProductImageViewModel>> GetListImage(int productId);
         Task<ProductImageViewModel> GetImageById(int imageId);
         Task<bool> IsMyProduct(Guid userId, int productId);
+        Task<ApiResult<bool>> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId);
+        Task<int> AddDetail(ProductDetailCreateRequest request, Guid userInfoId);
+        Task<ProductDetailViewModel> GetProductDetailById(int productDetailId);
         //Task<PagedResult<ProductViewModel>> GetAllPagingByCategoryId(GetProductPagingByCategoryIdRequest request);
     }
 }

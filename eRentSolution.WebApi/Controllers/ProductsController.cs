@@ -1,5 +1,6 @@
 ﻿using eRentSolution.Application.Catalog.Products;
 using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.ProductDetails;
 using eRentSolution.ViewModels.Catalog.ProductImages;
 using eRentSolution.ViewModels.Catalog.Products;
 using Microsoft.AspNetCore.Mvc;
@@ -39,9 +40,19 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok(product);
         }
+        [HttpGet("productDetail/{id}")]
+        public async Task<IActionResult> GetProductDetailById(int id)
+        {
+            var product = await _productService.GetProductDetailById(id);
+            if (product == null)
+            {
+                return BadRequest("Cannot find product detail");
+            }
+            return Ok(product);
+        }
         [HttpPost("{userInfoId}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Creat([FromForm] ProductCreateRequest request, Guid userInfoId)
+        public async Task<IActionResult> Create([FromForm] ProductCreateRequest request, Guid userInfoId)
         {
             var productId = await _productService.Create(request, userInfoId);
             if (productId == 0)
@@ -51,6 +62,13 @@ namespace eRentSolution.BackendApi.Controllers
             var product = await _productService.GetById(productId);
 
             return CreatedAtAction(nameof(GetById), new { id = productId }, product);
+        }
+        [HttpPost("addProductDetail/{userInfoId}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddProductDetail([FromForm] ProductDetailCreateRequest request, Guid userInfoId)
+        {
+            var productDetailId = await _productService.AddDetail(request, userInfoId);
+            return Ok(productDetailId);
         }
         [HttpPut("{userInfoId}/{productId}")]
         [Consumes("multipart/form-data")]
@@ -84,7 +102,7 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok(result);
         }
-        [HttpPut("{productId}")]
+        [HttpPut("viewcount/{productId}")]
         public async Task<IActionResult> AddViewcount(int productId)
         {
             var result = await _productService.AddViewcount(productId);
@@ -124,20 +142,20 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok();
         }
-        [HttpPut("price/{userInfoId}/{productDetailId}/{newPrice}")]
-        public async Task<IActionResult> UpdatePrice(int productDetailId, decimal newPrice, Guid userInfoId)
+        [HttpPut("price/{userInfoId}")]
+        public async Task<IActionResult> UpdatePrice([FromForm]ProductUpdatePriceRequest request, Guid userInfoId)
         {
-            var isSuccessful = await _productService.UpdatePrice(productDetailId, newPrice, userInfoId);
+            var isSuccessful = await _productService.UpdatePrice(request.ProductDetailId, request.NewPrice, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
             }
             return Ok();
         }
-        [HttpPut("stock/{userInfoId}/{productDetailId}/{addedQuantity}")]
-        public async Task<IActionResult> UpdateStock(int productDetailId, int addedQuantity, Guid userInfoId)
+        [HttpPut("stock/{userInfoId}")]
+        public async Task<IActionResult> UpdateStock([FromForm]ProductUpdateStockRequest request, Guid userInfoId)
         {
-            var isSuccessful = await _productService.UpdateStock(productDetailId, addedQuantity, userInfoId);
+            var isSuccessful = await _productService.UpdateStock(request.ProductDetailId, request.AddedQuantity, userInfoId);
             if (isSuccessful == false)
             {
                 return BadRequest();
@@ -178,6 +196,16 @@ namespace eRentSolution.BackendApi.Controllers
             var result = await _productService.IsMyProduct(userId, productId);
             return Ok(result);
         }
+        [HttpPut("updateDetail/{userId}")]
+        public async Task<IActionResult> UpdateDetail([FromBody] ProductDetailUpdateRequest request, Guid userId)
+        {
+            var isSuccessful = await _productService.UpdateDetail(request, userId);
+            if (isSuccessful.IsSuccessed == false)
+            {
+                return BadRequest();
+            }
+            return Ok(isSuccessful);
+        }
 
         // ============== IMAGE===========
         [HttpGet("img/{imageId}")]
@@ -189,7 +217,7 @@ namespace eRentSolution.BackendApi.Controllers
                 return BadRequest("Cannot find Image");
             }
             return Ok(Image);
-        }
+        } 
         [HttpGet("imgs/{productId}")]
         public async Task<IActionResult> GetImageByProductId(int productId)
         {
@@ -200,18 +228,19 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok(Image);
         }
-        [HttpPost("add-img/{productDetailId}")]
-        public async Task<IActionResult> AddImage([FromForm] ProductImageCreateRequest request, int productDetailId)
+        [HttpPost("add-img/{userId}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddImage([FromForm] ProductImageCreateRequest request, Guid userId)
         {
             //     var productId = await _productService.Create(request);
-            var imageId = await _productService.AddImage(request, productDetailId);
-            if (imageId == 0)
+            var result = await _productService.AddImage(request, userId);
+            if (!result.IsSuccessed)
             {
-                return BadRequest();
+                return BadRequest(result);
             }
-            var image = await _productService.GetImageById(request.ProductId);
+            var image = await _productService.GetImageById(request.ProductDetailId);
 
-            return CreatedAtAction(nameof(GetImageById), new { id = imageId }, image);
+            return CreatedAtAction(nameof(GetImageById), new { id = result }, image);
         }
         [HttpDelete("img/{imageID}")]
         public async Task<IActionResult> RemoveImage(int imageID)
@@ -223,15 +252,16 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok();
         }
-        [HttpPut("update-img")]
-        public async Task<IActionResult> UpdateImage([FromForm] ProductImageUpdateRequest request)
+        [HttpPut("update-img/{userId}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateImage([FromForm] ProductImageUpdateRequest request, Guid userId)
         {
-            var result = await _productService.UpdateImage(request);
-            if (result == 0)
+            var result = await _productService.UpdateImage(request, userId);
+            if (!result.IsSuccessed)
             {
-                return BadRequest();
+                return BadRequest(result);
             }
-            return Ok();
+            return Ok(result);
         }
 
     }

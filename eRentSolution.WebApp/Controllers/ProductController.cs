@@ -1,6 +1,8 @@
 ﻿using eRentSolution.Integration;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.ProductDetails;
+using eRentSolution.ViewModels.Catalog.ProductImages;
 using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -278,6 +280,114 @@ namespace eRentSolution.WebApp.Controllers
                 Category = await _categoryApiClient.GetById(categoryId, SystemConstant.AppSettings.TokenWebApp),
                 Products = products
             });
+        }
+        [HttpGet]
+        public IActionResult AddDetail(int id)
+        {
+            return View(new ProductDetailCreateRequest()
+            {
+                ProductId = id
+            });
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddDetail([FromForm] ProductDetailCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await _productApiClient.AddProductDetail(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (result)
+            {
+                TempData["result"] = "Tạo mới sản phẩm thành công";
+                return RedirectToAction("MyListProducts");
+            }
+
+            ModelState.AddModelError("", "Tạo mới sản phẩm thất bại");
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditDetail(int productDetailId)
+        {
+            var productDetail = await _productApiClient.GetProductDetailById(productDetailId, SystemConstant.AppSettings.TokenWebApp);
+            var productViewModel = new ProductDetailUpdateRequest()
+            {
+                Id = productDetailId,
+                Detail = productDetail.Detail,
+                Length = productDetail.Length,
+                Width = productDetail.Width,
+                ProductDetailName = productDetail.ProductDetailName
+            };
+            return View(productViewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditDetail([FromForm] ProductDetailUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await _productApiClient.UpdateDetail(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (result)
+            {
+                TempData["result"] = "Chỉnh sửa sản phẩm thành công";
+                return RedirectToAction("MyListProducts");
+            }
+
+            ModelState.AddModelError("", "Chỉnh sửa sản phẩm thất bại");
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditImage(int imageId)
+        {
+            var image = await _productApiClient.GetImageById(imageId, SystemConstant.AppSettings.TokenWebApp);
+            var imageUpdateRequest = new ProductImageUpdateRequest()
+            {
+                ImageId = image.Id,
+                OldImageUrl = image.ImagePath
+            };
+            return View(imageUpdateRequest);
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> EditImage([FromForm] ProductImageUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await _productApiClient.UpdateImage(request, SystemConstant.AppSettings.TokenWebApp, Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("MyListProducts");
+            }
+
+            ModelState.AddModelError("", result.ResultObject);
+            return View(request);
+        }
+        [HttpGet]
+        public IActionResult AddImage(int productDetailId)
+        {
+            return View(new ProductImageCreateRequest()
+            {
+                ProductDetailId = productDetailId
+            });
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddImage([FromForm] ProductImageCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await _productApiClient.AddImage(request, SystemConstant.AppSettings.TokenWebApp, Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("MyListProducts");
+            }
+
+            ModelState.AddModelError("", result.ResultObject);
+            return View(request);
         }
         public async Task<List<ProductViewModel>> GetProductImages(List<ProductViewModel> products)
         {
