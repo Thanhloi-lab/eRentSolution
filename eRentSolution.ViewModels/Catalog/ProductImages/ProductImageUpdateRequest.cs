@@ -7,5 +7,6 @@ namespace eRentSolution.ViewModels.Catalog.ProductImages
         public int ImageId { get; set; }
         public IFormFile ImageFile { get; set; }
         public string OldImageUrl { get; set; }
+        public int ProductDetailId { get; set; }
     }
 }

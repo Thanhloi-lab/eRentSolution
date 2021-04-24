@@ -12,5 +12,6 @@ namespace eRentSolution.ViewModels.Catalog.ProductDetails
         public string Detail { get; set; }
         public int Width { get; set; }
         public int Length { get; set; }
+        public int ProductId { get; set; }
     }
 }

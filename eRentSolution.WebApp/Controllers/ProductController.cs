@@ -300,14 +300,14 @@ namespace eRentSolution.WebApp.Controllers
             if (result)
             {
                 TempData["result"] = "Tạo mới sản phẩm thành công";
-                return RedirectToAction("MyListProducts");
+                return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
             ModelState.AddModelError("", "Tạo mới sản phẩm thất bại");
             return View(request);
         }
         [HttpGet]
-        public async Task<IActionResult> EditDetail(int productDetailId)
+        public async Task<IActionResult> EditDetail(int productDetailId, int productId)
         {
             var productDetail = await _productApiClient.GetProductDetailById(productDetailId, SystemConstant.AppSettings.TokenWebApp);
             var productViewModel = new ProductDetailUpdateRequest()
@@ -316,7 +316,8 @@ namespace eRentSolution.WebApp.Controllers
                 Detail = productDetail.Detail,
                 Length = productDetail.Length,
                 Width = productDetail.Width,
-                ProductDetailName = productDetail.ProductDetailName
+                ProductDetailName = productDetail.ProductDetailName,
+                ProductId = productId
             };
             return View(productViewModel);
         }
@@ -329,21 +330,22 @@ namespace eRentSolution.WebApp.Controllers
             var result = await _productApiClient.UpdateDetail(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (result)
             {
-                TempData["result"] = "Chỉnh sửa sản phẩm thành công";
-                return RedirectToAction("MyListProducts");
+                TempData["result"] = "Chỉnh sửa chi tiết sản phẩm thành công";
+                return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
             ModelState.AddModelError("", "Chỉnh sửa sản phẩm thất bại");
             return View(request);
         }
         [HttpGet]
-        public async Task<IActionResult> EditImage(int imageId)
+        public async Task<IActionResult> EditImage(int imageId, int productDetailId)
         {
             var image = await _productApiClient.GetImageById(imageId, SystemConstant.AppSettings.TokenWebApp);
             var imageUpdateRequest = new ProductImageUpdateRequest()
             {
                 ImageId = image.Id,
-                OldImageUrl = image.ImagePath
+                OldImageUrl = image.ImagePath,
+                ProductDetailId = productDetailId
             };
             return View(imageUpdateRequest);
         }
@@ -358,7 +360,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("MyListProducts");
+                return Redirect($"/product/MyProductDetail/{request.ProductDetailId}");
             }
 
             ModelState.AddModelError("", result.ResultObject);
@@ -383,7 +385,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("MyListProducts");
+                return Redirect($"/product/MyProductDetail/{request.ProductDetailId}");
             }
 
             ModelState.AddModelError("", result.ResultObject);

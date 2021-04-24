@@ -97,6 +97,7 @@
                         <a href="#"> <img src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="" class="box-item__img"></a>
                         <form asp-action="EditImage" method="get" style="padding: 0 20px 20px 20px;">
                             <input asp-for="@image.Id" name="imageId" type="hidden" input />
+                            <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
                             <input type="submit" value="Chỉnh sửa hình ảnh" class="btn btn-danger" />
                         </form>
                     }
@@ -106,6 +107,7 @@
                 <td>
                     <form asp-action="EditDetail" method="get" style="padding: 0 20px 20px 20px;">
                         <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+                        <input asp-for="@Model.Id" name="productDetailId" type="hidden" input />
                         <input type="submit" value="Chỉnh sửa chi tiết" class="btn btn-danger" />
                     </form>
                 </td>
