@@ -111,14 +111,19 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 throw new eRentException($"Cannot find a product: { product.Id}");
             }
-            // Lay anh
-            var Imgages = _context.ProductImages.Where(p => p.ProductDetailId == productId);
-            foreach (var image in Imgages)
+            var details = await GetDetailsByProductId(productId);
+            foreach (var item in details)
             {
-                 int isDeleteSuccess = _storageService.DeleteFile(image.ImagePath);
-                if (isDeleteSuccess == -1)
-                    return false;
+                var Imgages = _context.ProductImages.Where(p => p.ProductDetailId == item.Id);
+                foreach (var image in Imgages)
+                {
+                    int isDeleteSuccess = _storageService.DeleteFile(image.ImagePath);
+                    if (isDeleteSuccess == -1)
+                        return false;
+                }
             }
+            // Lay anh
+            
 
             var censors = await _context.Censors.Where(x => x.ProductId == productId).ToListAsync();
             foreach (var item in censors)
@@ -707,6 +712,9 @@ namespace eRentSolution.Application.Catalog.Products
             productDetail.Detail = request.Detail;
             productDetail.Width = request.Width;
             productDetail.Length = request.Length;
+            productDetail.Stock = request.Stock;
+            productDetail.Price = request.Price;
+            productDetail.OriginalPrice = request.OriginalPrice;
             _context.ProductDetails.Update(productDetail);
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProductDetail);
             var censor = new Censor()
@@ -785,28 +793,79 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.Censors.AddAsync(censors);
             return productDetail.Id;
         }
+        public async Task<bool> DeleteDetail(int productDetailId, Guid userId)
+        {
+            var detail = await _context.ProductDetails.FindAsync(productDetailId);
+            if (detail == null)
+                return false;
+
+            _context.ProductDetails.Remove(detail);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                var Imgages = _context.ProductImages.Where(p => p.ProductDetailId == productDetailId);
+                foreach (var image in Imgages)
+                {
+                    int isDeleteSuccess = _storageService.DeleteFile(image.ImagePath);
+                    if (isDeleteSuccess == -1)
+                        return false;
+                }
+
+                var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteDetail);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    Date = DateTime.UtcNow,
+                    ProductId = detail.ProductId,
+                    UserInfoId = userId,
+                };
+                _context.Censors.Add(censor);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+
+
+
         //----------------Images-------
         // No Done
-        public async Task<int> RemoveImage(int imageId)
+        public async Task<bool> DeleteImage(int imageId, Guid userId)
         {
             var productImage = await _context.ProductImages.FindAsync(imageId);
             if (productImage == null)
-                return -1;
+                return false;
 
             var productDetail = await _context.ProductDetails.FindAsync(productImage.ProductDetailId);
             if (productDetail == null)
-                return -1;
+                return false;
             var listProductImages = from pd in _context.ProductDetails
                                     join i in _context.ProductImages on pd.Id equals i.ProductDetailId
                                     select new { i };
             if (listProductImages.Count() <= 1)
-                return -2;
+                return false;
             
             int isDeleteSuccess = _storageService.DeleteFile(productImage.ImagePath);
             if (isDeleteSuccess == -1)
-                return 0;
+                return false;
             _context.ProductImages.Remove(productImage);
-            return await _context.SaveChangesAsync();
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteImage);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    Date = DateTime.UtcNow,
+                    ProductId = productDetail.ProductId,
+                    UserInfoId = userId,
+                };
+                _context.Censors.Add(censor);
+                return true;
+            }
+               
+            return false;
         }
         public async Task<ProductImageViewModel> GetImageById(int imageId)
         {
@@ -875,8 +934,21 @@ namespace eRentSolution.Application.Catalog.Products
                 productImage.FileSize = request.ImageFile.Length;
             }
             _context.ProductImages.Add(productImage);
-             await _context.SaveChangesAsync();
-            return  new ApiSuccessResult<string>($"Thêm ảnh thành công");
+            var result = await _context.SaveChangesAsync();
+            if(result>0)
+            {
+                var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateImage);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    Date = DateTime.UtcNow,
+                    ProductId = product.Id,
+                    UserInfoId = userId,
+                };
+                _context.Censors.Add(censor);
+                return new ApiSuccessResult<string>($"Thêm ảnh thành công");
+            }
+            return new ApiErrorResult<string>("Thêm ảnh thất bại");
         }
         public async Task<ApiResult<string>> UpdateImage(ProductImageUpdateRequest request, Guid userId)
         {
@@ -892,9 +964,27 @@ namespace eRentSolution.Application.Catalog.Products
                 productImage.FileSize = request.ImageFile.Length;
             }
             _context.ProductImages.Update(productImage);
-            await _context.SaveChangesAsync();
-            return new ApiSuccessResult<string>($"Sửa ảnh thành công");
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateImage);
+                var detail = await _context.ProductDetails.FindAsync(productImage.ProductDetailId);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    Date = DateTime.UtcNow,
+                    ProductId = detail.ProductId,
+                    UserInfoId = userId,
+                };
+                _context.Censors.Add(censor);
+                return new ApiSuccessResult<string>($"Thêm ảnh thành công");
+            }
+            return new ApiErrorResult<string>("Thêm ảnh thất bại");
         }
+
+
+
+
 
         //--------FILE--------
         private async Task<string> SaveFile(IFormFile file)
@@ -920,9 +1010,12 @@ namespace eRentSolution.Application.Catalog.Products
                 OriginalPrice = productDetail.OriginalPrice,
                 ProductDetailName =productDetail.Name,
                 Price = productDetail.Price,
-                Stock = productDetail.Stock
+                Stock = productDetail.Stock,
+                ProductId = productDetail.ProductId
             };
             return viewModel;
         }
+
+        
     }
 }

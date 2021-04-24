@@ -341,7 +341,10 @@ namespace eRentSolution.AdminApp.Controllers
                 Detail = productDetail.Detail,
                 Length = productDetail.Length,
                 Width = productDetail.Width,
-                ProductDetailName = productDetail.ProductDetailName
+                ProductDetailName = productDetail.ProductDetailName,
+                OriginalPrice = productDetail.OriginalPrice,
+                Price = productDetail.Price,
+                Stock = productDetail.Stock,
             };
             return View(productViewModel);
         }

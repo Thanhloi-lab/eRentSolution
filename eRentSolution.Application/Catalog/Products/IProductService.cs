@@ -29,7 +29,8 @@ namespace eRentSolution.Application.Catalog.Products
         Task<PagedResult<ProductViewModel>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId);
         Task<List<ProductViewModel>> GetLastestProducts( int take);
         Task<ApiResult<string>> AddImage( ProductImageCreateRequest request, Guid userId);
-        Task<int> RemoveImage(int imageId);
+        Task<bool> DeleteImage(int imageId, Guid userId);
+        Task<bool> DeleteDetail(int productDetailId, Guid userId);
         Task<ApiResult<string>> UpdateImage( ProductImageUpdateRequest request, Guid userId);
         Task<List<ProductImageViewModel>> GetListImage(int productId);
         Task<ProductImageViewModel> GetImageById(int imageId);

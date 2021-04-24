@@ -40,16 +40,7 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok(product);
         }
-        [HttpGet("productDetail/{id}")]
-        public async Task<IActionResult> GetProductDetailById(int id)
-        {
-            var product = await _productService.GetProductDetailById(id);
-            if (product == null)
-            {
-                return BadRequest("Cannot find product detail");
-            }
-            return Ok(product);
-        }
+        
         [HttpPost("{userInfoId}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] ProductCreateRequest request, Guid userInfoId)
@@ -63,13 +54,7 @@ namespace eRentSolution.BackendApi.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = productId }, product);
         }
-        [HttpPost("addProductDetail/{userInfoId}")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AddProductDetail([FromForm] ProductDetailCreateRequest request, Guid userInfoId)
-        {
-            var productDetailId = await _productService.AddDetail(request, userInfoId);
-            return Ok(productDetailId);
-        }
+        
         [HttpPut("{userInfoId}/{productId}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, Guid userInfoId, [FromRoute]int productId)
@@ -142,26 +127,6 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok();
         }
-        [HttpPut("price/{userInfoId}")]
-        public async Task<IActionResult> UpdatePrice([FromForm]ProductUpdatePriceRequest request, Guid userInfoId)
-        {
-            var isSuccessful = await _productService.UpdatePrice(request.ProductDetailId, request.NewPrice, userInfoId);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
-        }
-        [HttpPut("stock/{userInfoId}")]
-        public async Task<IActionResult> UpdateStock([FromForm]ProductUpdateStockRequest request, Guid userInfoId)
-        {
-            var isSuccessful = await _productService.UpdateStock(request.ProductDetailId, request.AddedQuantity, userInfoId);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
-        }
         [HttpPut("{id}/categories")]
         public async Task<IActionResult> CategoryAssign(int id, [FromBody] CategoryAssignRequest request)
         {
@@ -206,6 +171,57 @@ namespace eRentSolution.BackendApi.Controllers
             }
             return Ok(isSuccessful);
         }
+        [HttpPost("addProductDetail/{userInfoId}")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddProductDetail([FromForm] ProductDetailCreateRequest request, Guid userInfoId)
+        {
+            var productDetailId = await _productService.AddDetail(request, userInfoId);
+            return Ok(productDetailId);
+        }
+        [HttpGet("productDetail/{id}")]
+        public async Task<IActionResult> GetProductDetailById(int id)
+        {
+            var product = await _productService.GetProductDetailById(id);
+            if (product == null)
+            {
+                return BadRequest("Cannot find product detail");
+            }
+            return Ok(product);
+        }
+        [HttpDelete("{userId}/deleteDetail/{productDetailId}")]
+        public async Task<IActionResult> DeleteDetail(int productDetailId, Guid userId)
+        {
+            var isSuccessful = await _productService.DeleteDetail(productDetailId, userId);
+            if (isSuccessful == false)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+        [HttpPut("price/{userInfoId}")]
+        public async Task<IActionResult> UpdatePrice([FromForm] ProductUpdatePriceRequest request, Guid userInfoId)
+        {
+            var isSuccessful = await _productService.UpdatePrice(request.ProductDetailId, request.NewPrice, userInfoId);
+            if (isSuccessful == false)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+        [HttpPut("stock/{userInfoId}")]
+        public async Task<IActionResult> UpdateStock([FromForm] ProductUpdateStockRequest request, Guid userInfoId)
+        {
+            var isSuccessful = await _productService.UpdateStock(request.ProductDetailId, request.AddedQuantity, userInfoId);
+            if (isSuccessful == false)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
+
+
+
 
         // ============== IMAGE===========
         [HttpGet("img/{imageId}")]
@@ -242,11 +258,11 @@ namespace eRentSolution.BackendApi.Controllers
 
             return CreatedAtAction(nameof(GetImageById), new { id = result }, image);
         }
-        [HttpDelete("img/{imageID}")]
-        public async Task<IActionResult> RemoveImage(int imageID)
+        [HttpDelete("{userId}/img/{imageId}")]
+        public async Task<IActionResult> RemoveImage(int imageId, Guid userId)
         {
-            var result = await _productService.RemoveImage(imageID);
-            if (result == 0)
+            var result = await _productService.DeleteImage(imageId, userId);
+            if (!result)
             {
                 return BadRequest();
             }

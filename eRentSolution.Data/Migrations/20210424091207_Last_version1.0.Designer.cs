@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eRentSolution.Data.EF;
 
 namespace eRentSolution.Data.Migrations
 {
     [DbContext(typeof(eRentDbContext))]
-    partial class eRentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210424091207_Last_version1.0")]
+    partial class Last_version10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

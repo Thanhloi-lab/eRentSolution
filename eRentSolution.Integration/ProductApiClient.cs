@@ -249,10 +249,6 @@ namespace eRentSolution.Integration
             var result = await GetAsync<ProductDetailViewModel>($"/api/products/productDetail/{productDetailId}", tokenName);
             return result;
         }
-        public Task<bool> DeleteDetail(int productDetailId, Guid userInfoId, string tokenName)
-        {
-            throw new NotImplementedException();
-        }
         public Task<bool> HideProductDetail(int productDetailId, Guid userInfoId, string tokenName)
         {
             throw new NotImplementedException();
@@ -260,6 +256,11 @@ namespace eRentSolution.Integration
         public Task<bool> ShowProductDetail(int productDetailId, Guid userInfoId, string tokenName)
         {
             throw new NotImplementedException();
+        }
+        public async Task<bool> DeleteDetail(int productDetailId, Guid userId, string tokenName)
+        {
+            var result = await DeleteAsync<bool>($"/api/products/{userId}/deleteDetail/{productDetailId}", tokenName);
+            return result;
         }
         #endregion
 
@@ -340,6 +341,11 @@ namespace eRentSolution.Integration
         public async Task<List<ProductImageViewModel>> GetListImages(int productId, string tokenName)
         {
             var result = await GetListAsync<ProductImageViewModel>($"/api/products/imgs/{productId}", tokenName);
+            return result;
+        }
+        public async Task<bool> DeleteImage(int imageId, Guid userId, string tokenName)
+        {
+            var result = await DeleteAsync<bool>($"/api/products/{userId}/img/{imageId}", tokenName);
             return result;
         }
         #endregion

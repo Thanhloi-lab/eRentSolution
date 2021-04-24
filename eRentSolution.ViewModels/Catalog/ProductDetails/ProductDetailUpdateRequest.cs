@@ -12,6 +12,9 @@ namespace eRentSolution.ViewModels.Catalog.ProductDetails
         public string Detail { get; set; }
         public int Width { get; set; }
         public int Length { get; set; }
+        public decimal Price { get; set; }
+        public decimal OriginalPrice { get; set; }
+        public int Stock { get; set; }
         public int ProductId { get; set; }
     }
 }

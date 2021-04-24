@@ -36,6 +36,7 @@ namespace eRentSolution.WebApp.Controllers
             _httpContextAccessor = httpContextAccessor;
             _userApiClient = userApiClient;
         }
+        #region -----PRODUCT-------
         [AllowAnonymous]
         public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
         {
@@ -281,12 +282,15 @@ namespace eRentSolution.WebApp.Controllers
                 Products = products
             });
         }
+        #endregion
+
+        #region ------DETAIL------
         [HttpGet]
-        public IActionResult AddDetail(int id)
+        public IActionResult AddDetail(int productId)
         {
             return View(new ProductDetailCreateRequest()
             {
-                ProductId = id
+                ProductId = productId
             });
         }
         [HttpPost]
@@ -317,7 +321,10 @@ namespace eRentSolution.WebApp.Controllers
                 Length = productDetail.Length,
                 Width = productDetail.Width,
                 ProductDetailName = productDetail.ProductDetailName,
-                ProductId = productId
+                ProductId = productId,
+                Stock = productDetail.Stock,
+                OriginalPrice = productDetail.OriginalPrice,
+                Price = productDetail.Price
             };
             return View(productViewModel);
         }
@@ -338,14 +345,66 @@ namespace eRentSolution.WebApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public async Task<IActionResult> EditImage(int imageId, int productDetailId)
+        public async Task<IActionResult> DeleteDetail(int productDetailId, int productId)
+        {
+            var product = await _productApiClient.GetById(productId, SystemConstant.AppSettings.TokenWebApp);
+            if(product==null)
+            {
+                TempData["failResult"] = "Sản phẩm không tồn tại";
+                return RedirectToAction("MyListProducts");
+            }
+            else
+            {
+                userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (await _productApiClient.IsMyProduct(productId, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
+                {
+                    return RedirectToAction("index");
+                }
+                if (product.ProductDetailViewModels.Count<2)
+                {
+                    TempData["failResult"] = "Không thể xóa chi tiết cuối cùng của sản phẩm";
+                    return Redirect($"/product/MyProductDetail/{productId}");
+                }
+            }    
+            return View(new ProductDetailDeleteRequest()
+            {
+                ProductId = productId,
+                ProductDetailId = productDetailId
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteDetail([FromForm] ProductDetailDeleteRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["failResult"] = "Xóa sản phẩm không thành công";
+                return View(request);
+            }
+
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await _productApiClient.DeleteDetail(request.ProductDetailId, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            if (result)
+            {
+                TempData["result"] = "Xóa sản phẩm thành công";
+                return Redirect($"/product/MyProductDetail/{request.ProductId}");
+            }
+
+            TempData["failResult"] = "Xóa sản phẩm không thành công";
+            return View(request);
+        }
+        #endregion
+
+        #region ------IMAGE------
+        [HttpGet]
+        public async Task<IActionResult> EditImage(int imageId, int productId)
         {
             var image = await _productApiClient.GetImageById(imageId, SystemConstant.AppSettings.TokenWebApp);
             var imageUpdateRequest = new ProductImageUpdateRequest()
             {
                 ImageId = image.Id,
                 OldImageUrl = image.ImagePath,
-                ProductDetailId = productDetailId
+                ProductId = productId
             };
             return View(imageUpdateRequest);
         }
@@ -360,18 +419,19 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return Redirect($"/product/MyProductDetail/{request.ProductDetailId}");
+                return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
             ModelState.AddModelError("", result.ResultObject);
             return View(request);
         }
         [HttpGet]
-        public IActionResult AddImage(int productDetailId)
+        public IActionResult AddImage(int productDetailId, int productId)
         {
             return View(new ProductImageCreateRequest()
             {
-                ProductDetailId = productDetailId
+                ProductDetailId = productDetailId,
+                ProductId = productId
             });
         }
         [HttpPost]
@@ -385,7 +445,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return Redirect($"/product/MyProductDetail/{request.ProductDetailId}");
+                return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
             ModelState.AddModelError("", result.ResultObject);
@@ -414,5 +474,53 @@ namespace eRentSolution.WebApp.Controllers
             }
             return products;
         }
+        [HttpGet]
+        public async Task<IActionResult> DeleteImage(int productDetailId, int imageId)
+        {
+            var productDetail = await _productApiClient.GetProductDetailById(productDetailId, SystemConstant.AppSettings.TokenWebApp);
+            var product = await _productApiClient.GetById(productDetail.ProductId, SystemConstant.AppSettings.TokenWebApp);
+            if (productDetail == null || product == null)
+            {
+                TempData["failResult"] = "Xảy ra lỗi trong quá trình vui lòng thử lại sau";
+                return Redirect($"/product/MyProductDetail/{product.Id}");
+            }
+            else
+            {
+                userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                if (await _productApiClient.IsMyProduct(product.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
+                {
+                    return RedirectToAction("index");
+                }
+            }
+            return View(new ProductImageDeleteRequest()
+            {
+                ProductId = productDetail.ProductId,
+                ProductDetailId = productDetailId,
+                ImageId = imageId
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteImage([FromForm] ProductImageDeleteRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["failResult"] = "Xóa hình ảnh không thành công";
+                return View(request);
+            }
+
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var result = await _productApiClient.DeleteImage(request.ImageId, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            if (result)
+            {
+                TempData["result"] = "Xóa hình ảnh thành công";
+                return Redirect($"/product/MyProductDetail/{request.ProductId}");
+            }
+
+            TempData["failResult"] = "Xóa hình ảnh không thành công";
+            return View(request);
+        }
+        #endregion
+
     }
 }

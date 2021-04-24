@@ -38,7 +38,7 @@ namespace eRentSolution.Integration
         Task<ApiResult<bool>> UpdateStock(ProductUpdateStockRequest request, Guid userInfoId, string tokenName);
         Task<ApiResult<bool>> UpdatePrice(ProductUpdatePriceRequest request, Guid userInfoId, string tokenName);
         Task<ApiResult<bool>> AddViewcount(int productId, string tokenName);
-        Task<bool> DeleteDetail(int productDetailId, Guid userInfoId, string tokenName);
+        Task<bool> DeleteDetail(int productDetailId, Guid userId, string tokenName);
         Task<ProductDetailViewModel> GetProductDetailById(int productDetailId, string tokenName);
         Task<bool> HideProductDetail(int productDetailId, Guid userInfoId, string tokenName);
         Task<bool> ShowProductDetail(int productDetailId, Guid userInfoId, string tokenName);
@@ -49,7 +49,7 @@ namespace eRentSolution.Integration
         Task<ProductImageViewModel> GetImageById(int imageId, string tokenName);
         Task<ApiResult<string>> UpdateImage(ProductImageUpdateRequest request, string tokenName, Guid userId);
         Task<ApiResult<string>> AddImage(ProductImageCreateRequest request, string tokenName, Guid userId);
-        Task<bool> DeleteImage(int imageId, string tokenName, Guid userId);
+        Task<bool> DeleteImage(int imageId, Guid userId, string tokenName);
         #endregion
     }
 }

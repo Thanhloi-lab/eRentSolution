@@ -8,7 +8,7 @@ namespace eRentSolution.ViewModels.Catalog.ProductDetails
 {
     public class ProductDetailViewModel
     {
-        [Display(Name = "Mã loại sản phẩm")]
+        [Display(Name = "Mã chi tiết sản phẩm")]
         public int Id { set; get; }
         [Display(Name = "Tên loại sản phẩm")]
         public string ProductDetailName { set; get; }
@@ -30,5 +30,7 @@ namespace eRentSolution.ViewModels.Catalog.ProductDetails
         public List<ProductImageViewModel> Images { set; get; } = new List<ProductImageViewModel>();
         [Display(Name = "Sản phẩm đại diện")]
         public bool IsThumbnail { get; set; }
+        [Display(Name = "Mã sản phẩm")]
+        public int ProductId { get; set; }
     }
 }

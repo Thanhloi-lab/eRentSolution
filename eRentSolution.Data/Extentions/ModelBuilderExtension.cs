@@ -200,6 +200,36 @@ namespace eRentSolution.Data.Extentions
            {
                Id = 15,
                ActionName = "Hiện sản phẩm"
+           },
+           new UserAction()
+           {
+               Id = 16,
+               ActionName = "Chỉnh sửa hình ảnh sản phẩm"
+           },
+           new UserAction()
+           {
+               Id = 17,
+               ActionName = "Thêm hình ảnh sản phẩm"
+           },
+           new UserAction()
+           {
+               Id = 18,
+               ActionName = "Xóa hình ảnh sản phẩm"
+           },
+           new UserAction()
+           {
+               Id = 19,
+               ActionName = "Xóa chi tiết sản phẩm"
+           } ,
+           new UserAction()
+           {
+               Id = 20,
+               ActionName = "Thêm chi tiết sản phẩm"
+           },
+           new UserAction()
+           {
+               Id = 21,
+               ActionName = "Chỉnh sửa chi tiết sản phẩm"
            }
            );
             modelBuilder.Entity<Censor>().HasData(
