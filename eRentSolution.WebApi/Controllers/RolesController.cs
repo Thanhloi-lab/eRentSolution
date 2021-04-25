@@ -21,9 +21,9 @@ namespace eRentSolution.BackendApi.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _roleService.GetAll();
-            if (result == null)
-                return BadRequest();
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
     }
 }

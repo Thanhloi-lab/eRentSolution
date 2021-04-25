@@ -1,4 +1,5 @@
-﻿using eRentSolution.ViewModels.System.Roles;
+﻿using eRentSolution.ViewModels.Common;
+using eRentSolution.ViewModels.System.Roles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -18,7 +19,7 @@ namespace eRentSolution.Integration
         {
         }
 
-        public async Task<List<RoleViewModel>> GetAll(string tokenName)
+        public async Task<ApiResult<List<RoleViewModel>>> GetAll(string tokenName)
         {
             var result = await GetListAsync<RoleViewModel>($"api/roles", tokenName);
             return result;

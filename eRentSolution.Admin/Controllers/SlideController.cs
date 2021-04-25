@@ -32,7 +32,8 @@ namespace eRentSolution.AdminApp.Controllers
             _configuration = configuration;
             _categoryApiClient = categoryApiClient;
             _slideApiClient = slideApiClient;
-            userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            _httpContextAccessor = httpContextAccessor;
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         public async Task<IActionResult> Index(string keyword, int? status, int pageIndex = 1, int pageSize = 10)
@@ -42,7 +43,6 @@ namespace eRentSolution.AdminApp.Controllers
                 Keyword = keyword,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                //CategoryId = categoryId
                 Status = status
             };
 
@@ -69,33 +69,24 @@ namespace eRentSolution.AdminApp.Controllers
                     Selected = status.HasValue && status.Value.ToString() == "0"
                 }
             };
-            //var dropDown = new List<string>();
-            //dropDown.Add("Hoạt động");
-            //dropDown.Add("Không hoạt động");
 
-            //ViewBag.Status = dropDown.Select(x => new SelectListItem()
-            //{
-            //    Text = x,
-            //    Value = Status.Active.ToString(),
-            //    Selected = status.HasValue && status.ToString() == x
-            //});
             ViewBag.Status = viewBagStatus;
-            return View(slides);
+            return View(slides.ResultObject);
         }
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var slide = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
-            if(slide==null)
+            if(!slide.IsSuccessed)
             {
-                TempData["failResult"] = "Slide không tồn tại";
+                TempData["failResult"] = slide.Message;
                 return RedirectToAction("index");
             }
             var slideViewModel = new SlideUpdateRequest()
             {
                 Id = id,
-                Name = slide.Name,
-                Description = slide.Description,
+                Name = slide.ResultObject.Name,
+                Description = slide.ResultObject.Description,
             };
             return View(slideViewModel);
         }
@@ -107,13 +98,13 @@ namespace eRentSolution.AdminApp.Controllers
                 return View();
 
             var result = await _slideApiClient.UpdateSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Chỉnh sửa slide thành công";
+                TempData["result"] = result.ResultObject;
                 return RedirectToAction("Index");
             }
 
-            ModelState.AddModelError("", "Chỉnh sửa slide thất bại");
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         [HttpGet]
@@ -131,12 +122,12 @@ namespace eRentSolution.AdminApp.Controllers
                 return View();
             var result = await _slideApiClient.DeleteSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
 
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Xóa slide thành công";
+                TempData["result"] = result.ResultObject;
                 return RedirectToAction("Index");
             }
-            TempData["failResult"] = "Xóa slide không thành công";
+            ModelState.AddModelError("", result.Message);
             return View(request.Id);
         }
         [HttpGet]
@@ -154,12 +145,12 @@ namespace eRentSolution.AdminApp.Controllers
                 return View();
             var result = await _slideApiClient.HideSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
 
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Ẩn slide thành công";
+                TempData["result"] = result.ResultObject;
                 return RedirectToAction("Index");
             }
-            TempData["failResult"] = "Ẩn slide không thành công";
+            ModelState.AddModelError("", result.Message);
             return View(request.Id);
         }
         [HttpGet]
@@ -177,19 +168,22 @@ namespace eRentSolution.AdminApp.Controllers
                 return View();
             var result = await _slideApiClient.ShowSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
 
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Hiện sản phẩm trình chiếu thành công";
+                TempData["result"] = result.ResultObject;
                 return RedirectToAction("Index");
             }
-            TempData["failResult"] = "Hiện sản phẩm trình chiếu không thành công";
+            ModelState.AddModelError("", result.Message);
             return View(request.Id);
         }
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
             var result = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
-            return View(result);
+            if(result.IsSuccessed)
+                return View(result.ResultObject);
+            TempData["failResult"] = result.Message;
+            return RedirectToAction("intdex");
         }
     }
 }

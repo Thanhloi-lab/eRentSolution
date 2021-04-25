@@ -9,13 +9,13 @@ namespace eRentSolution.Application.Utilities.Slides
 {
     public interface ISlideService
     {
-        Task<List<SlideViewModel>> GetAll();
-        Task<SlideViewModel> GetById(int slideId);
-        Task<int> AddSlide(SlideCreateRequest request, Guid userInfoId);
-        Task<bool> DeleteSlide(SlideStatusRequest request, Guid userInfoId);
-        Task<bool> HideSlide(SlideStatusRequest request, Guid userInfoId);
-        Task<bool> ShowSlide(SlideStatusRequest request, Guid userInfoId);
-        Task<bool> UpdateSlide(SlideUpdateRequest request, Guid userInfoId);
-        Task<PagedResult<SlideViewModel>> GetAllPaging(GetSlidePagingRequest request);
+        Task<ApiResult<List<SlideViewModel>>> GetAll();
+        Task<ApiResult<SlideViewModel>> GetById(int slideId);
+        Task<ApiResult<string>> AddSlide(SlideCreateRequest request, Guid userInfoId);
+        Task<ApiResult<string>> DeleteSlide(SlideStatusRequest request, Guid userInfoId);
+        Task<ApiResult<string>> HideSlide(SlideStatusRequest request, Guid userInfoId);
+        Task<ApiResult<string>> ShowSlide(SlideStatusRequest request, Guid userInfoId);
+        Task<ApiResult<string>> UpdateSlide(SlideUpdateRequest request, Guid userInfoId);
+        Task<ApiResult<PagedResult<SlideViewModel>>> GetAllPaging(GetSlidePagingRequest request);
     }
 }

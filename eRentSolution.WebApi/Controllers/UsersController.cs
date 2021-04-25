@@ -24,108 +24,107 @@ namespace eRentSolution.BackendApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate([FromBody]UserLoginRequest request, bool isAdminPage)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.Authenticate(request, isAdminPage);
-            if(string.IsNullOrEmpty(result.ResultObject))
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _userService.Delete(id);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _userService.GetById(id);
-            if(!result.IsSuccessed)
-                return BadRequest();
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("paging")]
         public async Task<IActionResult> GetUserPaging([FromQuery]GetUserPagingRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.GetUserPaging(request);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody]UserRegisterRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.Register(request);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("{id}/roles")]
         public async Task<IActionResult> RoleAssign(Guid id ,[FromBody]RoleAssignRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.RoleAssign(id, request);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.Update(id, request);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("Password/{id}")]
         public async Task<IActionResult> UpdatePassword(Guid id, [FromBody] UserUpdatePasswordRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.UpdatePassword(request);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("ResetPassword/{id}")]
         public async Task<IActionResult> ResetPassword(Guid id, [FromBody] UserResetPasswordRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.ResetPassword(request);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("activity-log")]
         public async Task<IActionResult> GetUserActivity([FromQuery] UserActivityLogRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.GetUserActivities(request);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("page-activity-log")]
         public async Task<IActionResult> GetPageActivity([FromQuery] UserActivityLogRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(request);
             var result = await _userService.GetPageUserActivities(request);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("{productId}/product")]
         public async Task<IActionResult> GetUserByProductId(int productId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(productId);
             var result = await _userService.GetUserByProductId(productId);
-            return Ok(result.ResultObject);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("updateAvatar")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateImage([FromForm] UserAvatarUpdateRequest request)
         {
-            var products = await _userService.UpdateAvatar(request);
-            return Ok(products);
+            var result = await _userService.UpdateAvatar(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
     }
 }

@@ -69,10 +69,13 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> Login(UserLoginRequest request)
         {
             if (!ModelState.IsValid)
-                return View(ModelState);
-
+            {
+                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                return View(request);
+            }    
+                
             var result = await _userApiClient.Authenticate(request, false);
-            if (result.ResultObject == null)
+            if (!result.IsSuccessed)
             {
                 ModelState.AddModelError("", result.Message);
                 return View();
@@ -131,8 +134,11 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> Register(UserRegisterRequest request)
         {
             if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
                 return View(request);
-
+            }    
+                
             var result = await _userApiClient.RegisterUser(request);
             if (!result.IsSuccessed)
             {

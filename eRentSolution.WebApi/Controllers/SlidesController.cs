@@ -22,20 +22,26 @@ namespace eRentSolution.BackendApi.Controllers
         [HttpGet("paging")]
         public async Task<IActionResult> GetAllPaging([FromQuery] GetSlidePagingRequest request)
         {
-            var product = await _slideService.GetAllPaging(request);
-            return Ok(product);
+            var result = await _slideService.GetAllPaging(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var slides = await _slideService.GetAll();
-            return Ok(slides);
+            var result = await _slideService.GetAll();
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("{slideId}")]
         public async Task<IActionResult> GetById(int slideId)
         {
-            var slide = await _slideService.GetById(slideId);
-            return Ok(slide);
+            var result = await _slideService.GetById(slideId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPost("{userInfoId}/create/{productId}")]
         [Consumes("multipart/form-data")]
@@ -43,7 +49,9 @@ namespace eRentSolution.BackendApi.Controllers
         {
             request.ProductId = productId;
             var result = await _slideService.AddSlide(request, userInfoId);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("{userInfoId}/update/{slideId}")]
         [Consumes("multipart/form-data")]
@@ -51,28 +59,36 @@ namespace eRentSolution.BackendApi.Controllers
         {
             request.Id = slideId;
             var result = await _slideService.UpdateSlide(request, userInfoId);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("{userInfoId}/delete/{slideId}")]
         public async Task<IActionResult> Delete(int slideId, Guid userInfoId, [FromForm] SlideStatusRequest request)
         {
             request.Id = slideId;
             var result = await _slideService.DeleteSlide(request, userInfoId);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("{userInfoId}/hide/{slideId}")]
         public async Task<IActionResult> Hide(Guid userInfoId, int slideId, [FromForm] SlideStatusRequest request)
         {
             request.Id = slideId;
             var result = await _slideService.HideSlide(request, userInfoId);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("{userInfoId}/show/{slideId}")]
         public async Task<IActionResult> Show(Guid userInfoId, int slideId, [FromForm] SlideStatusRequest request)
         {
             request.Id = slideId;
             var result = await _slideService.ShowSlide(request, userInfoId);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
     }
 }

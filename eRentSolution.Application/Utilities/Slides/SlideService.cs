@@ -28,14 +28,15 @@ namespace eRentSolution.Application.Utilities.Slides
             _storageService = storageService;
         }
 
-        public async Task<int> AddSlide(SlideCreateRequest request, Guid userInfoId)
+        public async Task<ApiResult<string>> AddSlide(SlideCreateRequest request, Guid userInfoId)
         {
             var action = await _context.UserActions
                 .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateSlide);
             
             var product = await _context.Products.FindAsync(request.ProductId);
-            if(product==null)
-                return -1;
+            if (product == null)
+                return new ApiErrorResult<string>("Sản phẩm không tồn tại");
+
             var slide = new Slide()
             {
                 Name = request.Name,
@@ -56,24 +57,31 @@ namespace eRentSolution.Application.Utilities.Slides
                     Date = DateTime.UtcNow,
                     ProductId = product.Id
                 };
-                await _context.Censors.AddAsync(censor);
+                 await _context.Censors.AddAsync(censor);
             }
-            return await _context.SaveChangesAsync();
+            else
+            {
+                return new ApiErrorResult<string>("Thêm sản phẩm trình chiếu thất bại");
+            }    
+            result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Thêm sản phẩm trình chiếu thành công");
+            return new ApiErrorResult<string>("Thêm sản phẩm trình chiếu thất bại");
         }
-
-        public async Task<bool> HideSlide(SlideStatusRequest request, Guid userInfoId)
+        public async Task<ApiResult<string>> HideSlide(SlideStatusRequest request, Guid userInfoId)
         {
             var action = await _context.UserActions
                 .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.HideSlide);
             
             var slide = await _context.Slides.FindAsync(request.Id);
             if (slide == null)
-                return false;
+                return new ApiErrorResult<string>("Sản phẩm trình chiếu không tồn tại");
 
             slide.Status = Data.Enums.Status.InActive;
             var result = await _context.SaveChangesAsync();
             
-           //var product = await  _context.Products.FirstOrDefaultAsync(x => x.Id == slide.ProductId);
+            if (result < 0)
+                return new ApiErrorResult<string>("Ẩn sản phâm trình chiếu thất bại");
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -82,19 +90,18 @@ namespace eRentSolution.Application.Utilities.Slides
                 ProductId = slide.ProductId
             };
             await _context.Censors.AddAsync(censor);
-            await _context.SaveChangesAsync();
-            if (result>0)
-                return true;
-            return false;
+            result = await _context.SaveChangesAsync();
+            if (result < 0)
+                return new ApiErrorResult<string>("Ẩn sản phâm trình chiếu thất bại");
+            return new ApiSuccessResult<string>("Ẩn sản phẩm trình chiếu thành công");
         }
-
-        public async Task<bool> DeleteSlide(SlideStatusRequest request, Guid userInfoId)
+        public async Task<ApiResult<string>> DeleteSlide(SlideStatusRequest request, Guid userInfoId)
         {
             var slide = await _context.Slides.FindAsync(request.Id);
             if (slide == null)
-                return false;
+                return new ApiErrorResult<string>("Sản phẩm trình chiếu không tồn tại");
 
-             _storageService.DeleteFile(slide.ImagePath);
+            _storageService.DeleteFile(slide.ImagePath);
             _context.Slides.Remove(slide);
             var result = await _context.SaveChangesAsync();
             if(result >0)
@@ -108,12 +115,77 @@ namespace eRentSolution.Application.Utilities.Slides
                     ProductId = slide.ProductId
                 };
                 await _context.Censors.AddAsync(censor);
-                await _context.SaveChangesAsync();
+                result = await _context.SaveChangesAsync();
+                if(result > 0)
+                    return new ApiSuccessResult<string>("Xóa sản phẩm trình chiếu thành công");
+                return new ApiErrorResult<string>("Xóa sản phâm trình chiếu thất bại");
             }
-            return true;
+            return new ApiErrorResult<string>("Xóa sản phâm trình chiếu thất bại");
         }
+        public async Task<ApiResult<string>> UpdateSlide(SlideUpdateRequest request, Guid userInfoId)
+        {
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateSlide);
 
-        public async Task<List<SlideViewModel>> GetAll()
+            var slide = await _context.Slides.FindAsync(request.Id);
+            if (slide == null)
+                return new ApiErrorResult<string>("Sản phẩm trình chiếu không tồn tại");
+            slide.Description = request.Description;
+            slide.Name = request.Name;
+
+            var result = await _context.SaveChangesAsync();
+            if (result < 0)
+                return new ApiErrorResult<string>("Cập nhật sản phâm trình chiếu thất bại");
+
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                Date = DateTime.UtcNow,
+                ProductId = slide.ProductId
+            };
+            await _context.Censors.AddAsync(censor);
+            result = await _context.SaveChangesAsync();
+
+            if (result > 0)
+                return new ApiSuccessResult<string>("Cập nhật sản phẩm trình chiếu thành công");
+
+            _context.Slides.Remove(slide);
+            await _context.SaveChangesAsync();
+            return new ApiErrorResult<string>("Cập nhật sản phâm trình chiếu thất bại");
+        }
+        public async Task<ApiResult<string>> ShowSlide(SlideStatusRequest request, Guid userInfoId)
+        {
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ShowSlide);
+
+            var slide = await _context.Slides.FindAsync(request.Id);
+            if (slide == null)
+                return new ApiErrorResult<string>("Sản phẩm trình chiếu không tồn tại");
+
+            slide.Status = Data.Enums.Status.Active;
+            var result = await _context.SaveChangesAsync();
+            if (result < 0)
+                return new ApiErrorResult<string>("Hiện sản phâm trình chiếu thất bại");
+
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                Date = DateTime.UtcNow,
+                ProductId = slide.ProductId
+            };
+
+            await _context.Censors.AddAsync(censor);
+            result =await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Cập nhật sản phẩm trình chiếu thành công");
+
+            _context.Slides.Remove(slide);
+            await _context.SaveChangesAsync();
+            return new ApiErrorResult<string>("Cập nhật sản phâm trình chiếu thất bại");
+        }
+        public async Task<ApiResult<List<SlideViewModel>>> GetAll()
         {
             var slides = await _context.Slides.Where(x=>x.Status == Data.Enums.Status.Active).Select(x => new SlideViewModel()
             {
@@ -129,17 +201,12 @@ namespace eRentSolution.Application.Utilities.Slides
                 var product = await _context.Products.FindAsync(item.ProductId);
                 item.ProductName = product.Name;
             }
-            return slides;
+            return new ApiSuccessResult<List<SlideViewModel>>(slides);
         }
-
-        public async Task<PagedResult<SlideViewModel>> GetAllPaging(GetSlidePagingRequest request)
+        public async Task<ApiResult<PagedResult<SlideViewModel>>> GetAllPaging(GetSlidePagingRequest request)
         {
             var query = from s in _context.Slides
-                        join p in _context.Products on s.ProductId equals p.Id //into sp
-                        //from p in sp.DefaultIfEmpty()
-                        //join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        //join c in _context.Categories on pic.CategoryId equals c.Id into picc
-                        //from c in picc.DefaultIfEmpty()
+                        join p in _context.Products on s.ProductId equals p.Id
                         where s.Status == Data.Enums.Status.Active
                         select new { s, p};
 
@@ -203,10 +270,9 @@ namespace eRentSolution.Application.Utilities.Slides
                 PageSize = request.PageSize,
                 TotalRecords = slides.Count
             };
-            return page;
+            return new ApiSuccessResult<PagedResult<SlideViewModel>>(page);
         }
-
-        public async Task<SlideViewModel> GetById(int slideId)
+        public async Task<ApiResult<SlideViewModel>> GetById(int slideId)
         {
             var slide = await _context.Slides.FindAsync(slideId);
             if (slide == null)
@@ -221,37 +287,14 @@ namespace eRentSolution.Application.Utilities.Slides
                 ProductId = slide.ProductId,
                 Status = slide.Status
             };
+
             var product = await _context.Products.FindAsync(slideViewModel.ProductId);
             slideViewModel.ProductName = product.Name;
-            return slideViewModel;
+            return new ApiSuccessResult<SlideViewModel>(slideViewModel);
         }
 
-        public async Task<bool> UpdateSlide(SlideUpdateRequest request, Guid userInfoId)
-        {
-            var action = await _context.UserActions
-                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateSlide);
 
-            var slide = await _context.Slides.FindAsync(request.Id);
-            if (slide == null)
-                return false;
-            slide.Description = request.Description;
-            slide.Name = request.Name;
-            
-            //var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == slide.ProductId);
-            var censor = new Censor()
-            {
-                ActionId = action.Id,
-                UserInfoId = userInfoId,
-                Date = DateTime.UtcNow,
-                ProductId = slide.ProductId
-            };
-            await _context.Censors.AddAsync(censor);
-            
-            var result = await _context.SaveChangesAsync();
-            if (result > 0) 
-                return true;
-            return false;
-        }
+
 
         private async Task<string> SaveFile(IFormFile file)
         {
@@ -260,32 +303,6 @@ namespace eRentSolution.Application.Utilities.Slides
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
-
-        public async Task<bool> ShowSlide(SlideStatusRequest request, Guid userInfoId)
-        {
-            var action = await _context.UserActions
-                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ShowSlide);
-
-            var slide = await _context.Slides.FindAsync(request.Id);
-            if (slide == null)
-                return false;
-
-            slide.Status = Data.Enums.Status.Active;
-            var result = await _context.SaveChangesAsync();
-
-            //var product = await  _context.Products.FirstOrDefaultAsync(x => x.Id == slide.ProductId);
-            var censor = new Censor()
-            {
-                ActionId = action.Id,
-                UserInfoId = userInfoId,
-                Date = DateTime.UtcNow,
-                ProductId = slide.ProductId
-            };
-            await _context.Censors.AddAsync(censor);
-            await _context.SaveChangesAsync();
-            if (result > 0)
-                return true;
-            return false;
-        }
+        
     }
 }

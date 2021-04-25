@@ -27,7 +27,7 @@ namespace eRentSolution.Integration
             _httpContextAccessor = httpContextAccessor;
         }
 
-        protected async Task<List<T>> GetListAsync<T>(string url, string tokenName)
+        protected async Task<ApiResult<List<T>>> GetListAsync<T>(string url, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -38,13 +38,14 @@ namespace eRentSolution.Integration
             var body = await respond.Content.ReadAsStringAsync();
             if (respond.IsSuccessStatusCode)
             {
-                List<T> myDeserializedObjList = (List<T>)JsonConvert.DeserializeObject(body, typeof(List<T>));
+                ApiSuccessResult<List<T>> myDeserializedObjList = (ApiSuccessResult<List<T>>)JsonConvert.DeserializeObject(body, typeof(ApiSuccessResult<List<T>>));
                 return myDeserializedObjList;
             }
-            return JsonConvert.DeserializeObject<List<T>>(body);
+            ApiErrorResult<List<T>> error = (ApiErrorResult<List<T>>)JsonConvert.DeserializeObject(body, typeof(ApiErrorResult<List<T>>));
+            return error;
 
         }
-        protected async Task<T> GetAsync<T>(string url, string tokenName)
+        protected async Task<ApiResult<T>> GetAsync<T>(string url, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -55,10 +56,11 @@ namespace eRentSolution.Integration
             var body = await respond.Content.ReadAsStringAsync();
             if (respond.IsSuccessStatusCode)
             {
-                T myDeserializedObjList = (T)JsonConvert.DeserializeObject(body, typeof(T));
+                ApiSuccessResult<T> myDeserializedObjList = (ApiSuccessResult<T>)JsonConvert.DeserializeObject(body, typeof(ApiSuccessResult<T>));
                 return myDeserializedObjList;
             }
-            return JsonConvert.DeserializeObject<T>(body);
+            ApiErrorResult<T> error = (ApiErrorResult<T>)JsonConvert.DeserializeObject(body, typeof(ApiErrorResult<T>));
+            return error;
         }
         protected async Task<ApiResult<T>> GetPageAsync<T>(string url, string tokenName)
         {
@@ -77,7 +79,7 @@ namespace eRentSolution.Integration
 
             return JsonConvert.DeserializeObject<ApiErrorResult<T>>(body);
         }
-        protected async Task<bool> DeleteAsync<T>(string url, string tokenName)
+        protected async Task<ApiResult<T>> DeleteAsync<T>(string url, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -85,11 +87,14 @@ namespace eRentSolution.Integration
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
 
             var respond = await client.DeleteAsync(url);
+            var body = await respond.Content.ReadAsStringAsync();
             if (respond.IsSuccessStatusCode)
             {
-                return true;
+                var result = JsonConvert.DeserializeObject<ApiSuccessResult<T>>(body);
+                return result;
             }
-            return false;
+            var error = JsonConvert.DeserializeObject<ApiErrorResult<T>>(body);
+            return error;
         }
         protected async Task<ApiResult<T>> PostAsync<T>(string url, object obj)
         {

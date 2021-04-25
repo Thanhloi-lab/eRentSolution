@@ -22,37 +22,35 @@ namespace eRentSolution.BackendApi.Controllers
         public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPagingRequest request)
         {
             var product = await _productService.GetAllPaging(request);
-            return Ok(product);
+            if (product.IsSuccessed)
+                return Ok(product);
+            return BadRequest(product);
         }
         [HttpGet("{userId}/GetPageProductByUserId")]
         public async Task<IActionResult> GetPageProductByUserId([FromQuery] GetProductPagingRequest request, Guid userId)
         {
             var product = await _productService.GetPageProductByUserID(request, userId);
-            return Ok(product);
+            if (product.IsSuccessed)
+                return Ok(product);
+            return BadRequest(product);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var product = await _productService.GetById(id);
-            if (product == null)
-            {
-                return BadRequest("Cannot find product");
-            }
-            return Ok(product);
+            if (product.IsSuccessed)
+                return Ok(product);
+            return BadRequest(product);
         }
         
         [HttpPost("{userInfoId}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] ProductCreateRequest request, Guid userInfoId)
         {
-            var productId = await _productService.Create(request, userInfoId);
-            if (productId == 0)
-            {
-                return BadRequest();
-            }
-            var product = await _productService.GetById(productId);
-
-            return CreatedAtAction(nameof(GetById), new { id = productId }, product);
+            var result = await _productService.Create(request, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         
         [HttpPut("{userInfoId}/{productId}")]
@@ -60,163 +58,139 @@ namespace eRentSolution.BackendApi.Controllers
         public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request, Guid userInfoId, [FromRoute]int productId)
         {
             request.Id = productId;
-            var isSuccessful = await _productService.Update(request, userInfoId);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            var result = await _productService.Update(request, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("{userInfoId}/createfeature/{productId}")]
         public async Task<IActionResult> CreateFeature(Guid userInfoId, int productId)
         {
             var result = await _productService.CreateFeature(productId, userInfoId);
-            if (result.IsSuccessed == false)
-            {
-                return BadRequest();
-            }
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("{userInfoId}/deletefeature/{productId}")]
         public async Task<IActionResult> DeleteFeature(Guid userInfoId, int productId)
         {
             var result = await _productService.DeleteFeature(productId, userInfoId);
-            if (result.IsSuccessed == false)
-            {
-                return BadRequest();
-            }
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("viewcount/{productId}")]
         public async Task<IActionResult> AddViewcount(int productId)
         {
             var result = await _productService.AddViewcount(productId);
-            if (result == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var isSuccessful = await _productService.Delete(id);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            var result = await _productService.Delete(id);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("hide/{userInfoId}/{id}")]
         public async Task<IActionResult> Hide(int id, Guid userInfoId)
         {
-            var isSuccessful = await _productService.Hide(id, userInfoId);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            var result = await _productService.Hide(id, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("show/{userInfoId}/{id}")]
         public async Task<IActionResult> Show(int id, Guid userInfoId)
         {
-            var isSuccessful = await _productService.Show(id, userInfoId);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            var result = await _productService.Show(id, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("{id}/categories")]
         public async Task<IActionResult> CategoryAssign(int id, [FromBody] CategoryAssignRequest request)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _productService.CategoryAssign(id, request);
-            if (!result.IsSuccessed)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("feature")]
         public async Task<IActionResult> GetFeaturedProducts([FromQuery] GetProductPagingRequest request)
         {
-            var products = await _productService.GetFeaturedProducts(request);
-            return Ok(products);
+            var result = await _productService.GetFeaturedProducts(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("lastest/{take}")]
         public async Task<IActionResult> GetLastestProducts(int take)
         {
-            var products = await _productService.GetLastestProducts(take);
-            return Ok(products);
+            var result = await _productService.GetLastestProducts(take);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("isMyProduct/{userId}/{productId}")]
         public async Task<IActionResult> IsMyProduct(int productId, Guid userId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _productService.IsMyProduct(userId, productId);
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("updateDetail/{userId}")]
         public async Task<IActionResult> UpdateDetail([FromBody] ProductDetailUpdateRequest request, Guid userId)
         {
-            var isSuccessful = await _productService.UpdateDetail(request, userId);
-            if (isSuccessful.IsSuccessed == false)
-            {
-                return BadRequest();
-            }
-            return Ok(isSuccessful);
+            var result = await _productService.UpdateDetail(request, userId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPost("addProductDetail/{userInfoId}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddProductDetail([FromForm] ProductDetailCreateRequest request, Guid userInfoId)
         {
-            var productDetailId = await _productService.AddDetail(request, userInfoId);
-            return Ok(productDetailId);
+            var result = await _productService.AddDetail(request, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpGet("productDetail/{id}")]
         public async Task<IActionResult> GetProductDetailById(int id)
         {
-            var product = await _productService.GetProductDetailById(id);
-            if (product == null)
-            {
-                return BadRequest("Cannot find product detail");
-            }
-            return Ok(product);
+            var result = await _productService.GetProductDetailById(id);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("{userId}/deleteDetail/{productDetailId}")]
         public async Task<IActionResult> DeleteDetail(int productDetailId, Guid userId)
         {
-            var isSuccessful = await _productService.DeleteDetail(productDetailId, userId);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            var result = await _productService.DeleteDetail(productDetailId, userId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("price/{userInfoId}")]
         public async Task<IActionResult> UpdatePrice([FromForm] ProductUpdatePriceRequest request, Guid userInfoId)
         {
-            var isSuccessful = await _productService.UpdatePrice(request.ProductDetailId, request.NewPrice, userInfoId);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            var result = await _productService.UpdatePrice(request.ProductDetailId, request.NewPrice, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("stock/{userInfoId}")]
         public async Task<IActionResult> UpdateStock([FromForm] ProductUpdateStockRequest request, Guid userInfoId)
         {
-            var isSuccessful = await _productService.UpdateStock(request.ProductDetailId, request.AddedQuantity, userInfoId);
-            if (isSuccessful == false)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            var result = await _productService.UpdateStock(request.ProductDetailId, request.AddedQuantity, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
 
 
@@ -227,57 +201,44 @@ namespace eRentSolution.BackendApi.Controllers
         [HttpGet("img/{imageId}")]
         public async Task<IActionResult> GetImageById(int imageId)
         {
-            var Image = await _productService.GetImageById(imageId);
-            if (Image == null)
-            {
-                return BadRequest("Cannot find Image");
-            }
-            return Ok(Image);
+            var result = await _productService.GetImageById(imageId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         } 
         [HttpGet("imgs/{productId}")]
         public async Task<IActionResult> GetImageByProductId(int productId)
         {
-            var Image = await _productService.GetListImage(productId);
-            if (Image == null)
-            {
-                return BadRequest("Cannot find Image");
-            }
-            return Ok(Image);
+            var result = await _productService.GetListImage(productId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPost("add-img/{userId}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddImage([FromForm] ProductImageCreateRequest request, Guid userId)
         {
-            //     var productId = await _productService.Create(request);
             var result = await _productService.AddImage(request, userId);
-            if (!result.IsSuccessed)
-            {
-                return BadRequest(result);
-            }
-            var image = await _productService.GetImageById(request.ProductDetailId);
-
-            return CreatedAtAction(nameof(GetImageById), new { id = result }, image);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpDelete("{userId}/img/{imageId}")]
         public async Task<IActionResult> RemoveImage(int imageId, Guid userId)
         {
             var result = await _productService.DeleteImage(imageId, userId);
-            if (!result)
-            {
-                return BadRequest();
-            }
-            return Ok();
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("update-img/{userId}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateImage([FromForm] ProductImageUpdateRequest request, Guid userId)
         {
             var result = await _productService.UpdateImage(request, userId);
-            if (!result.IsSuccessed)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
 
     }

@@ -10,17 +10,17 @@ namespace eRentSolution.Application.System.Users
     public interface IUserService
     {
         Task<ApiResult<string>> Authenticate(UserLoginRequest request, bool isAdminPage);
-        Task<ApiResult<bool>> Register(UserRegisterRequest request);
+        Task<ApiResult<string>> Register(UserRegisterRequest request);
         Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request);
-        Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request);
-        Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request);
-        Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request);
-        Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
+        Task<ApiResult<string>> Update(Guid id, UserUpdateRequest request);
+        Task<ApiResult<string>> UpdatePassword(UserUpdatePasswordRequest request);
+        Task<ApiResult<string>> ResetPassword(UserResetPasswordRequest request);
+        Task<ApiResult<string>> RoleAssign(Guid id, RoleAssignRequest request);
         Task<ApiResult<UserViewModel>> GetById(Guid id);
         Task<ApiResult<UserViewModel>> GetUserByProductId(int productId);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetPageUserActivities(UserActivityLogRequest request);
-        Task<ApiResult<bool>> Delete(Guid id);
-        Task<ApiResult<bool>> UpdateAvatar(UserAvatarUpdateRequest request);
+        Task<ApiResult<string>> Delete(Guid id);
+        Task<ApiResult<string>> UpdateAvatar(UserAvatarUpdateRequest request);
     }
 }

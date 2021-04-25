@@ -34,11 +34,14 @@ namespace eRentSolution.WebApp.Controllers
                 PageSize = pageSize,
                 PageIndex = pageIndex,
             };
+            var slides = await _slideApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
+            var featuredProducts = await _productApiClient.GetFeaturedProducts(request, SystemConstant.AppSettings.TokenWebApp);
+            var lastestProducts = await _productApiClient.GetLastestProducts(SystemConstant.ProductSettings.NumberOfLastestProducts, SystemConstant.AppSettings.TokenWebApp);
             var viewModel = new HomeViewModel
             {
-                Slides = await _slideApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp),
-                FeaturedProducts = await _productApiClient.GetFeaturedProducts(request, SystemConstant.AppSettings.TokenWebApp),
-                LastestProducts = await _productApiClient.GetLastestProducts(SystemConstant.ProductSettings.NumberOfLastestProducts, SystemConstant.AppSettings.TokenWebApp)
+                Slides = slides.ResultObject,
+                FeaturedProducts = featuredProducts.ResultObject,
+                LastestProducts = lastestProducts.ResultObject 
             };
             viewModel.FeaturedProducts.Items = await GetProductImages(viewModel.FeaturedProducts.Items);
             viewModel.LastestProducts = await GetProductImages(viewModel.LastestProducts);
@@ -49,18 +52,18 @@ namespace eRentSolution.WebApp.Controllers
             foreach (var item in products)
             {
                 var images = await _productApiClient.GetListImages(item.Id, SystemConstant.AppSettings.TokenWebApp);
-                if (images != null)
+                if (images.IsSuccessed)
                 {
-                    if (images.Count > 0)
+                    if (images.ResultObject.Count > 0)
                     {
-                        foreach (var image in images)
+                        foreach (var image in images.ResultObject)
                         {
                             if (image.IsDefault == true)
                                 item.ThumbnailImage = image.ImagePath;
                         }
                         if (item.ThumbnailImage == null)
                         {
-                            item.ThumbnailImage = images.ElementAt(0).ImagePath;
+                            item.ThumbnailImage = images.ResultObject.ElementAt(0).ImagePath;
                         }
                     }
                 }

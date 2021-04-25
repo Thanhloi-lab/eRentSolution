@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\eRentSolution.Admin\eRentSolution.AdminApp.csproj" />
     <ProjectReference Include="..\eRentSolution.Application\eRentSolution.Application.csproj" />
+    <ProjectReference Include="..\eRentSolution.Integration\eRentSolution.Integration.csproj" />
   </ItemGroup>
 
 </Project>

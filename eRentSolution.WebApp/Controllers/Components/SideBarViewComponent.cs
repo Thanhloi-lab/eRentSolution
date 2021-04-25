@@ -18,7 +18,7 @@ namespace eRentSolution.WebApp.Controllers.Components
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var item = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
-            return View(item);
+            return View(item.ResultObject);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using eRentSolution.Data.Entities;
+using eRentSolution.ViewModels.Common;
 using eRentSolution.ViewModels.System.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace eRentSolution.Application.System.Roles
             _roleManager = roleManager;
         }
 
-        public async Task<List<RoleViewModel>> GetAll()
+        public async Task<ApiResult<List<RoleViewModel>>> GetAll()
         {
             var roles = await _roleManager.Roles
                 .Select(x=>new RoleViewModel() 
@@ -28,7 +29,9 @@ namespace eRentSolution.Application.System.Roles
                     Id = x.Id,
                     Name = x.Name
                 }).ToListAsync();
-            return roles;
+            if (roles == null)
+                return new ApiErrorResult<List<RoleViewModel>>("Không tồn tại vai trò nào");
+            return new ApiSuccessResult<List<RoleViewModel>>(roles);
         }
     }
 }

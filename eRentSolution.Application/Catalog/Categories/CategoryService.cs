@@ -26,34 +26,42 @@ namespace eRentSolution.Application.Catalog.Categories
             _storageService = storageService;
         }
 
-        public async Task<List<CategoryViewModel>> GetAll()
+        public async Task<ApiResult<List<CategoryViewModel>>> GetAll()
         {
-            return await _context.Categories.Select(x => new CategoryViewModel()
+            var categories =  await _context.Categories.Select(x => new CategoryViewModel()
             {
                 Id = x.Id,
                 Name = x.Name,
                 ParentId = x.ParentId,
-                 Image = x.ImagePath
+                Image = x.ImagePath
             }).ToListAsync();
+            if (categories != null)
+                return new ApiSuccessResult<List<CategoryViewModel>>(categories);
+            return new ApiErrorResult<List<CategoryViewModel>>("Không tìm thấy danh mục nào");
         }
 
-        public async Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId)
+        public async Task<ApiResult<List<CategoryViewModel>>> GetAllCategoryByProductId(int productId)
         {
             var query = from c in _context.Categories
                         join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
                         join p in _context.Products on pic.ProductId equals p.Id
                         where p.Id == productId
                         select new { c };
-            return await query.Select(x => new CategoryViewModel()
+            if(query.Count()<0)
+            {
+                return new ApiErrorResult<List<CategoryViewModel>>("Không tìm thấy danh mục nào");
+            }    
+            var categories = await query.Select(x => new CategoryViewModel()
             {
                 Id = x.c.Id,
                 Name = x.c.Name,
-                ParentId = x.c.ParentId, 
-                Image=x.c.ImagePath
+                ParentId = x.c.ParentId,
+                Image = x.c.ImagePath
             }).ToListAsync();
+            return new ApiSuccessResult<List<CategoryViewModel>>(categories);
         }
 
-        public async Task<PagedResult<CategoryViewModel>> GetAllPaging(GetCategoryPagingRequest request)
+        public async Task<ApiResult<PagedResult<CategoryViewModel>>> GetAllPaging(GetCategoryPagingRequest request)
         {
             var query = from c in _context.Categories
                         select new { c };
@@ -77,24 +85,25 @@ namespace eRentSolution.Application.Catalog.Categories
                 PageSize = request.PageSize,
                 TotalRecords = data.Count
             };
-            return page;
+            return new ApiSuccessResult<PagedResult<CategoryViewModel>>(page);
         }
 
-        public async Task<CategoryViewModel> GetById(int id)
+        public async Task<ApiResult<CategoryViewModel>> GetById(int id)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (category == null)
-                return null;
-            return new CategoryViewModel()
+                return new ApiErrorResult<CategoryViewModel>("Không tìm thấy danh mục nào");
+            var viewModel = new CategoryViewModel()
             {
                 Id = category.Id,
                 Name = category.Name,
                 ParentId = category.ParentId,
                 Image = category.ImagePath
             };
+            return new ApiSuccessResult<CategoryViewModel>(viewModel);
         }
 
-        public async Task<bool> UpdateImage(CategoryImageUpdateRequest request)
+        public async Task<ApiResult<string>> UpdateImage(CategoryImageUpdateRequest request)
         {
             var category = await _context.Categories.FindAsync(request.CategoryId);
             int isDeleteSuccess = 0;
@@ -103,7 +112,7 @@ namespace eRentSolution.Application.Catalog.Categories
                 if (category.ImagePath != SystemConstant.DefaultAvatar && category.ImagePath != null)
                       isDeleteSuccess = _storageService.DeleteFile(category.ImagePath);
                 if (isDeleteSuccess == -1)
-                    return false;
+                    return new ApiErrorResult<string>("Chỉnh sửa ảnh không thành công, vui lòng thử lại sau");
                 category.ImagePath = await this.SaveFile(request.ImageFile);
                 category.ImageSize = request.ImageFile.Length;
             }
@@ -112,10 +121,10 @@ namespace eRentSolution.Application.Catalog.Categories
             if (result > 0)
             {
                 await _context.SaveChangesAsync();
-                return true;
+                return new ApiSuccessResult<string>("Chỉnh sửa ảnh thành công");
             }
 
-            return false;
+            return new ApiErrorResult<string>("Chỉnh sửa ảnh không thành công, vui lòng thử lại sau");
         }
         private async Task<string> SaveFile(IFormFile file)
         {

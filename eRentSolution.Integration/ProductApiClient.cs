@@ -32,12 +32,12 @@ namespace eRentSolution.Integration
             _httpContextAccessor = httpContextAccessor;
         }
         #region ----PRODUCT-----
-        public async Task<ApiResult<bool>> CategoryAssign(int productId, CategoryAssignRequest request, string tokenName)
+        public async Task<ApiResult<string>> CategoryAssign(int productId, CategoryAssignRequest request, string tokenName)
         {
-            var result = await PutAsync<bool>($"/api/products/{productId}/categories", request, tokenName);
+            var result = await PutAsync<string>($"/api/products/{productId}/categories", request, tokenName);
             return result;
         }
-        public async Task<bool> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -73,15 +73,20 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SubProductName) ? "" : request.SubProductName), "subProductName");
 
             var response = await client.PostAsync($"api/products/{userInfoId}", requestContent);
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(body);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
 
         }
-        public async Task<bool> DeleteProduct(int productId, string tokenName)
+        public async Task<ApiResult<string>> DeleteProduct(int productId, string tokenName)
         {
-            var result = await DeleteAsync<bool>($"/api/products/delete/{productId}", tokenName);
+            var result = await DeleteAsync<string>($"/api/products/delete/{productId}", tokenName);
             return result;
         }
-        public async Task<bool> UpdateProduct(ProductUpdateRequest request, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> UpdateProduct(ProductUpdateRequest request, Guid userInfoId, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -90,76 +95,56 @@ namespace eRentSolution.Integration
 
             var requestContent = new MultipartFormDataContent();
 
-            //if (request.ThumbnailImage != null)
-            //{
-            //    byte[] data;
-            //    using (var br = new BinaryReader(request.ThumbnailImage.OpenReadStream()))
-            //    {
-            //        data = br.ReadBytes((int)request.ThumbnailImage.OpenReadStream().Length);
-            //    }
-            //    ByteArrayContent bytes = new ByteArrayContent(data);
-            //    requestContent.Add(bytes, "ThumbnailImage", request.ThumbnailImage.FileName);
-            //}
-
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name.ToString()), "name");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Address) ? "" : request.Address.ToString()), "address");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.IsFeatured.ToString()) ? "" : request.IsFeatured.ToString()), "isFeatured");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Description) ? "" : request.Description.ToString()), "description");
-            //requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Details) ? "" : request.Details.ToString()), "details");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoDescription) ? "" : request.SeoDescription.ToString()), "seoDescription");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoAlias) ? "" : request.SeoAlias.ToString()), "seoAlias");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.SeoTitle) ? "" : request.SeoTitle.ToString()), "seoTitle");
 
             var response = await client.PutAsync($"api/products/{userInfoId}/{request.Id}", requestContent);
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(body);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
         }
-        public async Task<bool> HideProduct(int productId, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> HideProduct(int productId, Guid userInfoId, string tokenName)
         {
-            var result = await DeleteAsync<bool>($"/api/products/hide/{userInfoId}/{productId}", tokenName);
+            var result = await DeleteAsync<string>($"/api/products/hide/{userInfoId}/{productId}", tokenName);
             return result;
         }
-        public async Task<bool> ShowProduct(int productId, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> ShowProduct(int productId, Guid userInfoId, string tokenName)
         {
-            var result = await DeleteAsync<bool>($"/api/products/show/{userInfoId}/{productId}", tokenName);
+            var result = await DeleteAsync<string>($"/api/products/show/{userInfoId}/{productId}", tokenName);
             return result;
         }
-        public async Task<ProductViewModel> GetById(int productId, string tokenName)
+        public async Task<ApiResult<ProductViewModel>> GetById(int productId, string tokenName)
         {
             var result = await GetAsync<ProductViewModel>($"/api/products/{productId}", tokenName);
             return result;
         }
-        public async Task<bool> IsMyProduct(int productId, Guid userId, string tokenName)
+        public async Task<ApiResult<string>> IsMyProduct(int productId, Guid userId, string tokenName)
         {
-            var result = await GetAsync<bool>($"/api/products/isMyProduct/{userId}/{productId}", tokenName);
+            var result = await GetAsync<string>($"/api/products/isMyProduct/{userId}/{productId}", tokenName);
             return result;
         }
-        public async Task<bool> CreateFeature(FeatureProductRequest request, string tokenName, Guid userInfoId)
+        public async Task<ApiResult<string>> CreateFeature(FeatureProductRequest request, string tokenName, Guid userInfoId)
         {
-            //var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
-            //var client = _httpClientFactory.CreateClient();
-            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", session);
-            //client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-
-            //var json = JsonConvert.SerializeObject(request);
-            //var httpContext = new StringContent(json, Encoding.UTF8, "application/json");
-
-            //var respond = await client.PutAsync($"/api/products/{userInfoId}/createfeature/{request.ProductId}", httpContext);
-            //var body = await respond.Content.ReadAsStringAsync();
-            //if (respond.IsSuccessStatusCode)
-            //    return true;
-            //return false;
-            var result = await PutAsync<bool>($"/api/products/{userInfoId}/createfeature/{request.ProductId}", request, tokenName);
-            return result.ResultObject;
+            var result = await PutAsync<string>($"/api/products/{userInfoId}/createfeature/{request.ProductId}", request, tokenName);
+            return result;
         }
-        public async Task<bool> DeleteFeature(FeatureProductRequest request, string tokenName, Guid userInfoId)
+        public async Task<ApiResult<string>> DeleteFeature(FeatureProductRequest request, string tokenName, Guid userInfoId)
         {
-            var result = await PutAsync<bool>($"/api/products/{userInfoId}/deletefeature/{request.ProductId}", request, tokenName);
-            return result.ResultObject;
+            var result = await PutAsync<string>($"/api/products/{userInfoId}/deletefeature/{request.ProductId}", request, tokenName);
+            return result;
         }
         #endregion
 
         #region -----GET PAGE PRODUCT------
-        public async Task<PagedResult<ProductViewModel>> GetPagings(GetProductPagingRequest request, string tokenName)
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetPagings(GetProductPagingRequest request, string tokenName)
         {
             var result = await GetAsync<PagedResult<ProductViewModel>>(
                 $"/api/products/paging?pageIndex={request.PageIndex}" +
@@ -168,18 +153,18 @@ namespace eRentSolution.Integration
                 $"&categoryId={request.CategoryId}", tokenName);
             return result;
         }
-        public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName)
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName)
         {
             var result = await GetAsync<PagedResult<ProductViewModel>>($"/api/products/feature?pageindex={request.PageIndex}" +
                 $"&pagesize={request.PageSize}&keyword={request.Keyword}&categoryId={request.CategoryId}", tokenName);
             return result;
         }
-        public async Task<List<ProductViewModel>> GetLastestProducts(int take, string tokenName)
+        public async Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take, string tokenName)
         {
             var result = await GetListAsync<ProductViewModel>($"/api/products/lastest/{take}", tokenName);
             return result;
         }
-        public async Task<PagedResult<ProductViewModel>> GetPageProductsByUserId(GetProductPagingRequest request, Guid userId, string tokenName)
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductsByUserId(GetProductPagingRequest request, Guid userId, string tokenName)
         {
             var result = await GetAsync<PagedResult<ProductViewModel>>(
                 $"/api/products/{userId}/GetPageProductByUserId?pageIndex={request.PageIndex}" +
@@ -191,12 +176,12 @@ namespace eRentSolution.Integration
         #endregion
 
         #region -----PRODUCT DETAIL------
-        public async Task<bool> UpdateDetail(ProductDetailUpdateRequest request, Guid userId, string tokenName)
+        public async Task<ApiResult<string>> UpdateDetail(ProductDetailUpdateRequest request, Guid userId, string tokenName)
         {
-            var result = await PutAsync<bool>($"/api/products/updateDetail/{userId}", request, tokenName);
-            return result.ResultObject;
+            var result = await PutAsync<string>($"/api/products/updateDetail/{userId}", request, tokenName);
+            return result;
         }
-        public async Task<bool> AddProductDetail(ProductDetailCreateRequest request, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> AddProductDetail(ProductDetailCreateRequest request, Guid userInfoId, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -227,45 +212,50 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Detail) ? "" : request.Detail), "details");
 
             var response = await client.PostAsync($"api/products/addProductDetail/{userInfoId}/", requestContent);
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(body);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
         }
-        public async Task<ApiResult<bool>> UpdateStock(ProductUpdateStockRequest request, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> UpdateStock(ProductUpdateStockRequest request, Guid userInfoId, string tokenName)
         {
-            var result = await PutAsync<bool>($"/api/products/stock/{userInfoId}", request, tokenName);
+            var result = await PutAsync<string>($"/api/products/stock/{userInfoId}", request, tokenName);
             return result;
         }
-        public async Task<ApiResult<bool>> UpdatePrice(ProductUpdatePriceRequest request, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> UpdatePrice(ProductUpdatePriceRequest request, Guid userInfoId, string tokenName)
         {
-            var result = await PutAsync<bool>($"/api/products/price/{userInfoId}", request, tokenName);
+            var result = await PutAsync<string>($"/api/products/price/{userInfoId}", request, tokenName);
             return result;
         }
-        public async Task<ApiResult<bool>> AddViewcount(int productId, string tokenName)
+        public async Task<ApiResult<string>> AddViewcount(int productId, string tokenName)
         {
-            var result = await PutAsync<bool>($"/api/products/viewcount/{productId}", productId, tokenName);
+            var result = await PutAsync<string>($"/api/products/viewcount/{productId}", productId, tokenName);
             return result;
         }
-        public async Task<ProductDetailViewModel> GetProductDetailById(int productDetailId, string tokenName)
+        public async Task<ApiResult<ProductDetailViewModel>> GetProductDetailById(int productDetailId, string tokenName)
         {
             var result = await GetAsync<ProductDetailViewModel>($"/api/products/productDetail/{productDetailId}", tokenName);
             return result;
         }
-        public Task<bool> HideProductDetail(int productDetailId, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> HideProductDetail(int productDetailId, Guid userInfoId, string tokenName)
         {
             throw new NotImplementedException();
         }
-        public Task<bool> ShowProductDetail(int productDetailId, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<string>> ShowProductDetail(int productDetailId, Guid userInfoId, string tokenName)
         {
             throw new NotImplementedException();
         }
-        public async Task<bool> DeleteDetail(int productDetailId, Guid userId, string tokenName)
+        public async Task<ApiResult<string>> DeleteDetail(int productDetailId, Guid userId, string tokenName)
         {
-            var result = await DeleteAsync<bool>($"/api/products/{userId}/deleteDetail/{productDetailId}", tokenName);
+            var result = await DeleteAsync<string>($"/api/products/{userId}/deleteDetail/{productDetailId}", tokenName);
             return result;
         }
         #endregion
 
         #region ------IMAGE-------
-        public async Task<ProductImageViewModel> GetImageById(int imageId, string tokenName)
+        public async Task<ApiResult<ProductImageViewModel>> GetImageById(int imageId, string tokenName)
         {
             var result = await GetAsync<ProductImageViewModel>($"/api/products/img/{imageId}", tokenName);
             return result;
@@ -334,18 +324,14 @@ namespace eRentSolution.Integration
             else
                 return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
         }
-        public Task<bool> DeleteImage(int imageId, string tokenName, Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-        public async Task<List<ProductImageViewModel>> GetListImages(int productId, string tokenName)
+        public async Task<ApiResult<List<ProductImageViewModel>>> GetListImages(int productId, string tokenName)
         {
             var result = await GetListAsync<ProductImageViewModel>($"/api/products/imgs/{productId}", tokenName);
             return result;
         }
-        public async Task<bool> DeleteImage(int imageId, Guid userId, string tokenName)
+        public async Task<ApiResult<string>> DeleteImage(int imageId, Guid userId, string tokenName)
         {
-            var result = await DeleteAsync<bool>($"/api/products/{userId}/img/{imageId}", tokenName);
+            var result = await DeleteAsync<string>($"/api/products/{userId}/img/{imageId}", tokenName);
             return result;
         }
         #endregion

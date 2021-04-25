@@ -9,13 +9,13 @@ namespace eRentSolution.Integration
 {
     public interface ISlideApiClient
     {
-        Task<List<SlideViewModel>> GetAll(string tokenName);
-        Task<SlideViewModel> GetById(int slideId, string tokenName);
-        Task<bool> DeleteSlide(SlideStatusRequest request, string tokenName, Guid userInfoId);
-        Task<bool> HideSlide(SlideStatusRequest request, string tokenName, Guid userInfoId);
-        Task<bool> ShowSlide(SlideStatusRequest request, string tokenName, Guid userInfoId);
-        Task<bool> UpdateSlide(SlideUpdateRequest request, string tokenName, Guid userInfoId);
-        Task<bool> CreateSlide(SlideCreateRequest request, string tokenName, Guid userInfoId);
-        Task<PagedResult<SlideViewModel>> GetPagings(GetSlidePagingRequest request, string tokenName);
+        Task<ApiResult<List<SlideViewModel>>> GetAll(string tokenName);
+        Task<ApiResult<SlideViewModel>> GetById(int slideId, string tokenName);
+        Task<ApiResult<string>> DeleteSlide(SlideStatusRequest request, string tokenName, Guid userInfoId);
+        Task<ApiResult<string>> HideSlide(SlideStatusRequest request, string tokenName, Guid userInfoId);
+        Task<ApiResult<string>> ShowSlide(SlideStatusRequest request, string tokenName, Guid userInfoId);
+        Task<ApiResult<string>> UpdateSlide(SlideUpdateRequest request, string tokenName, Guid userInfoId);
+        Task<ApiResult<string>> CreateSlide(SlideCreateRequest request, string tokenName, Guid userInfoId);
+        Task<ApiResult<PagedResult<SlideViewModel>>> GetPagings(GetSlidePagingRequest request, string tokenName);
     }
 }

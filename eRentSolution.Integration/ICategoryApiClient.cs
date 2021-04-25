@@ -9,10 +9,10 @@ namespace eRentSolution.Integration
 {
     public interface ICategoryApiClient
     {
-        Task<List<CategoryViewModel>> GetAll(string tokenName);
-        Task<CategoryViewModel> GetById(int id, string tokenName);
-        Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId, string tokenName);
-        Task<bool> UpdateImage(CategoryImageUpdateRequest request, string tokenName);
-        Task<PagedResult<CategoryViewModel>> GetPagings(GetCategoryPagingRequest request, string tokenName);
+        Task<ApiResult<List<CategoryViewModel>>> GetAll(string tokenName);
+        Task<ApiResult<CategoryViewModel>> GetById(int id, string tokenName);
+        Task<ApiResult<List<CategoryViewModel>>> GetAllCategoryByProductId(int productId, string tokenName);
+        Task<ApiResult<string>> UpdateImage(CategoryImageUpdateRequest request, string tokenName);
+        Task<ApiResult<PagedResult<CategoryViewModel>>> GetPagings(GetCategoryPagingRequest request, string tokenName);
     }
 }

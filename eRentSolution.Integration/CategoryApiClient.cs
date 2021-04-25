@@ -28,24 +28,22 @@ namespace eRentSolution.Integration
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<CategoryViewModel>> GetAll(string tokenName)
+        public async Task<ApiResult<List<CategoryViewModel>>> GetAll(string tokenName)
         {
             var result = await GetListAsync<CategoryViewModel>($"api/categories", tokenName);
             return result;
         }
-
-        public async Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId, string tokenName)
+        public async Task<ApiResult<List<CategoryViewModel>>> GetAllCategoryByProductId(int productId, string tokenName)
         {
             var result = await GetListAsync<CategoryViewModel>($"api/categories/productcategories/{productId}", tokenName);
             return result;
         }
-
-        public async Task<CategoryViewModel> GetById(int id, string tokenName)
+        public async Task<ApiResult<CategoryViewModel>> GetById(int id, string tokenName)
         {
             var result = await GetAsync<CategoryViewModel>($"api/categories/{id}", tokenName);
             return result;
         }
-        public async Task<bool> UpdateImage(CategoryImageUpdateRequest request, string tokenName)
+        public async Task<ApiResult<string>> UpdateImage(CategoryImageUpdateRequest request, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -70,11 +68,11 @@ namespace eRentSolution.Integration
             var body = await result.Content.ReadAsStringAsync();
             if (result.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<bool>(body);
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(body);
             }
-            return false;
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
         }
-        public async Task<PagedResult<CategoryViewModel>> GetPagings(GetCategoryPagingRequest request, string tokenName)
+        public async Task<ApiResult<PagedResult<CategoryViewModel>>> GetPagings(GetCategoryPagingRequest request, string tokenName)
         {
             var result = await GetAsync<PagedResult<CategoryViewModel>>(
                 $"/api/categories/paging?pageIndex={request.PageIndex}" +

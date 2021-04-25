@@ -2,6 +2,7 @@
 using eRentSolution.ViewModels.Utilities.Slides;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,7 @@ namespace eRentSolution.Integration
             _configuration = configuration;
         }
 
-        public async Task<bool> CreateSlide(SlideCreateRequest request, string tokenName, Guid userInfoId)
+        public async Task<ApiResult<string>> CreateSlide(SlideCreateRequest request, string tokenName, Guid userInfoId)
         {
 
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
@@ -52,27 +53,32 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Description) ? "" : request.Description.ToString()), "description");
 
             var response = await client.PostAsync($"api/slides/{userInfoId}/create/{request.ProductId}", requestContent);
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(body);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
         }
-        public async Task<bool> DeleteSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
+        public async Task<ApiResult<string>> DeleteSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
         {
-            var result = await DeleteAsync<bool>($"/api/Slides/{userInfoId}/delete/{request.Id}", tokenName);
+            var result = await DeleteAsync<string>($"/api/Slides/{userInfoId}/delete/{request.Id}", tokenName);
             return result;
 
         }
-        public async Task<bool> HideSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
+        public async Task<ApiResult<string>> HideSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
         {
-            var result = await PutAsync<bool>($"/api/Slides/{userInfoId}/hide/{request.Id}", request, tokenName);
-            return result.ResultObject;
+            var result = await PutAsync<string>($"/api/Slides/{userInfoId}/hide/{request.Id}", request, tokenName);
+            return result;
 
         }
-        public async Task<bool> ShowSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
+        public async Task<ApiResult<string>> ShowSlide(SlideStatusRequest request, string tokenName, Guid userInfoId)
         {
-            var result = await PutAsync<bool>($"/api/Slides/{userInfoId}/show/{request.Id}", request, tokenName);
-            return result.ResultObject;
+            var result = await PutAsync<string>($"/api/Slides/{userInfoId}/show/{request.Id}", request, tokenName);
+            return result;
 
         }
-        public async Task<bool> UpdateSlide(SlideUpdateRequest request, string tokenName, Guid userInfoId)
+        public async Task<ApiResult<string>> UpdateSlide(SlideUpdateRequest request, string tokenName, Guid userInfoId)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -85,13 +91,18 @@ namespace eRentSolution.Integration
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Description) ? "" : request.Description.ToString()), "description");
 
             var response = await client.PutAsync($"api/slides/{userInfoId}/update/{request.Id}", requestContent);
-            return response.IsSuccessStatusCode;
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(body);
+            }
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
         }
-        public async Task<List<SlideViewModel>> GetAll(string tokenName)
+        public async Task<ApiResult<List<SlideViewModel>>> GetAll(string tokenName)
         {
             return await GetListAsync<SlideViewModel>("/api/Slides", tokenName);
         }
-        public async Task<PagedResult<SlideViewModel>> GetPagings(GetSlidePagingRequest request, string tokenName)
+        public async Task<ApiResult<PagedResult<SlideViewModel>>> GetPagings(GetSlidePagingRequest request, string tokenName)
         {
             var result = await GetAsync<PagedResult<SlideViewModel>>(
                 $"/api/Slides/paging?pageIndex={request.PageIndex}" +
@@ -99,7 +110,7 @@ namespace eRentSolution.Integration
                 $"&keyword={request.Keyword}&status={request.Status}", tokenName);
             return result;
         }
-        public async Task<SlideViewModel> GetById(int SlideId, string tokenName)
+        public async Task<ApiResult<SlideViewModel>> GetById(int SlideId, string tokenName)
         {
             var result = await GetAsync<SlideViewModel>($"/api/slides/{SlideId}", tokenName);
             return result;

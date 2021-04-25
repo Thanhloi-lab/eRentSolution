@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace eRentSolution.WebApp.Controllers
 {
 
-    //[Authorize]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserApiClient _userApiClient;
@@ -36,7 +36,11 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> Details(Guid id)
         {
             var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
-            return View(result);
+            if(!result.IsSuccessed)
+            {
+                return RedirectToAction("index","home");
+            }
+            return View(result.ResultObject);
         }
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
@@ -44,20 +48,18 @@ namespace eRentSolution.WebApp.Controllers
             //var reusult = User.IsInRole(SystemConstant.AppSettings.AdminRole);
             if (!id.ToString().Equals(userId))
             {
-                TempData["FailResult"] = "Không thể chỉnh sửa tài khoản";
-                return View(id);
+                return RedirectToAction("Error", "Home");
             }
             var target = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
-            if (target != null)
+            if (target.IsSuccessed)
             {
-                var user = target;
                 var updateRequest = new UserUpdateRequest()
                 {
-                    Dob = user.Dob,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    PhoneNumber = user.PhoneNumber,
+                    Dob = target.ResultObject.Dob,
+                    Email = target.ResultObject.Email,
+                    FirstName = target.ResultObject.FirstName,
+                    LastName = target.ResultObject.LastName,
+                    PhoneNumber = target.ResultObject.PhoneNumber,
                     Id = id
                 };
                 return View(updateRequest);
@@ -72,8 +74,8 @@ namespace eRentSolution.WebApp.Controllers
             var result = await _userApiClient.Update(request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Chỉnh sửa thành công";
-                return RedirectToAction("index");
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("details");
             }
             ModelState.AddModelError("", result.Message);
             return View(request);
@@ -81,6 +83,10 @@ namespace eRentSolution.WebApp.Controllers
         [HttpGet]
         public IActionResult ChangePassword(Guid id)
         {
+            if (!id.ToString().Equals(userId))
+            {
+                return RedirectToAction("Error", "Home");
+            }
             return View(new UserUpdatePasswordRequest()
             {
                 Id = id
@@ -94,15 +100,14 @@ namespace eRentSolution.WebApp.Controllers
             var result = await _userApiClient.UpdatePassword(request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed)
             {
-                TempData["result"] = "Chỉnh sửa mật khẩu thành công";
-                return RedirectToAction("index");
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Details");
             }
             else
             {
-                TempData["FailResult"] = "Chỉnh sửa mật khẩu không thành công";
-                return RedirectToAction("index");
+                ModelState.AddModelError("", result.Message);
+                return View(request);
             }
-            return View(request);
         }
     }
 }

@@ -43,15 +43,14 @@ namespace eRentSolution.AdminApp.Controllers
             var products = await _categoryApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Keyword = keyword;
 
-
-            return View(products);
+            return View(products.ResultObject);
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpGet]
         public async Task<IActionResult> EditImage(int id)
         {
             var target = await _categoryApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
-            if (target != null)
+            if (target.IsSuccessed && target.ResultObject != null)
             {
                 var updateRequest = new CategoryImageUpdateRequest()
                 {
@@ -67,12 +66,12 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
             var result = await _categoryApiClient.UpdateImage(request, SystemConstant.AppSettings.TokenAdmin);
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Update category successful";
+                TempData["result"] = result.ResultObject;
                 return RedirectToAction("index");
             }
-            ModelState.AddModelError("", result.ToString());
+            TempData["failResult"] = result.Message;
             return View(request);
         }
     }

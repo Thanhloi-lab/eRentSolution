@@ -89,133 +89,31 @@ namespace eRentSolution.Application.System.Users
             return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
 
         }
-        public async Task<ApiResult<bool>> Delete(Guid id)
+        public async Task<ApiResult<string>> Delete(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
-                return new ApiErrorResult<bool>("User is not exist");
+                return new ApiErrorResult<string>("Tài khoản không tồn tại");
             if(user.Id.ToString().Equals(SystemConstant.AppSettings.CurrentUserId))
-                return new ApiErrorResult<bool>("Cannot delete current login account");
-            //var result = await _userManager.DeleteAsync(user);
+                return new ApiErrorResult<string>("Không thể xóa tài khoản hiện tại");
 
             user.Status = Data.Enums.Status.InActive;
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
-                return new ApiSuccessResult<bool>();
-            return new ApiErrorResult<bool>("Delete user unsuccessful");
+                return new ApiSuccessResult<string>("Xóa thành công");
+            return new ApiErrorResult<string>("Xóa thất bại, vui lòng thử lại sau");
 
         }
-        public async Task<ApiResult<UserViewModel>> GetById(Guid id)
-        {
-            var user = await _userManager.FindByIdAsync(id.ToString());
-            if (user == null)
-                return new ApiErrorResult<UserViewModel>($"Cannot find user with id: {id}");
-            var roles = await _userManager.GetRolesAsync(user);
-            var person =  await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == id);
-            var userViewModel = new UserViewModel()
-            {
-                PhoneNumber = user.PhoneNumber,
-                FirstName = person.FirstName,
-                Dob = person.Dob,
-                Email = user.Email,
-                LastName = person.LastName,
-                UserName = user.UserName,
-                Roles = roles,
-                Id = id, 
-                AvatarFilePath = user.AvatarFilePath
-            };
-            return new ApiSuccessResult<UserViewModel>(userViewModel);
-        }
-
-        //public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
-        //{
-        //    var query = _userManager.Users;
-        //    if (!string.IsNullOrEmpty(request.Keyword))
-        //    {
-        //        query = query.Where(x => x.UserName.Contains(request.Keyword)
-        //                    || x.PhoneNumber.Contains(request.Keyword) 
-        //                    || x.UserName.Contains(request.Keyword)
-        //                    || x.FirstName.Contains(request.Keyword)
-        //                    || x.LastName.Contains(request.Keyword));
-        //    }
-        //    /* PAGING*/
-        //    int totalRow = await query.CountAsync();
-        //    var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
-        //        .Take(request.PageSize)
-        //        .Select(x => new UserViewModel()
-        //        {
-        //            Id = x.Id,
-        //            PhoneNumber = x.PhoneNumber,
-        //            FirstName = x.FirstName,
-        //            Dob = x.Dob,
-        //            Email = x.Email,
-        //            LastName = x.LastName,
-        //            UserName = x.UserName
-        //        }).ToListAsync();
-
-        //    //4.select and projection
-        //    var pageResult = new PagedResult<UserViewModel>()
-        //    {
-        //        TotalRecords = totalRow,
-        //        Items = data,
-        //        PageIndex = request.PageIndex,
-        //        PageSize = request.PageSize
-        //    };
-        //    return new ApiSuccessResult<PagedResult<UserViewModel>>(pageResult);
-        //}
-        public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
-        {
-            var query = from u in _userManager.Users
-                        join p in _context.UserInfos on u.Id equals p.UserId
-                        select new { u, p };
-            if (!string.IsNullOrEmpty(request.Keyword))
-            {
-                query = query.Where(x => x.u.UserName.Contains(request.Keyword)
-                            || x.u.PhoneNumber.Contains(request.Keyword)
-                            || x.p.LastName.Contains(request.Keyword)
-                            || x.p.FirstName.Contains(request.Keyword));
-            }
-            
-            /* PAGING*/
-            int totalRow = await query.CountAsync();
-            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(x => new UserViewModel()
-                {
-                    Id = x.u.Id,
-                    PhoneNumber = x.u.PhoneNumber,
-                    FirstName = x.p.FirstName,
-                    Dob = x.p.Dob,
-                    Email = x.u.Email,
-                    LastName = x.p.LastName,
-                    UserName = x.u.UserName,
-                    AvatarFilePath = x.u.AvatarFilePath
-                }).ToListAsync();
-
-            //foreach (var item in data)
-            //{
-                
-            //}
-            //4.select and projection
-            var pageResult = new PagedResult<UserViewModel>()
-            {
-                TotalRecords = totalRow,
-                Items = data,
-                PageIndex = request.PageIndex,
-                PageSize = request.PageSize
-            };
-            return new ApiSuccessResult<PagedResult<UserViewModel>>(pageResult);
-        }
-        public async Task<ApiResult<bool>> Register(UserRegisterRequest request)
+        public async Task<ApiResult<string>> Register(UserRegisterRequest request)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user != null)
             {
-                return new ApiErrorResult<bool>("Username already exists");
+                return new ApiErrorResult<string>("Tài khoản đã tồn tại");
             }
             if (await _userManager.FindByEmailAsync(request.Email) != null)
             {
-                return new ApiErrorResult<bool>("Email already exists");
+                return new ApiErrorResult<string>("Email đã tồn tại");
             }
             user = new AppUser()
             {
@@ -236,18 +134,16 @@ namespace eRentSolution.Application.System.Users
                 user.AvatarFilePath = SystemConstant.DefaultAvatar;
                 user.AvatarFileSize = SystemConstant.DefaultAvatarSize;
                 await _userManager.UpdateAsync(user);
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<string>("Tạo thành công");
             }    
-                
-
-            return new ApiErrorResult<bool>("Fail to create account");
+            return new ApiErrorResult<string>("Tại tài khoản thất bại");
         }
-        public async Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request)
+        public async Task<ApiResult<string>> RoleAssign(Guid id, RoleAssignRequest request)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                return new ApiErrorResult<bool>("Account does not exists");
+                return new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
 
             var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList();
@@ -268,13 +164,13 @@ namespace eRentSolution.Application.System.Users
                 }
             }
 
-            return new ApiSuccessResult<bool>();
+            return new ApiSuccessResult<string>("Gán quyền thành công");
         }
-        public async Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request)
+        public async Task<ApiResult<string>> Update(Guid id, UserUpdateRequest request)
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))
             {
-                return new ApiErrorResult<bool>("Email already exists");
+                return new ApiErrorResult<string>("Email không tồn tại");
             }
             var user = await _userManager.FindByIdAsync(id.ToString());
             var person = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == id);
@@ -288,12 +184,12 @@ namespace eRentSolution.Application.System.Users
             if (result.Succeeded)
             {
                 await _context.SaveChangesAsync();
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<string>("Cập nhật thành công");
             }
                 
-            return new ApiErrorResult<bool>("Update unsuccessful");
+            return new ApiErrorResult<string>("Cập nhật thất bại");
         }
-        public async Task<ApiResult<bool>> UpdateAvatar(UserAvatarUpdateRequest request)
+        public async Task<ApiResult<string>> UpdateAvatar(UserAvatarUpdateRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.Id.ToString());
             int isDeleteSuccess = 0;
@@ -304,7 +200,7 @@ namespace eRentSolution.Application.System.Users
                     isDeleteSuccess =  _storageService.DeleteFile(user.AvatarFilePath);
                 }
                 if (isDeleteSuccess == -1)
-                    new ApiErrorResult<bool>("Update unsuccessful");
+                    new ApiErrorResult<string>("Cập nhật ảnh thất bại, vui lòng thử lại sau");
 
                 user.AvatarFilePath = await this.SaveFile(request.AvatarFile);
             }
@@ -313,33 +209,33 @@ namespace eRentSolution.Application.System.Users
             if (result.Succeeded)
             {
                 await _context.SaveChangesAsync();
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<string>("Cập nhật ảnh thành công");
             }
 
-            return new ApiErrorResult<bool>("Update unsuccessful");
+            return new ApiErrorResult<string>("Cập nhật ảnh thất bại");
         }
-        public async Task<ApiResult<bool>> UpdatePassword(UserUpdatePasswordRequest request)
+        public async Task<ApiResult<string>> UpdatePassword(UserUpdatePasswordRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.Id.ToString());
             if(user == null)
             {
-                new ApiErrorResult<bool>("Update unsuccessful");
+                new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
             if (result.Succeeded)
             {
                // await _context.SaveChangesAsync();
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<string>("Đổi mật khẩu thành công");
             }
 
-            return new ApiErrorResult<bool>("Update unsuccessful");
+            return new ApiErrorResult<string>("Đổi mật khẩu thất bại, vui lòng thử lại sau");
         }
-        public async Task<ApiResult<bool>> ResetPassword(UserResetPasswordRequest request)
+        public async Task<ApiResult<string>> ResetPassword(UserResetPasswordRequest request)
         {
             var user = await _userManager.FindByIdAsync(request.Id.ToString());
             if (user == null)
             {
-                new ApiErrorResult<bool>("Update unsuccessful");
+                new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
             user.DateChangePassword = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
@@ -347,9 +243,68 @@ namespace eRentSolution.Application.System.Users
             if (removeResult.Succeeded)
             {
                 var result = await _userManager.AddPasswordAsync(user, request.NewPassword + user.DateChangePassword);
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<string>("Đặt lại mật khẩu thành công");
             }
-            return new ApiErrorResult<bool>("Update unsuccessful");
+            return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
+        }
+        public async Task<ApiResult<UserViewModel>> GetById(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+                return new ApiErrorResult<UserViewModel>($"Tài khoản không tồn tại");
+            var roles = await _userManager.GetRolesAsync(user);
+            var person = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == id);
+            var userViewModel = new UserViewModel()
+            {
+                PhoneNumber = user.PhoneNumber,
+                FirstName = person.FirstName,
+                Dob = person.Dob,
+                Email = user.Email,
+                LastName = person.LastName,
+                UserName = user.UserName,
+                Roles = roles,
+                Id = id,
+                AvatarFilePath = user.AvatarFilePath
+            };
+            return new ApiSuccessResult<UserViewModel>(userViewModel);
+        }
+        public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
+        {
+            var query = from u in _userManager.Users
+                        join p in _context.UserInfos on u.Id equals p.UserId
+                        select new { u, p };
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.u.UserName.Contains(request.Keyword)
+                            || x.u.PhoneNumber.Contains(request.Keyword)
+                            || x.p.LastName.Contains(request.Keyword)
+                            || x.p.FirstName.Contains(request.Keyword));
+            }
+
+            /* PAGING*/
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new UserViewModel()
+                {
+                    Id = x.u.Id,
+                    PhoneNumber = x.u.PhoneNumber,
+                    FirstName = x.p.FirstName,
+                    Dob = x.p.Dob,
+                    Email = x.u.Email,
+                    LastName = x.p.LastName,
+                    UserName = x.u.UserName,
+                    AvatarFilePath = x.u.AvatarFilePath
+                }).ToListAsync();
+
+            var pageResult = new PagedResult<UserViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize
+            };
+            return new ApiSuccessResult<PagedResult<UserViewModel>>(pageResult);
         }
         public async Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request)
         {
@@ -415,24 +370,16 @@ namespace eRentSolution.Application.System.Users
             };
             return new ApiSuccessResult<PagedResult<ActivityLogViewModel>>(pageResult);
         }
-        private async Task<string> SaveFile(IFormFile file)
-        {
-            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
-            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
-            return fileName;
-        }
-
         public async Task<ApiResult<UserViewModel>> GetUserByProductId(int productId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var query = (from ui in _context.UserInfos
-                       join u in _context.AppUsers on ui.UserId equals u.Id
-                       join c in _context.Censors on ui.UserId equals c.UserInfoId
-                       join a in _context.UserActions on c.ActionId equals a.Id
-                       join p in _context.Products on c.ProductId equals p.Id
-                       where p.Id == productId && a.ActionName == action.ActionName
-                       select new { u, ui }).FirstOrDefault();
+                         join u in _context.AppUsers on ui.UserId equals u.Id
+                         join c in _context.Censors on ui.UserId equals c.UserInfoId
+                         join a in _context.UserActions on c.ActionId equals a.Id
+                         join p in _context.Products on c.ProductId equals p.Id
+                         where p.Id == productId && a.ActionName == action.ActionName
+                         select new { u, ui }).FirstOrDefault();
             var user = new UserViewModel()
             {
                 AvatarFilePath = query.u.AvatarFilePath,
@@ -446,5 +393,14 @@ namespace eRentSolution.Application.System.Users
             };
             return new ApiSuccessResult<UserViewModel>(user);
         }
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
+            return fileName;
+        }
+
+       
     }
 }

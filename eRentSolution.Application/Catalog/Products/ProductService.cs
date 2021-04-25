@@ -29,23 +29,23 @@ namespace eRentSolution.Application.Catalog.Products
             _context = context;
             _storageService = storageService;
         }
-       
-        //Fixed
-        //kiem tra null trc roi moi + vao
-        public async Task<bool> AddViewcount(int productId)
+
+        public async Task<ApiResult<string>> AddViewcount(int productId)
         {
             var product = await _context.Products.FindAsync(productId);
             if(product == null)
             {
-                throw new eRentException($"Cannot find a product: { product.Id}");
+                return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
             product.ViewCount += 1;
             await _context.SaveChangesAsync();
-            return true;
+            return new ApiSuccessResult<string>("Thêm lượt xem thành công");
         }
-        public async Task<int> Create(ProductCreateRequest request, Guid userInfoId)
+        public async Task<ApiResult<string>> Create(ProductCreateRequest request, Guid userInfoId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            if (action == null)
+                return new ApiErrorResult<string>("Không tìm thấy hành động");
             var product = new Product()
             {
                 Name = request.Name,
@@ -98,13 +98,15 @@ namespace eRentSolution.Application.Catalog.Products
             }
             else
             {
-                return -1;
+                return new ApiErrorResult<string>("Ảnh không tồn tại");
             }
             await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
-            return product.Id;
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Thêm sản phẩm thành công");
+            return new ApiErrorResult<string>("Thêm sản phẩm thất bại, vui lòng thử lại sau");
         }
-        public async Task<bool> Delete(int productId)
+        public async Task<ApiResult<string>> Delete(int productId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
@@ -112,14 +114,14 @@ namespace eRentSolution.Application.Catalog.Products
                 throw new eRentException($"Cannot find a product: { product.Id}");
             }
             var details = await GetDetailsByProductId(productId);
-            foreach (var item in details)
+            foreach (var item in details.ResultObject)
             {
                 var Imgages = _context.ProductImages.Where(p => p.ProductDetailId == item.Id);
                 foreach (var image in Imgages)
                 {
                     int isDeleteSuccess = _storageService.DeleteFile(image.ImagePath);
                     if (isDeleteSuccess == -1)
-                        return false;
+                        return new ApiErrorResult<string>("Xóa ảnh thất bại vui lòng thử lại trong giây lát");
                 }
             }
             // Lay anh
@@ -135,20 +137,22 @@ namespace eRentSolution.Application.Catalog.Products
 
             var result = await _context.SaveChangesAsync();
             if (result != 0)
-                return true;
+                return new ApiSuccessResult<string>("Xóa ảnh thành công");
             else
-                return false;
+                return new ApiErrorResult<string>("Xóa ảnh thất bại, vui lòng thử lại sau");
         }
-        public async Task<bool> Hide(int productId, Guid userInfoId)
+        public async Task<ApiResult<string>> Hide(int productId, Guid userInfoId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
             {
-                throw new eRentException($"Cannot find a product: { product.Id}");
+                return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
 
             var action = await _context.UserActions
                 .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.HideProduct);
+            if (action == null)
+                return new ApiErrorResult<string>("Không tìm thấy hành động");
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -162,16 +166,16 @@ namespace eRentSolution.Application.Catalog.Products
 
             var result = await _context.SaveChangesAsync();
             if (result != 0)
-                return true;
+                return new ApiSuccessResult<string>("Ẩn sản phẩm thành công");
             else
-                return false;
+                return new ApiErrorResult<string>("Ẩn sản phẩm thất bại");
         }
-        public async Task<bool> Show(int productId, Guid userInfoId)
+        public async Task<ApiResult<string>> Show(int productId, Guid userInfoId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
             {
-                throw new eRentException($"Cannot find a product: { product.Id}");
+                return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
             product.Status = Data.Enums.Status.Active;
 
@@ -179,7 +183,9 @@ namespace eRentSolution.Application.Catalog.Products
             if(result >0)
             {
                 var action = await _context.UserActions
-                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ShowProduct);
+                            .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ShowProduct);
+                if(action == null)
+                    return new ApiErrorResult<string>("Không tìm thấy hành động");
                 var censor = new Censor()
                 {
                     ActionId = action.Id,
@@ -192,26 +198,23 @@ namespace eRentSolution.Application.Catalog.Products
             }
 
             if (result != 0)
-                return true;
+                return new ApiSuccessResult<string>("Hiện sản phẩm thành công");
             else
-                return false;
+                return new ApiErrorResult<string>("Hiện sản phẩm thất bại");
         }
-        public async Task<bool> UpdatePrice(int productDetailId ,decimal newPrice, Guid userInfoId)
+        public async Task<ApiResult<string>> UpdatePrice(int productDetailId ,decimal newPrice, Guid userInfoId)
         {
-            //var product = await _context.Products.FindAsync(productId);
-            //if (product == null)
-            //{
-            //    return false;
-            //}
             var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
             if (productDetail == null)
             {
-                return false;
+                return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
             }
             productDetail.Price = newPrice;
 
             var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdatePriceProduct);
+            if (action == null)
+                return new ApiErrorResult<string>("Không tìm thấy hành động");
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -220,20 +223,25 @@ namespace eRentSolution.Application.Catalog.Products
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-            await _context.SaveChangesAsync();
-            return true;
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Cập nhật giá thành công");
+            else
+                return new ApiErrorResult<string>("Cập nhật giá thất bại");
         }
-        public async Task<bool> UpdateStock(int productDetailId, int addedQuantity, Guid userInfoId)
+        public async Task<ApiResult<string>> UpdateStock(int productDetailId, int addedQuantity, Guid userInfoId)
         {
             var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
             if (productDetail == null)
             {
-                return false;
+                return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
             }
             productDetail.Stock += addedQuantity;
 
             var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateStockProduct);
+            if (action == null)
+                return new ApiErrorResult<string>("Không tìm thấy hành động");
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -243,24 +251,28 @@ namespace eRentSolution.Application.Catalog.Products
 
             };
             await _context.Censors.AddAsync(censor);
-            await _context.SaveChangesAsync();
-            return true;
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Cập nhật tồn kho thành công");
+            else
+                return new ApiErrorResult<string>("Cập nhật tồn kho thất bại");
         }
-        public async Task<bool> Update(ProductUpdateRequest request, Guid userInfoId)
+        public async Task<ApiResult<string>> Update(ProductUpdateRequest request, Guid userInfoId)
         {
             var product = await _context.Products.FindAsync(request.Id);
             if (product == null)
             {
-                return false;
+                return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
             product.Name = request.Name;
             product.Description = request.Description;
-            //product.Details = request.Details;
             product.SeoAlias = request.SeoAlias;
             product.SeoTitle = request.SeoTitle;
             product.SeoDescription = request.SeoDescription;
             product.Address = request.Address;
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProduct);
+            if (action == null)
+                return new ApiErrorResult<string>("Không tìm thấy hành động");
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -271,17 +283,22 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.Censors.AddAsync(censor);
 
             var result = await _context.SaveChangesAsync();
-            return true;
+            if (result > 0)
+                return new ApiSuccessResult<string>("Cập nhật sản phẩm thành công");
+            else
+                return new ApiErrorResult<string>("Cập nhật sản phẩm thất bại");
         }
-        public async Task<ApiResult<bool>> CreateFeature(int productId, Guid userInfoId)
+        public async Task<ApiResult<string>> CreateFeature(int productId, Guid userInfoId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
             {
-                return new ApiErrorResult<bool>($"Sản phẩm id:{productId} không tồn tại");
+                return new ApiErrorResult<string>($"Sản phẩm không tồn tại");
             }
             product.IsFeatured = Status.Active;
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateFeatureProduct);
+            if (action == null)
+                return new ApiErrorResult<string>("Không tìm thấy hành động");
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -290,18 +307,23 @@ namespace eRentSolution.Application.Catalog.Products
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-            await _context.SaveChangesAsync();
-            return new ApiSuccessResult<bool>(true);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Tạo sản phẩm nổi bật thành công");
+            else
+                return new ApiErrorResult<string>("Tạo sản phẩm nổi bật thất bại");
         }
-        public async Task<ApiResult<bool>> DeleteFeature(int productId, Guid userInfoId)
+        public async Task<ApiResult<string>> DeleteFeature(int productId, Guid userInfoId)
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null)
             {
-                return new ApiErrorResult<bool>($"Sản phẩm id:{productId} không tồn tại");
+                return new ApiErrorResult<string>($"Sản phẩm không tồn tại");
             }
             product.IsFeatured = Status.InActive;
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteFeatureProduct);
+            if (action == null)
+                return new ApiErrorResult<string>("Không tìm thấy hành động");
             var censor = new Censor()
             {
                 ActionId = action.Id,
@@ -310,10 +332,13 @@ namespace eRentSolution.Application.Catalog.Products
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-            await _context.SaveChangesAsync();
-            return new ApiSuccessResult<bool>(true);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Hủy sản phẩm nổi bật thành công");
+            else
+                return new ApiErrorResult<string>("Hủy sản phẩm nổi bật thất bại");
         }
-        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetAllPaging(GetProductPagingRequest request)
         {
             var query = from p in _context.Products
                             //join pd in _context.ProductDetails on p.Id equals pd.Id
@@ -338,7 +363,6 @@ namespace eRentSolution.Application.Catalog.Products
                 Id = x.p.Id,
                 DateCreated = x.p.DateCreated,
                 Description = x.p.Description,
-                //Details = x.p.Details,
                 Name = x.p.Name,
                 SeoAlias = x.p.SeoAlias,
                 SeoDescription = x.p.SeoDescription,
@@ -346,36 +370,13 @@ namespace eRentSolution.Application.Catalog.Products
                 ViewCount = x.p.ViewCount,
                 Status = x.p.Status,
                 Address = x.p.Address
-            }).ToListAsync();
+            }).Distinct().ToListAsync();
 
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            if (totalRow > 1)
-            {
-                for (int i = 0; i < data.Count - 1; i++)
-                {
-                    if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
-                    {
-                        totalRow--;
-                    }
-                    else
-                    {
-                        products.Add(data.ElementAt(i));
-                    }
-                    if (i == data.Count - 2)
-                    {
-                        products.Add(data.ElementAt(i + 1));
-                    }
-                }
-            }
-            else if (totalRow == 1)
-            {
-                products.Add(data.ElementAt(0));
-            }
-            foreach (var item in products)
+            foreach (var item in data)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails;
-                foreach (var productDetail in productDetails)
+                item.ProductDetailViewModels = productDetails.ResultObject;
+                foreach (var productDetail in productDetails.ResultObject)
                 {
                     item.Stock += productDetail.Stock;
                 }
@@ -383,18 +384,18 @@ namespace eRentSolution.Application.Catalog.Products
             
             var page = new PagedResult<ProductViewModel>()
             {
-                Items = products,
+                Items = data,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRow
             };
-            return page;
+            return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
         }
-        public async Task<ProductViewModel> GetById(int id)
+        public async Task<ApiResult<ProductViewModel>> GetById(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
-                throw new eRentException($"Cannot find a product: {id}");
+                return new ApiErrorResult<ProductViewModel>("Không tìm thấy sản phẩm");
 
             var categories = await (from c in _context.Categories
                                     join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
@@ -402,26 +403,30 @@ namespace eRentSolution.Application.Catalog.Products
                                     select c.Name).ToListAsync();
 
             var productDetails = await GetDetailsByProductId(product.Id);
+            if (!productDetails.IsSuccessed)
+                return new ApiErrorResult<ProductViewModel>(productDetails.Message);
 
             var productViewModel = new ProductViewModel()
             {
                 DateCreated = product.DateCreated,
                 Description = product.Description,
-                //Details = product.Details,
                 Id = product.Id,
                 Name = product.Name,
                 SeoAlias = product.SeoAlias,
                 SeoDescription = product.SeoDescription,
                 SeoTitle = product.SeoTitle,
                 ViewCount = product.ViewCount,
-                ProductDetailViewModels = productDetails,
+                ProductDetailViewModels = productDetails.ResultObject,
                 Status = product.Status,
                 Categories = categories,
                 IsFeatured = product.IsFeatured,
                 Address = product.Address
             };
             var productImages = await GetListImage(product.Id);
-            foreach (var item in productImages)
+            if (!productImages.IsSuccessed)
+                return new ApiErrorResult<ProductViewModel>(productImages.Message);
+
+            foreach (var item in productImages.ResultObject)
             {
                 if (item.IsDefault)
                 {
@@ -429,14 +434,14 @@ namespace eRentSolution.Application.Catalog.Products
                     break;
                 }
             }
-            foreach (var productDetail in productDetails)
+            foreach (var productDetail in productDetails.ResultObject)
             {
                 productViewModel.Stock += productDetail.Stock;
             }
 
-            return productViewModel;
+            return new ApiSuccessResult<ProductViewModel>(productViewModel);
         }
-        public async Task<List<ProductDetailViewModel>> GetDetailsByProductId(int productId)
+        public async Task<ApiResult<List<ProductDetailViewModel>>> GetDetailsByProductId(int productId)
         {
             var query =from pd in _context.ProductDetails
                         join p in _context.Products on pd.ProductId equals p.Id
@@ -456,16 +461,20 @@ namespace eRentSolution.Application.Catalog.Products
             }).ToListAsync();
             foreach (var item in productDetails)
             {
-                item.Images = await GetListImageByProductDetailId(item.Id);
+                var result = await GetListImageByProductDetailId(item.Id);
+                if (!result.IsSuccessed)
+                    return new ApiErrorResult<List<ProductDetailViewModel>>(result.Message);
+
+                item.Images = result.ResultObject;
             }
-            return productDetails;
+            return new ApiSuccessResult<List<ProductDetailViewModel>>(productDetails);
         }
-        public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+        public async Task<ApiResult<string>> CategoryAssign(int id, CategoryAssignRequest request)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
-                return new ApiErrorResult<bool>($"Sản phẩm id:{id} không tồn tại");
+                return new ApiErrorResult<string>($"Sản phẩm không tồn tại");
             }
 
             foreach (var category in request.Categories)
@@ -486,10 +495,12 @@ namespace eRentSolution.Application.Catalog.Products
                     });
                 }
             }
-            await _context.SaveChangesAsync();
-            return new ApiSuccessResult<bool>();
+            var result = await _context.SaveChangesAsync();
+            if(result >0)
+                return new ApiSuccessResult<string>("Gán danh mục thành công");
+            return new ApiErrorResult<string>("Gán danh mục thất bại");
         }
-        public async Task<PagedResult<ProductViewModel>> GetFeaturedProducts(GetProductPagingRequest request)
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request)
         {
             //1. Select join
             var query = from p in _context.Products
@@ -515,36 +526,14 @@ namespace eRentSolution.Application.Catalog.Products
                     ViewCount = x.p.ViewCount,
                     Status = x.p.Status,
                     Address = x.p.Address
-                }).ToListAsync();
+                }).Distinct().ToListAsync();
 
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            if (totalRow > 1)
-            {
-                for (int i = 0; i < data.Count - 1; i++)
-                {
-                    if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
-                    {
-                        totalRow--;
-                    }
-                    else
-                    {
-                        products.Add(data.ElementAt(i));
-                    }
-                    if (i == data.Count - 2)
-                    {
-                        products.Add(data.ElementAt(i + 1));
-                    }
-                }
-            }
-            else if (totalRow == 1)
-            {
-                products.Add(data.ElementAt(0));
-            }
-            foreach (var item in products)
+            
+            foreach (var item in data)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails;
-                foreach (var productDetail in productDetails)
+                item.ProductDetailViewModels = productDetails.ResultObject;
+                foreach (var productDetail in productDetails.ResultObject)
                 {
                     item.Stock += productDetail.Stock;
                 }
@@ -552,13 +541,13 @@ namespace eRentSolution.Application.Catalog.Products
             var pageResult = new PagedResult<ProductViewModel>()
             {
                 TotalRecords = totalRow,
-                Items = products,
+                Items = data,
                 PageSize = request.PageSize,
                 PageIndex = request.PageIndex
             };
-            return pageResult;
+            return new ApiSuccessResult<PagedResult<ProductViewModel>>(pageResult);
         }
-        public async Task<List<ProductViewModel>> GetLastestProducts(int take)
+        public async Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take)
         {
             //1. Select join
             var query = from p in _context.Products
@@ -587,42 +576,42 @@ namespace eRentSolution.Application.Catalog.Products
                     Address = x.p.Address
                 }).Distinct().ToListAsync();
 
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            if (totalRow > 1)
-            {
-                for (int i = 0; i < data.Count - 1; i++)
-                {
-                    if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
-                    {
-                        totalRow--;
-                    }
-                    else
-                    {
-                        products.Add(data.ElementAt(i));
-                    }
-                    if (i == data.Count - 2)
-                    {
-                        products.Add(data.ElementAt(i + 1));
-                    }
-                }
-            }
-            else if (totalRow == 1)
-            {
-                products.Add(data.ElementAt(0));
-            }
+            //List<ProductViewModel> products = new List<ProductViewModel>();
+            //if (totalRow > 1)
+            //{
+            //    for (int i = 0; i < data.Count - 1; i++)
+            //    {
+            //        if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
+            //        {
+            //            totalRow--;
+            //        }
+            //        else
+            //        {
+            //            products.Add(data.ElementAt(i));
+            //        }
+            //        if (i == data.Count - 2)
+            //        {
+            //            products.Add(data.ElementAt(i + 1));
+            //        }
+            //    }
+            //}
+            //else if (totalRow == 1)
+            //{
+            //    products.Add(data.ElementAt(0));
+            //}
 
-            foreach (var item in products)
+            foreach (var item in data)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails;
-                foreach (var productDetail in productDetails)
+                item.ProductDetailViewModels = productDetails.ResultObject;
+                foreach (var productDetail in productDetails.ResultObject)
                 {
                     item.Stock += productDetail.Stock;
                 }
             }
-            return products;
+            return new ApiSuccessResult<List<ProductViewModel>>(data);
         }
-        public async Task<PagedResult<ProductViewModel>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId)
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var query = from p in _context.Products
@@ -649,7 +638,6 @@ namespace eRentSolution.Application.Catalog.Products
                 Id = x.p.Id,
                 DateCreated = x.p.DateCreated,
                 Description = x.p.Description,
-                //Details = x.p.Details,
                 Name = x.p.Name,
                 SeoAlias = x.p.SeoAlias,
                 SeoDescription = x.p.SeoDescription,
@@ -657,36 +645,13 @@ namespace eRentSolution.Application.Catalog.Products
                 ViewCount = x.p.ViewCount,
                 Status = x.p.Status,
                 Address = x.p.Address
-            }).ToListAsync();
+            }).Distinct().ToListAsync();
 
-            List<ProductViewModel> products = new List<ProductViewModel>();
-            if (totalRow > 1)
-            {
-                for (int i = 0; i < data.Count - 1; i++)
-                {
-                    if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
-                    {
-                        totalRow--;
-                    }
-                    else
-                    {
-                        products.Add(data.ElementAt(i));
-                    }
-                    if (i == data.Count - 2)
-                    {
-                        products.Add(data.ElementAt(i + 1));
-                    }
-                }
-            }
-            else if (totalRow == 1)
-            {
-                products.Add(data.ElementAt(0));
-            }
-            foreach (var item in products)
+            foreach (var item in data)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails;
-                foreach (var productDetail in productDetails)
+                item.ProductDetailViewModels = productDetails.ResultObject;
+                foreach (var productDetail in productDetails.ResultObject)
                 {
                     item.Stock += productDetail.Stock;
                 }
@@ -694,19 +659,19 @@ namespace eRentSolution.Application.Catalog.Products
 
             var page = new PagedResult<ProductViewModel>()
             {
-                Items = products,
+                Items = data,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRow
             };
-            return page;
+            return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
         }
-        public async Task<ApiResult<bool>> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId)
+        public async Task<ApiResult<string>> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId)
         {
             var productDetail = await _context.ProductDetails.FindAsync(request.Id);
             if (productDetail == null)
             {
-                return new ApiErrorResult<bool>($"Sản phẩm id:{request.Id} không tồn tại");
+                return new ApiErrorResult<string>($"Sản phẩm id không tồn tại");
             }
             productDetail.Name = request.ProductDetailName;
             productDetail.Detail = request.Detail;
@@ -726,10 +691,13 @@ namespace eRentSolution.Application.Catalog.Products
             };
             
             await _context.Censors.AddAsync(censor);
-            await _context.SaveChangesAsync();
-            return new ApiSuccessResult<bool>(true);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Cập nhật chi tiết thành công");
+            else
+                return new ApiErrorResult<string>("Cập nhật chi tiết thất bại");
         }
-        public async Task<bool> IsMyProduct(Guid userId, int productId)
+        public async Task<ApiResult<string>> IsMyProduct(Guid userId, int productId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var query = from p in _context.Products
@@ -737,17 +705,18 @@ namespace eRentSolution.Application.Catalog.Products
                         where cen.UserInfoId == userId && p.Status == Status.Active
                              && cen.ActionId == action.Id && p.Id == productId
                         select new { p };
+
             if (query.Count() > 0)
-                return true;
+                return new ApiSuccessResult<string>("Sản phẩm thuộc về tài khoản hiện tại");
             else
-                return false;
+                return new ApiErrorResult<string>("Sản phẩm không thuộc về tài khoản hiện tại");
         }
-        public async Task<int> AddDetail(ProductDetailCreateRequest request, Guid userInfoId)
+        public async Task<ApiResult<string>> AddDetail(ProductDetailCreateRequest request, Guid userInfoId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProductDetail);
             var product = await _context.Products.FindAsync(request.ProductId);
             if (product == null)
-                return -1;
+                return new ApiErrorResult<string>("Sản phẩm không tồn tại");
             var productDetail = new ProductDetail()
             {
                 DateCreated = DateTime.UtcNow,
@@ -777,12 +746,12 @@ namespace eRentSolution.Application.Catalog.Products
             }
             else
             {
-                return -1;
+                return new ApiErrorResult<string>("Ảnh đính kèm không tồn tại");
             }
             await _context.ProductDetails.AddAsync(productDetail);
             var result = await _context.SaveChangesAsync();
             if (result < 1)
-                return -1;
+                return new ApiErrorResult<string>("Thêm ảnh thất bại");
             var censors = new Censor()
             {
                 ActionId = action.Id,
@@ -791,13 +760,16 @@ namespace eRentSolution.Application.Catalog.Products
                 ProductId = product.Id
             };
             await _context.Censors.AddAsync(censors);
-            return productDetail.Id;
+            result = await _context.SaveChangesAsync();
+            if (result > 0)
+                return new ApiSuccessResult<string>("Thêm ảnh thành công");
+            return new ApiErrorResult<string>("Thêm ảnh thất bại");
         }
-        public async Task<bool> DeleteDetail(int productDetailId, Guid userId)
+        public async Task<ApiResult<string>> DeleteDetail(int productDetailId, Guid userId)
         {
             var detail = await _context.ProductDetails.FindAsync(productDetailId);
             if (detail == null)
-                return false;
+                return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
 
             _context.ProductDetails.Remove(detail);
             var result = await _context.SaveChangesAsync();
@@ -808,7 +780,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     int isDeleteSuccess = _storageService.DeleteFile(image.ImagePath);
                     if (isDeleteSuccess == -1)
-                        return false;
+                        return new ApiErrorResult<string>("Xóa sản phẩm thất bại, vui lòng thử lại sau");
                 }
 
                 var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteDetail);
@@ -820,35 +792,63 @@ namespace eRentSolution.Application.Catalog.Products
                     UserInfoId = userId,
                 };
                 _context.Censors.Add(censor);
-                await _context.SaveChangesAsync();
-                return true;
+                result = await _context.SaveChangesAsync();
+                if (result > 0)
+                    return new ApiSuccessResult<string>("Xóa chi tiết thành công");
             }
-            return false;
+            return new ApiErrorResult<string>("Xóa chi tiết thất bại");
         }
+        public async Task<ApiResult<ProductDetailViewModel>> GetProductDetailById(int productDetailId)
+        {
+            var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
+            if (productDetail == null)
+                return new ApiErrorResult<ProductDetailViewModel>("Không tìm thấy chi tiết sản phẩm");
 
+            var images = await GetListImageByProductDetailId(productDetailId);
+            if(!images.IsSuccessed)
+                return new ApiErrorResult<ProductDetailViewModel>(images.Message);
+
+            var viewModel = new ProductDetailViewModel()
+            {
+                Id = productDetail.Id,
+                DateCreated = productDetail.DateCreated,
+                Detail = productDetail.Detail,
+                Images = images.ResultObject,
+                Length = productDetail.Length,
+                Width = productDetail.Width,
+                OriginalPrice = productDetail.OriginalPrice,
+                ProductDetailName = productDetail.Name,
+                Price = productDetail.Price,
+                Stock = productDetail.Stock,
+                ProductId = productDetail.ProductId
+            };
+            return new ApiSuccessResult<ProductDetailViewModel>(viewModel);
+        }
 
 
 
         //----------------Images-------
         // No Done
-        public async Task<bool> DeleteImage(int imageId, Guid userId)
+        public async Task<ApiResult<string>> DeleteImage(int imageId, Guid userId)
         {
             var productImage = await _context.ProductImages.FindAsync(imageId);
             if (productImage == null)
-                return false;
+                return new ApiErrorResult<string>("Không tìm thấy ảnh");
 
             var productDetail = await _context.ProductDetails.FindAsync(productImage.ProductDetailId);
             if (productDetail == null)
-                return false;
+                return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
+
             var listProductImages = from pd in _context.ProductDetails
                                     join i in _context.ProductImages on pd.Id equals i.ProductDetailId
                                     select new { i };
             if (listProductImages.Count() <= 1)
-                return false;
-            
+                return new ApiErrorResult<string>("Không thể xóa ảnh cuối cùng của chi tiết này");
+
             int isDeleteSuccess = _storageService.DeleteFile(productImage.ImagePath);
             if (isDeleteSuccess == -1)
-                return false;
+                return new ApiErrorResult<string>("Xóa ảnh không thành công, vui lòng thử lại sau");
+
             _context.ProductImages.Remove(productImage);
             var result = await _context.SaveChangesAsync();
             if (result > 0)
@@ -862,16 +862,16 @@ namespace eRentSolution.Application.Catalog.Products
                     UserInfoId = userId,
                 };
                 _context.Censors.Add(censor);
-                return true;
+                return new ApiSuccessResult<string>("Xóa hình ảnh thành công");
             }
-               
-            return false;
+
+            return new ApiErrorResult<string>("Xóa hình ảnh không thành công");
         }
-        public async Task<ProductImageViewModel> GetImageById(int imageId)
+        public async Task<ApiResult<ProductImageViewModel>> GetImageById(int imageId)
         {
             var image = await _context.ProductImages.FindAsync(imageId);
             if (image == null)
-                throw new eRentException($"Cannot find a product: { imageId}");
+                return new ApiErrorResult<ProductImageViewModel>("Hình ảnh không tồn tại");
 
             var productViewModel = new ProductImageViewModel()
             {
@@ -883,39 +883,47 @@ namespace eRentSolution.Application.Catalog.Products
                 Id = image.Id,
                 IsDefault = image.IsDefault
             };
-            return productViewModel;
+            return new ApiSuccessResult<ProductImageViewModel>(productViewModel);
         }
-        public async Task<List<ProductImageViewModel>> GetListImage(int productId)
+        public async Task<ApiResult<List<ProductImageViewModel>>> GetListImage(int productId)
         {
             var product = await _context.Products.FindAsync(productId);
-            if (product == null) throw new eRentException($"Cannot find a product: { productId}");
+            if (product == null)
+                return new ApiErrorResult<List<ProductImageViewModel>> ("Không tìm thấy sản phẩm");
             var productDetail = await _context.ProductDetails.FirstOrDefaultAsync(x => x.ProductId == productId);
-            return await _context.ProductImages.Where(x => x.ProductDetailId == productDetail.Id)
-                    .Select(i => new ProductImageViewModel()
-                    {
-                        Caption = i.Caption,
-                        ImagePath = i.ImagePath,
-                        FileSize = i.FileSize,
-                        DateCreated = i.DateCreated,
-                        IsDefault = i.IsDefault,
-                        ProductDetailId = productDetail.Id,
-                        Id = i.Id,
-                    }).ToListAsync();
+            if (productDetail == null)
+                return new ApiErrorResult<List<ProductImageViewModel>>("Không tìm thấy chi tiết sản phẩm");
+
+            var images = await _context.ProductImages.Where(x => x.ProductDetailId == productDetail.Id)
+                        .Select(i => new ProductImageViewModel()
+                        {
+                            Caption = i.Caption,
+                            ImagePath = i.ImagePath,
+                            FileSize = i.FileSize,
+                            DateCreated = i.DateCreated,
+                            IsDefault = i.IsDefault,
+                            ProductDetailId = productDetail.Id,
+                            Id = i.Id,
+                        }).ToListAsync();
+            return new ApiSuccessResult<List<ProductImageViewModel>>(images);
         }
-        public async Task<List<ProductImageViewModel>> GetListImageByProductDetailId(int productDetailId)
+        public async Task<ApiResult<List<ProductImageViewModel>>> GetListImageByProductDetailId(int productDetailId)
         {
             var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
-            return await _context.ProductImages.Where(x => x.ProductDetailId == productDetail.Id)
-                    .Select(i => new ProductImageViewModel()
-                    {
-                        Caption = i.Caption,
-                        ImagePath = i.ImagePath,
-                        FileSize = i.FileSize,
-                        DateCreated = i.DateCreated,
-                        IsDefault = i.IsDefault,
-                        ProductDetailId = productDetail.Id,
-                        Id = i.Id,
-                    }).ToListAsync();
+            if (productDetail == null)
+                return new ApiErrorResult<List<ProductImageViewModel>>("Không tìm thấy chi tiết sản phẩm");
+            var images = await _context.ProductImages.Where(x => x.ProductDetailId == productDetail.Id)
+                        .Select(i => new ProductImageViewModel()
+                        {
+                            Caption = i.Caption,
+                            ImagePath = i.ImagePath,
+                            FileSize = i.FileSize,
+                            DateCreated = i.DateCreated,
+                            IsDefault = i.IsDefault,
+                            ProductDetailId = productDetail.Id,
+                            Id = i.Id,
+                        }).ToListAsync();
+            return new ApiSuccessResult<List<ProductImageViewModel>>(images);
         }
         public async Task<ApiResult<string>> AddImage(ProductImageCreateRequest request, Guid userId)
         {
@@ -984,8 +992,6 @@ namespace eRentSolution.Application.Catalog.Products
 
 
 
-
-
         //--------FILE--------
         private async Task<string> SaveFile(IFormFile file)
         {
@@ -994,28 +1000,6 @@ namespace eRentSolution.Application.Catalog.Products
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
-        public async Task<ProductDetailViewModel> GetProductDetailById(int productDetailId)
-        {
-            var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
-            if (productDetail == null)
-                return null;
-            var viewModel = new ProductDetailViewModel()
-            {
-                Id = productDetail.Id,
-                DateCreated = productDetail.DateCreated,
-                Detail = productDetail.Detail,
-                Images = await GetListImageByProductDetailId(productDetailId),
-                Length = productDetail.Length,
-                Width = productDetail.Width,
-                OriginalPrice = productDetail.OriginalPrice,
-                ProductDetailName =productDetail.Name,
-                Price = productDetail.Price,
-                Stock = productDetail.Stock,
-                ProductId = productDetail.ProductId
-            };
-            return viewModel;
-        }
 
-        
     }
 }

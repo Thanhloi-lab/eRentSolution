@@ -10,10 +10,10 @@ namespace eRentSolution.Application.Catalog.Categories
 {
     public interface ICategoryService
     {
-        Task<List<CategoryViewModel>> GetAll();
-        Task<CategoryViewModel> GetById(int id);
-        Task<List<CategoryViewModel>> GetAllCategoryByProductId(int productId);
-        Task<bool> UpdateImage(CategoryImageUpdateRequest request);
-        Task<PagedResult<CategoryViewModel>> GetAllPaging(GetCategoryPagingRequest request);
+        Task<ApiResult<List<CategoryViewModel>>> GetAll();
+        Task<ApiResult<CategoryViewModel>> GetById(int id);
+        Task<ApiResult<List<CategoryViewModel>>> GetAllCategoryByProductId(int productId);
+        Task<ApiResult<string>> UpdateImage(CategoryImageUpdateRequest request);
+        Task<ApiResult<PagedResult<CategoryViewModel>>> GetAllPaging(GetCategoryPagingRequest request);
     }
 }

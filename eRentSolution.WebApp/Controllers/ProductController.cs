@@ -58,51 +58,68 @@ namespace eRentSolution.WebApp.Controllers
             ViewBag.Keyword = keyword;
 
             var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
-            ViewBag.Categories = categories.Select(x => new SelectListItem()
+            ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString(),
                 Selected = categoryId.HasValue && categoryId.Value == x.Id
             });
-            return View(products);
+            return View(products.ResultObject);
         }
         [AllowAnonymous]
         public async Task<IActionResult> Detail(int id)
         {
             var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
-            var categories = await _categoryApiClient.GetAllCategoryByProductId(id, SystemConstant.AppSettings.TokenWebApp);
-            if (categories == null)
+            if (!product.IsSuccessed)
             {
-                categories = new List<CategoryViewModel>();
+                TempData["failResult"] = product.Message;
+                return RedirectToAction("Index", "home");
+            }
+            var categories = await _categoryApiClient.GetAllCategoryByProductId(id, SystemConstant.AppSettings.TokenWebApp);
+            if (!categories.IsSuccessed)
+            {
+                categories.ResultObject = new List<CategoryViewModel>();
                 var category = new CategoryViewModel()
                 {
                     Id = -1,
                     Name = "N/A",
                 };
-                categories.Add(category);
+                categories.ResultObject.Add(category);
             }
             var products = new List<ProductViewModel>();
-            products.Add(product);
+            products.Add(product.ResultObject);
             products = await GetProductImages(products);
-            product = products.ElementAt(0);
-            var user = await _userApiClient.GetUserByProductId(product.Id, SystemConstant.AppSettings.TokenWebApp);
+            product.ResultObject = products.ElementAt(0);
+            var user = await _userApiClient.GetUserByProductId(product.ResultObject.Id, SystemConstant.AppSettings.TokenWebApp);
+            if(!user.IsSuccessed)
+            {
+                TempData["failResult"] = user.Message;
+                return RedirectToAction("Index");
+            }    
             return View(new ProductDetailViewModels()
             {
-                Owner = user,
-                Categories = categories,
-                Product = product
+                Owner = user.ResultObject,
+                Categories = categories.ResultObject,
+                Product = product.ResultObject
             }) ;
         }
         [HttpGet]
         public async Task<IActionResult> MyProductDetail(int id)
         {
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (await _productApiClient.IsMyProduct(id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
+            var isMyProduct = await _productApiClient.IsMyProduct(id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (!isMyProduct.IsSuccessed)
             {
-                return RedirectToAction("Index", "Home");
+                TempData["failResult"] = isMyProduct.Message;
+                return RedirectToAction("Index", "home");
             }
-            var products = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
-            return View(products);
+            var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            if (!product.IsSuccessed)
+            {
+                TempData["failResult"] = product.Message;
+                return RedirectToAction("MyListProducts");
+            }
+            return View(product.ResultObject);
         }
         [HttpGet]
         public async Task<IActionResult> MyListProducts(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
@@ -125,18 +142,17 @@ namespace eRentSolution.WebApp.Controllers
             ViewBag.Keyword = keyword;
 
             var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
-            ViewBag.Categories = categories.Select(x => new SelectListItem()
+            ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString(),
                 Selected = categoryId.HasValue && categoryId.Value == x.Id
             });
-            return View(products);
+            return View(products.ResultObject);
         }
         [HttpGet]
         public async Task<IActionResult> GetUserListProducts(Guid ownerId, string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
         {
-
             var request = new GetProductPagingRequest()
             {
                 Keyword = keyword,
@@ -154,18 +170,18 @@ namespace eRentSolution.WebApp.Controllers
             ViewBag.Keyword = keyword;
 
             var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
-            ViewBag.Categories = categories.Select(x => new SelectListItem()
+            ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id.ToString(),
                 Selected = categoryId.HasValue && categoryId.Value == x.Id
             });
-            products.Items = await GetProductImages(products.Items);
+            products.ResultObject.Items = await GetProductImages(products.ResultObject.Items);
             var user = await _userApiClient.GetById(ownerId, SystemConstant.AppSettings.TokenWebApp);
             return View(new UserListProductsViewModel() 
             { 
-                Products = products,
-                Owner = user,
+                Products = products.ResultObject,
+                Owner = user.ResultObject,
             });
         }
         [HttpGet]
@@ -178,16 +194,20 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> Create([FromForm] ProductCreateRequest request)
         {
             if (!ModelState.IsValid)
-                return View();
+            {
+                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                return View(request);
+            }
+
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
-            if (result)
+            if (!result.IsSuccessed)
             {
-                TempData["result"] = "Tạo mới sản phẩm thành công";
+                TempData["result"] = result.ResultObject;
                 return RedirectToAction("MyListProducts");
             }
 
-            ModelState.AddModelError("", "Tạo mới sản phẩm thất bại");
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         [HttpGet]
@@ -195,20 +215,26 @@ namespace eRentSolution.WebApp.Controllers
         {
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
-            if (await _productApiClient.IsMyProduct(product.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
+            if (!product.IsSuccessed)
+            {
+                TempData["failResult"] = product.Message;
+                return RedirectToAction("Index");
+            }
+            var isMyProduct = await _productApiClient.IsMyProduct(product.ResultObject.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (!isMyProduct.IsSuccessed)
             {
                 return RedirectToAction("Index", "Home");
             }
             var productViewModel = new ProductUpdateRequest()
             {
                 Id = id,
-                Name = product.Name,
-                Description = product.Description,
+                Name = product.ResultObject.Name,
+                Description = product.ResultObject.Description,
                 //Details = product.Details,
-                SeoAlias = product.SeoAlias,
-                SeoDescription = product.SeoDescription,
-                SeoTitle = product.SeoTitle,
-                IsFeatured = product.IsFeatured
+                SeoAlias = product.ResultObject.SeoAlias,
+                SeoDescription = product.ResultObject.SeoDescription,
+                SeoTitle = product.ResultObject.SeoTitle,
+                IsFeatured = product.ResultObject.IsFeatured
             };
             return View(productViewModel);
         }
@@ -217,28 +243,37 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> Edit([FromForm] ProductUpdateRequest request)
         {
             if (!ModelState.IsValid)
-                return View();
-            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (await _productApiClient.IsMyProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
             {
+                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                return View(request);
+            }    
+                
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var isMyProduct = await _productApiClient.IsMyProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (!isMyProduct.IsSuccessed)
+            {
+                TempData["failResult"] = isMyProduct.Message;
                 return RedirectToAction("Index", "Home");
             }
             var result = await _productApiClient.UpdateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Chỉnh sửa sản phẩm thành công";
+                TempData["result"] = result.ResultObject;
                 return RedirectToAction("Index");
             }
 
-            ModelState.AddModelError("", "Chỉnh sửa sản phẩm thất bại");
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (await _productApiClient.IsMyProduct(id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
+
+            var isMyProduct = await _productApiClient.IsMyProduct(id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (!isMyProduct.IsSuccessed)
             {
+                TempData["failResult"] = isMyProduct.Message;
                 return RedirectToAction("Index", "Home");
             }
             return View(new ProductStatusRequest()
@@ -250,21 +285,26 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> Delete(ProductStatusRequest request)
         {
             if (!ModelState.IsValid)
-                return View();
-            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (await _productApiClient.IsMyProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
             {
+                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                return View(request);
+            }
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var isMyProduct = await _productApiClient.IsMyProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (!isMyProduct.IsSuccessed)
+            {
+                TempData["failResult"] = isMyProduct.Message;
                 return RedirectToAction("Index", "Home");
             }
             var result = await _productApiClient.DeleteProduct(request.Id, SystemConstant.AppSettings.TokenAdmin);
 
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Xóa sản phẩm thành công";
+                TempData["result"] = result.ResultObject;
                 return RedirectToAction("Index");
             }
-            TempData["failResult"] = "Xóa sản phẩm không thành công";
-            return View(request.Id);
+            ModelState.AddModelError("", result.Message);
+            return View(request);
         }
         [AllowAnonymous]
         public async Task<IActionResult> Category(int categoryId, int page = 1, int pageSize = 10)
@@ -275,11 +315,17 @@ namespace eRentSolution.WebApp.Controllers
                 PageIndex = page,
                 PageSize = pageSize
             }, SystemConstant.AppSettings.TokenWebApp);
-            products.Items = await GetProductImages(products.Items);
+            products.ResultObject.Items = await GetProductImages(products.ResultObject.Items);
+            var category = await _categoryApiClient.GetById(categoryId, SystemConstant.AppSettings.TokenWebApp);
+            if(!category.IsSuccessed)
+            {
+                TempData["failResult"] = category.Message;
+                return RedirectToAction("Index", "home");
+            }    
             return View(new ProductCategoryViewModel()
             {
-                Category = await _categoryApiClient.GetById(categoryId, SystemConstant.AppSettings.TokenWebApp),
-                Products = products
+                Category = category.ResultObject,
+                Products = products.ResultObject
             });
         }
         #endregion
@@ -298,33 +344,42 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> AddDetail([FromForm] ProductDetailCreateRequest request)
         {
             if (!ModelState.IsValid)
-                return View();
+            {
+                ModelState.AddModelError("", "Dữ liệu không hợp lệ");
+                return View(request);
+            }    
+                
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.AddProductDetail(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Tạo mới sản phẩm thành công";
+                TempData["result"] = result.ResultObject;
                 return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
-            ModelState.AddModelError("", "Tạo mới sản phẩm thất bại");
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         [HttpGet]
         public async Task<IActionResult> EditDetail(int productDetailId, int productId)
         {
             var productDetail = await _productApiClient.GetProductDetailById(productDetailId, SystemConstant.AppSettings.TokenWebApp);
+            if(!productDetail.IsSuccessed)
+            {
+                ModelState.AddModelError("", productDetail.Message);
+                RedirectToAction("Detail");
+            }
             var productViewModel = new ProductDetailUpdateRequest()
             {
                 Id = productDetailId,
-                Detail = productDetail.Detail,
-                Length = productDetail.Length,
-                Width = productDetail.Width,
-                ProductDetailName = productDetail.ProductDetailName,
+                Detail = productDetail.ResultObject.Detail,
+                Length = productDetail.ResultObject.Length,
+                Width = productDetail.ResultObject.Width,
+                ProductDetailName = productDetail.ResultObject.ProductDetailName,
                 ProductId = productId,
-                Stock = productDetail.Stock,
-                OriginalPrice = productDetail.OriginalPrice,
-                Price = productDetail.Price
+                Stock = productDetail.ResultObject.Stock,
+                OriginalPrice = productDetail.ResultObject.OriginalPrice,
+                Price = productDetail.ResultObject.Price
             };
             return View(productViewModel);
         }
@@ -332,35 +387,40 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> EditDetail([FromForm] ProductDetailUpdateRequest request)
         {
             if (!ModelState.IsValid)
-                return View();
+            {
+                ModelState.AddModelError("", "Dữ liệu không hợp lệ");
+                return View(request);
+            }    
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.UpdateDetail(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Chỉnh sửa chi tiết sản phẩm thành công";
+                TempData["result"] = result.ResultObject;
                 return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
-            ModelState.AddModelError("", "Chỉnh sửa sản phẩm thất bại");
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         [HttpGet]
         public async Task<IActionResult> DeleteDetail(int productDetailId, int productId)
         {
             var product = await _productApiClient.GetById(productId, SystemConstant.AppSettings.TokenWebApp);
-            if(product==null)
+            if(!product.IsSuccessed)
             {
-                TempData["failResult"] = "Sản phẩm không tồn tại";
+                TempData["failResult"] = product.Message;
                 return RedirectToAction("MyListProducts");
             }
             else
             {
                 userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                if (await _productApiClient.IsMyProduct(productId, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
+                var isMyProduct = await _productApiClient.IsMyProduct(productId, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+                if (!isMyProduct.IsSuccessed)
                 {
+                    TempData["failResult"] = isMyProduct.Message;
                     return RedirectToAction("index");
                 }
-                if (product.ProductDetailViewModels.Count<2)
+                if (product.ResultObject.ProductDetailViewModels.Count<2)
                 {
                     TempData["failResult"] = "Không thể xóa chi tiết cuối cùng của sản phẩm";
                     return Redirect($"/product/MyProductDetail/{productId}");
@@ -377,20 +437,20 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["failResult"] = "Xóa sản phẩm không thành công";
+                ModelState.AddModelError("", "Dữ liệu không hợp lệ");
                 return View(request);
             }
 
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.DeleteDetail(request.ProductDetailId, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
 
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Xóa sản phẩm thành công";
+                TempData["result"] = result.ResultObject;
                 return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
-            TempData["failResult"] = "Xóa sản phẩm không thành công";
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         #endregion
@@ -399,11 +459,23 @@ namespace eRentSolution.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> EditImage(int imageId, int productId)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var isMyProduct = await _productApiClient.IsMyProduct(productId, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (!isMyProduct.IsSuccessed)
+            {
+                TempData["failResult"] = isMyProduct.Message;
+                return RedirectToAction("Index", "Home");
+            }
             var image = await _productApiClient.GetImageById(imageId, SystemConstant.AppSettings.TokenWebApp);
+            if(!image.IsSuccessed)
+            {
+                TempData["failResult"] = image.Message;
+                return Redirect($"/product/MyProductDetail/{productId}");
+            }
             var imageUpdateRequest = new ProductImageUpdateRequest()
             {
-                ImageId = image.Id,
-                OldImageUrl = image.ImagePath,
+                ImageId = image.ResultObject.Id,
+                OldImageUrl = image.ResultObject.ImagePath,
                 ProductId = productId
             };
             return View(imageUpdateRequest);
@@ -413,7 +485,11 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> EditImage([FromForm] ProductImageUpdateRequest request)
         {
             if (!ModelState.IsValid)
-                return View();
+            {
+                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                return View(request);
+            }
+
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.UpdateImage(request, SystemConstant.AppSettings.TokenWebApp, Guid.Parse(userId));
             if (result.IsSuccessed)
@@ -426,8 +502,15 @@ namespace eRentSolution.WebApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public IActionResult AddImage(int productDetailId, int productId)
+        public async Task<IActionResult> AddImage(int productDetailId, int productId)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var isMyProduct = await _productApiClient.IsMyProduct(productId, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (!isMyProduct.IsSuccessed)
+            {
+                TempData["failResult"] = isMyProduct.Message;
+                return RedirectToAction("Index", "Home");
+            }
             return View(new ProductImageCreateRequest()
             {
                 ProductDetailId = productDetailId,
@@ -439,7 +522,10 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> AddImage([FromForm] ProductImageCreateRequest request)
         {
             if (!ModelState.IsValid)
-                return View();
+            {
+                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                return View(request);
+            }
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.AddImage(request, SystemConstant.AppSettings.TokenWebApp, Guid.Parse(userId));
             if (result.IsSuccessed)
@@ -448,7 +534,7 @@ namespace eRentSolution.WebApp.Controllers
                 return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
-            ModelState.AddModelError("", result.ResultObject);
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         public async Task<List<ProductViewModel>> GetProductImages(List<ProductViewModel> products)
@@ -456,18 +542,18 @@ namespace eRentSolution.WebApp.Controllers
             foreach (var item in products)
             {
                 var images = await _productApiClient.GetListImages(item.Id, SystemConstant.AppSettings.TokenWebApp);
-                if (images != null)
+                if (images.IsSuccessed)
                 {
-                    if (images.Count > 0)
+                    if (images.ResultObject.Count > 0)
                     {
-                        foreach (var image in images)
+                        foreach (var image in images.ResultObject)
                         {
                             if (image.IsDefault == true)
                                 item.ThumbnailImage = image.ImagePath;
                         }
                         if (item.ThumbnailImage == null)
                         {
-                            item.ThumbnailImage = images.ElementAt(0).ImagePath;
+                            item.ThumbnailImage = images.ResultObject.ElementAt(0).ImagePath;
                         }
                     }
                 }
@@ -478,23 +564,28 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> DeleteImage(int productDetailId, int imageId)
         {
             var productDetail = await _productApiClient.GetProductDetailById(productDetailId, SystemConstant.AppSettings.TokenWebApp);
-            var product = await _productApiClient.GetById(productDetail.ProductId, SystemConstant.AppSettings.TokenWebApp);
-            if (productDetail == null || product == null)
+            var product = await _productApiClient.GetById(productDetail.ResultObject.ProductId, SystemConstant.AppSettings.TokenWebApp);
+            if (!productDetail.IsSuccessed)
             {
-                TempData["failResult"] = "Xảy ra lỗi trong quá trình vui lòng thử lại sau";
-                return Redirect($"/product/MyProductDetail/{product.Id}");
+                TempData["failResult"] = productDetail.Message;
+                return Redirect($"/product/MyProductDetail/{product.ResultObject.Id}");
             }
-            else
+            else if (!product.IsSuccessed)
             {
-                userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                if (await _productApiClient.IsMyProduct(product.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp) == false)
-                {
-                    return RedirectToAction("index");
-                }
+                TempData["failResult"] = productDetail.Message;
+                return Redirect($"/product/MyProductDetail/{product.ResultObject.Id}");
+            }
+
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var isMyProduct = await _productApiClient.IsMyProduct(product.ResultObject.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (!isMyProduct.IsSuccessed)
+            {
+                TempData["failResult"] = isMyProduct.Message;
+                return RedirectToAction("Index", "Home");
             }
             return View(new ProductImageDeleteRequest()
             {
-                ProductId = productDetail.ProductId,
+                ProductId = productDetail.ResultObject.ProductId,
                 ProductDetailId = productDetailId,
                 ImageId = imageId
             });
@@ -504,20 +595,20 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["failResult"] = "Xóa hình ảnh không thành công";
+                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
                 return View(request);
             }
 
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.DeleteImage(request.ImageId, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
 
-            if (result)
+            if (result.IsSuccessed)
             {
-                TempData["result"] = "Xóa hình ảnh thành công";
+                TempData["result"] = result.ResultObject;
                 return Redirect($"/product/MyProductDetail/{request.ProductId}");
             }
 
-            TempData["failResult"] = "Xóa hình ảnh không thành công";
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         #endregion

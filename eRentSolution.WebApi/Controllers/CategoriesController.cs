@@ -23,29 +23,37 @@ namespace eRentSolution.BackendApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _categoryService.GetAll();
-            return Ok(products);
+            var categories = await _categoryService.GetAll();
+            if(categories.IsSuccessed)
+                return Ok(categories);
+            return BadRequest(categories);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var categories = await _categoryService.GetById( id);
-            return Ok(categories);
+            if (categories.IsSuccessed)
+                return Ok(categories);
+            return BadRequest(categories);
         }
 
         [HttpGet("productcategories/{productId}")]
         public async Task<IActionResult> GetAllByProductId(int productId)
         {
             var categories = await _categoryService.GetAllCategoryByProductId(productId);
-            return Ok(categories);
+            if (categories.IsSuccessed)
+                return Ok(categories);
+            return BadRequest(categories);
         }
         [HttpPut("UpdateImage")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateImage([FromForm] CategoryImageUpdateRequest request)
         {
-            var products = await _categoryService.UpdateImage(request);
-            return Ok(products);
+            var categories = await _categoryService.UpdateImage(request);
+            if (categories.IsSuccessed)
+                return Ok(categories);
+            return BadRequest(categories);
         }
 
         [HttpGet("paging")]
