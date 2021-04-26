@@ -38,21 +38,16 @@ namespace eRentSolution.WebApp.Controllers
         }
         #region -----PRODUCT-------
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string keyword, string address, int? categoryId, int pageIndex = 1, int pageSize = 10)
         {
-            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var request = new GetProductPagingRequest()
             {
-                Keyword = keyword,
+                CategoryId = categoryId,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                CategoryId = categoryId
+                Keyword = keyword,
+                Address = address
             };
-
-            if (TempData["result"] != null)
-            {
-                ViewBag.success = TempData["result"];
-            }
 
             var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Keyword = keyword;
@@ -64,6 +59,7 @@ namespace eRentSolution.WebApp.Controllers
                 Value = x.Id.ToString(),
                 Selected = categoryId.HasValue && categoryId.Value == x.Id
             });
+
             return View(products.ResultObject);
         }
         [AllowAnonymous]
@@ -313,7 +309,7 @@ namespace eRentSolution.WebApp.Controllers
             {
                 CategoryId = categoryId,
                 PageIndex = page,
-                PageSize = pageSize
+                PageSize = pageSize,
             }, SystemConstant.AppSettings.TokenWebApp);
             products.ResultObject.Items = await GetProductImages(products.ResultObject.Items);
             var category = await _categoryApiClient.GetById(categoryId, SystemConstant.AppSettings.TokenWebApp);

@@ -2,6 +2,7 @@
 using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.ViewModels.Common;
 using System;
+using System.Collections.Generic;
 
 namespace eRentSolution.WebApp.Models
 {

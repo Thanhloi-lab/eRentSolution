@@ -168,7 +168,7 @@
                 </select>
                 <input class="billing_address_1" name="" type="hidden" value="">
                 <input class="billing_address_2" name="" type="hidden" value="">
-                <button class="btn-filter" onclick="myFunction()">Tìm</button>
+                <button type="submit" class="btn-filter" onclick="myFunction()">Tìm</button>
 
             </form>
 
@@ -176,18 +176,7 @@
         @RenderBody()
 
     </div>
-    <!-- Header End====================================================================== -->
-    <!-- Footer ================================================================== -->
-    @*<select id="province" name="calc_shipping_provinces" required="">
-            <option value="">Tỉnh / Thành phố</option>
-        </select>
-        <select id="district" name="calc_shipping_district" required="">
-            <option value="">Quận / Huyện</option>
-        </select>
-        <input class="billing_address_1" name="" type="hidden" value="">
-        <input class="billing_address_2" name="" type="hidden" value="">
-        <button onclick="myFunction()">Click me</button>
-        <div style="margin-top: 100px;" id="box"></div>*@
+
 
 
     <footer class="footer">
@@ -282,7 +271,7 @@
         </div>
     </footer>
 </body>
- <script>
+<script>
 
      window.onclick = function (event) {
          openCloseDropdown(event)
@@ -297,9 +286,9 @@
 
      function openCloseDropdown(event) {
          if (!event.target.matches('.dropdown-toggle')) {
-             // 
+             //
              // Close dropdown when click out of dropdown menu
-             // 
+             //
              closeAllDropdown()
          } else {
              var toggle = event.target.dataset.toggle
@@ -382,11 +371,27 @@
              })
          })
      })
-     function myFunction() {
-         var provinceText = $("#province option:selected").text();
+    function myFunction() {
+        var provinceText = $("#province option:selected").val.text();
          var districtText = $("#district option:selected").text();
 
+         {
+            address1 = provinceText +"-"+ districtText;
+
+            $.ajax({
+                type: "GET",
+                url: "@Url.RouteUrl("/product/index")",
+                data: { address:address1 },
+                dataType: "text",
+                success: function (msg) {
+                    console.log(msg);
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+        };
      }
-    
- </script>
+
+</script>
 </html>
