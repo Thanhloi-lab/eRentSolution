@@ -4,7 +4,18 @@
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    th {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
 
+    td {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+    
+</style>
 
 <div class="container-fluid">
     <h1 class="mt-4">Chi tiết sản phẩm</h1>
@@ -60,24 +71,23 @@
 
                                 for (int i = 0; i < Model.Categories.Count; i++)
                                 {
-                                    <td>
-                                        @Html.DisplayFor(model => Model.Categories[i])
-                                    </td>
-
-                                }
-                                if (Model.Categories.Count == 0)
-                                {
-                                    <td>
-                                        N/A
-                                    </td>
-                                }
-                            }
-                            else
-                            {
-                                <td>
-                                    N/A
-                                </td>
-                            }
+                <td>
+                    @Html.DisplayFor(model => Model.Categories[i])
+                </td>
+ }
+            if (Model.Categories.Count == 0)
+            {
+            <td>
+                N/A
+            </td>
+ }
+    }
+    else
+    {
+            <td>
+                N/A
+            </td>
+}
                         </tr>
                     </tbody>
                     <tbody>
@@ -138,159 +148,135 @@
                         </tr>
                     </tbody>
                 </table>
-
-                @foreach (var item in Model.ProductDetailViewModels)
-                {
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Thuộc tính
-                                </th>
-                                <th>
-                                    Mô tả
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @Html.DisplayNameFor(model => item.Images)
-                                </td>
-                                @if (item.Images.Count > 0)
-                                {
-                                    <td>
-                                        @foreach (var image in item.Images)
-                                        {
-                                            <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
-                                            @*<form asp-action="EditImage" method="get" style="padding: 0 20px 20px 20px;">
-                                                <input asp-for="@image.Id" name="imageId" type="hidden" input />
-                                                <input type="submit" value="Edit" class="btn btn-danger" />
-                                            </form>*@
-                                        }
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <a href="#"><img src="#" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
-                                    </td>
-                                }
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @Html.DisplayNameFor(model => item.ProductDetailName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(model => item.ProductDetailName)
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @Html.DisplayNameFor(model => item.Detail)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(model => item.Detail)
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @Html.DisplayNameFor(model => item.Price)
-
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(model => item.Price)
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @Html.DisplayNameFor(model => item.OriginalPrice)
-
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(model => item.OriginalPrice)
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @Html.DisplayNameFor(model => item.Width)
-
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(model => item.Width)
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    @Html.DisplayNameFor(model => item.Length)
-
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(model => item.Length)
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    Diện tích
-                                </td>
-                                <td>
-                                    @(item.Width * item.Length)
-                                </td>
-                            </tr>
-                        </tbody>
-                        @*<tbody>
-                            <tr>
-                                <td>
-                                    <form asp-action="EditDetail" method="get" style="padding: 0 20px 20px 20px;">
-                                        <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                                        <input type="submit" value="Edit" class="btn btn-danger" />
-                                    </form>
-                                    <form asp-action="AddImage" method="get" style="padding: 0 20px 20px 20px;">
-                                        <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                                        <input type="submit" value="AddImage" class="btn btn-danger" />
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>*@
-
-
-                    </table>
-                }
-                @if (Model.IsFeatured == eRentSolution.Data.Enums.Status.InActive)
-                {
-                    <form asp-action="CreateFeature">
+                <div>
+                    <form asp-action="Edit" method="get" style="margin: 40px;">
                         <input asp-for="Id" type="hidden" input />
-                        <input type="submit" value="Thêm vào sản phẩm nổi bật" class="btn btn-danger" />
+                        <input type="submit" value="Edit" class="btn btn-outline-warning" />
                     </form>
-                }
-                else
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center;vertical-align:middle;">
+                                Tên loại sản phẩm
+                            </th>
+                            <th style="text-align:center;vertical-align:middle;">
+                                Chi tiết
+                            </th>
+                            <th style="text-align:center;vertical-align:middle;">
+                                Giá
+                            </th>
+                            <th style="text-align:center;vertical-align:middle;">
+                                Giá gốc
+                            </th>
+                            <th style="text-align:center;vertical-align:middle;">
+                                Chiều rộng
+                            </th>
+                            <th style="text-align:center;vertical-align:middle;">
+                                Chiều dài
+                            </th>
+                            <th style="text-align:center;vertical-align:middle;">
+                                Diện tích
+                            </th>
+                            <th style="text-align:center;vertical-align:middle;">
+                                Hình ảnh
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model.ProductDetailViewModels)
+                    {
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.ProductDetailName)
+                    </td>
+                    <td>
+                        <p style="word-wrap:break-word; width:200px;"> @Html.DisplayFor(model => item.Detail)</p>
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.OriginalPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Width)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Length)
+                    </td>
+                    <td>
+                        @(item.Width * item.Length)
+                    </td>
+                
+                    @if (item.Images.Count > 0)
+            {
+        <td >
+            <div style="display:flex; width:311px; height:113px; flex-wrap:wrap; ">
+                @foreach (var image in item.Images)
                 {
-                    <form asp-action="DeleteFeature">
-                        <input asp-for="Id" type="hidden" input />
-                        <input type="submit" value="Xóa khỏi sản phẩm nổi bật" class="btn btn-danger" />
-                    </form>
-                }
+            <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="N/A" style="width: 50px; height: 50px; object-fit: cover;"></a>
+                                    <form asp-action="EditImage" method="get" style="padding: 0 20px 20px 20px;">
+                                        <input asp-for="@image.Id" name="imageId" type="hidden" input />
+                                        <input type="submit" value="Edit" class="btn btn-outline-warning" />
+                                    </form>}
+            </div>
+
+        </td> }
+                        else
+                        {
+                          <td>
+                           <a href="#"><img src="#" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
+                        </td>}
+
+                    <td style="display: flex;">
+                        <form asp-action="EditDetail" method="get" style=" padding: 0 8px 8px 8px;">
+                            <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+                            <input type="submit" value="Edit" class="btn btn-outline-success" />
+                        </form>
+                        <form asp-action="AddImage" method="get" style=" padding: 0 8px 8px 8px;">
+                            <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+                            <input type="submit" value="AddImage" class="btn btn-outline-info" />
+                        </form>
+                    </td>
+                </tr>
+                @*<tr>
+            <td>
+                @Html.DisplayNameFor(model => item.Images)
+            </td>
+            @if (item.Images.Count > 0)
+            {
+                <td>
+                    @foreach (var image in item.Images)
+                    {
+                        <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
+                        <form asp-action="EditImage" method="get" style="padding: 0 20px 20px 20px;">
+                            <input asp-for="@image.Id" name="imageId" type="hidden" input />
+                            <input type="submit" value="Edit" class="btn btn-danger" />
+                        </form>
+                    }
+                </td>
+            }
+            else
+            {
+                <td>
+                    <a href="#"><img src="#" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
+                </td>
+            }
+        </tr>*@
+
+            </tbody>
+}
+                </table>
+
             </div>
         </div>
     </div>
 </div>
-@*<div>
-    <form asp-action="Edit" method="get" style="margin: 40px;">
-        <input asp-for="Id" type="hidden" input />
-        <input type="submit" value="Edit" class="btn btn-danger" />
-    </form>
-</div>*@
+
+

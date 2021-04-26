@@ -74,7 +74,7 @@
     <p class="category__heading">Tin đăng cho bạn</p>
 
     <div class="box-flex">
-        @foreach (var item in Model.LastestProducts)
+        @foreach (var item in Model.PageProducts.Items)
         {
             var url = $"/Products/{item.Id}";
             <div class="box-full-flex loadmore">

@@ -314,6 +314,7 @@ namespace eRentSolution.Integration
 
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Caption) ? "" : request.Caption), "caption");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.ProductDetailId.ToString()) ? "" : request.ProductDetailId.ToString()), "productDetailId");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.ProductId.ToString()) ? "" : request.ProductId.ToString()), "productId");
 
             var response = await client.PostAsync($"api/products/add-img/{userId}/", requestContent);
             var body = await response.Content.ReadAsStringAsync();

@@ -1,10 +1,10 @@
 ﻿@model eRentSolution.ViewModels.Catalog.Products.ProductCreateRequest
 
-@{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
+<script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
 <div class="container-fluid">
     <h1 class="mt-4">Tạo mới sản phẩm</h1>
     <ol class="breadcrumb mb-4">
@@ -64,11 +64,22 @@
                         <textarea asp-for="Detail" rows="5" class="form-control"></textarea>
                         <span asp-validation-for="Detail" class="text-danger"></span>
                     </div>
+                  
                     <div class="form-group">
                         <label asp-for="Address" class="control-label">Địa chỉ</label>
-                        <input asp-for="Address" class="form-control" />
+                        <input asp-for="Address" class="form-control" placeholder="Nhập số nhà, đường, phường" />
                         <span asp-validation-for="Address" class="text-danger"></span>
                     </div>
+                    <div class="form-group">
+                        <select style="margin-left:0; border:1px solid #7f7f7f; height:38px;" id="province" name="calc_shipping_provinces" required="">
+                            <option value="">Tỉnh / Thành phố</option>
+                        </select>
+                        <select style=" border:1px solid #7f7f7f;height:38px;" id="district" name="calc_shipping_district" required="">
+                            <option value="">Quận / Huyện</option>
+                        </select>
+                    </div>
+                    
+
                     <div class="form-group">
                         <label asp-for="ThumbnailImage" class="control-label">Ảnh đại diện</label>
                         <input asp-for="ThumbnailImage" type="file" class="form-control" />
@@ -90,10 +101,12 @@
                         <span asp-validation-for="SeoDescription" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Create" onclick="myFunction()" class="btn btn-primary" />
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script src="~/js/select.js"></script>

@@ -2,7 +2,8 @@
 
 @{ ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout3.cshtml"; }
-
+<link rel="stylesheet" href="~/css/input.css" />
+<script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
 <div class="container-contact100">
     <div class="wrap-contact100">
         <form asp-action="Create" enctype="multipart/form-data" class="contact100-form validate-form">
@@ -54,13 +55,19 @@
             </div>
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Địa chỉ</span>
-                <textarea class="input100" asp-for="Address"></textarea>
+                <input class="input100" asp-for="Address" />
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
+            <select style="margin-left:0; border:1px solid #7f7f7f" id="province" name="calc_shipping_provinces" required="">
+                <option value="">Tỉnh / Thành phố</option>
+            </select>
+            <select style=" border:1px solid #7f7f7f" id="district" name="calc_shipping_district" required="" >
+                <option value="">Quận / Huyện</option>
+            </select>
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Mô tả</span>
-                <textarea class="input100" asp-for="Description" rows="2"></textarea>
+                <textarea class="input100" asp-for="Description" rows="5"></textarea>
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
@@ -96,8 +103,9 @@
             </div>
             <div class="container-contact100-form-btn">
                 <div class="wrap-contact100-form-btn">
+                    <input asp-for="@Model.Address" name="Address" type="hidden" input />
                     <div class="contact100-form-bgbtn"></div>
-                    <button type="submit" class="contact100-form-btn">
+                    <button type="submit" onclick="myFunction()" class="contact100-form-btn">
                         <span>
                             Submit
                             <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
@@ -109,18 +117,4 @@
     </div>
 </div>
 
-
-
-
-
-
-/*//////////////////////////////////////////////////////////////////
-[ FONT ]*/
-
-
-
-
-
-/*//////////////////////////////////////////////////////////////////
-[ RESTYLE TAG ]*/
-
+<script src="~/js/select.js"></script>

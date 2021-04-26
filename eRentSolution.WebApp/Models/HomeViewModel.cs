@@ -10,6 +10,6 @@ namespace eRentSolution.WebApp.Models
         public List<SlideViewModel> Slides { get; set; }
 
         public PagedResult<ProductViewModel> FeaturedProducts { get; set; }
-        public List<ProductViewModel> LastestProducts { get; set; }
+        public PagedResult<ProductViewModel> PageProducts { get; set; }
     }
 }

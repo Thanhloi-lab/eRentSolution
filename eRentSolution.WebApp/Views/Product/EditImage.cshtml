@@ -1,56 +1,59 @@
 ﻿@model eRentSolution.ViewModels.Catalog.ProductImages.ProductImageUpdateRequest
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
-@{
-    ViewData["Title"] = "EditImage";
-    Layout = "~/Views/Shared/_Layout3.cshtml";
-}
+@{ ViewData["Title"] = "EditImage";
+                Layout = "~/Views/Shared/_Layout3.cshtml"; }
 
-<div class="container-fluid">
-    <h1 class="mt-4">Cập nhật hình ảnh</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Cập nhật hình ảnh</li>
-    </ol>
-    <div class="card mb-4">
-        <div class="card-header">
-            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
-        </div>
-        <div class="col-md-4">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ImageId)
-                        </th>
-                        <th>
-                            @Html.DisplayFor(model => model.ImageId)
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.OldImageUrl)
-                        </th>
-                        <th>
-                            <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.OldImageUrl" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <form asp-action="EditImage" enctype="multipart/form-data">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="ImageFile" class="control-label">Ảnh đại diện</label>
-                    <input asp-for="ImageFile" type="file" class="form-control" />
-                    <span asp-validation-for="ImageFile" class="text-danger"></span>
-                </div>
-                <div class="form-group">
+
+<link rel="stylesheet" href="~/css/input.css" />
+
+
+<div class="container-contact100">
+    <div class="wrap-contact100">
+        <form asp-action="EditImage" enctype="multipart/form-data" method="post" class="contact100-form validate-form">
+            <span class="contact100-form-title">
+                Cập nhật hình ảnh
+            </span>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="wrap-input100 validate-input">
+
+                <span style="font-size:2rem; text-align:center; font-weight:500;" class="input100">@Html.DisplayNameFor(model => model.ImageId): @Html.DisplayFor(model => model.ImageId)</span>
+                <span class="focus-input100"></span>
+
+            </div>
+            <div class="wrap-input100 validate-input">
+                <span style="font-size:2rem; text-align:center; font-weight:500;" class="input100">Hình ảnh cũ</span>
+                <a style="display:block; margin: 10px 0 0 146px;" href="#"><img src="@Configuration["BaseAddress"]/user-content/@Model.OldImageUrl" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
+                <span class="focus-input100"></span>
+
+            </div>
+            <div class="wrap-input100 validate-input">
+                <span class="label-input100">Chọn ảnh mới</span>
+                <input class="input100" asp-for="ImageFile" type="file">
+                <span class="focus-input100"></span>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+
+                <span class="focus-input100"></span>
+
+            </div>
+            <div class="container-contact100-form-btn">
+                <div class="wrap-contact100-form-btn">
+                    <div class="contact100-form-bgbtn"></div>
                     <input asp-for="ImageId" type="hidden" input />
                     <input asp-for="ProductId" type="hidden" input />
                     <input asp-for="OldImageUrl" type="hidden" input />
-                    <input type="submit" value="Save" class="btn btn-primary" />
+
+                    <button type="submit" class="contact100-form-btn">
+                        <span>
+                            Cập nhật
+                            <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+                        </span>
+                    </button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
+
+
 

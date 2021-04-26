@@ -338,137 +338,6 @@ namespace eRentSolution.Application.Catalog.Products
             else
                 return new ApiErrorResult<string>("Hủy sản phẩm nổi bật thất bại");
         }
-        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetAllPaging(GetProductPagingRequest request)
-        {
-            var query = from p in _context.Products
-                            //join pd in _context.ProductDetails on p.Id equals pd.Id
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
-                        from pic in ppic.DefaultIfEmpty()
-                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
-                        from c in picc.DefaultIfEmpty()
-                            //&& pd.IsThumbnail == true
-                        select new { p, c, pic};//, pd};
-
-            if (request.Keyword != null)
-            {
-                query = query.Where(x => x.p.Name.Contains(request.Keyword));
-            }
-            if (request.CategoryId != null && request.CategoryId != 0)
-            {
-                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
-            }
-            int totalRow = await query.CountAsync();
-            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
-            {
-                Id = x.p.Id,
-                DateCreated = x.p.DateCreated,
-                Description = x.p.Description,
-                Name = x.p.Name,
-                SeoAlias = x.p.SeoAlias,
-                SeoDescription = x.p.SeoDescription,
-                SeoTitle = x.p.SeoTitle,
-                ViewCount = x.p.ViewCount,
-                Status = x.p.Status,
-                Address = x.p.Address
-            }).Distinct().ToListAsync();
-
-            foreach (var item in data)
-            {
-                var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails.ResultObject;
-                foreach (var productDetail in productDetails.ResultObject)
-                {
-                    item.Stock += productDetail.Stock;
-                }
-            }
-            
-            var page = new PagedResult<ProductViewModel>()
-            {
-                Items = data,
-                PageIndex = request.PageIndex,
-                PageSize = request.PageSize,
-                TotalRecords = totalRow
-            };
-            return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
-        }
-        public async Task<ApiResult<ProductViewModel>> GetById(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-                return new ApiErrorResult<ProductViewModel>("Không tìm thấy sản phẩm");
-
-            var categories = await (from c in _context.Categories
-                                    join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
-                                    where pic.ProductId == id
-                                    select c.Name).ToListAsync();
-
-            var productDetails = await GetDetailsByProductId(product.Id);
-            if (!productDetails.IsSuccessed)
-                return new ApiErrorResult<ProductViewModel>(productDetails.Message);
-
-            var productViewModel = new ProductViewModel()
-            {
-                DateCreated = product.DateCreated,
-                Description = product.Description,
-                Id = product.Id,
-                Name = product.Name,
-                SeoAlias = product.SeoAlias,
-                SeoDescription = product.SeoDescription,
-                SeoTitle = product.SeoTitle,
-                ViewCount = product.ViewCount,
-                ProductDetailViewModels = productDetails.ResultObject,
-                Status = product.Status,
-                Categories = categories,
-                IsFeatured = product.IsFeatured,
-                Address = product.Address
-            };
-            var productImages = await GetListImage(product.Id);
-            if (!productImages.IsSuccessed)
-                return new ApiErrorResult<ProductViewModel>(productImages.Message);
-
-            foreach (var item in productImages.ResultObject)
-            {
-                if (item.IsDefault)
-                {
-                    productViewModel.ThumbnailImage = item.ImagePath;
-                    break;
-                }
-            }
-            foreach (var productDetail in productDetails.ResultObject)
-            {
-                productViewModel.Stock += productDetail.Stock;
-            }
-
-            return new ApiSuccessResult<ProductViewModel>(productViewModel);
-        }
-        public async Task<ApiResult<List<ProductDetailViewModel>>> GetDetailsByProductId(int productId)
-        {
-            var query =from pd in _context.ProductDetails
-                        join p in _context.Products on pd.ProductId equals p.Id
-                       where pd.ProductId == productId
-                        select new { pd };
-            var productDetails = await query.Select(x => new ProductDetailViewModel()
-            {
-                Id = x.pd.Id,
-                DateCreated = x.pd.DateCreated,
-                OriginalPrice = x.pd.OriginalPrice,
-                Price = x.pd.Price,
-                ProductDetailName = x.pd.Name,
-                Stock = x.pd.Stock, 
-                Width=x.pd.Width,
-                Length = x.pd.Length,
-                Detail = x.pd.Detail,
-            }).ToListAsync();
-            foreach (var item in productDetails)
-            {
-                var result = await GetListImageByProductDetailId(item.Id);
-                if (!result.IsSuccessed)
-                    return new ApiErrorResult<List<ProductDetailViewModel>>(result.Message);
-
-                item.Images = result.ResultObject;
-            }
-            return new ApiSuccessResult<List<ProductDetailViewModel>>(productDetails);
-        }
         public async Task<ApiResult<string>> CategoryAssign(int id, CategoryAssignRequest request)
         {
             var product = await _context.Products.FindAsync(id);
@@ -496,175 +365,9 @@ namespace eRentSolution.Application.Catalog.Products
                 }
             }
             var result = await _context.SaveChangesAsync();
-            if(result >0)
+            if (result > 0)
                 return new ApiSuccessResult<string>("Gán danh mục thành công");
             return new ApiErrorResult<string>("Gán danh mục thất bại");
-        }
-        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request)
-        {
-            //1. Select join
-            var query = from p in _context.Products
-                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
-
-                        where p.IsFeatured == Status.Active
-                        select new { p, pd };
-
-            var totalRow = query.Count();
-            var data = await query.OrderByDescending(x => x.p.DateCreated)
-                .Skip((request.PageIndex - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(x => new ProductViewModel()
-                {
-                    Id = x.p.Id,
-                    DateCreated = x.p.DateCreated,
-                    Description = x.p.Description,
-                   // Details = x.p.Details,
-                    Name = x.p.Name,
-                    SeoAlias = x.p.SeoAlias,
-                    SeoDescription = x.p.SeoDescription,
-                    SeoTitle = x.p.SeoTitle,
-                    ViewCount = x.p.ViewCount,
-                    Status = x.p.Status,
-                    Address = x.p.Address
-                }).Distinct().ToListAsync();
-
-            
-            foreach (var item in data)
-            {
-                var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails.ResultObject;
-                foreach (var productDetail in productDetails.ResultObject)
-                {
-                    item.Stock += productDetail.Stock;
-                }
-            }
-            var pageResult = new PagedResult<ProductViewModel>()
-            {
-                TotalRecords = totalRow,
-                Items = data,
-                PageSize = request.PageSize,
-                PageIndex = request.PageIndex
-            };
-            return new ApiSuccessResult<PagedResult<ProductViewModel>>(pageResult);
-        }
-        public async Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take)
-        {
-            //1. Select join
-            var query = from p in _context.Products
-                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
-                        from pic in ppic.DefaultIfEmpty()
-                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
-                        from c in picc.DefaultIfEmpty()
-                        select new { p, pd };//, pic};
-
-            var totalRow = query.Count();
-            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
-                .Select(x => new ProductViewModel()
-                {
-
-                    Id = x.p.Id,
-                    DateCreated = x.p.DateCreated,
-                    Description = x.p.Description,
-                    //Details = x.p.Details,
-                    Name = x.p.Name,
-                    SeoAlias = x.p.SeoAlias,
-                    SeoDescription = x.p.SeoDescription,
-                    SeoTitle = x.p.SeoTitle,
-                    ViewCount = x.p.ViewCount,
-                    Status = x.p.Status, 
-                    Address = x.p.Address
-                }).Distinct().ToListAsync();
-
-            //List<ProductViewModel> products = new List<ProductViewModel>();
-            //if (totalRow > 1)
-            //{
-            //    for (int i = 0; i < data.Count - 1; i++)
-            //    {
-            //        if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
-            //        {
-            //            totalRow--;
-            //        }
-            //        else
-            //        {
-            //            products.Add(data.ElementAt(i));
-            //        }
-            //        if (i == data.Count - 2)
-            //        {
-            //            products.Add(data.ElementAt(i + 1));
-            //        }
-            //    }
-            //}
-            //else if (totalRow == 1)
-            //{
-            //    products.Add(data.ElementAt(0));
-            //}
-
-            foreach (var item in data)
-            {
-                var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails.ResultObject;
-                foreach (var productDetail in productDetails.ResultObject)
-                {
-                    item.Stock += productDetail.Stock;
-                }
-            }
-            return new ApiSuccessResult<List<ProductViewModel>>(data);
-        }
-        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId)
-        {
-            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
-            var query = from p in _context.Products
-                        join cen in _context.Censors on p.Id equals cen.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
-                        from pic in ppic.DefaultIfEmpty()
-                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
-                        from c in picc.DefaultIfEmpty()
-                        where cen.UserInfoId == userId && p.Status == Status.Active
-                             && cen.ActionId == action.Id
-                        select new { p, c, pic };
-
-            if (request.Keyword != null)
-            {
-                query = query.Where(x => x.p.Name.Contains(request.Keyword));
-            }
-            if (request.CategoryId != null && request.CategoryId != 0)
-            {
-                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
-            }
-            int totalRow = await query.CountAsync();
-            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
-            {
-                Id = x.p.Id,
-                DateCreated = x.p.DateCreated,
-                Description = x.p.Description,
-                Name = x.p.Name,
-                SeoAlias = x.p.SeoAlias,
-                SeoDescription = x.p.SeoDescription,
-                SeoTitle = x.p.SeoTitle,
-                ViewCount = x.p.ViewCount,
-                Status = x.p.Status,
-                Address = x.p.Address
-            }).Distinct().ToListAsync();
-
-            foreach (var item in data)
-            {
-                var productDetails = await GetDetailsByProductId(item.Id);
-                item.ProductDetailViewModels = productDetails.ResultObject;
-                foreach (var productDetail in productDetails.ResultObject)
-                {
-                    item.Stock += productDetail.Stock;
-                }
-            }
-
-            var page = new PagedResult<ProductViewModel>()
-            {
-                Items = data,
-                PageIndex = request.PageIndex,
-                PageSize = request.PageSize,
-                TotalRecords = totalRow
-            };
-            return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
         }
         public async Task<ApiResult<string>> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId)
         {
@@ -824,7 +527,311 @@ namespace eRentSolution.Application.Catalog.Products
             };
             return new ApiSuccessResult<ProductDetailViewModel>(viewModel);
         }
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetAllPaging(GetProductPagingRequest request)
+        {
+            var query = from p in _context.Products
+                            //join pd in _context.ProductDetails on p.Id equals pd.Id
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                            //&& pd.IsThumbnail == true
+                        select new { p, c, pic };//, pd};
 
+            if (request.Keyword != null)
+            {
+                query = query.Where(x => x.p.Name.Contains(request.Keyword));
+            }
+            if (request.CategoryId != null && request.CategoryId != 0)
+            {
+                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+            }
+            if (request.Address != null)
+            {
+                var address = request.Address.Split("-");
+                foreach (var item in address)
+                {
+                    query = query.Where(x => x.p.Address.Contains(item));
+                }
+            }
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
+            {
+                Id = x.p.Id,
+                DateCreated = x.p.DateCreated,
+                Description = x.p.Description,
+                Name = x.p.Name,
+                SeoAlias = x.p.SeoAlias,
+                SeoDescription = x.p.SeoDescription,
+                SeoTitle = x.p.SeoTitle,
+                ViewCount = x.p.ViewCount,
+                Status = x.p.Status,
+                Address = x.p.Address
+            }).Distinct().ToListAsync();
+
+            foreach (var item in data)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails.ResultObject;
+                foreach (var productDetail in productDetails.ResultObject)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+
+            var page = new PagedResult<ProductViewModel>()
+            {
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalRecords = totalRow
+            };
+            return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
+        }
+        public async Task<ApiResult<ProductViewModel>> GetById(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+                return new ApiErrorResult<ProductViewModel>("Không tìm thấy sản phẩm");
+
+            var categories = await (from c in _context.Categories
+                                    join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
+                                    where pic.ProductId == id
+                                    select c.Name).ToListAsync();
+
+            var productDetails = await GetDetailsByProductId(product.Id);
+            if (!productDetails.IsSuccessed)
+                return new ApiErrorResult<ProductViewModel>(productDetails.Message);
+
+            var productViewModel = new ProductViewModel()
+            {
+                DateCreated = product.DateCreated,
+                Description = product.Description,
+                Id = product.Id,
+                Name = product.Name,
+                SeoAlias = product.SeoAlias,
+                SeoDescription = product.SeoDescription,
+                SeoTitle = product.SeoTitle,
+                ViewCount = product.ViewCount,
+                ProductDetailViewModels = productDetails.ResultObject,
+                Status = product.Status,
+                Categories = categories,
+                IsFeatured = product.IsFeatured,
+                Address = product.Address
+            };
+            var productImages = await GetListImage(product.Id);
+            if (!productImages.IsSuccessed)
+                return new ApiErrorResult<ProductViewModel>(productImages.Message);
+
+            foreach (var item in productImages.ResultObject)
+            {
+                if (item.IsDefault)
+                {
+                    productViewModel.ThumbnailImage = item.ImagePath;
+                    break;
+                }
+            }
+            foreach (var productDetail in productDetails.ResultObject)
+            {
+                productViewModel.Stock += productDetail.Stock;
+            }
+
+            return new ApiSuccessResult<ProductViewModel>(productViewModel);
+        }
+        public async Task<ApiResult<List<ProductDetailViewModel>>> GetDetailsByProductId(int productId)
+        {
+            var query = from pd in _context.ProductDetails
+                        join p in _context.Products on pd.ProductId equals p.Id
+                        where pd.ProductId == productId
+                        select new { pd };
+            var productDetails = await query.Select(x => new ProductDetailViewModel()
+            {
+                Id = x.pd.Id,
+                DateCreated = x.pd.DateCreated,
+                OriginalPrice = x.pd.OriginalPrice,
+                Price = x.pd.Price,
+                ProductDetailName = x.pd.Name,
+                Stock = x.pd.Stock,
+                Width = x.pd.Width,
+                Length = x.pd.Length,
+                Detail = x.pd.Detail,
+            }).ToListAsync();
+            foreach (var item in productDetails)
+            {
+                var result = await GetListImageByProductDetailId(item.Id);
+                if (!result.IsSuccessed)
+                    return new ApiErrorResult<List<ProductDetailViewModel>>(result.Message);
+
+                item.Images = result.ResultObject;
+            }
+            return new ApiSuccessResult<List<ProductDetailViewModel>>(productDetails);
+        }
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request)
+        {
+            //1. Select join
+            var query = from p in _context.Products
+                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
+
+                        where p.IsFeatured == Status.Active
+                        select new { p, pd };
+
+            var totalRow = query.Count();
+            var data = await query.OrderByDescending(x => x.p.DateCreated)
+                .Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new ProductViewModel()
+                {
+                    Id = x.p.Id,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.p.Description,
+                    // Details = x.p.Details,
+                    Name = x.p.Name,
+                    SeoAlias = x.p.SeoAlias,
+                    SeoDescription = x.p.SeoDescription,
+                    SeoTitle = x.p.SeoTitle,
+                    ViewCount = x.p.ViewCount,
+                    Status = x.p.Status,
+                    Address = x.p.Address
+                }).Distinct().ToListAsync();
+
+
+            foreach (var item in data)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails.ResultObject;
+                foreach (var productDetail in productDetails.ResultObject)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+            var pageResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = data,
+                PageSize = request.PageSize,
+                PageIndex = request.PageIndex
+            };
+            return new ApiSuccessResult<PagedResult<ProductViewModel>>(pageResult);
+        }
+        public async Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take)
+        {
+            //1. Select join
+            var query = from p in _context.Products
+                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                        select new { p, pd };//, pic};
+
+            var totalRow = query.Count();
+            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
+                .Select(x => new ProductViewModel()
+                {
+
+                    Id = x.p.Id,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.p.Description,
+                    //Details = x.p.Details,
+                    Name = x.p.Name,
+                    SeoAlias = x.p.SeoAlias,
+                    SeoDescription = x.p.SeoDescription,
+                    SeoTitle = x.p.SeoTitle,
+                    ViewCount = x.p.ViewCount,
+                    Status = x.p.Status,
+                    Address = x.p.Address
+                }).Distinct().ToListAsync();
+
+            //List<ProductViewModel> products = new List<ProductViewModel>();
+            //if (totalRow > 1)
+            //{
+            //    for (int i = 0; i < data.Count - 1; i++)
+            //    {
+            //        if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
+            //        {
+            //            totalRow--;
+            //        }
+            //        else
+            //        {
+            //            products.Add(data.ElementAt(i));
+            //        }
+            //        if (i == data.Count - 2)
+            //        {
+            //            products.Add(data.ElementAt(i + 1));
+            //        }
+            //    }
+            //}
+            //else if (totalRow == 1)
+            //{
+            //    products.Add(data.ElementAt(0));
+            //}
+
+            foreach (var item in data)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails.ResultObject;
+                foreach (var productDetail in productDetails.ResultObject)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+            return new ApiSuccessResult<List<ProductViewModel>>(data);
+        }
+        public async Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId)
+        {
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            var query = from p in _context.Products
+                        join cen in _context.Censors on p.Id equals cen.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
+                        where cen.UserInfoId == userId && p.Status == Status.Active
+                             && cen.ActionId == action.Id
+                        select new { p, c, pic };
+
+            if (request.Keyword != null)
+            {
+                query = query.Where(x => x.p.Name.Contains(request.Keyword));
+            }
+            if (request.CategoryId != null && request.CategoryId != 0)
+            {
+                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+            }
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
+            {
+                Id = x.p.Id,
+                DateCreated = x.p.DateCreated,
+                Description = x.p.Description,
+                Name = x.p.Name,
+                SeoAlias = x.p.SeoAlias,
+                SeoDescription = x.p.SeoDescription,
+                SeoTitle = x.p.SeoTitle,
+                ViewCount = x.p.ViewCount,
+                Status = x.p.Status,
+                Address = x.p.Address
+            }).Distinct().ToListAsync();
+
+            foreach (var item in data)
+            {
+                var productDetails = await GetDetailsByProductId(item.Id);
+                item.ProductDetailViewModels = productDetails.ResultObject;
+                foreach (var productDetail in productDetails.ResultObject)
+                {
+                    item.Stock += productDetail.Stock;
+                }
+            }
+
+            var page = new PagedResult<ProductViewModel>()
+            {
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalRecords = totalRow
+            };
+            return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
+        }
 
 
         //----------------Images-------
@@ -866,6 +873,70 @@ namespace eRentSolution.Application.Catalog.Products
             }
 
             return new ApiErrorResult<string>("Xóa hình ảnh không thành công");
+        }
+        public async Task<ApiResult<string>> AddImage(ProductImageCreateRequest request, Guid userId)
+        {
+            var product = await _context.Products.FindAsync(request.ProductId);
+            if (product == null)
+                return new ApiErrorResult<string>($"Sản phẩm id={request.ProductDetailId} không tồn tại");
+            var productImage = new ProductImage()
+            {
+                Caption = request.Caption == null ? "Non-caption" : request.Caption,
+                DateCreated = DateTime.UtcNow,
+                ProductDetailId = request.ProductDetailId
+            };
+            if (request.ImageFile != null)
+            {
+                productImage.ImagePath = await this.SaveFile(request.ImageFile);
+                productImage.FileSize = request.ImageFile.Length;
+            }
+            _context.ProductImages.Add(productImage);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateImage);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    Date = DateTime.UtcNow,
+                    ProductId = product.Id,
+                    UserInfoId = userId,
+                };
+                _context.Censors.Add(censor);
+                return new ApiSuccessResult<string>($"Thêm ảnh thành công");
+            }
+            return new ApiErrorResult<string>("Thêm ảnh thất bại");
+        }
+        public async Task<ApiResult<string>> UpdateImage(ProductImageUpdateRequest request, Guid userId)
+        {
+            var productImage = await _context.ProductImages.FindAsync(request.ImageId);
+            if (productImage == null)
+                return new ApiErrorResult<string>($"Hình ảnh id:{request.ImageId} không tồn tại");
+            if (request.ImageFile != null)
+            {
+                int isDeleteSuccess = _storageService.DeleteFile(productImage.ImagePath);
+                if (isDeleteSuccess == -1)
+                    return new ApiErrorResult<string>($"Sửa ảnh thất bại, vui lòng thử lại sau vài giây.");
+                productImage.ImagePath = await this.SaveFile(request.ImageFile);
+                productImage.FileSize = request.ImageFile.Length;
+            }
+            _context.ProductImages.Update(productImage);
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateImage);
+                var detail = await _context.ProductDetails.FindAsync(productImage.ProductDetailId);
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    Date = DateTime.UtcNow,
+                    ProductId = detail.ProductId,
+                    UserInfoId = userId,
+                };
+                _context.Censors.Add(censor);
+                return new ApiSuccessResult<string>($"Thêm ảnh thành công");
+            }
+            return new ApiErrorResult<string>("Thêm ảnh thất bại");
         }
         public async Task<ApiResult<ProductImageViewModel>> GetImageById(int imageId)
         {
@@ -925,70 +996,7 @@ namespace eRentSolution.Application.Catalog.Products
                         }).ToListAsync();
             return new ApiSuccessResult<List<ProductImageViewModel>>(images);
         }
-        public async Task<ApiResult<string>> AddImage(ProductImageCreateRequest request, Guid userId)
-        {
-            var product = await _context.Products.FindAsync(request.ProductDetailId);
-            if (product == null)
-                return new ApiErrorResult<string>($"Sản phẩm id:{request.ProductDetailId} không tồn tại");
-            var productImage = new ProductImage()
-            {
-                Caption = request.Caption == null ? "Non-caption" : request.Caption,
-                DateCreated = DateTime.UtcNow,
-                ProductDetailId = request.ProductDetailId
-            };
-            if (request.ImageFile != null)
-            {
-                productImage.ImagePath = await this.SaveFile(request.ImageFile);
-                productImage.FileSize = request.ImageFile.Length;
-            }
-            _context.ProductImages.Add(productImage);
-            var result = await _context.SaveChangesAsync();
-            if(result>0)
-            {
-                var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateImage);
-                var censor = new Censor()
-                {
-                    ActionId = action.Id,
-                    Date = DateTime.UtcNow,
-                    ProductId = product.Id,
-                    UserInfoId = userId,
-                };
-                _context.Censors.Add(censor);
-                return new ApiSuccessResult<string>($"Thêm ảnh thành công");
-            }
-            return new ApiErrorResult<string>("Thêm ảnh thất bại");
-        }
-        public async Task<ApiResult<string>> UpdateImage(ProductImageUpdateRequest request, Guid userId)
-        {
-            var productImage = await _context.ProductImages.FindAsync(request.ImageId);
-            if (productImage == null)
-                return new ApiErrorResult<string>($"Hình ảnh id:{request.ImageId} không tồn tại");
-            if (request.ImageFile != null)
-            {
-                int isDeleteSuccess =_storageService.DeleteFile(productImage.ImagePath);
-                if (isDeleteSuccess == -1)
-                    return new ApiErrorResult<string>($"Sửa ảnh thất bại, vui lòng thử lại sau vài giây.");
-                productImage.ImagePath = await this.SaveFile(request.ImageFile);
-                productImage.FileSize = request.ImageFile.Length;
-            }
-            _context.ProductImages.Update(productImage);
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
-            {
-                var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateImage);
-                var detail = await _context.ProductDetails.FindAsync(productImage.ProductDetailId);
-                var censor = new Censor()
-                {
-                    ActionId = action.Id,
-                    Date = DateTime.UtcNow,
-                    ProductId = detail.ProductId,
-                    UserInfoId = userId,
-                };
-                _context.Censors.Add(censor);
-                return new ApiSuccessResult<string>($"Thêm ảnh thành công");
-            }
-            return new ApiErrorResult<string>("Thêm ảnh thất bại");
-        }
+        
 
 
 

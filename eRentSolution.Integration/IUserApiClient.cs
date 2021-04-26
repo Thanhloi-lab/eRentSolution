@@ -15,8 +15,10 @@ namespace eRentSolution.Integration
         Task<ApiResult<string>> UpdatePassword(UserUpdatePasswordRequest request, string tokenName);
         Task<ApiResult<string>> ResetPassword(UserResetPasswordRequest request, string tokenName);
         Task<ApiResult<string>> Delete(Guid id, string tokenName);
+        Task<ApiResult<string>> BanUser(Guid id, string tokenName);
         Task<ApiResult<string>> RoleAssign(RoleAssignRequest request, string tokenName);
         Task<ApiResult<string>> RegisterUser(UserRegisterRequest registerRequest);
+
         Task<ApiResult<PagedResult<UserViewModel>>> GetUsersPaging(GetUserPagingRequest request, string tokenName);
         Task<ApiResult<UserViewModel>> GetById(Guid id, string tokenName);
         Task<ApiResult<UserViewModel>> GetUserByProductId(int productId, string tokenName);

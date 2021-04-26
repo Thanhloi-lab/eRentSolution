@@ -9,11 +9,18 @@
     <None Include="Views\Account\Register.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Product\AddDetail.cshtml" />
+    <None Include="Views\Product\AddImage.cshtml" />
     <None Include="Views\Product\Category.cshtml" />
     <None Include="Views\Product\Create.cshtml" />
     <None Include="Views\Product\Delete.cshtml" />
+    <None Include="Views\Product\DeleteDetail.cshtml" />
+    <None Include="Views\Product\DeleteImage.cshtml" />
     <None Include="Views\Product\Detail.cshtml" />
     <None Include="Views\Product\Edit.cshtml" />
+    <None Include="Views\Product\EditDetail.cshtml" />
+    <None Include="Views\Product\EditImage.cshtml" />
+    <None Include="Views\Product\GetUserListProducts.cshtml" />
     <None Include="Views\Product\Index.cshtml" />
     <None Include="Views\Product\MyListProducts.cshtml" />
     <None Include="Views\Product\MyProductDetail.cshtml" />
@@ -28,6 +35,8 @@
     <None Include="Views\User\Details.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\js\details.js" />
+    <None Include="wwwroot\js\select.js" />
     <None Include="wwwroot\js\site.js" />
     <None Include="wwwroot\js\validate.js" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />

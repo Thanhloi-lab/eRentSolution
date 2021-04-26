@@ -27,7 +27,7 @@ namespace eRentSolution.WebApp.Controllers
             _productApiClient = productApiClient;
         }
 
-        public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = SystemConstant.ProductSettings.NumberOfLastestProducts)
+        public async Task<IActionResult> Index(int pageIndex = 1, int pageSize = 10)
         {
             GetProductPagingRequest request = new GetProductPagingRequest()
             {
@@ -36,15 +36,15 @@ namespace eRentSolution.WebApp.Controllers
             };
             var slides = await _slideApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
             var featuredProducts = await _productApiClient.GetFeaturedProducts(request, SystemConstant.AppSettings.TokenWebApp);
-            var lastestProducts = await _productApiClient.GetLastestProducts(SystemConstant.ProductSettings.NumberOfLastestProducts, SystemConstant.AppSettings.TokenWebApp);
+            var pageProducts = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenWebApp);
             var viewModel = new HomeViewModel
             {
                 Slides = slides.ResultObject,
                 FeaturedProducts = featuredProducts.ResultObject,
-                LastestProducts = lastestProducts.ResultObject 
+                PageProducts = pageProducts.ResultObject 
             };
             viewModel.FeaturedProducts.Items = await GetProductImages(viewModel.FeaturedProducts.Items);
-            viewModel.LastestProducts = await GetProductImages(viewModel.LastestProducts);
+            viewModel.PageProducts.Items = await GetProductImages(viewModel.PageProducts.Items);
             return View(viewModel);
         }
         public async Task<List<ProductViewModel>> GetProductImages(List<ProductViewModel> products)
@@ -82,15 +82,5 @@ namespace eRentSolution.WebApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        //public IActionResult SetCultureCookie(string cltr, string returnUrl)
-        //{
-        //    Response.Cookies.Append(
-        //        CookieRequestCultureProvider.DefaultCookieName,
-        //        CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(cltr)),
-        //        new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
-        //        );
-
-        //    return LocalRedirect(returnUrl);
-        //}
     }
 }

@@ -5,15 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Views\Category\EditImage.cshtml" />
+    <None Include="Views\Category\Index.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
     <None Include="Views\Login\Index.cshtml" />
+    <None Include="Views\Product\AddDetail.cshtml" />
+    <None Include="Views\Product\AddImage.cshtml" />
     <None Include="Views\Product\CategoryAssign.cshtml" />
     <None Include="Views\Product\Create.cshtml" />
     <None Include="Views\Product\CreateSlide.cshtml" />
     <None Include="Views\Product\Delete.cshtml" />
     <None Include="Views\Product\Details.cshtml" />
     <None Include="Views\Product\Edit.cshtml" />
+    <None Include="Views\Product\EditDetail.cshtml" />
+    <None Include="Views\Product\EditImage.cshtml" />
     <None Include="Views\Product\Hide.cshtml" />
     <None Include="Views\Product\Index.cshtml" />
     <None Include="Views\Product\Show.cshtml" />
@@ -40,6 +46,7 @@
     <None Include="Views\User\RoleAssign.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\app.js" />
     <None Include="wwwroot\assets\demo\chart-area-demo.js" />
     <None Include="wwwroot\assets\demo\chart-bar-demo.js" />
     <None Include="wwwroot\assets\demo\chart-pie-demo.js" />
@@ -48,6 +55,7 @@
     <None Include="wwwroot\assets\img\log.svg" />
     <None Include="wwwroot\assets\img\register.svg" />
     <None Include="wwwroot\js\scripts.js" />
+    <None Include="wwwroot\js\select.js" />
     <None Include="wwwroot\js\site.js" />
   </ItemGroup>
 

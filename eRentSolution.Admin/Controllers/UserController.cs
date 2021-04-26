@@ -265,7 +265,7 @@ namespace eRentSolution.AdminApp.Controllers
                 return View();
             }
 
-            var result = await _userApiClient.Delete(request.Id, SystemConstant.AppSettings.TokenAdmin);
+            var result = await _userApiClient.BanUser(request.Id, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
@@ -332,7 +332,6 @@ namespace eRentSolution.AdminApp.Controllers
             var user = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             if(!user.IsSuccessed)
                 return null;
-
             var roles = await _roleApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
             if (!roles.IsSuccessed)
                 return null;

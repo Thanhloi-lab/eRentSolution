@@ -93,6 +93,11 @@ namespace eRentSolution.Integration
             var result = await PutAsync<string>($"/api/users/ResetPassword/{request.Id}", request, tokenName);
             return result;
         }
+        public async Task<ApiResult<string>> BanUser(Guid id, string tokenName)
+        {
+            var result = await PutAsync<string>($"api/users/ban-user/{id}", id, tokenName);
+            return result;
+        }
         public async Task<ApiResult<UserViewModel>> GetById(Guid id, string tokenName)
         {
             var result = await GetPageAsync<UserViewModel>($"/api/users/{id}", tokenName);
@@ -121,6 +126,7 @@ namespace eRentSolution.Integration
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}", tokenName);
             return result;
         }
+
         
     }
 }

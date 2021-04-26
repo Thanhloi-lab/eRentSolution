@@ -22,22 +22,26 @@ namespace eRentSolution.Application.Catalog.Products
         Task<ApiResult<string>> CreateFeature(int productId, Guid userInfoId);
         Task<ApiResult<string>> DeleteFeature(int productId, Guid userInfoId);
         Task<ApiResult<string>> AddViewcount(int productId);
-        Task<ApiResult<ProductViewModel>> GetById(int id);
-        Task<ApiResult<PagedResult<ProductViewModel>>> GetAllPaging(GetProductPagingRequest request);
         Task<ApiResult<string>> CategoryAssign(int id, CategoryAssignRequest request);
-        Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request);
-        Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId);
-        Task<ApiResult<List<ProductViewModel>>> GetLastestProducts( int take);
         Task<ApiResult<string>> AddImage( ProductImageCreateRequest request, Guid userId);
         Task<ApiResult<string>> DeleteImage(int imageId, Guid userId);
         Task<ApiResult<string>> DeleteDetail(int productDetailId, Guid userId);
         Task<ApiResult<string>> UpdateImage( ProductImageUpdateRequest request, Guid userId);
-        Task<ApiResult<List<ProductImageViewModel>>> GetListImage(int productId);
-        Task<ApiResult<ProductImageViewModel>> GetImageById(int imageId);
         Task<ApiResult<string>> IsMyProduct(Guid userId, int productId);
         Task<ApiResult<string>> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId);
         Task<ApiResult<string>> AddDetail(ProductDetailCreateRequest request, Guid userInfoId);
+
+
+        Task<ApiResult<ProductViewModel>> GetById(int id);
+        Task<ApiResult<ProductImageViewModel>> GetImageById(int imageId);
+        Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take);
+        Task<ApiResult<List<ProductImageViewModel>>> GetListImage(int productId);
         Task<ApiResult<ProductDetailViewModel>> GetProductDetailById(int productDetailId);
+        Task<ApiResult<PagedResult<ProductViewModel>>> GetAllPaging(GetProductPagingRequest request);
+        Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request);
+        Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId);
+        
+        
         //Task<PagedResult<ProductViewModel>> GetAllPagingByCategoryId(GetProductPagingByCategoryIdRequest request);
     }
 }

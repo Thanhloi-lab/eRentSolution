@@ -11,16 +11,18 @@ namespace eRentSolution.Application.System.Users
     {
         Task<ApiResult<string>> Authenticate(UserLoginRequest request, bool isAdminPage);
         Task<ApiResult<string>> Register(UserRegisterRequest request);
-        Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request);
         Task<ApiResult<string>> Update(Guid id, UserUpdateRequest request);
         Task<ApiResult<string>> UpdatePassword(UserUpdatePasswordRequest request);
         Task<ApiResult<string>> ResetPassword(UserResetPasswordRequest request);
         Task<ApiResult<string>> RoleAssign(Guid id, RoleAssignRequest request);
+        Task<ApiResult<string>> Delete(Guid id);
+        Task<ApiResult<string>> UpdateAvatar(UserAvatarUpdateRequest request);
+        Task<ApiResult<string>> BanUser(Guid id);
         Task<ApiResult<UserViewModel>> GetById(Guid id);
         Task<ApiResult<UserViewModel>> GetUserByProductId(int productId);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetPageUserActivities(UserActivityLogRequest request);
-        Task<ApiResult<string>> Delete(Guid id);
-        Task<ApiResult<string>> UpdateAvatar(UserAvatarUpdateRequest request);
+        Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request);
+
     }
 }

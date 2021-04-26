@@ -4,59 +4,78 @@
     ViewData["Title"] = "AddDetail";
     Layout = "~/Views/Shared/_Layout3.cshtml";
 }
+<link rel="stylesheet" href="~/css/input.css" />
+
+
 
 <div class="container-contact100">
     <div class="wrap-contact100">
         <form asp-action="AddDetail" enctype="multipart/form-data" class="contact100-form validate-form">
             <span class="contact100-form-title">
-                Tạo sản phẩm
+                Tạo chi tiết sản phẩm
             </span>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="wrap-input100 validate-input">
-                <label asp-for="ProductDetailName" class="control-label"></label>
-                <input asp-for="ProductDetailName" class="form-control" />
+                <span class="label-input100">Tên loại sản phẩm</span>
+                <input class="input100"  asp-for="ProductDetailName">
+                <span class="focus-input100"></span>
                 <span asp-validation-for="ProductDetailName" class="text-danger"></span>
             </div>
             <div class="wrap-input100 validate-input">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <span class="label-input100">Giá hiện tại</span>
+                <input class="input100" asp-for="Price">
+                <span class="focus-input100"></span>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="wrap-input100 validate-input">
-                <label asp-for="OriginalPrice" class="control-label"></label>
-                <input asp-for="OriginalPrice" class="form-control" />
+                <span class="label-input100">Giá gốc</span>
+                <input class="input100" asp-for="OriginalPrice" type="number">
+                <span class="focus-input100"></span>
                 <span asp-validation-for="OriginalPrice" class="text-danger"></span>
             </div>
             <div class="wrap-input100 validate-input">
-                <label asp-for="Stock" class="control-label"></label>
-                <input asp-for="Stock" class="form-control" />
+                <span class="label-input100">Tồn kho</span>
+                <input class="input100" asp-for="Stock" type="number">
+                <span class="focus-input100"></span>
                 <span asp-validation-for="Stock" class="text-danger"></span>
             </div>
             <div class="wrap-input100 validate-input">
-                <label asp-for="Detail" class="control-label"></label>
-                <input asp-for="Detail" class="form-control" />
+                <span class="label-input100">Chi tiết sản phẩm</span>
+                <textarea class="input100" asp-for="Detail"></textarea>
+                <span class="focus-input100"></span>
                 <span asp-validation-for="Detail" class="text-danger"></span>
             </div>
             <div class="wrap-input100 validate-input">
-                <label asp-for="Length" class="control-label"></label>
-                <input asp-for="Length" class="form-control" />
+                <span class="label-input100">Chiều dài</span>
+                <input class="input100" asp-for="Length" type="number">
+                <span class="focus-input100"></span>
                 <span asp-validation-for="Length" class="text-danger"></span>
             </div>
             <div class="wrap-input100 validate-input">
-                <label asp-for="Width" class="control-label"></label>
-                <input asp-for="Width" class="form-control" />
+                <span class="label-input100">chiều rộng</span>
+                <input class="input100" asp-for="Width" type="number">
+                <span class="focus-input100"></span>
                 <span asp-validation-for="Width" class="text-danger"></span>
             </div>
+            
             <div class="wrap-input100 validate-input">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" type="file" class="form-control" />
+                <span class="label-input100">Hình ảnh</span>
+                <input class="input100" asp-for="Image" type="file">
+                <span class="focus-input100"></span>
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
-            <div class="wrap-input100 validate-input">
-                <input asp-for="ProductId" type="hidden" input />
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="container-contact100-form-btn">
+                <div class="wrap-contact100-form-btn">
+                    <div class="contact100-form-bgbtn"></div>
+                    <input asp-for="ProductId" type="hidden" input />
+                    <button type="submit" class="contact100-form-btn">
+                        <span>
+                            Submit
+                            <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 </div>
-

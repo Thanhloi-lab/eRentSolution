@@ -195,13 +195,13 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
                 return View(request);
             }
 
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
-            if (!result.IsSuccessed)
+            if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
                 return RedirectToAction("MyListProducts");

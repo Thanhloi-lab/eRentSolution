@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eRentSolution.Data.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -23,6 +24,8 @@ namespace eRentSolution.ViewModels.System.Users
         [Display(Name = "Ngày sinh")]
         [DataType(DataType.Date)]
         public DateTime Dob { get; set; }
+        [Display(Name = "Hoạt động")]
+        public Status Status { get; set; }
         public IList<string> Roles { get; set; }
     }
 }

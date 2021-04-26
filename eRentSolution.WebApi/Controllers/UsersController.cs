@@ -37,6 +37,14 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        [HttpPut("ban-user/{id}")]
+        public async Task<IActionResult> BanUser(Guid id)
+        {
+            var result = await _userService.BanUser(id);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {

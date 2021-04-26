@@ -9,5 +9,6 @@ namespace eRentSolution.ViewModels.Catalog.Products
     {
         public string Keyword { get; set; }
         public int? CategoryId { get; set; }
+        public string? Address { get; set; }
     }
 }

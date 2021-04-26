@@ -97,11 +97,26 @@ namespace eRentSolution.Application.System.Users
             if(user.Id.ToString().Equals(SystemConstant.AppSettings.CurrentUserId))
                 return new ApiErrorResult<string>("Không thể xóa tài khoản hiện tại");
 
-            user.Status = Data.Enums.Status.InActive;
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
                 return new ApiSuccessResult<string>("Xóa thành công");
             return new ApiErrorResult<string>("Xóa thất bại, vui lòng thử lại sau");
+
+        }
+        public async Task<ApiResult<string>> BanUser(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+                return new ApiErrorResult<string>("Tài khoản không tồn tại");
+            if (user.Id.ToString().Equals(SystemConstant.AppSettings.CurrentUserId))
+                return new ApiErrorResult<string>("Không thể khóa tài khoản hiện tại");
+
+            user.Status = Data.Enums.Status.InActive;
+            
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+                return new ApiSuccessResult<string>("Khóa tài khoản thành công");
+            return new ApiErrorResult<string>("Khóa tài khoản thất bại, vui lòng thử lại sau");
 
         }
         public async Task<ApiResult<string>> Register(UserRegisterRequest request)
@@ -264,7 +279,8 @@ namespace eRentSolution.Application.System.Users
                 UserName = user.UserName,
                 Roles = roles,
                 Id = id,
-                AvatarFilePath = user.AvatarFilePath
+                AvatarFilePath = user.AvatarFilePath,
+                Status = user.Status
             };
             return new ApiSuccessResult<UserViewModel>(userViewModel);
         }
@@ -294,9 +310,49 @@ namespace eRentSolution.Application.System.Users
                     Email = x.u.Email,
                     LastName = x.p.LastName,
                     UserName = x.u.UserName,
-                    AvatarFilePath = x.u.AvatarFilePath
+                    AvatarFilePath = x.u.AvatarFilePath,
+                    Status = x.u.Status
                 }).ToListAsync();
 
+            var pageResult = new PagedResult<UserViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize
+            };
+            return new ApiSuccessResult<PagedResult<UserViewModel>>(pageResult);
+        }
+        public async Task<ApiResult<PagedResult<UserViewModel>>> GetStaffPaging(GetUserPagingRequest request)
+        {
+            var query = from u in _userManager.Users
+                        join p in _context.UserInfos on u.Id equals p.UserId
+                        select new { u, p };
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.u.UserName.Contains(request.Keyword)
+                            || x.u.PhoneNumber.Contains(request.Keyword)
+                            || x.p.LastName.Contains(request.Keyword)
+                            || x.p.FirstName.Contains(request.Keyword));
+            }
+
+            /* PAGING*/
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new UserViewModel()
+                {
+                    Id = x.u.Id,
+                    PhoneNumber = x.u.PhoneNumber,
+                    FirstName = x.p.FirstName,
+                    Dob = x.p.Dob,
+                    Email = x.u.Email,
+                    LastName = x.p.LastName,
+                    UserName = x.u.UserName,
+                    AvatarFilePath = x.u.AvatarFilePath,
+                    Status = x.u.Status
+                }).ToListAsync();
+            
             var pageResult = new PagedResult<UserViewModel>()
             {
                 TotalRecords = totalRow,
