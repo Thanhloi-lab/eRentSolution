@@ -51,7 +51,7 @@ namespace eRentSolution.WebApp.Controllers
 
             var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Keyword = keyword;
-
+            products.ResultObject.Items = await GetProductImages(products.ResultObject.Items);
             var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
             {

@@ -548,7 +548,7 @@ namespace eRentSolution.Application.Catalog.Products
             }
             if (request.Address != null)
             {
-                var address = request.Address.Split("-");
+                var address = request.Address.Split("_");
                 foreach (var item in address)
                 {
                     query = query.Where(x => x.p.Address.Contains(item));

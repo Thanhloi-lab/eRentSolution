@@ -150,7 +150,7 @@ namespace eRentSolution.Integration
                 $"/api/products/paging?pageIndex={request.PageIndex}" +
                 $"&pageSize={request.PageSize}" +
                 $"&keyword={request.Keyword}" +
-                $"&categoryId={request.CategoryId}", tokenName);
+                $"&categoryId={request.CategoryId} + &address={request.Address}", tokenName);
             return result;
         }
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName)
