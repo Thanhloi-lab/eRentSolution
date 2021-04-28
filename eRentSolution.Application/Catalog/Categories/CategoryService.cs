@@ -29,9 +29,7 @@ namespace eRentSolution.Application.Catalog.Categories
 
         public async Task<ApiResult<string>> CreateCategory(CategoryCreateRequest request)
         {
-            var action = await _context.UserActions
-                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateCategory);
-
+           
             var category = new Category()
             {
                 Name = request.CategoryName,
