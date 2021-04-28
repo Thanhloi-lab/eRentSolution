@@ -33,6 +33,7 @@ namespace eRentSolution.WebApp.Controllers
             {
                 PageSize = pageSize,
                 PageIndex = pageIndex,
+                IsGuess = true
             };
             var slides = await _slideApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
             var featuredProducts = await _productApiClient.GetFeaturedProducts(request, SystemConstant.AppSettings.TokenWebApp);

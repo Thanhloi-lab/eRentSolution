@@ -57,6 +57,7 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoAlias = request.SeoAlias,
                 SeoDescription = request.SeoDescription,
                 SeoTitle = request.SeoTitle,
+                StatusId = (int)(object)(Status.InActive),
                 ProductDetails = new List<ProductDetail>()
                 {
                     new ProductDetail()
@@ -659,11 +660,18 @@ namespace eRentSolution.Application.Catalog.Products
             }
             var page = new PagedResult<ProductViewModel>()
             {
-                Items = products,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRow
             };
+            if (request.MinPrice != null && request.MaxPrice != null)
+            {
+                page.Items = products;
+            }
+            else
+            {
+                page.Items = data;
+            }
             return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
         }
         public async Task<ApiResult<ProductViewModel>> GetById(int id)
@@ -817,11 +825,18 @@ namespace eRentSolution.Application.Catalog.Products
             }
             var pageResult = new PagedResult<ProductViewModel>()
             {
-                TotalRecords = totalRow,
                 Items = products,
                 PageSize = request.PageSize,
                 PageIndex = request.PageIndex
             };
+            if (request.MinPrice != null && request.MaxPrice != null)
+            {
+                pageResult.Items = products;
+            }
+            else
+            {
+                pageResult.Items = data;
+            }
             return new ApiSuccessResult<PagedResult<ProductViewModel>>(pageResult);
         }
         public async Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take)
@@ -872,7 +887,7 @@ namespace eRentSolution.Application.Catalog.Products
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                        where cen.UserInfoId == userId && p.StatusId == (int)(object)Status.Active
+                        where cen.UserInfoId == userId 
                              && cen.ActionId == action.Id
                         select new { p, c, pic };
 
@@ -937,11 +952,19 @@ namespace eRentSolution.Application.Catalog.Products
             }
             var page = new PagedResult<ProductViewModel>()
             {
-                Items = products,
+                
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRow
             };
+            if (request.MinPrice != null && request.MaxPrice != null)
+            {
+                page.Items = products;
+            }    
+            else
+            {
+                page.Items = data;
+            }    
             return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
         }
 

@@ -163,7 +163,7 @@ namespace eRentSolution.Integration
                 $"&categoryId={request.CategoryId}" +
                 $"&address={request.Address}" +
                 $"&minprice={request.MinPrice}" +
-                $"&maxprice={request.MaxPrice}", tokenName);
+                $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}" , tokenName);
             return result;
         }
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName)
@@ -175,7 +175,7 @@ namespace eRentSolution.Integration
                 $"&categoryId={request.CategoryId}" +
                 $"&address={request.Address}" +
                 $"&minprice={request.MinPrice}" +
-                $"&maxprice={request.MaxPrice}", tokenName);
+                $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}", tokenName);
             return result;
         }
         public async Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take, string tokenName)
@@ -192,7 +192,7 @@ namespace eRentSolution.Integration
                 $"&categoryId={request.CategoryId}" +
                 $"&address={request.Address}" +
                 $"&minprice={request.MinPrice}" +
-                $"&maxprice={request.MaxPrice}", tokenName);
+                $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}", tokenName);
             return result;
         }
         #endregion

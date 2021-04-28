@@ -17,6 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+
 </head>
 <body>
     <header class="header">
@@ -150,6 +151,20 @@ else
         <!-- Sidebar ================================================== -->
         @await Component.InvokeAsync("SideBar")
         <!-- Sidebar end=============================================== -->
+        <div class="box-select">
+                <p class="category__heading">Lọc phòng theo khu vực</p>
+                <select style="margin-left:0; border:1px solid #7f7f7f" id="province" name="calc_shipping_provinces" required="">
+                    <option value="">Tỉnh / Thành phố</option>
+                </select>
+                <select style=" border:1px solid #7f7f7f" id="district" name="calc_shipping_district" required="">
+                    <option value="">Quận / Huyện</option>
+                </select>
+                <form asp-action="Index" asp-controller="product" method="get">
+
+                    <input class="billing_address_2" name="address" type="hidden" value="">
+                    <input class="btn danger" type="submit" onclick="myFunction()" value="Delete Detail" />
+                </form>
+            </div>
         @RenderBody()
   
     <!-- Header End====================================================================== -->
@@ -276,5 +291,90 @@ else
             }
         }
     }
+
+    /*=============select tinh quan ==============*/
+
+    if (address_2 = localStorage.getItem('address_2_saved')) {
+        $('select[name="calc_shipping_district"] option').each(function () {
+            if ($(this).text() == address_2) {
+                $(this).attr('selected', '')
+            }
+        })
+
+        $('input.billing_address_2').attr('value', address_2)
+    }
+    if (district = localStorage.getItem('district')) {
+        $('select[name="calc_shipping_district"]').html(district)
+        $('select[name="calc_shipping_district"]').on('change', function () {
+            var target = $(this).children('option:selected')
+            target.attr('selected', '')
+            $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+            address_2 = target.text()
+            $('input.billing_address_2').attr('value', address_2)
+            district = $('select[name="calc_shipping_district"]').html()
+            localStorage.setItem('district', district)
+            localStorage.setItem('address_2_saved', address_2)
+        })
+    }
+    $('select[name="calc_shipping_provinces"]').each(function () {
+
+        var $this = $(this),
+            stc = ''
+        c.forEach(function (i, e) {
+            e += +1
+            stc += '<option value=' + e + '>' + i + '</option>'
+            $this.html('<option value="">Tỉnh / Thành phố</option>' + stc)
+            if (address_1 = localStorage.getItem('address_1_saved')) {
+                $('select[name="calc_shipping_provinces"] option').each(function () {
+                    if ($(this).text() == address_1) {
+                        $(this).attr('selected', '')
+                    }
+                })
+
+
+                $('input.billing_address_1').attr('value', address_1)
+            }
+            $this.on('change', function (i) {
+                i = $this.children('option:selected').index() - 1
+                var str = '',
+                    r = $this.val()
+                if (r != '') {
+                    arr[i].forEach(function (el) {
+                        str += '<option value="' + el + '">' + el + '</option>'
+                        $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>' + str)
+                    })
+                    var address_1 = $this.children('option:selected').text()
+                    var district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('address_1_saved', address_1)
+                    localStorage.setItem('district', district)
+                    $('select[name="calc_shipping_district"]').on('change', function () {
+                        var target = $(this).children('option:selected')
+                        target.attr('selected', '')
+                        $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+                        var address_2 = target.text()
+                        $('input.billing_address_2').attr('value', address_2)
+                        district = $('select[name="calc_shipping_district"]').html()
+                        localStorage.setItem('district', district)
+                        localStorage.setItem('address_2_saved', address_2)
+                    })
+                } else {
+                    $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>')
+                    district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('district', district)
+                    localStorage.removeItem('address_1_saved', address_1)
+                }
+            })
+        })
+    })
+    function myFunction() {
+        var provinceText = $("#province option:selected").text();
+        var districtText = $("#district option:selected").text();
+        // bien luu dia chi
+        var address = districtText + "_" + provinceText;
+        var add = document.querySelector('input.billing_address_2');
+        add.value = address;
+        console.log(add.value);
+    }
+
 </script>
 </html>
