@@ -38,7 +38,7 @@ namespace eRentSolution.WebApp.Controllers
         }
         #region -----PRODUCT-------
         [AllowAnonymous]
-        public async Task<IActionResult> Index(string keyword, string address, int? categoryId, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string keyword, string address, int? categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
         {
             var request = new GetProductPagingRequest()
             {
@@ -46,7 +46,10 @@ namespace eRentSolution.WebApp.Controllers
                 PageIndex = pageIndex,
                 PageSize = pageSize,
                 Keyword = keyword,
-                Address = address
+                Address = address,
+                IsGuess = true,
+                MaxPrice = maxPrice,
+                MinPrice = minPrice
             };
 
             var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
@@ -118,15 +121,19 @@ namespace eRentSolution.WebApp.Controllers
             return View(product.ResultObject);
         }
         [HttpGet]
-        public async Task<IActionResult> MyListProducts(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> MyListProducts(string keyword, string address, int? categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
         {
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var request = new GetProductPagingRequest()
             {
-                Keyword = keyword,
+                CategoryId = categoryId,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                CategoryId = categoryId
+                Keyword = keyword,
+                Address = address,
+                IsGuess = false,
+                MaxPrice = maxPrice,
+                MinPrice = minPrice
             };
 
             if (TempData["result"] != null)
@@ -147,14 +154,18 @@ namespace eRentSolution.WebApp.Controllers
             return View(products.ResultObject);
         }
         [HttpGet]
-        public async Task<IActionResult> GetUserListProducts(Guid ownerId, string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> GetUserListProducts(Guid ownerId, string keyword, string address, int? categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
         {
             var request = new GetProductPagingRequest()
             {
-                Keyword = keyword,
+                CategoryId = categoryId,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                CategoryId = categoryId
+                Keyword = keyword,
+                Address = address,
+                IsGuess = true,
+                MaxPrice = maxPrice,
+                MinPrice = minPrice
             };
 
             if (TempData["result"] != null)
@@ -323,6 +334,52 @@ namespace eRentSolution.WebApp.Controllers
                 Category = category.ResultObject,
                 Products = products.ResultObject
             });
+        }
+        [HttpGet]
+        public IActionResult Hide(int id)
+        {
+            return View(new ProductStatusRequest()
+            {
+                Id = id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Hide(ProductStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _productApiClient.HideProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request.Id);
+        }
+        [HttpGet]
+        public IActionResult Show(int id)
+        {
+            return View(new ProductStatusRequest()
+            {
+                Id = id
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> Show(ProductStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _productApiClient.ShowProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request.Id);
         }
         #endregion
 

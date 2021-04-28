@@ -162,7 +162,7 @@ namespace eRentSolution.Application.Catalog.Products
             };
             await _context.Censors.AddAsync(censor);
 
-            product.Status = Data.Enums.Status.InActive;
+            product.StatusId = (int)(object)Status.Private;
 
             var result = await _context.SaveChangesAsync();
             if (result != 0)
@@ -177,14 +177,14 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
-            product.Status = Data.Enums.Status.Active;
+            product.StatusId = (int)(object)Status.Public;
 
             var result = await _context.SaveChangesAsync();
-            if(result >0)
+            if (result > 0)
             {
                 var action = await _context.UserActions
                             .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ShowProduct);
-                if(action == null)
+                if (action == null)
                     return new ApiErrorResult<string>("Không tìm thấy hành động");
                 var censor = new Censor()
                 {
@@ -201,6 +201,67 @@ namespace eRentSolution.Application.Catalog.Products
                 return new ApiSuccessResult<string>("Hiện sản phẩm thành công");
             else
                 return new ApiErrorResult<string>("Hiện sản phẩm thất bại");
+        }
+        public async Task<ApiResult<string>> ActiveProduct(int productId, Guid userInfoId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
+            }
+            product.StatusId = (int)(object)Status.Active;
+
+            var result = await _context.SaveChangesAsync();
+            if(result >0)
+            {
+                var action = await _context.UserActions
+                            .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ActiveProduct);
+                if(action == null)
+                    return new ApiErrorResult<string>("Không tìm thấy hành động");
+                var censor = new Censor()
+                {
+                    ActionId = action.Id,
+                    UserInfoId = userInfoId,
+                    ProductId = product.Id,
+                    Date = DateTime.UtcNow
+                };
+                await _context.Censors.AddAsync(censor);
+                result = await _context.SaveChangesAsync();
+            }
+
+            if (result != 0)
+                return new ApiSuccessResult<string>("Cho phép sản phẩm hiển thị thành công");
+            else
+                return new ApiErrorResult<string>("Cho phép sản phẩm hiển thị thất bại");
+        }
+        public async Task<ApiResult<string>> InActiveProduct(int productId, Guid userInfoId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
+            }
+
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.InActiveProduct);
+            if (action == null)
+                return new ApiErrorResult<string>("Không tìm thấy hành động");
+            var censor = new Censor()
+            {
+                ActionId = action.Id,
+                UserInfoId = userInfoId,
+                ProductId = product.Id,
+                Date = DateTime.UtcNow
+            };
+            await _context.Censors.AddAsync(censor);
+
+            product.StatusId = (int)(object)Status.InActive;
+
+            var result = await _context.SaveChangesAsync();
+            if (result != 0)
+                return new ApiSuccessResult<string>("Khóa sản phẩm thành công");
+            else
+                return new ApiErrorResult<string>("Khóa sản phẩm thất bại");
         }
         public async Task<ApiResult<string>> UpdatePrice(int productDetailId ,decimal newPrice, Guid userInfoId)
         {
@@ -405,7 +466,7 @@ namespace eRentSolution.Application.Catalog.Products
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var query = from p in _context.Products
                         join cen in _context.Censors on p.Id equals cen.ProductId
-                        where cen.UserInfoId == userId && p.Status == Status.Active
+                        where cen.UserInfoId == userId && p.StatusId == (int)(object)Status.Active
                              && cen.ActionId == action.Id && p.Id == productId
                         select new { p };
 
@@ -554,6 +615,10 @@ namespace eRentSolution.Application.Catalog.Products
                     query = query.Where(x => x.p.Address.Contains(item));
                 }
             }
+            if(request.IsGuess==true)
+            {
+                query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
+            }    
             int totalRow = await query.CountAsync();
             var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
             {
@@ -565,10 +630,10 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoDescription = x.p.SeoDescription,
                 SeoTitle = x.p.SeoTitle,
                 ViewCount = x.p.ViewCount,
-                Status = x.p.Status,
+                StatusId = x.p.StatusId,
                 Address = x.p.Address
             }).Distinct().ToListAsync();
-
+            var products = new List<ProductViewModel>();
             foreach (var item in data)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
@@ -578,10 +643,23 @@ namespace eRentSolution.Application.Catalog.Products
                     item.Stock += productDetail.Stock;
                 }
             }
-
+            foreach (var item in data)
+            {
+                for (int  i = 0;  i <item.ProductDetailViewModels.Count;  i++)
+                {
+                    if(request.MinPrice!=null && request.MaxPrice!=null)
+                    {
+                        if (item.ProductDetailViewModels.ElementAt(i).Price > request.MinPrice && item.ProductDetailViewModels.ElementAt(i).Price < request.MaxPrice)
+                        {
+                            products.Add(item);
+                            break;
+                        }
+                    }
+                }
+            }
             var page = new PagedResult<ProductViewModel>()
             {
-                Items = data,
+                Items = products,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRow
@@ -614,7 +692,7 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoTitle = product.SeoTitle,
                 ViewCount = product.ViewCount,
                 ProductDetailViewModels = productDetails.ResultObject,
-                Status = product.Status,
+                StatusId = product.StatusId,
                 Categories = categories,
                 IsFeatured = product.IsFeatured,
                 Address = product.Address
@@ -671,10 +749,30 @@ namespace eRentSolution.Application.Catalog.Products
             //1. Select join
             var query = from p in _context.Products
                         join pd in _context.ProductDetails on p.Id equals pd.ProductId
-
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
                         where p.IsFeatured == Status.Active
-                        select new { p, pd };
-
+                        select new { p, pd, pic };
+            if (request.Keyword != null)
+            {
+                query = query.Where(x => x.p.Name.Contains(request.Keyword));
+            }
+            if (request.CategoryId != null && request.CategoryId != 0)
+            {
+                query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+            }
+            if (request.Address != null)
+            {
+                var address = request.Address.Split("_");
+                foreach (var item in address)
+                {
+                    query = query.Where(x => x.p.Address.Contains(item));
+                }
+            }
+            if (request.IsGuess == true)
+            {
+                query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
+            }
             var totalRow = query.Count();
             var data = await query.OrderByDescending(x => x.p.DateCreated)
                 .Skip((request.PageIndex - 1) * request.PageSize)
@@ -684,16 +782,14 @@ namespace eRentSolution.Application.Catalog.Products
                     Id = x.p.Id,
                     DateCreated = x.p.DateCreated,
                     Description = x.p.Description,
-                    // Details = x.p.Details,
                     Name = x.p.Name,
                     SeoAlias = x.p.SeoAlias,
                     SeoDescription = x.p.SeoDescription,
                     SeoTitle = x.p.SeoTitle,
                     ViewCount = x.p.ViewCount,
-                    Status = x.p.Status,
+                    StatusId = x.p.StatusId,
                     Address = x.p.Address
                 }).Distinct().ToListAsync();
-
 
             foreach (var item in data)
             {
@@ -704,10 +800,25 @@ namespace eRentSolution.Application.Catalog.Products
                     item.Stock += productDetail.Stock;
                 }
             }
+            var products = new List<ProductViewModel>();
+            foreach (var item in data)
+            {
+                for (int i = 0; i < item.ProductDetailViewModels.Count; i++)
+                {
+                    if (request.MinPrice != null && request.MaxPrice != null)
+                    {
+                        if (item.ProductDetailViewModels.ElementAt(i).Price > request.MinPrice && item.ProductDetailViewModels.ElementAt(i).Price < request.MaxPrice)
+                        {
+                            products.Add(item);
+                            break;
+                        }
+                    }
+                }
+            }
             var pageResult = new PagedResult<ProductViewModel>()
             {
                 TotalRecords = totalRow,
-                Items = data,
+                Items = products,
                 PageSize = request.PageSize,
                 PageIndex = request.PageIndex
             };
@@ -738,34 +849,9 @@ namespace eRentSolution.Application.Catalog.Products
                     SeoDescription = x.p.SeoDescription,
                     SeoTitle = x.p.SeoTitle,
                     ViewCount = x.p.ViewCount,
-                    Status = x.p.Status,
+                    StatusId = x.p.StatusId,
                     Address = x.p.Address
                 }).Distinct().ToListAsync();
-
-            //List<ProductViewModel> products = new List<ProductViewModel>();
-            //if (totalRow > 1)
-            //{
-            //    for (int i = 0; i < data.Count - 1; i++)
-            //    {
-            //        if (data.ElementAt(i).Id == data.ElementAt(i + 1).Id)
-            //        {
-            //            totalRow--;
-            //        }
-            //        else
-            //        {
-            //            products.Add(data.ElementAt(i));
-            //        }
-            //        if (i == data.Count - 2)
-            //        {
-            //            products.Add(data.ElementAt(i + 1));
-            //        }
-            //    }
-            //}
-            //else if (totalRow == 1)
-            //{
-            //    products.Add(data.ElementAt(0));
-            //}
-
             foreach (var item in data)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
@@ -786,7 +872,7 @@ namespace eRentSolution.Application.Catalog.Products
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                        where cen.UserInfoId == userId && p.Status == Status.Active
+                        where cen.UserInfoId == userId && p.StatusId == (int)(object)Status.Active
                              && cen.ActionId == action.Id
                         select new { p, c, pic };
 
@@ -797,6 +883,18 @@ namespace eRentSolution.Application.Catalog.Products
             if (request.CategoryId != null && request.CategoryId != 0)
             {
                 query = query.Where(x => x.pic.CategoryId == request.CategoryId);
+            }
+            if (request.Address != null)
+            {
+                var address = request.Address.Split("_");
+                foreach (var item in address)
+                {
+                    query = query.Where(x => x.p.Address.Contains(item));
+                }
+            }
+            if (request.IsGuess == true)
+            {
+                query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
             }
             int totalRow = await query.CountAsync();
             var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
@@ -809,7 +907,7 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoDescription = x.p.SeoDescription,
                 SeoTitle = x.p.SeoTitle,
                 ViewCount = x.p.ViewCount,
-                Status = x.p.Status,
+                StatusId = x.p.StatusId,
                 Address = x.p.Address
             }).Distinct().ToListAsync();
 
@@ -822,10 +920,24 @@ namespace eRentSolution.Application.Catalog.Products
                     item.Stock += productDetail.Stock;
                 }
             }
-
+            var products = new List<ProductViewModel>();
+            foreach (var item in data)
+            {
+                for (int i = 0; i < item.ProductDetailViewModels.Count; i++)
+                {
+                    if (request.MinPrice != null && request.MaxPrice != null)
+                    {
+                        if (item.ProductDetailViewModels.ElementAt(i).Price > request.MinPrice && item.ProductDetailViewModels.ElementAt(i).Price < request.MaxPrice)
+                        {
+                            products.Add(item);
+                            break;
+                        }
+                    }
+                }
+            }
             var page = new PagedResult<ProductViewModel>()
             {
-                Items = data,
+                Items = products,
                 PageIndex = request.PageIndex,
                 PageSize = request.PageSize,
                 TotalRecords = totalRow

@@ -1,6 +1,7 @@
 ﻿using eRentSolution.Application.Common;
 using eRentSolution.Data.EF;
 using eRentSolution.Data.Entities;
+using eRentSolution.Data.Enums;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Common;
 using eRentSolution.ViewModels.System.Users;
@@ -364,12 +365,11 @@ namespace eRentSolution.Application.System.Users
         }
         public async Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request)
         {
-            //var user = await _userManager.FindByIdAsync(id.ToString());
             var query = from ui in _context.UserInfos
                         join c in _context.Censors on ui.UserId equals c.UserInfoId
                         join a in _context.UserActions on c.ActionId equals a.Id
                         join p in _context.Products on c.ProductId equals p.Id
-                        where ui.UserId == request.Id && p.Status == Data.Enums.Status.Active
+                        where ui.UserId == request.Id
                         select new { ui, a, p, c };
 
             var totalRow = await query.CountAsync();
@@ -396,7 +396,6 @@ namespace eRentSolution.Application.System.Users
                         join c in _context.Censors on ui.UserId equals c.UserInfoId
                         join a in _context.UserActions on c.ActionId equals a.Id
                         join p in _context.Products on c.ProductId equals p.Id
-                        where p.Status == Data.Enums.Status.Active
                         select new { ui, a, p, c };
             if (!string.IsNullOrEmpty(request.Keyword))
             {

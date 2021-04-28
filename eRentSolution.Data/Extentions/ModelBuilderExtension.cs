@@ -21,9 +21,7 @@ namespace eRentSolution.Data.Extentions
                 new Category()
                 {
                     Id = 1,
-                    IsShowOnHome = true,
                     ParentId = null,
-                    SortOrder = 1,
                     Status = Status.Active,
                     Name = "HomeStay",
                     SeoAlias = "homestay",
@@ -35,9 +33,7 @@ namespace eRentSolution.Data.Extentions
                  new Category()
                  {
                      Id = 2,
-                     IsShowOnHome = true,
                      ParentId = null,
-                     SortOrder = 2,
                      Status = Status.Active,
                      Name = "Khách sạn",
                      SeoAlias = "khach-san",
@@ -106,7 +102,6 @@ namespace eRentSolution.Data.Extentions
                SeoAlias = "HomeStay-thanh-loi",
                SeoDescription = "HomeStay-thanh-loi",
                SeoTitle = "HomeStay-thanh-loi",
-               //Details = "HomeStay Thanh Loi rộng 1m dài 2m sâu 3m",
                Description = "HomeStay Thanh Loi tại pờ tít",
                IsFeatured = Status.InActive,
                Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3"
@@ -230,8 +225,17 @@ namespace eRentSolution.Data.Extentions
            {
                Id = 21,
                ActionName = "Chỉnh sửa chi tiết sản phẩm"
-           }
-           );
+           },
+           new UserAction()
+           {
+               Id = 22,
+               ActionName = "Không cho phép hiển thị"
+           },
+           new UserAction()
+           {
+               Id = 23,
+               ActionName = "Cho phép hiển thị"
+           });
             modelBuilder.Entity<Censor>().HasData(
            new Censor()
            {
@@ -245,6 +249,28 @@ namespace eRentSolution.Data.Extentions
             {
                 RoleId = roleId,
                 UserId = adminId
+            });
+
+            modelBuilder.Entity<ProductStatus>().HasData(
+            new ProductStatus() 
+            {
+                Id = 1,
+                StatusName = "Khóa sản phẩm hiển thị"
+            },
+            new ProductStatus()
+            {
+                Id = 2,
+                StatusName = "Cho phép sản phẩm hiển thị"
+            },
+            new ProductStatus()
+            {
+                Id = 3,
+                StatusName = "Hiện sản phẩm"
+            },
+            new ProductStatus()
+            {
+                Id = 4,
+                StatusName = "Ẩn sản phẩm"
             });
         }
     }

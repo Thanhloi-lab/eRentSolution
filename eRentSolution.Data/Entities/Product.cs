@@ -16,9 +16,10 @@ namespace eRentSolution.Data.Entities
         public string Address { get; set; }
         public int ViewCount { set; get; }
         public DateTime DateCreated { set; get; }
-        public Status Status { get; set; }
+        public int StatusId { get; set; }
         public Status? IsFeatured { get; set; }
 
+        public ProductStatus ProductStatus { get; set; }
         public List<ProductInCategory> ProductInCategories { get; set; }
         public List<Censor> Censors { get; set; }
         public List<Slide> Slides { get; set; }

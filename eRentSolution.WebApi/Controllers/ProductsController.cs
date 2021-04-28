@@ -95,7 +95,7 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        [HttpDelete("hide/{userInfoId}/{id}")]
+        [HttpPut("hide/{userInfoId}/{id}")]
         public async Task<IActionResult> Hide(int id, Guid userInfoId)
         {
             var result = await _productService.Hide(id, userInfoId);
@@ -103,10 +103,26 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        [HttpDelete("show/{userInfoId}/{id}")]
+        [HttpPut("show/{userInfoId}/{id}")]
         public async Task<IActionResult> Show(int id, Guid userInfoId)
         {
             var result = await _productService.Show(id, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPut("active/{userInfoId}/{id}")]
+        public async Task<IActionResult> ActiveProduct(int id, Guid userInfoId)
+        {
+            var result = await _productService.ActiveProduct(id, userInfoId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPut("inactive/{userInfoId}/{id}")]
+        public async Task<IActionResult> InActiveProduct(int id, Guid userInfoId)
+        {
+            var result = await _productService.InActiveProduct(id, userInfoId);
             if (result.IsSuccessed)
                 return Ok(result);
             return BadRequest(result);

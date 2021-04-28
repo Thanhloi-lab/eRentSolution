@@ -32,35 +32,59 @@ namespace eRentSolution.BackendApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var categories = await _categoryService.GetById( id);
-            if (categories.IsSuccessed)
-                return Ok(categories);
-            return BadRequest(categories);
+            var result = await _categoryService.GetById( id);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpGet("productcategories/{productId}")]
         public async Task<IActionResult> GetAllByProductId(int productId)
         {
-            var categories = await _categoryService.GetAllCategoryByProductId(productId);
-            if (categories.IsSuccessed)
-                return Ok(categories);
-            return BadRequest(categories);
+            var result = await _categoryService.GetAllCategoryByProductId(productId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
         [HttpPut("UpdateImage")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateImage([FromForm] CategoryImageUpdateRequest request)
         {
-            var categories = await _categoryService.UpdateImage(request);
-            if (categories.IsSuccessed)
-                return Ok(categories);
-            return BadRequest(categories);
+            var result = await _categoryService.UpdateImage(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
         }
-
+        [HttpPost("createCategory")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateRequest request)
+        {
+            var result = await _categoryService.CreateCategory(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPut("updateCategory")]
+        public async Task<IActionResult> UpdateCategory([FromForm] CategoryUpdateRequest request)
+        {
+            var result = await _categoryService.UpdateCategory(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpDelete("deleteCategory/{categoryId}")]
+        public async Task<IActionResult> DeleteCategory(int categoryId)
+        {
+            var result = await _categoryService.DeleteCategory(categoryId);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
         [HttpGet("paging")]
         public async Task<IActionResult> GetAllPaging([FromQuery] GetCategoryPagingRequest request)
         {
-            var product = await _categoryService.GetAllPaging(request);
-            return Ok(product);
+            var result = await _categoryService.GetAllPaging(request);
+            return Ok(result);
         }
     }
 }

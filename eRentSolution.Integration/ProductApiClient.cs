@@ -113,12 +113,12 @@ namespace eRentSolution.Integration
         }
         public async Task<ApiResult<string>> HideProduct(int productId, Guid userInfoId, string tokenName)
         {
-            var result = await DeleteAsync<string>($"/api/products/hide/{userInfoId}/{productId}", tokenName);
+            var result = await PutAsync<string>($"/api/products/hide/{userInfoId}/{productId}", productId, tokenName);
             return result;
         }
         public async Task<ApiResult<string>> ShowProduct(int productId, Guid userInfoId, string tokenName)
         {
-            var result = await DeleteAsync<string>($"/api/products/show/{userInfoId}/{productId}", tokenName);
+            var result = await PutAsync<string>($"/api/products/show/{userInfoId}/{productId}", productId, tokenName);
             return result;
         }
         public async Task<ApiResult<ProductViewModel>> GetById(int productId, string tokenName)
@@ -141,6 +141,16 @@ namespace eRentSolution.Integration
             var result = await PutAsync<string>($"/api/products/{userInfoId}/deletefeature/{request.ProductId}", request, tokenName);
             return result;
         }
+        public async Task<ApiResult<string>> ActiveProduct(int productId, Guid userInfoId, string tokenName)
+        {
+            var result = await PutAsync<string>($"/api/products/active/{userInfoId}/{productId}", productId, tokenName);
+            return result;
+        }
+        public async Task<ApiResult<string>> InActiveProduct(int productId, Guid userInfoId, string tokenName)
+        {
+            var result = await PutAsync<string>($"/api/products/inactive/{userInfoId}/{productId}", productId, tokenName);
+            return result;
+        }
         #endregion
 
         #region -----GET PAGE PRODUCT------
@@ -150,13 +160,22 @@ namespace eRentSolution.Integration
                 $"/api/products/paging?pageIndex={request.PageIndex}" +
                 $"&pageSize={request.PageSize}" +
                 $"&keyword={request.Keyword}" +
-                $"&categoryId={request.CategoryId} + &address={request.Address}", tokenName);
+                $"&categoryId={request.CategoryId}" +
+                $"&address={request.Address}" +
+                $"&minprice={request.MinPrice}" +
+                $"&maxprice={request.MaxPrice}", tokenName);
             return result;
         }
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName)
         {
-            var result = await GetAsync<PagedResult<ProductViewModel>>($"/api/products/feature?pageindex={request.PageIndex}" +
-                $"&pagesize={request.PageSize}&keyword={request.Keyword}&categoryId={request.CategoryId}", tokenName);
+            var result = await GetAsync<PagedResult<ProductViewModel>>(
+                $"/api/products/feature?pageindex={request.PageIndex}" +
+                $"&pageSize={request.PageSize}" +
+                $"&keyword={request.Keyword}" +
+                $"&categoryId={request.CategoryId}" +
+                $"&address={request.Address}" +
+                $"&minprice={request.MinPrice}" +
+                $"&maxprice={request.MaxPrice}", tokenName);
             return result;
         }
         public async Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take, string tokenName)
@@ -170,7 +189,10 @@ namespace eRentSolution.Integration
                 $"/api/products/{userId}/GetPageProductByUserId?pageIndex={request.PageIndex}" +
                 $"&pageSize={request.PageSize}" +
                 $"&keyword={request.Keyword}" +
-                $"&categoryId={request.CategoryId}", tokenName);
+                $"&categoryId={request.CategoryId}" +
+                $"&address={request.Address}" +
+                $"&minprice={request.MinPrice}" +
+                $"&maxprice={request.MaxPrice}", tokenName);
             return result;
         }
         #endregion
@@ -335,6 +357,8 @@ namespace eRentSolution.Integration
             var result = await DeleteAsync<string>($"/api/products/{userId}/img/{imageId}", tokenName);
             return result;
         }
+
+       
         #endregion
     }
 }

@@ -14,6 +14,9 @@ namespace eRentSolution.Application.Catalog.Categories
         Task<ApiResult<CategoryViewModel>> GetById(int id);
         Task<ApiResult<List<CategoryViewModel>>> GetAllCategoryByProductId(int productId);
         Task<ApiResult<string>> UpdateImage(CategoryImageUpdateRequest request);
+        Task<ApiResult<string>> DeleteCategory(int categoryId);
+        Task<ApiResult<string>> CreateCategory(CategoryCreateRequest request);
+        Task<ApiResult<string>> UpdateCategory(CategoryUpdateRequest request);
         Task<ApiResult<PagedResult<CategoryViewModel>>> GetAllPaging(GetCategoryPagingRequest request);
     }
 }

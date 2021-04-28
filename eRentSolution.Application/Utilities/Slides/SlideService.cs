@@ -294,8 +294,6 @@ namespace eRentSolution.Application.Utilities.Slides
         }
 
 
-
-
         private async Task<string> SaveFile(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');

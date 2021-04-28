@@ -16,6 +16,8 @@ namespace eRentSolution.Integration
         Task<ApiResult<string>> UpdateProduct(ProductUpdateRequest request, Guid userInfoId, string tokenName);
         Task<ApiResult<string>> HideProduct(int productId, Guid userInfoId, string tokenName);
         Task<ApiResult<string>> ShowProduct(int productId, Guid userInfoId, string tokenName);
+        Task<ApiResult<string>> ActiveProduct(int productId, Guid userInfoId, string tokenName);
+        Task<ApiResult<string>> InActiveProduct(int productId, Guid userInfoId, string tokenName);
         Task<ApiResult<string>> DeleteProduct(int id, string tokenName);
         Task<ApiResult<string>> CreateFeature(FeatureProductRequest request, string tokenName, Guid userInfoId);
         Task<ApiResult<string>> DeleteFeature(FeatureProductRequest request, string tokenName, Guid userInfoId);

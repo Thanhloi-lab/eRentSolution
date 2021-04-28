@@ -1,5 +1,6 @@
 ﻿using eRentSolution.Application.Common;
 using eRentSolution.Data.EF;
+using eRentSolution.Data.Entities;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Categories;
 using eRentSolution.ViewModels.Common;
@@ -24,6 +25,58 @@ namespace eRentSolution.Application.Catalog.Categories
         {
             _context = context;
             _storageService = storageService;
+        }
+
+        public async Task<ApiResult<string>> CreateCategory(CategoryCreateRequest request)
+        {
+            var action = await _context.UserActions
+                .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateCategory);
+
+            var category = new Category()
+            {
+                Name = request.CategoryName,
+                ParentId = request.ParentId,
+                DateCreate = DateTime.UtcNow
+            };
+            if (request.ImageFile != null)
+            {
+                category.ImagePath = await this.SaveFile(request.ImageFile);
+                category.ImageSize = request.ImageFile.Length;
+            }
+            else
+            {
+                return new ApiErrorResult<string>("Ảnh không tồn tại");
+            }
+            await _context.Categories.AddAsync(category);
+            var result = await _context.SaveChangesAsync();
+            if (result < 1)
+            {
+                _storageService.DeleteFile(category.ImagePath);
+                return new ApiErrorResult<string>("Thêm danh mục thất bại");
+            }
+            return new ApiSuccessResult<string>("Tạo danh mục thành công");
+        }
+
+        public async Task<ApiResult<string>> DeleteCategory(int categoryId)
+        {
+            var query = from c in _context.Categories
+                        join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
+                        where c.Id == categoryId
+                        select new { c };
+
+            if(query.Count()>0)
+            {
+                return new ApiErrorResult<string>("Không thể xóa danh mục đã có sản phẩm");
+            }
+            var category = await _context.Categories.FindAsync(categoryId);
+            _context.Categories.Remove(category);
+            var result = await _context.SaveChangesAsync();
+            if (result < 1)
+            {
+                return new ApiErrorResult<string>("Xóa danh mục thất bại");
+            }
+            _storageService.DeleteFile(category.ImagePath);
+            return new ApiSuccessResult<string>("Xóa danh mục thành công");
         }
 
         public async Task<ApiResult<List<CategoryViewModel>>> GetAll()
@@ -103,14 +156,33 @@ namespace eRentSolution.Application.Catalog.Categories
             return new ApiSuccessResult<CategoryViewModel>(viewModel);
         }
 
+        public async Task<ApiResult<string>> UpdateCategory(CategoryUpdateRequest request)
+        {
+            var category = await _context.Categories.FindAsync(request.CategoryId);
+            if(category==null)
+                return new ApiErrorResult<string>("Danh mục không tồn tại");
+            category.Name = request.CategoryName;
+
+            var result = await _context.SaveChangesAsync();
+            if (result > 0)
+            {
+                await _context.SaveChangesAsync();
+                return new ApiSuccessResult<string>("Chỉnh sửa danh mục thành công");
+            }
+
+            return new ApiErrorResult<string>("Chỉnh sửa danh mục không thành công, vui lòng thử lại sau");
+        }
+
         public async Task<ApiResult<string>> UpdateImage(CategoryImageUpdateRequest request)
         {
             var category = await _context.Categories.FindAsync(request.CategoryId);
+            if (category == null)
+                return new ApiErrorResult<string>("Danh mục không tồn tại");
             int isDeleteSuccess = 0;
             if (request.ImageFile != null)
             {
                 if (category.ImagePath != SystemConstant.DefaultAvatar && category.ImagePath != null)
-                      isDeleteSuccess = _storageService.DeleteFile(category.ImagePath);
+                    isDeleteSuccess = _storageService.DeleteFile(category.ImagePath);
                 if (isDeleteSuccess == -1)
                     return new ApiErrorResult<string>("Chỉnh sửa ảnh không thành công, vui lòng thử lại sau");
                 category.ImagePath = await this.SaveFile(request.ImageFile);
@@ -123,9 +195,10 @@ namespace eRentSolution.Application.Catalog.Categories
                 await _context.SaveChangesAsync();
                 return new ApiSuccessResult<string>("Chỉnh sửa ảnh thành công");
             }
-
+            _storageService.DeleteFile(category.ImagePath);
             return new ApiErrorResult<string>("Chỉnh sửa ảnh không thành công, vui lòng thử lại sau");
         }
+
         private async Task<string> SaveFile(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');

@@ -8,8 +8,6 @@ namespace eRentSolution.Data.Entities
     public class Category
     {
         public int Id { get; set; }
-        public int SortOrder { set; get; }
-        public bool IsShowOnHome { get; set; }
         public int? ParentId { get; set; }
         public Status Status { get; set; }
         public string Name { set; get; }
@@ -18,6 +16,7 @@ namespace eRentSolution.Data.Entities
         public string SeoAlias { set; get; }
         public string ImagePath { get; set; }
         public long ImageSize { get; set; }
+        public DateTime DateCreate { get; set; }
         public List<ProductInCategory> ProductInCategories { get; set; }
     }
 }

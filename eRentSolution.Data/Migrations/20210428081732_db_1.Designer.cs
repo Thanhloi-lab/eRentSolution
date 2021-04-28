@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using eRentSolution.Data.EF;
 
 namespace eRentSolution.Data.Migrations
 {
     [DbContext(typeof(eRentDbContext))]
-    partial class eRentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210428081732_db_1")]
+    partial class db_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -179,7 +181,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "b476622f-ae5a-4478-ae23-4bc7bf61dd0c",
+                            ConcurrencyStamp = "7f24030b-3951-4cc0-a07f-b8d8b9870bf1",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -187,7 +189,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "a0671b6b-f274-47e8-bb62-11c3ba0eafe7",
+                            ConcurrencyStamp = "a635158d-e816-4f1d-b751-363d9d0dc64a",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -268,14 +270,14 @@ namespace eRentSolution.Data.Migrations
                             AccessFailedCount = 0,
                             AvatarFilePath = "default_avatar.png",
                             AvatarFileSize = 15131L,
-                            ConcurrencyStamp = "6e01df5e-2ba7-440d-a736-994a052cc6ab",
-                            DateChangePassword = new DateTime(2021, 4, 28, 11, 55, 4, 18, DateTimeKind.Utc).AddTicks(5209),
+                            ConcurrencyStamp = "b7166cda-fc3b-4ecf-96dd-f7793d2ead4a",
+                            DateChangePassword = new DateTime(2021, 4, 28, 8, 17, 30, 923, DateTimeKind.Utc).AddTicks(6511),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPp58IhTkQ9mzl/y4PDofF4mf1d2mhXrzyxNRlw1xhdSGUEeswI6mw0Uq+wMU3zuaA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPSo4PgopvsAhH0wYtGYImzHbc8djf4EvnTAK/7zBmJUZZp4BCALYCE7HOtEB0yJoA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 2,
@@ -293,15 +295,15 @@ namespace eRentSolution.Data.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateCreate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ImagePath")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<long>("ImageSize")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("IsShowOnHome")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -324,6 +326,9 @@ namespace eRentSolution.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -337,25 +342,27 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ImagePath = "default_category.jpg",
                             ImageSize = 3021L,
+                            IsShowOnHome = true,
                             Name = "HomeStay",
                             SeoAlias = "homestay",
                             SeoDescription = "Loại hình nhà cho thuê và ở chung với chủ nhà.",
                             SeoTitle = "Nhà cho thuê ở cùng chủ hộ",
+                            SortOrder = 1,
                             Status = 2
                         },
                         new
                         {
                             Id = 2,
-                            DateCreate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             ImagePath = "default_category.jpg",
                             ImageSize = 3021L,
+                            IsShowOnHome = true,
                             Name = "Khách sạn",
                             SeoAlias = "khach-san",
                             SeoDescription = "Cho thuê, mướn phòng khách sạn",
                             SeoTitle = "Khách sạn",
+                            SortOrder = 2,
                             Status = 2
                         });
                 });
@@ -396,7 +403,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 4, 28, 11, 55, 4, 47, DateTimeKind.Utc).AddTicks(9183),
+                            Date = new DateTime(2021, 4, 28, 8, 17, 30, 958, DateTimeKind.Utc).AddTicks(7125),
                             ProductId = 1,
                             UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
@@ -502,7 +509,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
-                            DateCreated = new DateTime(2021, 4, 28, 11, 55, 4, 46, DateTimeKind.Utc).AddTicks(326),
+                            DateCreated = new DateTime(2021, 4, 28, 8, 17, 30, 956, DateTimeKind.Utc).AddTicks(9733),
                             Description = "HomeStay Thanh Loi tại pờ tít",
                             IsFeatured = 1,
                             Name = "HomeStay Thanh Loi",
@@ -571,7 +578,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 28, 11, 55, 4, 46, DateTimeKind.Utc).AddTicks(9309),
+                            DateCreated = new DateTime(2021, 4, 28, 8, 17, 30, 957, DateTimeKind.Utc).AddTicks(7617),
                             Detail = "2 nvs .....",
                             Length = 10,
                             Name = "Phòng 1 chổ nằm",
@@ -893,16 +900,6 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 21,
                             ActionName = "Chỉnh sửa chi tiết sản phẩm"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            ActionName = "Không cho phép hiển thị"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            ActionName = "Cho phép hiển thị"
                         });
                 });
 

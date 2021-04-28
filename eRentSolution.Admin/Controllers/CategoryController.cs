@@ -1,6 +1,8 @@
 ﻿using eRentSolution.Integration;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.Catalog.Categories;
+using eRentSolution.ViewModels.Catalog.Products;
+using eRentSolution.ViewModels.Utilities.Slides;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +62,7 @@ namespace eRentSolution.AdminApp.Controllers
             }
             return RedirectToAction("Error", "Home");
         }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpPost]
         public async Task<IActionResult> EditImage(CategoryImageUpdateRequest request)
         {
@@ -73,6 +76,98 @@ namespace eRentSolution.AdminApp.Controllers
             }
             TempData["failResult"] = result.Message;
             return View(request);
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            return View(new SlideStatusRequest()
+            {
+                Id = id,
+            });
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpPost]
+        public async Task<IActionResult> Delete(SlideStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _categoryApiClient.DeteleCategory(request, SystemConstant.AppSettings.TokenAdmin);
+
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request.Id);
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpGet]
+        public IActionResult CreateCategory(int? id)
+        {
+            return View(new CategoryCreateRequest()
+            {
+                ParentId = id
+            });
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateCategory([FromForm] CategoryCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _categoryApiClient.CreateCategory(request, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpGet]
+        public IActionResult UpdateCategory(int id, string name)
+        {
+
+            return View(new CategoryUpdateRequest()
+            {
+                CategoryId = id,
+                CategoryName = name
+            });
+        }
+        [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
+        [HttpPost]
+        public async Task<IActionResult> UpdateCategory([FromForm] CategoryUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _categoryApiClient.UpdateCategory(request, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Detail(int id)
+        {
+            var result = await _categoryApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
+            {
+                return View(result.ResultObject);
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return RedirectToAction("Index");
         }
     }
 }

@@ -38,7 +38,7 @@ namespace eRentSolution.ViewModels.Catalog.Products
         [Display(Name = "Từ khóa")]
         public string SeoAlias { get; set; }
         [Display(Name = "Trạng thái")]
-        public Status Status { get; set; }
+        public int StatusId { get; set; }
         [Display(Name = "Những danh mục")]
         public List<string> Categories { get; set; } = new List<string>();
         public List<ProductDetailViewModel> ProductDetailViewModels { get; set; } = new List<ProductDetailViewModel>();

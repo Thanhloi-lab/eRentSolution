@@ -39,14 +39,18 @@ namespace eRentSolution.AdminApp.Controllers
             //userInfoId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Actor).Value;
         }
 
-        public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string keyword, int? categoryId, decimal? minPrice, decimal? maxPrice, string address, int pageIndex = 1, int pageSize = 10)
         {
             var request = new GetProductPagingRequest()
             {
                 Keyword = keyword,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                CategoryId = categoryId
+                CategoryId = categoryId,
+                IsGuess = false,
+                Address = address,
+                MaxPrice = maxPrice,
+                MinPrice = maxPrice
             };
 
             if (TempData["result"] != null)
@@ -100,7 +104,7 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request.Id);
         }
         [HttpGet]
-        public IActionResult Hide(int id)
+        public IActionResult InActive(int id)
         {
             return View(new ProductStatusRequest()
             {
@@ -108,11 +112,11 @@ namespace eRentSolution.AdminApp.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> Hide(ProductStatusRequest request)
+        public async Task<IActionResult> InActive(ProductStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _productApiClient.HideProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            var result = await _productApiClient.InActiveProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
 
             if (result.IsSuccessed)
             {
@@ -123,7 +127,7 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request.Id);
         }
         [HttpGet]
-        public IActionResult Show(int id)
+        public IActionResult Active(int id)
         {
             return View(new ProductStatusRequest()
             {
@@ -131,11 +135,11 @@ namespace eRentSolution.AdminApp.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> Show(ProductStatusRequest request)
+        public async Task<IActionResult> Active(ProductStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _productApiClient.ShowProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            var result = await _productApiClient.ActiveProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
 
             if (result.IsSuccessed)
             {
@@ -208,7 +212,38 @@ namespace eRentSolution.AdminApp.Controllers
             ModelState.AddModelError("", result.Message);
             return RedirectToAction("Details");
         }
+        [HttpGet]
+        public async Task<IActionResult> FeaturedProduct(string keyword, int? categoryId, decimal? minPrice, decimal? maxPrice, string address, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new GetProductPagingRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                CategoryId = categoryId,
+                IsGuess = false,
+                Address = address,
+                MaxPrice = maxPrice,
+                MinPrice = maxPrice
+            };
 
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["result"];
+            }
+
+            var products = await _productApiClient.GetFeaturedProducts(request, SystemConstant.AppSettings.TokenAdmin);
+            ViewBag.Keyword = keyword;
+
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+                Selected = categoryId.HasValue && categoryId.Value == x.Id
+            });
+            return View(products.ResultObject);
+        }
 
 
 

@@ -6,7 +6,9 @@ namespace eRentSolution.Data.Enums
 {
     public enum Status
     {
-        InActive,
-        Active
+        InActive=1,
+        Active=2,
+        Public=3,
+        Private=4
     }
 }

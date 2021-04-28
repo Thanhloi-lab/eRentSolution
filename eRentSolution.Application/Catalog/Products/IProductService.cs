@@ -16,6 +16,8 @@ namespace eRentSolution.Application.Catalog.Products
         Task<ApiResult<string>> Update(ProductUpdateRequest request, Guid userInfoId);
         Task<ApiResult<string>> Hide(int productId, Guid userInfoId);
         Task<ApiResult<string>> Show(int productId, Guid userInfoId);
+        Task<ApiResult<string>> InActiveProduct(int productId, Guid userInfoId);
+        Task<ApiResult<string>> ActiveProduct(int productId, Guid userInfoId);
         Task<ApiResult<string>> Delete(int productId);
         Task<ApiResult<string>> UpdatePrice(int productId, decimal newPrice, Guid userInfoId);
         Task<ApiResult<string>> UpdateStock(int productId, int addedQuantity, Guid userInfoId);
