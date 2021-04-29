@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Xóa sản phẩm";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
 }
 
 <div class="container-fluid">
@@ -26,9 +26,9 @@
                         @Html.DisplayFor(model => model.Id)
                     </dd>
                 </dl>
-                <form asp-action="Hide">
+                <form asp-action="Show">
                     <input asp-for="Id" type="hidden" input />
-                    <input type="submit" value="Hide" class="btn btn-danger" />
+                    <input type="submit" value="Show" class="btn btn-danger" />
                 </form>
             </div>
         </div>

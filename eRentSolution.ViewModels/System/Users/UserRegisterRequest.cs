@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eRentSolution.ViewModels.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -27,5 +28,7 @@ namespace eRentSolution.ViewModels.System.Users
         public string PhoneNumber { get; set; }
         [Display(Name = "Xác nhận mật khẩu")]
         public string ConfirmPassword { get; set; }
+        [Display(Name = "Phân quyền")]
+        public List<SelectItem> Roles { get; set; } = new List<SelectItem>();
     }
 }

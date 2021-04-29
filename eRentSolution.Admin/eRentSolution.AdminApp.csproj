@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Product\ActiveProduct.cshtml" />
+    <Content Remove="Views\Product\InActiveProduct.cshtml" />
+    <Content Remove="Views\Slide\CreateSlide.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Views\Category\EditImage.cshtml" />
     <None Include="Views\Category\Index.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
@@ -12,21 +18,21 @@
     <None Include="Views\Login\Index.cshtml" />
     <None Include="Views\Product\AddDetail.cshtml" />
     <None Include="Views\Product\AddImage.cshtml" />
-    <None Include="Views\Product\CategoryAssign.cshtml" />
     <None Include="Views\Product\Create.cshtml" />
     <None Include="Views\Product\CreateSlide.cshtml" />
     <None Include="Views\Product\Delete.cshtml" />
-    <None Include="Views\Product\Details.cshtml" />
+    <None Include="Views\Product\Detail.cshtml" />
     <None Include="Views\Product\Edit.cshtml" />
     <None Include="Views\Product\EditDetail.cshtml" />
     <None Include="Views\Product\EditImage.cshtml" />
-    <None Include="Views\Product\Hide.cshtml" />
+    <None Include="Views\Product\InActiveProduct.cshtml" />
     <None Include="Views\Product\Index.cshtml" />
-    <None Include="Views\Product\Show.cshtml" />
+    <None Include="Views\Product\ActiveProduct.cshtml" />
     <None Include="Views\Shared\Components\Pager\Default.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\Slide\CreateSlide.cshtml" />
     <None Include="Views\Slide\Delete.cshtml" />
     <None Include="Views\Slide\Details.cshtml" />
     <None Include="Views\Slide\Edit.cshtml" />

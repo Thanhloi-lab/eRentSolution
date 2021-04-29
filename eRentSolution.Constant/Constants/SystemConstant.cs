@@ -7,7 +7,8 @@ namespace eRentSolution.Utilities.Constants
     public class SystemConstant
     {
         public const string MainConnectionString = "eRentSolutionDatabase";
-        public const string BackendApiProductUrl = "https://localhost:5003/products/";
+        public const string BackendApiProductUrl = "localhost:5003/product/";
+        public const string AdminBackendApiProductUrl = "localhost:5002/product/";
         public const string DefaultAvatar = "default_avatar.png";
         public const string DefaultCategory = "default_category.jpg";
         public const long DefaultAvatarSize = 15131;
@@ -55,10 +56,6 @@ namespace eRentSolution.Utilities.Constants
             public const string UpdateImage = "Chỉnh sửa hình ảnh sản phẩm";
             public const string CreateImage = "Thêm hình ảnh sản phẩm";
             public const string DeleteImage = "Xóa hình ảnh sản phẩm";
-
-            public const string UpdateCategory = "Chỉnh sửa danh mục sản phẩm";
-            public const string CreateCategory = "Tạo danh mục sản phẩm";
-            public const string UpdateCategoryImage = "Chỉnh sửa hình ảnh danh mục sản phẩm";
         }
     }
 }

@@ -31,10 +31,13 @@
         <td>@Html.DisplayFor(modelItem => item.IsFeatured)</td>
         <td>@Html.DisplayFor(modmodelItemel => item.StatusId)</td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("MyProductDetail", "MyProductDetail", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })|
-            @Html.ActionLink("AddDetail", "AddDetail", new { id = item.Id })
+            @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.Id }) |
+            @Html.ActionLink("Chi tiết", "MyProductDetail", new { id = item.Id }) |
+            @Html.ActionLink("Xóa", "Delete", new { id = item.Id })|
+            @Html.ActionLink("Ẩn", "Hide", new { id = item.Id })|
+            @Html.ActionLink("Hiện", "Show", new { id = item.Id })|
+            @Html.ActionLink("Danh mục", "CategoryAssign", new { id = item.Id })|
+            @Html.ActionLink("Thêm chi tiết", "AddDetail", new { id = item.Id })
         </td>
     </tr>
         }

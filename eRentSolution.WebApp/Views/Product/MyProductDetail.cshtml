@@ -1,4 +1,5 @@
-﻿@model eRentSolution.ViewModels.Catalog.Products.ProductViewModel
+﻿@model eRentSolution.ViewModels.Catalog.Products.ProductViewModel;
+@using eRentSolution.Utilities.Constants;
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{ ViewData["Title"] = "MyProductDetail";
                 Layout = "~/Views/Shared/_Layout3.cshtml"; }
@@ -38,6 +39,16 @@
 
         </tr>
         <tr>
+            <td>@Html.DisplayNameFor(model => model.Categories)</td>
+            <td>
+                @foreach (var item in Model.Categories)
+                {
+                    @Html.DisplayFor(model => item)
+                    <br />
+                }
+            </td>
+        </tr>
+        <tr>
             <td>@Html.DisplayNameFor(model => model.Description)</td>
             <td>@Html.DisplayFor(model => model.Description)</td>
 
@@ -63,13 +74,18 @@
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.IsFeatured)</td>
-            <td>@Html.DisplayFor(model => model.IsFeatured)</td>
-
+            @if (Model.IsFeatured == eRentSolution.Data.Enums.Status.Active)
+            {
+                <td>Có</td>
+            }
+            else
+            {
+                <td>Không</td>
+            }
         </tr>
         <tr>
-            <td>@Html.DisplayNameFor(model => model.StatusId)</td>
-            <td>@Html.DisplayFor(model => model.StatusId)</td>
-
+            <td>@Html.DisplayNameFor(model => model.Status)</td>
+            <td>@Html.DisplayFor(model => model.Status)</td>
         </tr>
     </table>
 

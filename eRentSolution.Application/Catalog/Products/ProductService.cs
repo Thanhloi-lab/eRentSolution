@@ -80,7 +80,7 @@ namespace eRentSolution.Application.Catalog.Products
                         UserInfoId = userInfoId,
                         Date = DateTime.UtcNow
                     }
-                }
+                },
             };
             // Luu Anh
             if (request.ThumbnailImage != null)
@@ -104,7 +104,23 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.Products.AddAsync(product);
             var result = await _context.SaveChangesAsync();
             if (result > 0)
+            {
+                var prod = await _context.Products.FirstOrDefaultAsync(x => x.DateCreated == product.DateCreated);
+                foreach (var category in request.Categories)
+                {
+                    if (category.Selected == true)
+                    {
+                        await _context.ProductInCategories.AddAsync(new ProductInCategory()
+                        {
+                            CategoryId = int.Parse(category.Id),
+                            ProductId = prod.Id,
+                        });
+                    }
+                }
+                await _context.SaveChangesAsync();
                 return new ApiSuccessResult<string>("Thêm sản phẩm thành công");
+            }
+                
             return new ApiErrorResult<string>("Thêm sản phẩm thất bại, vui lòng thử lại sau");
         }
         public async Task<ApiResult<string>> Delete(int productId)
@@ -467,8 +483,7 @@ namespace eRentSolution.Application.Catalog.Products
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var query = from p in _context.Products
                         join cen in _context.Censors on p.Id equals cen.ProductId
-                        where cen.UserInfoId == userId && p.StatusId == (int)(object)Status.Active
-                             && cen.ActionId == action.Id && p.Id == productId
+                        where cen.UserInfoId == userId && cen.ActionId == action.Id && p.Id == productId
                         select new { p };
 
             if (query.Count() > 0)
@@ -688,7 +703,7 @@ namespace eRentSolution.Application.Catalog.Products
             var productDetails = await GetDetailsByProductId(product.Id);
             if (!productDetails.IsSuccessed)
                 return new ApiErrorResult<ProductViewModel>(productDetails.Message);
-
+            var status = await _context.ProductStatus.FirstOrDefaultAsync(x => x.Id == product.StatusId);
             var productViewModel = new ProductViewModel()
             {
                 DateCreated = product.DateCreated,
@@ -703,7 +718,8 @@ namespace eRentSolution.Application.Catalog.Products
                 StatusId = product.StatusId,
                 Categories = categories,
                 IsFeatured = product.IsFeatured,
-                Address = product.Address
+                Address = product.Address,
+                Status = status.StatusName
             };
             var productImages = await GetListImage(product.Id);
             if (!productImages.IsSuccessed)

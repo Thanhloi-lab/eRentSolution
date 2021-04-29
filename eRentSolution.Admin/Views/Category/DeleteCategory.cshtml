@@ -1,8 +1,8 @@
-﻿@model eRentSolution.ViewModels.Catalog.Products.ProductStatusRequest
+﻿@model eRentSolution.ViewModels.Utilities.Slides.SlideStatusRequest
 
-@{
+@{ 
     ViewData["Title"] = "Xóa sản phẩm";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+   Layout = "~/Views/Shared/_Layout.cshtml"; 
 }
 
 <div class="container-fluid">
@@ -15,7 +15,7 @@
         <div class="card-header">
             <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
         </div>
-
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="card-body">
             <div class="col-md-12">
                 <dl class="row">
@@ -26,9 +26,11 @@
                         @Html.DisplayFor(model => model.Id)
                     </dd>
                 </dl>
-                <form asp-action="Show">
+
+
+                <form asp-action="DeleteCategory">
                     <input asp-for="Id" type="hidden" input />
-                    <input type="submit" value="Show" class="btn btn-danger" />
+                    <input type="submit" value="Delete" class="btn btn-danger" />
                 </form>
             </div>
         </div>

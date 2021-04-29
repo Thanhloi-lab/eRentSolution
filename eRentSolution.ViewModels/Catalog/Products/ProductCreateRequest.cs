@@ -1,5 +1,6 @@
 ﻿
 using eRentSolution.Data.Entities;
+using eRentSolution.ViewModels.Common;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 
@@ -21,5 +22,6 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public int Width { get; set; }
         public int Length { get; set; }
         public IFormFile ThumbnailImage { get; set; }
+        public List<SelectItem> Categories { get; set; } = new List<SelectItem>();
     }
 }

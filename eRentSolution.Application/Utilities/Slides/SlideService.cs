@@ -207,7 +207,7 @@ namespace eRentSolution.Application.Utilities.Slides
         {
             var query = from s in _context.Slides
                         join p in _context.Products on s.ProductId equals p.Id
-                        where s.Status == Data.Enums.Status.Active
+                        
                         select new { s, p};
 
             if (request.Keyword != null)
@@ -218,7 +218,11 @@ namespace eRentSolution.Application.Utilities.Slides
                                             x.p.Name.Contains(request.Keyword));
                 }
             }
-            if(request.Status!=null && request.Status.HasValue)
+            if (request.isGuess)
+            {
+                query = query.Where(x => x.s.Status == Data.Enums.Status.Active);
+            }
+            if (request.Status!=null && request.Status.HasValue)
             {
                 if(request.Status==0)
                     query = query.Where(x => x.s.Status == Data.Enums.Status.InActive);

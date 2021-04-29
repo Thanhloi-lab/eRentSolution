@@ -72,7 +72,7 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        [HttpDelete("{userInfoId}/hide/{slideId}")]
+        [HttpPut("{userInfoId}/hide/{slideId}")]
         public async Task<IActionResult> Hide(Guid userInfoId, int slideId, [FromForm] SlideStatusRequest request)
         {
             request.Id = slideId;
@@ -81,7 +81,7 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        [HttpDelete("{userInfoId}/show/{slideId}")]
+        [HttpPut("{userInfoId}/show/{slideId}")]
         public async Task<IActionResult> Show(Guid userInfoId, int slideId, [FromForm] SlideStatusRequest request)
         {
             request.Id = slideId;

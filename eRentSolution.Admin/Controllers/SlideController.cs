@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace eRentSolution.AdminApp.Controllers
@@ -43,7 +44,8 @@ namespace eRentSolution.AdminApp.Controllers
                 Keyword = keyword,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                Status = status
+                Status = status,
+                isGuess = false
             };
 
             if (TempData["result"] != null)
@@ -184,6 +186,47 @@ namespace eRentSolution.AdminApp.Controllers
                 return View(result.ResultObject);
             TempData["failResult"] = result.Message;
             return RedirectToAction("intdex");
+        }
+        [HttpGet]
+        public IActionResult CreateSlide()
+        {
+            return View(new SlideCreateRequest()
+            {
+                ProductId = 0
+            });
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateSlide([FromForm] SlideCreateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            string formatAdmin = SystemConstant.AdminBackendApiProductUrl+ "detail/"+"([0-9]+)";
+            string formatWebApp = SystemConstant.AdminBackendApiProductUrl+ "detail/" + "([0-9]+)";
+            int id = 0;
+            bool isContainHttps = request.ProductUrl.Contains("https://");
+            if(isContainHttps)
+            {
+                request.ProductUrl = request.ProductUrl.Split("https://")[1];
+            }    
+            if (Regex.IsMatch(request.ProductUrl, formatAdmin) || Regex.IsMatch(request.ProductUrl, formatWebApp))
+            {
+                string[] splitedUrl = request.ProductUrl.Split("/");
+                id = int.Parse(splitedUrl[splitedUrl.Length-1]);
+            }
+            request.ProductId = id;
+
+            
+
+            var result = await _slideApiClient.CreateSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
         }
     }
 }

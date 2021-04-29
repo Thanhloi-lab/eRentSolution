@@ -4,6 +4,7 @@ using eRentSolution.ViewModels.Catalog.Categories;
 using eRentSolution.ViewModels.Catalog.ProductDetails;
 using eRentSolution.ViewModels.Catalog.ProductImages;
 using eRentSolution.ViewModels.Catalog.Products;
+using eRentSolution.ViewModels.Common;
 using eRentSolution.WebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -50,8 +51,7 @@ namespace eRentSolution.WebApp.Controllers
                 IsGuess = true,
                 MaxPrice = maxPrice,
                 MinPrice = minPrice
-            };
-
+            };   
             var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Keyword = keyword;
             products.ResultObject.Items = await GetProductImages(products.ResultObject.Items);
@@ -94,7 +94,13 @@ namespace eRentSolution.WebApp.Controllers
             {
                 TempData["failResult"] = user.Message;
                 return RedirectToAction("Index");
-            }    
+            }
+            var addViewCount = await _productApiClient.AddViewcount(id, SystemConstant.AppSettings.TokenWebApp);
+            if(!addViewCount.IsSuccessed)
+            {
+                TempData["failResult"] = user.Message;
+                return RedirectToAction("Index");
+            }
             return View(new ProductDetailViewModels()
             {
                 Owner = user.ResultObject,
@@ -192,9 +198,23 @@ namespace eRentSolution.WebApp.Controllers
             });
         }
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var categoryObj = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
+            var categoryAssignRequest = new List<SelectItem>();
+            foreach (var item in categoryObj.ResultObject)
+            {
+                categoryAssignRequest.Add(new SelectItem()
+                {
+                    Id = item.Id.ToString(),
+                    Name = item.Name,
+                    Selected = false
+                });
+            }
+            return View(new ProductCreateRequest()
+            {
+                Categories = categoryAssignRequest
+            }) ;
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
@@ -314,13 +334,18 @@ namespace eRentSolution.WebApp.Controllers
             return View(request);
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Category(int categoryId, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Category(string keyword, string address, int categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
         {
             var products = await _productApiClient.GetPagings(new GetProductPagingRequest()
             {
                 CategoryId = categoryId,
-                PageIndex = page,
+                PageIndex = pageSize,
                 PageSize = pageSize,
+                Address = address,
+                IsGuess = true,
+                Keyword = keyword,
+                MaxPrice = maxPrice,
+                MinPrice = minPrice
             }, SystemConstant.AppSettings.TokenWebApp);
             products.ResultObject.Items = await GetProductImages(products.ResultObject.Items);
             var category = await _categoryApiClient.GetById(categoryId, SystemConstant.AppSettings.TokenWebApp);
@@ -380,6 +405,47 @@ namespace eRentSolution.WebApp.Controllers
             }
             ModelState.AddModelError("", result.Message);
             return View(request.Id);
+        }
+        [HttpGet]
+        public async Task<IActionResult> CategoryAssign(int id)
+        {
+            var categoryAssignRequest = await GetCategoryAssignRequest(id);
+            return View(categoryAssignRequest);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CategoryAssign(CategoryAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
+                return View();
+            }    
+
+            var result = await _productApiClient.CategoryAssign(request.Id, request, SystemConstant.AppSettings.TokenWebApp);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", result.Message);
+            var categoryAssign = GetCategoryAssignRequest(request.Id);
+            return View(categoryAssign);
+        }
+        private async Task<CategoryAssignRequest> GetCategoryAssignRequest(int id)
+        {
+            var productObj = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var categoryObj = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
+            var categoryAssignRequest = new CategoryAssignRequest();
+            foreach (var category in categoryObj.ResultObject)
+            {
+                categoryAssignRequest.Categories.Add(new SelectItem()
+                {
+                    Id = category.Id.ToString(),
+                    Name = category.Name,
+                    Selected = productObj.ResultObject.Categories.Contains(category.Name)
+                });
+            }
+            return categoryAssignRequest;
         }
         #endregion
 

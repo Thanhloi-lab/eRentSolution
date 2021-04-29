@@ -31,6 +31,7 @@ namespace eRentSolution.Data.EF
             modelBuilder.ApplyConfiguration(new CensorConfiguration());
             modelBuilder.ApplyConfiguration(new UserInfoConfiguration());
             modelBuilder.ApplyConfiguration(new ProductDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductStatusConfiguration());
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
@@ -55,5 +56,6 @@ namespace eRentSolution.Data.EF
         public DbSet<ProductDetail> ProductDetails { get; set; }
         public DbSet<UserInfo> UserInfos { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<ProductStatus> ProductStatus { get; set; }
     }
 }

@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Product\CategoryAssign.cshtml" />
+    <Content Remove="Views\Product\Hide.cshtml" />
+    <Content Remove="Views\Product\Show.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Views\Account\Login.cshtml" />
     <None Include="Views\Account\Register.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
@@ -12,6 +18,7 @@
     <None Include="Views\Product\AddDetail.cshtml" />
     <None Include="Views\Product\AddImage.cshtml" />
     <None Include="Views\Product\Category.cshtml" />
+    <None Include="Views\Product\CategoryAssign.cshtml" />
     <None Include="Views\Product\Create.cshtml" />
     <None Include="Views\Product\Delete.cshtml" />
     <None Include="Views\Product\DeleteDetail.cshtml" />
@@ -21,9 +28,11 @@
     <None Include="Views\Product\EditDetail.cshtml" />
     <None Include="Views\Product\EditImage.cshtml" />
     <None Include="Views\Product\GetUserListProducts.cshtml" />
+    <None Include="Views\Product\Hide.cshtml" />
     <None Include="Views\Product\Index.cshtml" />
     <None Include="Views\Product\MyListProducts.cshtml" />
     <None Include="Views\Product\MyProductDetail.cshtml" />
+    <None Include="Views\Product\Show.cshtml" />
     <None Include="Views\Shared\Components\Pager\Default.cshtml" />
     <None Include="Views\Shared\Components\SideBar\Default.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />

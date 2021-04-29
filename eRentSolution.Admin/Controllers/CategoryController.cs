@@ -79,7 +79,7 @@ namespace eRentSolution.AdminApp.Controllers
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpGet]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteCategory(int id)
         {
             return View(new SlideStatusRequest()
             {
@@ -88,7 +88,7 @@ namespace eRentSolution.AdminApp.Controllers
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpPost]
-        public async Task<IActionResult> Delete(SlideStatusRequest request)
+        public async Task<IActionResult> DeleteCategory(SlideStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -99,8 +99,9 @@ namespace eRentSolution.AdminApp.Controllers
                 TempData["result"] = result.ResultObject;
                 return RedirectToAction("Index");
             }
+
             ModelState.AddModelError("", result.Message);
-            return View(request.Id);
+            return View(request);
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpGet]

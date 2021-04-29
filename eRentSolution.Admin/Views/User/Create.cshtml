@@ -61,6 +61,21 @@
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="Roles" class="control-label"></label>
+                        @for (int i = 0; i < Model.Roles.Count; i++)
+                        {
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" asp-for="Roles[i].Selected" />
+                                    <input type="hidden" asp-for="Roles[i].Id" />
+                                    <input type="hidden" asp-for="Roles[i].Name" />
+                                    @Model.Roles[i].Name
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="form-group">
                         <input type="submit" value="Lưu lại" class="btn btn-primary" />
                     </div>
                 </form>

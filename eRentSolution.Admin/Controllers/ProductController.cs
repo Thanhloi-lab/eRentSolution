@@ -71,7 +71,7 @@ namespace eRentSolution.AdminApp.Controllers
             return View(products.ResultObject);
         }
         [HttpGet]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
             if(!result.IsSuccessed)
@@ -104,7 +104,7 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request.Id);
         }
         [HttpGet]
-        public IActionResult InActive(int id)
+        public IActionResult InActiveProduct(int id)
         {
             return View(new ProductStatusRequest()
             {
@@ -112,7 +112,7 @@ namespace eRentSolution.AdminApp.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> InActive(ProductStatusRequest request)
+        public async Task<IActionResult> InActiveProduct(ProductStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -127,7 +127,7 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request.Id);
         }
         [HttpGet]
-        public IActionResult Active(int id)
+        public IActionResult ActiveProduct(int id)
         {
             return View(new ProductStatusRequest()
             {
@@ -135,7 +135,7 @@ namespace eRentSolution.AdminApp.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> Active(ProductStatusRequest request)
+        public async Task<IActionResult> ActiveProduct(ProductStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -212,38 +212,7 @@ namespace eRentSolution.AdminApp.Controllers
             ModelState.AddModelError("", result.Message);
             return RedirectToAction("Details");
         }
-        [HttpGet]
-        public async Task<IActionResult> FeaturedProduct(string keyword, int? categoryId, decimal? minPrice, decimal? maxPrice, string address, int pageIndex = 1, int pageSize = 10)
-        {
-            var request = new GetProductPagingRequest()
-            {
-                Keyword = keyword,
-                PageIndex = pageIndex,
-                PageSize = pageSize,
-                CategoryId = categoryId,
-                IsGuess = false,
-                Address = address,
-                MaxPrice = maxPrice,
-                MinPrice = maxPrice
-            };
-
-            if (TempData["result"] != null)
-            {
-                ViewBag.success = TempData["result"];
-            }
-
-            var products = await _productApiClient.GetFeaturedProducts(request, SystemConstant.AppSettings.TokenAdmin);
-            ViewBag.Keyword = keyword;
-
-            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
-            ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
-            {
-                Text = x.Name,
-                Value = x.Id.ToString(),
-                Selected = categoryId.HasValue && categoryId.Value == x.Id
-            });
-            return View(products.ResultObject);
-        }
+        
 
 
 
@@ -359,42 +328,7 @@ namespace eRentSolution.AdminApp.Controllers
         //    ModelState.AddModelError("", result.ResultObject);
         //    return View(request);
         //}
-        //[HttpGet]
-        //public async Task<IActionResult> CategoryAssign(int id)
-        //{
-        //    var categoryAssignRequest = await GetCategoryAssignRequest(id);
-        //    return View(categoryAssignRequest);
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> CategoryAssign(CategoryAssignRequest request)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return View();
-
-        //    var result = await _productApiClient.CategoryAssign(request.Id, request, SystemConstant.AppSettings.TokenAdmin);
-        //    if (result.IsSuccessed)
-        //    {
-        //        TempData["result"] = "Assign role successfully";
-        //        return RedirectToAction("Index");
-        //    }
-        //    ModelState.AddModelError("", result.Message);
-        //    var categoryAssign = GetCategoryAssignRequest(request.Id);
-        //    return View(categoryAssign);
-        //}
-        //private async Task<CategoryAssignRequest> GetCategoryAssignRequest(int id)
-        //{
-        //    var productObj = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
-        //    var categoryObj = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
-        //    var categoryAssignRequest = new CategoryAssignRequest();
-        //    foreach (var category in categoryObj)
-        //    {
-        //        categoryAssignRequest.Categories.Add(new SelectItem()
-        //        {
-        //            Id = category.Id.ToString(),
-        //            Name = category.Name,
-        //            Selected = productObj.Categories.Contains(category.Name)
-        //        });
-        //    }
+        
 
         //    return categoryAssignRequest;
         //}

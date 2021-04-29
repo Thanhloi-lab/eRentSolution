@@ -20,7 +20,6 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.ViewCount).IsRequired().HasDefaultValue(0);
             builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
-            builder.Property(x => x.SeoAlias).IsRequired().HasMaxLength(200);
             builder.Property(x => x.Description).IsRequired().HasMaxLength(2000);
             builder.Property(x => x.IsFeatured).IsRequired().HasDefaultValue(Status.InActive);
             builder.Property(x => x.Address).HasMaxLength(300).IsRequired();

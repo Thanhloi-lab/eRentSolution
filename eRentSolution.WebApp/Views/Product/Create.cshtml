@@ -17,6 +17,58 @@
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            <span class="label-input100">Danh mục sản phẩm</span>
+            @for (int i = 0; i < Model.Categories.Count; i++)
+            {
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" asp-for="Categories[i].Selected" />
+                        <input type="hidden" asp-for="Categories[i].Id" />
+                        <input type="hidden" asp-for="Categories[i].Name" />
+                        @Model.Categories[i].Name
+                    </label>
+                </div>
+            }
+            <select style="margin-left:0; border:1px solid #7f7f7f" id="province" name="calc_shipping_provinces" required="">
+                <option value="">Tỉnh / Thành phố</option>
+            </select>
+            <select style=" border:1px solid #7f7f7f" id="district" name="calc_shipping_district" required="">
+                <option value="">Quận / Huyện</option>
+            </select>
+            <input class="billing_address_2" asp-for="Address" type="hidden" value="">
+            <span asp-validation-for="Address" class="text-danger"></span>
+
+            <div class="wrap-input100 validate-input">
+                <span class="label-input100">Địa chỉ</span>
+                <input class="input-add input100" />
+                <span class="focus-input100"></span>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <span class="label-input100">Mô tả</span>
+                <textarea class="input100" asp-for="Description" rows="5"></textarea>
+                <span class="focus-input100"></span>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <span class="label-input100">Chủ đề tìm kiếm</span>
+                <input class="input100" asp-for="SeoTitle">
+                <span class="focus-input100"></span>
+                <span asp-validation-for="SeoTitle" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <span class="label-input100">Từ khóa tìm kiếm</span>
+                <input class="input100" asp-for="SeoAlias">
+                <span class="focus-input100"></span>
+                <span asp-validation-for="SeoAlias" class="text-danger"></span>
+            </div>
+            <div class="wrap-input100 validate-input">
+                <span class="label-input100">Mô tả tìm kiếm</span>
+                <input class="input100" asp-for="SeoDescription">
+                <span class="focus-input100"></span>
+                <span asp-validation-for="SeoDescription" class="text-danger"></span>
+            </div>
+            <p>Thông tin chi tiết</p>
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Tên loại sản phẩm</span>
                 <input class="input100" asp-for="SubProductName">
@@ -53,51 +105,14 @@
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Width" class="text-danger"></span>
             </div>
-            <div class="wrap-input100 validate-input">
-                <span class="label-input100">Địa chỉ</span>
-                <input class="input-add input100"  />
-                <span class="focus-input100"></span>
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <select style="margin-left:0; border:1px solid #7f7f7f" id="province" name="calc_shipping_provinces" required="">
-                <option value="">Tỉnh / Thành phố</option>
-            </select>
-            <select style=" border:1px solid #7f7f7f" id="district" name="calc_shipping_district" required="">
-                <option value="">Quận / Huyện</option>
-            </select>
-            <input class="billing_address_2" asp-for="Address" type="hidden" value="">
-            <span asp-validation-for="Address" class="text-danger"></span>
-        
-            <div class="wrap-input100 validate-input">
-                <span class="label-input100">Mô tả</span>
-                <textarea class="input100" asp-for="Description" rows="5"></textarea>
-                <span class="focus-input100"></span>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Chi tiết</span>
                 <textarea class="input100" asp-for="Detail" rows="5"></textarea>
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Detail" class="text-danger"></span>
             </div>
-            <div class="wrap-input100 validate-input">
-                <span class="label-input100">Chủ đề tìm kiếm</span>
-                <input class="input100" asp-for="SeoTitle">
-                <span class="focus-input100"></span>
-                <span asp-validation-for="SeoTitle" class="text-danger"></span>
-            </div>
-            <div class="wrap-input100 validate-input">
-                <span class="label-input100">Từ khóa tìm kiếm</span>
-                <input class="input100" asp-for="SeoAlias">
-                <span class="focus-input100"></span>
-                <span asp-validation-for="SeoAlias" class="text-danger"></span>
-            </div>
-            <div class="wrap-input100 validate-input">
-                <span class="label-input100">Mô tả tìm kiếm</span>
-                <input class="input100" asp-for="SeoDescription">
-                <span class="focus-input100"></span>
-                <span asp-validation-for="SeoDescription" class="text-danger"></span>
-            </div>
+
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Ảnh đại diện</span>
                 <input class="input100" asp-for="ThumbnailImage" type="file">

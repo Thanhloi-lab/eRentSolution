@@ -1,7 +1,8 @@
-﻿@model eRentSolution.ViewModels.System.Users.UserResetPasswordRequest
+﻿@model eRentSolution.ViewModels.Catalog.Products.ProductStatusRequest
+
 @{
-    ViewData["Title"] = "ResetPassword";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Xóa sản phẩm";
+    Layout = "~/Views/Shared/_Layout3.cshtml";
 }
 
 <div class="container-fluid">
@@ -12,9 +13,9 @@
     </ol>
     <div class="card mb-4">
         <div class="card-header">
-            <a class="btn btn-success" asp-action="Index" asp-controller="User">Về danh sách</a>
+            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
         </div>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
         <div class="card-body">
             <div class="col-md-12">
                 <dl class="row">
@@ -25,13 +26,11 @@
                         @Html.DisplayFor(model => model.Id)
                     </dd>
                 </dl>
-                <form asp-action="ResetPassword">
+                <form asp-action="Hide">
                     <input asp-for="Id" type="hidden" input />
-                    <input asp-for="NewPassword" type="hidden" input />
-                    <input type="submit" value="Reset" class="btn btn-danger" />
+                    <input type="submit" value="Hide" class="btn btn-danger" />
                 </form>
             </div>
         </div>
     </div>
 </div>
-

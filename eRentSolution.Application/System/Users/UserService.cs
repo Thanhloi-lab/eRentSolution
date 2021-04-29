@@ -131,6 +131,7 @@ namespace eRentSolution.Application.System.Users
             {
                 return new ApiErrorResult<string>("Email đã tồn tại");
             }
+            
             user = new AppUser()
             {
                 UserName = request.UserName,
@@ -144,9 +145,18 @@ namespace eRentSolution.Application.System.Users
                     LastName = request.LastName
                 }
             };
+            
             var result = await _userManager.CreateAsync(user, request.Password + user.DateChangePassword);
             if (result.Succeeded)
             {
+                var addedRoles = request.Roles.Where(x => x.Selected == true).Select(x => x.Name).ToList();
+                foreach (var roleName in addedRoles)
+                {
+                    if (await _userManager.IsInRoleAsync(user, roleName) == false)
+                    {
+                        await _userManager.AddToRoleAsync(user, roleName);
+                    }
+                }
                 user.AvatarFilePath = SystemConstant.DefaultAvatar;
                 user.AvatarFileSize = SystemConstant.DefaultAvatarSize;
                 await _userManager.UpdateAsync(user);

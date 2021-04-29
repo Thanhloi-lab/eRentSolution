@@ -19,6 +19,7 @@
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
         <li class="breadcrumb-item active">Danh sách hoạt động</li>
     </ol>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="card mb-12">
         <div class=" card-header">
             <div class="row">
@@ -44,16 +45,14 @@
             <div class="row">
                 @if (ViewBag.Success != null)
                 {
-                    <div id="msgAlert" class="alert alert-success" role="alert">
-                        @ViewBag.Success
-                    </div>
-                }
+    <div id="msgAlert" class="alert alert-success" role="alert">
+        @ViewBag.Success
+    </div>}
                 @if (TempData["FailResult"] != null)
                 {
-                    <div id="msgAlert" class="alert alert-fail" role="alert">
-                        @TempData["FailResult"]
-                    </div>
-                }
+    <div id="msgAlert" class="alert alert-fail" role="alert">
+        @TempData["FailResult"]
+    </div>}
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered">
@@ -76,21 +75,20 @@
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.UserLastName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ActionName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ProductName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Date)
-                                </td>
-                            </tr>
-                        }
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserLastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActionName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+            </tr>}
                     </tbody>
                 </table>
             </div>

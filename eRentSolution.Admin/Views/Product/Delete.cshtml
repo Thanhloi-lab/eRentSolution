@@ -15,7 +15,7 @@
         <div class="card-header">
             <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
         </div>
-
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="card-body">
             <div class="col-md-12">
                 <dl class="row">
@@ -26,7 +26,7 @@
                         @Html.DisplayFor(model => model.Id)
                     </dd>
                 </dl>
-                
+
 
                 <form asp-action="Delete">
                     <input asp-for="Id" type="hidden" input />

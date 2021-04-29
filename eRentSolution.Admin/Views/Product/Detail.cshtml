@@ -27,8 +27,11 @@
         <div class="card-header">
             <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
         </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="card-body">
+
             <div class="table-responsive">
+
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -68,26 +71,26 @@
                             </td>
                             @if (Model.Categories != null)
                             {
-
-                                for (int i = 0; i < Model.Categories.Count; i++)
+                                <td>
+                                    @for (int i = 0; i < Model.Categories.Count; i++)
+                                    {
+                                        @Html.DisplayFor(model => Model.Categories[i])
+                                        <br />
+                                    }
+                                </td>
+                                if (Model.Categories.Count == 0)
                                 {
-                <td>
-                    @Html.DisplayFor(model => Model.Categories[i])
-                </td>
- }
-            if (Model.Categories.Count == 0)
-            {
-            <td>
-                N/A
-            </td>
- }
-    }
-    else
-    {
-            <td>
-                N/A
-            </td>
-}
+                                    <td>
+                                        N/A
+                                    </td>
+                                }
+                            }
+                            else
+                            {
+                                <td>
+                                    N/A
+                                </td>
+                            }
                         </tr>
                     </tbody>
                     <tbody>
@@ -95,7 +98,6 @@
                         <tr>
                             <td>
                                 @Html.DisplayNameFor(model => model.IsFeatured)
-
                             </td>
                             <td>
                                 @Html.DisplayFor(model => model.IsFeatured)
@@ -148,12 +150,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <div>
-                    <form asp-action="Edit" method="get" style="margin: 40px;">
-                        <input asp-for="Id" type="hidden" input />
-                        <input type="submit" value="Edit" class="btn btn-outline-warning" />
-                    </form>
-                </div>
 
                 <table class="table table-bordered">
                     <thead>
@@ -182,96 +178,56 @@
                             <th style="text-align:center;vertical-align:middle;">
                                 Hình ảnh
                             </th>
-                            <th>
-
-                            </th>
                         </tr>
                     </thead>
                     @foreach (var item in Model.ProductDetailViewModels)
                     {
-            <tbody>
-                <tr>
-                    <td>
-                        @Html.DisplayFor(model => item.ProductDetailName)
-                    </td>
-                    <td>
-                        <p style="word-wrap:break-word; width:200px;"> @Html.DisplayFor(model => item.Detail)</p>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(model => item.ProductDetailName)
+                                </td>
+                                <td>
+                                    <p style="word-wrap:break-word; width:200px;"> @Html.DisplayFor(model => item.Detail)</p>
 
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.Price)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.OriginalPrice)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.Width)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.Length)
-                    </td>
-                    <td>
-                        @(item.Width * item.Length)
-                    </td>
-                
-                    @if (item.Images.Count > 0)
-            {
-        <td >
-            <div style="display:flex; width:311px; height:113px; flex-wrap:wrap; ">
-                @foreach (var image in item.Images)
-                {
-            <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="N/A" style="width: 50px; height: 50px; object-fit: cover;"></a>
-                                    <form asp-action="EditImage" method="get" style="padding: 0 20px 20px 20px;">
-                                        <input asp-for="@image.Id" name="imageId" type="hidden" input />
-                                        <input type="submit" value="Edit" class="btn btn-outline-warning" />
-                                    </form>}
-            </div>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.Price)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.OriginalPrice)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.Width)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.Length)
+                                </td>
+                                <td>
+                                    @(item.Width * item.Length)
+                                </td>
 
-        </td> }
-                        else
-                        {
-                          <td>
-                           <a href="#"><img src="#" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
-                        </td>}
+                                @if (item.Images.Count > 0)
+                                {
+                                    <td>
+                                        <div style="display:flex; width:311px; height:113px; flex-wrap:wrap; ">
+                                            @foreach (var image in item.Images)
+                                            {
+                                                <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="N/A" style="width: 50px; height: 50px; object-fit: cover;"></a>
+                                            }
+                                        </div>
+                                    </td>
 
-                    <td style="display: flex;">
-                        <form asp-action="EditDetail" method="get" style=" padding: 0 8px 8px 8px;">
-                            <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                            <input type="submit" value="Edit" class="btn btn-outline-success" />
-                        </form>
-                        <form asp-action="AddImage" method="get" style=" padding: 0 8px 8px 8px;">
-                            <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                            <input type="submit" value="AddImage" class="btn btn-outline-info" />
-                        </form>
-                    </td>
-                </tr>
-                @*<tr>
-            <td>
-                @Html.DisplayNameFor(model => item.Images)
-            </td>
-            @if (item.Images.Count > 0)
-            {
-                <td>
-                    @foreach (var image in item.Images)
-                    {
-                        <a href="#"><img src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
-                        <form asp-action="EditImage" method="get" style="padding: 0 20px 20px 20px;">
-                            <input asp-for="@image.Id" name="imageId" type="hidden" input />
-                            <input type="submit" value="Edit" class="btn btn-danger" />
-                        </form>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <a href="#"><img src="#" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
+                                    </td>
+                                }
+                            </tr>
+                        </tbody>
                     }
-                </td>
-            }
-            else
-            {
-                <td>
-                    <a href="#"><img src="#" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
-                </td>
-            }
-        </tr>*@
-
-            </tbody>
-}
                 </table>
 
             </div>

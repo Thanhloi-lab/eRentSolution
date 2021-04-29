@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -62,9 +63,23 @@ namespace eRentSolution.AdminApp.Controllers
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var roles = await _roleApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            var listRoles = new List<SelectItem>();
+            foreach (var item in roles.ResultObject)
+            {
+                listRoles.Add(new SelectItem()
+                {
+                    Id = item.Id.ToString(),
+                    Name = item.Name,
+                    Selected = false
+                });
+            }
+            return View(new UserRegisterRequest()
+            {
+                Roles = listRoles
+            });
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpPost]
@@ -225,7 +240,7 @@ namespace eRentSolution.AdminApp.Controllers
         {
             var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             if(result.IsSuccessed)
-                return View(result);
+                return View(result.ResultObject);
 
             TempData["FailResult"] = result.Message;
             return RedirectToAction("Index");
@@ -296,7 +311,6 @@ namespace eRentSolution.AdminApp.Controllers
                 return View();
             }
 
-            //var user = await _userApiClient.GetById(request.Id, SystemConstant.AppSettings.TokenAdmin);
             bool isYourself = false;
             if (request.Id.ToString().Equals(userId))
             {
