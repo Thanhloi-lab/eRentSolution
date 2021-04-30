@@ -654,6 +654,8 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
                 item.ProductDetailViewModels = productDetails.ResultObject;
+                var status = await _context.ProductStatus.FirstOrDefaultAsync(x => x.Id == item.StatusId);
+                item.Status = status.StatusName;
                 foreach (var productDetail in productDetails.ResultObject)
                 {
                     item.Stock += productDetail.Stock;
@@ -819,6 +821,8 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
                 item.ProductDetailViewModels = productDetails.ResultObject;
+                var status = await _context.ProductStatus.FirstOrDefaultAsync(x => x.Id == item.StatusId);
+                item.Status = status.StatusName;
                 foreach (var productDetail in productDetails.ResultObject)
                 {
                     item.Stock += productDetail.Stock;
@@ -927,6 +931,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
             }
+            
             int totalRow = await query.CountAsync();
             var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
             {
@@ -939,13 +944,15 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoTitle = x.p.SeoTitle,
                 ViewCount = x.p.ViewCount,
                 StatusId = x.p.StatusId,
-                Address = x.p.Address
+                Address = x.p.Address,
             }).Distinct().ToListAsync();
 
             foreach (var item in data)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
                 item.ProductDetailViewModels = productDetails.ResultObject;
+                var status = await _context.ProductStatus.FirstOrDefaultAsync(x => x.Id == item.StatusId);
+                item.Status = status.StatusName; 
                 foreach (var productDetail in productDetails.ResultObject)
                 {
                     item.Stock += productDetail.Stock;

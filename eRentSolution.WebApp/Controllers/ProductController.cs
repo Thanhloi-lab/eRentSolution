@@ -52,10 +52,10 @@ namespace eRentSolution.WebApp.Controllers
                 MaxPrice = maxPrice,
                 MinPrice = minPrice
             };   
-            var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
+            var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenWebApp);
             ViewBag.Keyword = keyword;
             products.ResultObject.Items = await GetProductImages(products.ResultObject.Items);
-            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
             ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
             {
                 Text = x.Name,
@@ -147,10 +147,10 @@ namespace eRentSolution.WebApp.Controllers
                 ViewBag.success = TempData["result"];
             }
 
-            var products = await _productApiClient.GetPageProductsByUserId(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            var products = await _productApiClient.GetPageProductsByUserId(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             ViewBag.Keyword = keyword;
 
-            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
             ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
             {
                 Text = x.Name,
@@ -182,7 +182,7 @@ namespace eRentSolution.WebApp.Controllers
             var products = await _productApiClient.GetPageProductsByUserId(request, ownerId, SystemConstant.AppSettings.TokenWebApp);
             ViewBag.Keyword = keyword;
 
-            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
             ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
             {
                 Text = x.Name,
@@ -271,7 +271,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                ModelState.AddModelError("", "Dữ liệu hông hợp lệ");
                 return View(request);
             }    
                 
@@ -286,7 +286,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index");
+                return RedirectToAction("MyListProducts");
             }
 
             ModelState.AddModelError("", result.Message);
@@ -313,7 +313,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                ModelState.AddModelError("", "Dữ liệu không hợp lệ");
                 return View(request);
             }
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -323,12 +323,12 @@ namespace eRentSolution.WebApp.Controllers
                 TempData["failResult"] = isMyProduct.Message;
                 return RedirectToAction("Index", "Home");
             }
-            var result = await _productApiClient.DeleteProduct(request.Id, SystemConstant.AppSettings.TokenAdmin);
+            var result = await _productApiClient.DeleteProduct(request.Id, SystemConstant.AppSettings.TokenWebApp);
 
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index");
+                return RedirectToAction("MyListProducts");
             }
             ModelState.AddModelError("", result.Message);
             return View(request);
@@ -373,12 +373,14 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _productApiClient.HideProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var isMyProduct = await _productApiClient.IsMyProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            var result = await _productApiClient.HideProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
 
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index");
+                return RedirectToAction("MyListProducts");
             }
             ModelState.AddModelError("", result.Message);
             return View(request.Id);
@@ -396,12 +398,15 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _productApiClient.ShowProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var isMyProduct = await _productApiClient.IsMyProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            var result = await _productApiClient.ShowProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
 
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index");
+                return RedirectToAction("MyListProducts");
             }
             ModelState.AddModelError("", result.Message);
             return View(request.Id);
@@ -605,7 +610,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                ModelState.AddModelError("", "Dữ liệu không hợp lệ");
                 return View(request);
             }
 
@@ -642,7 +647,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                ModelState.AddModelError("", "Dữ liệu không hợp lệ");
                 return View(request);
             }
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -714,12 +719,12 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Đăng nhập không hợp lệ");
+                ModelState.AddModelError("", "Dữ liệu không hợp lệ");
                 return View(request);
             }
 
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var result = await _productApiClient.DeleteImage(request.ImageId, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            var result = await _productApiClient.DeleteImage(request.ImageId, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
 
             if (result.IsSuccessed)
             {

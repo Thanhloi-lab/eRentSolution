@@ -78,7 +78,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var slide = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var slide = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             if(!slide.IsSuccessed)
             {
                 TempData["failResult"] = slide.Message;
@@ -181,7 +181,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var result = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var result = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             if(result.IsSuccessed)
                 return View(result.ResultObject);
             TempData["failResult"] = result.Message;

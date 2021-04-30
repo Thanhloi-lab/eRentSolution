@@ -73,7 +73,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
-            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.Ad);
             if(!result.IsSuccessed)
             {
                 TempData["failResult"] = result.Message;

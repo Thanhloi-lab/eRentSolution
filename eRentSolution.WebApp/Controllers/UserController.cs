@@ -30,12 +30,12 @@ namespace eRentSolution.WebApp.Controllers
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
+            token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
         }
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
-            var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
             if(!result.IsSuccessed)
             {
                 return RedirectToAction("index","home");
@@ -50,7 +50,7 @@ namespace eRentSolution.WebApp.Controllers
             {
                 return RedirectToAction("Error", "Home");
             }
-            var target = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            var target = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
             if (target.IsSuccessed)
             {
                 var updateRequest = new UserUpdateRequest()
@@ -71,7 +71,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _userApiClient.Update(request, SystemConstant.AppSettings.TokenAdmin);
+            var result = await _userApiClient.Update(request, SystemConstant.AppSettings.TokenWebApp);
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
@@ -97,7 +97,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _userApiClient.UpdatePassword(request, SystemConstant.AppSettings.TokenAdmin);
+            var result = await _userApiClient.UpdatePassword(request, SystemConstant.AppSettings.TokenWebApp);
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;

@@ -255,22 +255,22 @@ namespace eRentSolution.Data.Extentions
             new ProductStatus() 
             {
                 Id = 1,
-                StatusName = "Khóa sản phẩm hiển thị"
+                StatusName = "Khóa hoạt động"
             },
             new ProductStatus()
             {
                 Id = 2,
-                StatusName = "Cho phép sản phẩm hiển thị"
+                StatusName = "Hoạt động"
             },
             new ProductStatus()
             {
                 Id = 3,
-                StatusName = "Hiện sản phẩm"
+                StatusName = "Chờ duyệt"
             },
             new ProductStatus()
             {
                 Id = 4,
-                StatusName = "Ẩn sản phẩm"
+                StatusName = "Ẩn"
             });
         }
     }

@@ -31,12 +31,12 @@ namespace eRentSolution.Utilities.Constants
         }
         public class ActionSettings
         {
-            public const string HideProduct = "Ẩn sản phẩm";
             public const string UpdateProduct = "Chỉnh sửa sản phẩm";
             public const string CreateProduct = "Tạo sản phẩm";
-            public const string ShowProduct = "Hiện sản phẩm";
-            public const string InActiveProduct = "Không cho phép hiển thị";
-            public const string ActiveProduct = "Cho phép hiển thị";
+            public const string HideProduct = "Ẩn";
+            public const string ShowProduct = "Chờ duyệt";
+            public const string InActiveProduct = "Khóa hoạt động";
+            public const string ActiveProduct = "Hoạt động";
 
             public const string UpdateProductDetail = "Chỉnh sửa chi tiết sản phẩm";
             public const string CreateProductDetail = "Thêm chi tiết sản phẩm";
