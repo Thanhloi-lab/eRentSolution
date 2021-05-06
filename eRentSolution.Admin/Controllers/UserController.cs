@@ -58,6 +58,7 @@ namespace eRentSolution.AdminApp.Controllers
         public async Task<IActionResult> Logout()
         {
             Response.Cookies.Delete(SystemConstant.AppSettings.TokenAdmin);
+            Response.Cookies.Delete(CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("index", "login");
         }

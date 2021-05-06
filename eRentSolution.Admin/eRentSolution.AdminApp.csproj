@@ -5,14 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Product\ActiveProduct.cshtml" />
-    <Content Remove="Views\Product\InActiveProduct.cshtml" />
-    <Content Remove="Views\Slide\CreateSlide.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Include="Views\Category\CreateCategory.cshtml" />
+    <None Include="Views\Category\DeleteCategory.cshtml" />
+    <None Include="Views\Category\Detail.cshtml" />
     <None Include="Views\Category\EditImage.cshtml" />
     <None Include="Views\Category\Index.cshtml" />
+    <None Include="Views\Category\UpdateCategory.cshtml" />
+    <None Include="Views\FeaturedProduct\CreateFeatured.cshtml" />
+    <None Include="Views\FeaturedProduct\DeleteFeature.cshtml" />
+    <None Include="Views\FeaturedProduct\Index.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
     <None Include="Views\Login\Index.cshtml" />
@@ -25,6 +26,7 @@
     <None Include="Views\Product\Edit.cshtml" />
     <None Include="Views\Product\EditDetail.cshtml" />
     <None Include="Views\Product\EditImage.cshtml" />
+    <None Include="Views\Product\FeaturedProduct.cshtml" />
     <None Include="Views\Product\InActiveProduct.cshtml" />
     <None Include="Views\Product\Index.cshtml" />
     <None Include="Views\Product\ActiveProduct.cshtml" />

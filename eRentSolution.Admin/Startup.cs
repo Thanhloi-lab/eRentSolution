@@ -1,10 +1,14 @@
 using System;
+using eRentSolution.Data.EF;
+using eRentSolution.Data.Entities;
 using eRentSolution.Integration;
 using eRentSolution.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +28,7 @@ namespace eRentSolution.Admin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient();
+            
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -43,6 +48,9 @@ namespace eRentSolution.Admin
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
             services.AddTransient<ISlideApiClient, SlideApiClient>();
+
+
+
             IMvcBuilder builder = services.AddRazorPages();
             var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 #if DEBUG

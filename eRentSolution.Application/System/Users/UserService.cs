@@ -50,22 +50,21 @@ namespace eRentSolution.Application.System.Users
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
-                return new ApiErrorResult<string>("Username or password incorrect");
+                return new ApiErrorResult<string>("Tài khoản hoặc mật khẩu không đúng");
 
             if (user.Status == Data.Enums.Status.InActive)
-                return new ApiErrorResult<string>("Account was banned");
+                return new ApiErrorResult<string>("Tài khoản đã bị khóa");
 
             var roles = await _userManager.GetRolesAsync(user);
             if(isAdminPage)
             {
                 if(!roles.Contains(SystemConstant.AppSettings.UserAdminRole) && !roles.Contains(SystemConstant.AppSettings.AdminRole))
-                    return new ApiErrorResult<string>("Username or password incorrect");
+                    return new ApiErrorResult<string>("Tài khoản hoặc mật khẩu không đúng");
             }
-                
 
             var result = await _signInManager.PasswordSignInAsync(user, request.Password + user.DateChangePassword, request.RememberMe, true);
             if(!result.Succeeded)
-                return new ApiErrorResult<string>("Username or password incorrect");
+                return new ApiErrorResult<string>("Tài khoản hoặc mật khẩu không đúng");
             
             var userInfo = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == user.Id);
             var claims = new List<Claim>()
@@ -247,7 +246,7 @@ namespace eRentSolution.Application.System.Users
             {
                 new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
-            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword+user.DateChangePassword, request.NewPassword + DateTime.UtcNow);
             if (result.Succeeded)
             {
                // await _context.SaveChangesAsync();

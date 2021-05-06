@@ -5,12 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Product\CategoryAssign.cshtml" />
-    <Content Remove="Views\Product\Hide.cshtml" />
-    <Content Remove="Views\Product\Show.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Views\Account\Login.cshtml" />
     <None Include="Views\Account\Register.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
@@ -41,6 +35,7 @@
     <None Include="Views\Shared\_Layout2.cshtml" />
     <None Include="Views\Shared\_Layout3.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\User\ChangePassword.cshtml" />
     <None Include="Views\User\Details.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />

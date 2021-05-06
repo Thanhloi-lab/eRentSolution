@@ -2,7 +2,7 @@
 @using eRentSolution.Utilities.Constants;
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{ ViewData["Title"] = "MyProductDetail";
-                Layout = "~/Views/Shared/_Layout3.cshtml"; }
+    Layout = "~/Views/Shared/_Layout3.cshtml"; }
 
 <style>
     th {
@@ -43,9 +43,8 @@
             <td>
                 @foreach (var item in Model.Categories)
                 {
-                    @Html.DisplayFor(model => item)
-                    <br />
-                }
+    @Html.DisplayFor(model => item)
+                    <br />}
             </td>
         </tr>
         <tr>
@@ -76,12 +75,10 @@
             <td>@Html.DisplayNameFor(model => model.IsFeatured)</td>
             @if (Model.IsFeatured == eRentSolution.Data.Enums.Status.Active)
             {
-                <td>Có</td>
-            }
+<td>Có</td> }
             else
             {
-                <td>Không</td>
-            }
+<td>Không</td>            }
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.Status)</td>
@@ -125,76 +122,91 @@
         </tr>
         @foreach (var item in Model.ProductDetailViewModels)
         {
-    <tr>
-        <td>
-            @Html.DisplayFor(model => item.ProductDetailName)
-        </td>
-        <td>
-            <p style="word-wrap:break-word; width:200px;"> @Html.DisplayFor(model => item.Detail)</p>
+<tr>
+    <td>
+        @Html.DisplayFor(model => item.ProductDetailName)
+    </td>
+    <td>
+        <p style="word-wrap:break-word; width:200px;"> @Html.DisplayFor(model => item.Detail)</p>
 
-        </td>
-        <td>
-            @Html.DisplayFor(model => item.Price)
-        </td>
-        <td>
-            @Html.DisplayFor(model => item.OriginalPrice)
-        </td>
-        <td>
-            @Html.DisplayFor(model => item.Stock)
-        </td>
-        <td>
-            @Html.DisplayFor(model => item.Width)
-        </td>
-        <td>
-            @Html.DisplayFor(model => item.Length)
-        </td>
-        <td>
-            @(item.Width * item.Length)
-        </td>
-        <td>
-            <div style="display:flex; width:311px;height:113px; flex-wrap:wrap; ">
-                @foreach (var image in item.Images)
+    </td>
+    <td>
+        @Html.DisplayFor(model => item.Price)
+    </td>
+    <td>
+        @Html.DisplayFor(model => item.OriginalPrice)
+    </td>
+    <td>
+        @Html.DisplayFor(model => item.Stock)
+    </td>
+    <td>
+        @Html.DisplayFor(model => item.Width)
+    </td>
+    <td>
+        @Html.DisplayFor(model => item.Length)
+    </td>
+    <td>
+        @(item.Width * item.Length)
+    </td>
+    <td>
+    
+        <div style="display:flex; width:311px;height:113px; flex-wrap:wrap; ">
+            @{
+                var i = 0;
+                foreach (var image in item.Images)
                 {
-                    <a href="#"> <img style="width: 50px; height: 50px; object-fit: cover;" src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="" class="box-item__img"></a>
+                    <div class="@i" onclick="myFunction(@image.Id)"><img class="imgbox stt-@image.Id" style="width: 50px; height: 50px; object-fit: cover;" src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="" class="box-item__img"></div>
+                    
+
+
                     <div style="display:flex; flex-direction:column;">
                         <form asp-action="EditImage" method="get" style="padding: 0 20px 0 20px;">
                             <input asp-for="@image.Id" name="imageId" type="hidden" input />
                             <input asp-for="@Model.Id" name="productId" type="hidden" input />
                             <input type="submit" value="Edit" class="btn warning small" />
                         </form>
-                        <form asp-action="DeleteImage" method="get" style="padding: 0 20px 0 20px;">
+
+                        <form style="display:none;" asp-action="DeleteImage" method="get" style="padding: 0 20px 0 20px;">
                             <input asp-for="@image.Id" name="imageId" type="hidden" input />
                             <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                            <input style="width:56px;" type="submit" value="Del" class="btn danger small" />
+                            <input class="delInput delInput-@image.Id" style="width:56px;" type="submit" value="Del" class="btn danger small" />
                         </form>
                     </div>
-                   
+                    i++;
                 }
-            </div>
+            }
 
-        </td>
-        <td>
-            <div style="display:flex;">
-                <form asp-action="AddImage" method="get">
-                    <input asp-for="@Model.Id" name="productId" type="hidden" input />
-                    <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                    <input class="btn info" type="submit" value="Add Img" />
-                </form>
-                <form asp-action="EditDetail" method="get">
-                    <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                    <input asp-for="@Model.Id" name="productId" type="hidden" input />
-                    <input class="btn warning" type="submit" value="Edit Detail" />
-                </form>
-                <form asp-action="DeleteDetail" method="get">
-                    <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                    <input asp-for="@Model.Id" name="productId" type="hidden" input />
-                    <input class="btn danger" type="submit" value="Delete Detail" />
-                </form>
-            </div>
 
-        </td>
-    </tr>
-}
+
+        </div>
+
+    </td>
+    <td>
+        <div style="display:flex;">
+            <form asp-action="AddImage" method="get">
+                <input asp-for="@Model.Id" name="productId" type="hidden" input />
+                <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+                <input class="btn info" type="submit" value="Add Img" />
+            </form>
+            <form >
+               
+                <input onclick="myFunction1()" class="btn danger" type="button" value="Delete Img" />
+            </form>
+            <form asp-action="EditDetail" method="get">
+                <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+                <input asp-for="@Model.Id" name="productId" type="hidden" input />
+                <input class="btn warning" type="submit" value="Edit Detail" />
+            </form>
+            <form asp-action="DeleteDetail" method="get">
+                <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+                <input asp-for="@Model.Id" name="productId" type="hidden" input />
+                <input class="btn danger" type="submit" value="Delete Detail" />
+            </form>
+
+        </div>
+
+    </td>
+</tr>}
 
     </table>
     <div style="display:flex; justify-content:center; align-items:center; margin-top: 20px;">
@@ -202,13 +214,55 @@
             <input asp-for="@Model.Id" name="productId" type="hidden" input />
             <input style="border-radius:0; margin-right: 10px;" type="submit" value="Add Details" class="btn info" />
         </form>
-        <div >
+        <div>
             @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |*@
             <a style="margin-top:1px; display:block;" class="btn success" asp-controller="Product" asp-action="MyListProducts">Back to List</a>
         </div>
     </div>
-    
+
 </div>
+<script>
+    var imgId = document.querySelectorAll(".imgId");
+    var itemId = document.querySelectorAll(".itemId");
+    var imgValue = new Array();
+    var itemValue = new Array();
+    for (var i = 0; i < imgId.length; i++) {
+        imgValue[i] = imgId[i].value;
+        itemValue[i] = itemId[i].value;
+    }
+    var numberArr = [];
+    function myFunction(n) {
+        if (document.querySelector(".border-black")) {
+            document.querySelector(".border-black").classList.remove("border-black");
+        }
+        
+        document.querySelector(`.stt-${n}`).classList.add("border-black")
+
+        numberArr.pop();
+        numberArr.push(n);
+        console.log(numberArr)
+       
+    }
+    var delInput = document.querySelectorAll(".delInput")
+    function myFunction1() {
+     
+        var flag = false;
+        if (numberArr.length == 0) flag = true
+        for (var i = 0; i < delInput.length; i++) {
+           
+            if (delInput[i].className.includes(numberArr[0])) {
+              
+                delInput[i].form.submit();
+            }
+        }
+        if (flag == true) {
+            alert("Bạn chưa chọn ảnh")
+        }
+    }
+  
+    
+    
+</script>
 <style>
     #customers {
         font-family: Arial, Helvetica, sans-serif;
@@ -245,7 +299,7 @@
         font-size: 14px;
         cursor: pointer;
         text-decoration: none;
-        outline:none;
+        outline: none;
     }
 
     /* Green */
@@ -264,6 +318,7 @@
         text-transform: uppercase;
         color: #4CAF50;
     }
+
     .info {
         border-color: #2196F3;
         color: dodgerblue;
@@ -305,9 +360,20 @@
         .default:hover {
             background: #e7e7e7;
         }
-    .small{
+
+    .small {
         padding: 3px 14px;
     }
 </style>
 
 
+@*<form asp-action="EditImage" method="get" style="padding: 0 20px 0 20px;">
+    <input asp-for="@image.Id" name="imageId" type="hidden" input />
+    <input asp-for="@Model.Id" name="productId" type="hidden" input />
+    <input type="submit" value="Edit" class="btn warning small" />
+</form>
+<form asp-action="DeleteImage" method="get" style="padding: 0 20px 0 20px;">
+    <input asp-for="@image.Id" name="imageId" type="hidden" input />
+    <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+    <input style="width:56px;" type="submit" value="Del" class="btn danger small" />
+</form>*@

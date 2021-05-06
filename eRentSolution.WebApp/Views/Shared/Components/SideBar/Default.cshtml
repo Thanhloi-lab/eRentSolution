@@ -13,7 +13,7 @@
                 @foreach (var item in childrens)
                 {
                 <div class="category-item">
-                    <a href="/categories/@item.Id">
+                    <a href="/Categories/@item.Id">
                         <img  src=@Configuration["BaseAddress"]/user-content/@item.Image alt=@item.Name>
                         <span>@item.Name</span>
                     </a>
@@ -23,7 +23,7 @@
             else
             {
                 <div class="category-item">
-                    <a href="/categories/@parent.Id">
+                    <a href="/Categories/@parent.Id">
                         <img style=" border-radius: 27px;" src=@Configuration["BaseAddress"]/user-content/@parent.Image alt=@parent.Name>
                         <span>@parent.Name</span>
                     </a>

@@ -36,7 +36,6 @@ namespace eRentSolution.AdminApp.Controllers
             _slideApiClient = slideApiClient;
             _httpContextAccessor = httpContextAccessor;
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //userInfoId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Actor).Value;
         }
 
         public async Task<IActionResult> Index(string keyword, int? categoryId, decimal? minPrice, decimal? maxPrice, string address, int pageIndex = 1, int pageSize = 10)
@@ -73,7 +72,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int id)
         {
-            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.Ad);
+            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
             if(!result.IsSuccessed)
             {
                 TempData["failResult"] = result.Message;

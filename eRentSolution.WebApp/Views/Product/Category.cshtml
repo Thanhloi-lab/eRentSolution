@@ -1,43 +1,80 @@
 ﻿@using eRentSolution.ViewModels.Catalog.Products
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @model ProductCategoryViewModel
-@{ 
-    ViewData["Title"] = Model.Category.Name + (Model.Products.PageIndex == 1 ? "" : "-" + Model.Products.PageIndex);
-    Layout = "~/Views/Shared/_Layout1.cshtml"; 
-}
+@{ ViewData["Title"] = Model.Category.Name + (Model.Products.PageIndex == 1 ? "" : "-" + Model.Products.PageIndex);
+    Layout = "~/Views/Shared/_Layout3.cshtml"; }
+<script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<div class="box-select">
+    <p class="category__heading">Lọc phòng theo khu vực</p>
+    <div class="box-filter">
+        <select id="province" name="calc_shipping_provinces" required="">
+            <option value="">Tỉnh / Thành phố</option>
+        </select>
+        <select id="district" name="calc_shipping_district" required="">
+            <option value="">Quận / Huyện</option>
+        </select>
+        <form asp-action="Index" asp-controller="Product" method="get">
+            <input type="hidden" name="categoryId" class="category-input" value="" />
+            <input class="billing_address_2" name="address" type="hidden" value="">
+            <input type="number" name="minPrice" class="price-min" placeholder="Giá min">
+            <input type="number" name="maxPrice" class="price-max" placeholder="Giá max">
 
+            <input class="btn-filter" type="submit" onclick="myFunction1()" value="Lọc" />
+        </form>
+    </div>
 
+</div>
 
 <div class="box-product">
     <p class="category__heading">Tin đăng cho bạn</p>
-<div class="box-flex">
-    @for (int i = 0; i < Model.Products.Items.Count; i++)
-    {
-        ProductViewModel item = Model.Products.Items[i];
-        var url = $"/Products/{item.Id}";
-        <div class="box-full-flex">
-            <div class="box-item">
-                <div style="position: relative;" class="box-item__photo">
-                    <a  href="roomdetails.html">
-                        <a href="@url"> <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="" class="box-item__img"></a>
-                        <img class="icon-heart" width="20px" src="https://static.chotot.com/storage/chotot-icons/next/save-ad.svg" alt="photos">
-                    </a>
-                </div>
-                
-                <div class="box-item__caption">
-                    <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
-                    <p class="box-item__size">@(item.ProductDetailViewModels.ElementAt(0).Width * item.ProductDetailViewModels.ElementAt(0).Length) m²</p>
-                    <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
-                    <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
-                </div>
-            </div>
+    <div class="box-flex">
+        @for (int i = 0; i < Model.Products.Items.Count; i++)
+        {
+            ProductViewModel item = Model.Products.Items[i];
+            var url = $"/Products/{item.Id}";
+<div class="box-full-flex">
+    <div class="box-item">
+        <div style="position: relative;" class="box-item__photo">
+            <a href="roomdetails.html">
+                <a href="@url"> <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="" class="box-item__img"></a>
+                <img class="icon-heart" width="20px" src="https://static.chotot.com/storage/chotot-icons/next/save-ad.svg" alt="photos">
+            </a>
         </div>
-    }
 
-
-</div>
+        <div class="box-item__caption">
+            <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
+            <p class="box-item__size">@(item.ProductDetailViewModels.ElementAt(0).Width * item.ProductDetailViewModels.ElementAt(0).Length) m²</p>
+            <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
+            <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
+        </div>
     </div>
+</div>}
+
+
+    </div>
+</div>
 
 @await Component.InvokeAsync("Pager", Model.Products);
 <br class="clr" />
 
+<script>
+    function myFunction1() {
+        var url = new URL(window.location.href)
+        var categoryID = url.pathname.slice(12,)
+        document.querySelector(".category-input").value = categoryID
+        var provinceText = $("#province option:selected").text();
+        var districtText = $("#district option:selected").text();
+        // bien luu dia chi
+        var address = districtText + "_" + provinceText;
+        var add = document.querySelector('input.billing_address_2');
+        add.value = address;
+        document.querySelector('.k_category').value = categoryID;
+        document.querySelector('.k_address').value = address;
+        document.querySelector('.k_price-min').value = document.querySelector(".price-min").value;
+        document.querySelector('.k_price-max').value = document.querySelector(".price-max").value;
+        console.log(document.querySelector(".price-min").value);
+    }
+  
+    </script>
+<script src="~/js/select.js"></script>

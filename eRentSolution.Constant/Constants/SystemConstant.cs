@@ -13,6 +13,7 @@ namespace eRentSolution.Utilities.Constants
         public const string DefaultCategory = "default_category.jpg";
         public const long DefaultAvatarSize = 15131;
         public const long DefaultCategorySize = 3021;
+        public const string RememberMe = "/RememberMe:";
         public class AppSettings
         {
             public const string TokenAdmin = "Token";

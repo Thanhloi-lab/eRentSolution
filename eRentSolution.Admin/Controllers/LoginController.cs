@@ -68,10 +68,10 @@ namespace eRentSolution.AdminApp.Controllers
                 return View(ModelState);
 
             var result = await _userApiClient.Authenticate(request, true);
-            if (result.ResultObject == null && !result.IsSuccessed)
+            if (!result.IsSuccessed)
             {
-                TempData["failResult"] = result.Message;
-                return View();
+                ModelState.AddModelError("", result.Message);
+                return View(request);
             }
 
             var userPrincipal = this.ValidateToken(result.ResultObject);
@@ -85,7 +85,8 @@ namespace eRentSolution.AdminApp.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
-            Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+            if(request.RememberMe)
+                Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
 

@@ -3,10 +3,29 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @model PagedResult<ProductViewModel>
 @{ ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout1.cshtml"; 
-}
+    Layout = "~/Views/Shared/_Layout3.cshtml"; }
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<div class="box-select">
+    <p class="category__heading">Lọc phòng theo danh mục</p>
+    <div class="box-filter">
+
+        <form asp-action="Index" asp-controller="Product" method="get">
+            <select onchange="myFunction1()" class="category-select" id="province" name="categoryId" asp-items="@ViewBag.Categories" required="">
+                <option>--Chọn danh mục--</option>
+            </select>
+            <input class="billing_address_2" name="address" type="hidden" value="">
+            <input type="hidden" name="minPrice" class="price-min" placeholder="Giá min">
+            <input type="hidden" name="maxPrice" class="price-max" placeholder="Giá max">
+
+            <button type="submit" class="btn-filter">Lọc</button>
+        </form>
 
 
+
+    </div>
+
+</div>
 <div class="box-product">
     <p class="category__heading">Tin đăng cho bạn</p>
     <div class="box-flex">
@@ -30,11 +49,32 @@
                         <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
                     </div>
                 </div>
-            </div>
-        }
+            </div>}
     </div>
 </div>
 
 @await Component.InvokeAsync("Pager", Model);
 <br class="clr" />
 
+<script>
+    function getThamSo(nameThamSo) {
+        let thamSo = new URLSearchParams(window.location.search);
+        return thamSo.get(nameThamSo);
+    }
+    var address = (getThamSo("address"));
+    var minPrice = (getThamSo("minPrice"));
+    var maxPrice = (getThamSo("maxPrice"));
+    var add = document.querySelector('input.billing_address_2');
+    add.value = address;
+    document.querySelector(".price-min").value = minPrice;
+    document.querySelector(".price-max").value = maxPrice;
+
+
+    document.querySelector('.k_address').value = address;
+    document.querySelector('.k_price-min').value = minPrice;
+    document.querySelector('.k_price-max').value = maxPrice;
+    function myFunction1() {
+        document.querySelector('.k_category').value = document.querySelector(".category-select").value
+    }
+
+</script>

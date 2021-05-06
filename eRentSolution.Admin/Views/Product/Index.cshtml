@@ -1,17 +1,18 @@
 ﻿@using eRentSolution.ViewModels.Common;
 @model PagedResult<eRentSolution.ViewModels.Catalog.Products.ProductViewModel>
 
-@{
-    ViewData["Title"] = "Danh sách sản phẩm";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
 @section Scripts{
     <script>
         setTimeout(function () {
             $('#msgAlert').fadeOut('slow');
         }, 2000);
     </script>
+
 }
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
 <div class="container-fluid">
     <h1 class="mt-4">Danh sách sản phẩm</h1>
     <ol class="breadcrumb mb-4">
@@ -21,6 +22,17 @@
     <div class="card mb-12">
         <div class=" card-header">
             <div class="row">
+                <div class="col-md-2 col-xs-12">
+                    <a class="btn btn-success" asp-action="Create" asp-controller="Product">Tạo mới</a>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <select style="margin-left:0; border:1px solid #7f7f7f; height:38px;" id="province" name="calc_shipping_provinces" required="">
+                        <option value="">Tỉnh / Thành phố</option>
+                    </select>
+                    <select style=" border:1px solid #7f7f7f;height:38px;" id="district" name="calc_shipping_district" required="">
+                        <option value="">Quận / Huyện</option>
+                    </select>
+                </div>
                 <div class="col-md-6 col-xs-12">
                     <form asp-action="Index" method="get">
                         <div class="row">
@@ -31,9 +43,11 @@
                                 <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
                                     <option>--Chọn danh mục--</option>
                                 </select>
+
                             </div>
                             <div class="cold-md-3">
-                                <button type="submit" class="btn btn-primary">Tìm</button>
+                                <input class="billing_address_2" name="address" type="hidden" value="">
+                                <button type="submit" onclick="myFunction()" class="btn btn-primary">Tìm</button>
                                 <button type="button" onclick="window.location.href='/Product/Index'" class="btn btn-dark">Reset</button>
                             </div>
                         </div>
@@ -45,14 +59,14 @@
             <div class="row">
                 @if (ViewBag.Success != null)
                 {
-                    <div id="msgAlert" class="alert alert-success" role="alert">
-                        @ViewBag.Success
-                    </div>}
+    <div id="msgAlert" class="alert alert-success" role="alert">
+        @ViewBag.Success
+    </div>}
                 @if (TempData["failResult"] != null)
                 {
-                    <div id="failAlert" class="alert alert-success" role="alert">
-                        @TempData["failResult"]
-                    </div>}
+    <div id="failAlert" class="alert alert-success" role="alert">
+        @TempData["failResult"]
+    </div>}
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered">
@@ -83,82 +97,82 @@
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Id)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Stock)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ViewCount)
-                            </td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Stock)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ViewCount)
+                </td>
 
-                            @if (item.StatusId == (int)(object)eRentSolution.Data.Enums.Status.Public)
-                            {
-                                <td>
-                                    Chờ kiểm duyệt
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                    @Html.ActionLink("Xem", "Detail", new { item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
-                                    @Html.ActionLink("Kích hoạt", "ActiveProduct", new { item.Id }) |
-                                    @Html.ActionLink("Chặn", "InActiveProduct", new { item.Id }) |
-                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id }) |
-                                    @Html.ActionLink("Tạo chi tiết", "AddDetail", new { item.Id }) |
-                                    @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
-                                </td>
-                            }
-                            else if (item.StatusId == (int)(object)eRentSolution.Data.Enums.Status.Active)
-                            {
-                                <td>
-                                    Hoạt động
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                    @Html.ActionLink("Xem", "Detail", new { item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
-                                    @Html.ActionLink("Chặn", "InActiveProduct", new { item.Id }) |
-                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
-                                    @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
-                                </td>
-                            }
-                            else if (item.StatusId == (int)(object)eRentSolution.Data.Enums.Status.InActive)
-                            {
-                                <td>
-                                    Bị khóa
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                    @Html.ActionLink("Xem", "Detail", new { item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
-                                    @Html.ActionLink("Kích hoạt", "ActiveProduct", new { item.Id }) |
-                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
-                                    @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
-                                </td>
-                            }
-                            else if (item.StatusId == (int)(object)eRentSolution.Data.Enums.Status.Private)
-                            {
-                                <td>
-                                    Đang ẩn
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                    @Html.ActionLink("Xem", "Detail", new { item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
-                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
-                                    @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
-                                </td>
-                            }
-                        </tr>
-                        }
+                @if (item.StatusId == (int)(object)eRentSolution.Data.Enums.Status.Public)
+                {
+<td>
+    Chờ kiểm duyệt
+</td>
+                    <td>
+                        @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                        @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                        @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                        @Html.ActionLink("Kích hoạt", "ActiveProduct", new { item.Id }) |
+                        @Html.ActionLink("Chặn", "InActiveProduct", new { item.Id }) |
+                        @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id }) |
+                        @Html.ActionLink("Tạo chi tiết", "AddDetail", new { item.Id }) |
+                        @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
+                    </td>
+ }
+                else if (item.StatusId == (int)(object)eRentSolution.Data.Enums.Status.Active)
+                {
+<td>
+    Hoạt động
+</td>
+                    <td>
+                        @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                        @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                        @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                        @Html.ActionLink("Chặn", "InActiveProduct", new { item.Id }) |
+                        @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
+                        @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
+                    </td>
+ }
+                else if (item.StatusId == (int)(object)eRentSolution.Data.Enums.Status.InActive)
+                {
+<td>
+    Bị khóa
+</td>
+                    <td>
+                        @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                        @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                        @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                        @Html.ActionLink("Kích hoạt", "ActiveProduct", new { item.Id }) |
+                        @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
+                        @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
+                    </td>
+ }
+                else if (item.StatusId == (int)(object)eRentSolution.Data.Enums.Status.Private)
+                {
+<td>
+    Đang ẩn
+</td>
+                    <td>
+                        @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                        @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                        @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                        @Html.ActionLink("Gán danh mục", "CategoryAssign", new { item.Id })|
+                        @Html.ActionLink("Tạo slide", "CreateSlide", new { item.Id })
+                    </td>
+}
+            </tr>
+}
                     </tbody>
                 </table>
             </div>
@@ -166,3 +180,90 @@
         </div>
     </div>
 </div>
+
+<script>
+
+
+
+    /*=============select tinh quan ==============*/
+    if (address_2 = localStorage.getItem('address_2_saved')) {
+        $('select[name="calc_shipping_district"] option').each(function () {
+            if ($(this).text() == address_2) {
+                $(this).attr('selected', '')
+            }
+        })
+        $('input.billing_address_2').attr('value', address_2)
+    }
+    if (district = localStorage.getItem('district')) {
+        $('select[name="calc_shipping_district"]').html(district)
+        $('select[name="calc_shipping_district"]').on('change', function () {
+            var target = $(this).children('option:selected')
+            target.attr('selected', '')
+            $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+            address_2 = target.text()
+            $('input.billing_address_2').attr('value', address_2)
+            district = $('select[name="calc_shipping_district"]').html()
+            localStorage.setItem('district', district)
+            localStorage.setItem('address_2_saved', address_2)
+        })
+    }
+    $('select[name="calc_shipping_provinces"]').each(function () {
+        var $this = $(this),
+            stc = ''
+        c.forEach(function (i, e) {
+            e += +1
+            stc += '<option value=' + e + '>' + i + '</option>'
+            $this.html('<option value="">Tỉnh / Thành phố</option>' + stc)
+            if (address_1 = localStorage.getItem('address_1_saved')) {
+                $('select[name="calc_shipping_provinces"] option').each(function () {
+                    if ($(this).text() == address_1) {
+                        $(this).attr('selected', '')
+                    }
+                })
+                $('input.billing_address_1').attr('value', address_1)
+            }
+            $this.on('change', function (i) {
+                i = $this.children('option:selected').index() - 1
+                var str = '',
+                    r = $this.val()
+                if (r != '') {
+                    arr[i].forEach(function (el) {
+                        str += '<option value="' + el + '">' + el + '</option>'
+                        $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>' + str)
+                    })
+                    var address_1 = $this.children('option:selected').text()
+                    var district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('address_1_saved', address_1)
+                    localStorage.setItem('district', district)
+                    $('select[name="calc_shipping_district"]').on('change', function () {
+                        var target = $(this).children('option:selected')
+                        target.attr('selected', '')
+                        $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+                        var address_2 = target.text()
+                        $('input.billing_address_2').attr('value', address_2)
+                        district = $('select[name="calc_shipping_district"]').html()
+                        localStorage.setItem('district', district)
+                        localStorage.setItem('address_2_saved', address_2)
+                    })
+                } else {
+                    $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>')
+                    district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('district', district)
+                    localStorage.removeItem('address_1_saved', address_1)
+                }
+            })
+        })
+    })
+    function myFunction() {
+        var provinceText = $("#province option:selected").text();
+        var districtText = $("#district option:selected").text();
+        // bien luu dia chi
+      
+        var address = districtText + "_" + provinceText;
+        var add = document.querySelector('input.billing_address_2');
+        add.value = address;
+        console.log(add.value);
+    }
+
+
+</script>
