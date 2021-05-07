@@ -40,7 +40,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
 
-            if (token != null)
+            if (!string.IsNullOrEmpty(token))
             {
                 var userPrincipal = this.ValidateToken(token);
                 if (userPrincipal == null)
@@ -92,7 +92,10 @@ namespace eRentSolution.WebApp.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
-            Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+            var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
+            var cookies = _httpContextAccessor.HttpContext.Request.Cookies[CookieAuthenticationDefaults.AuthenticationScheme];
+            if (request.RememberMe)
+                Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
         private ClaimsPrincipal ValidateToken(string jwtToken)

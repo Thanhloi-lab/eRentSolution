@@ -10,8 +10,8 @@ using eRentSolution.Data.EF;
 namespace eRentSolution.Data.Migrations
 {
     [DbContext(typeof(eRentDbContext))]
-    [Migration("20210428115505_db")]
-    partial class db
+    [Migration("20210507101153_db4")]
+    partial class db4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -181,7 +181,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "b476622f-ae5a-4478-ae23-4bc7bf61dd0c",
+                            ConcurrencyStamp = "8365e96e-cb2e-4e1e-8120-8b568149682c",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -189,7 +189,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "a0671b6b-f274-47e8-bb62-11c3ba0eafe7",
+                            ConcurrencyStamp = "f38a9c6a-722a-4494-9981-2da0202a391f",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -270,14 +270,14 @@ namespace eRentSolution.Data.Migrations
                             AccessFailedCount = 0,
                             AvatarFilePath = "default_avatar.png",
                             AvatarFileSize = 15131L,
-                            ConcurrencyStamp = "6e01df5e-2ba7-440d-a736-994a052cc6ab",
-                            DateChangePassword = new DateTime(2021, 4, 28, 11, 55, 4, 18, DateTimeKind.Utc).AddTicks(5209),
+                            ConcurrencyStamp = "e28b00f1-32e1-42f8-aa6f-e9f5fbb68108",
+                            DateChangePassword = new DateTime(2021, 5, 7, 10, 11, 52, 162, DateTimeKind.Utc).AddTicks(3121),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPp58IhTkQ9mzl/y4PDofF4mf1d2mhXrzyxNRlw1xhdSGUEeswI6mw0Uq+wMU3zuaA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEE0ExTG/cMK41bl+rcfnuvhVyB/H6Lwxu8PErcql9pEYQfbWguGjVrYkV7FZGidL9g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 2,
@@ -314,7 +314,6 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SeoAlias")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -398,7 +397,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 4, 28, 11, 55, 4, 47, DateTimeKind.Utc).AddTicks(9183),
+                            Date = new DateTime(2021, 5, 7, 10, 11, 52, 190, DateTimeKind.Utc).AddTicks(5748),
                             ProductId = 1,
                             UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
@@ -473,9 +472,7 @@ namespace eRentSolution.Data.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("SeoAlias")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SeoDescription")
                         .HasColumnType("nvarchar(max)");
@@ -504,14 +501,14 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
-                            DateCreated = new DateTime(2021, 4, 28, 11, 55, 4, 46, DateTimeKind.Utc).AddTicks(326),
+                            DateCreated = new DateTime(2021, 5, 7, 10, 11, 52, 188, DateTimeKind.Utc).AddTicks(7640),
                             Description = "HomeStay Thanh Loi tại pờ tít",
                             IsFeatured = 1,
                             Name = "HomeStay Thanh Loi",
                             SeoAlias = "HomeStay-thanh-loi",
                             SeoDescription = "HomeStay-thanh-loi",
                             SeoTitle = "HomeStay-thanh-loi",
-                            StatusId = 0,
+                            StatusId = 2,
                             ViewCount = 0
                         });
                 });
@@ -573,7 +570,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 4, 28, 11, 55, 4, 46, DateTimeKind.Utc).AddTicks(9309),
+                            DateCreated = new DateTime(2021, 5, 7, 10, 11, 52, 189, DateTimeKind.Utc).AddTicks(6234),
                             Detail = "2 nvs .....",
                             Length = 10,
                             Name = "Phòng 1 chổ nằm",
@@ -654,32 +651,34 @@ namespace eRentSolution.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("StatusName")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductStatus");
+                    b.ToTable("ProductStatuses");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            StatusName = "Khóa sản phẩm hiển thị"
+                            StatusName = "Khóa hoạt động"
                         },
                         new
                         {
                             Id = 2,
-                            StatusName = "Cho phép sản phẩm hiển thị"
+                            StatusName = "Hoạt động"
                         },
                         new
                         {
                             Id = 3,
-                            StatusName = "Hiện sản phẩm"
+                            StatusName = "Chờ duyệt"
                         },
                         new
                         {
                             Id = 4,
-                            StatusName = "Ẩn sản phẩm"
+                            StatusName = "Ẩn"
                         });
                 });
 
@@ -809,37 +808,37 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 4,
-                            ActionName = "Chỉnh sửa tồn kho"
+                            ActionName = "Chờ duyệt"
                         },
                         new
                         {
                             Id = 5,
-                            ActionName = "Chỉnh sửa giá"
+                            ActionName = "Hoạt động"
                         },
                         new
                         {
                             Id = 6,
-                            ActionName = "Ẩn sản phẩm trình chiếu"
+                            ActionName = "Khóa hoạt động"
                         },
                         new
                         {
                             Id = 7,
-                            ActionName = "Chỉnh sửa sản phẩm trình chiếu"
-                        },
-                        new
-                        {
-                            Id = 8,
                             ActionName = "Tạo sản phẩm trình chiếu"
                         },
                         new
                         {
+                            Id = 8,
+                            ActionName = "Chỉnh sửa sản phẩm trình chiếu"
+                        },
+                        new
+                        {
                             Id = 9,
-                            ActionName = "Ẩn sản phẩm nổi bật"
+                            ActionName = "Ẩn sản phẩm trình chiếu"
                         },
                         new
                         {
                             Id = 10,
-                            ActionName = "Tạo sản phẩm nổi bật"
+                            ActionName = "Hiện sản phẩm trình chiếu"
                         },
                         new
                         {
@@ -849,7 +848,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 12,
-                            ActionName = "Hiện sản phẩm nổi bật"
+                            ActionName = "Tạo sản phẩm nổi bật"
                         },
                         new
                         {
@@ -859,12 +858,12 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 14,
-                            ActionName = "Hiện sản phẩm trình chiếu"
+                            ActionName = "Ẩn sản phẩm nổi bật"
                         },
                         new
                         {
                             Id = 15,
-                            ActionName = "Hiện sản phẩm"
+                            ActionName = "Hiện sản phẩm nổi bật"
                         },
                         new
                         {
@@ -899,12 +898,12 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 22,
-                            ActionName = "Không cho phép hiển thị"
+                            ActionName = "Chỉnh sửa tồn kho"
                         },
                         new
                         {
                             Id = 23,
-                            ActionName = "Cho phép hiển thị"
+                            ActionName = "Chỉnh sửa giá"
                         });
                 });
 

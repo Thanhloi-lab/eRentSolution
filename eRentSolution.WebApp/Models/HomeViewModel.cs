@@ -8,7 +8,6 @@ namespace eRentSolution.WebApp.Models
     public class HomeViewModel
     {
         public List<SlideViewModel> Slides { get; set; }
-
         public PagedResult<ProductViewModel> FeaturedProducts { get; set; }
         public PagedResult<ProductViewModel> PageProducts { get; set; }
     }

@@ -41,23 +41,22 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.SaveChangesAsync();
             return new ApiSuccessResult<string>("Thêm lượt xem thành công");
         }
-        public async Task<ApiResult<string>> Create(ProductCreateRequest request, Guid userInfoId)
+        public async Task<ApiResult<int>> Create(ProductCreateRequest request, Guid userInfoId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             if (action == null)
-                return new ApiErrorResult<string>("Không tìm thấy hành động");
+                return new ApiErrorResult<int>("Không tìm thấy hành động");
             var product = new Product()
             {
                 Name = request.Name,
                 DateCreated = DateTime.UtcNow,
                 Description = request.Description,
-                //Details = request.Details,
                 Address = request.Address,
                 ViewCount = 0,
                 SeoAlias = request.SeoAlias,
                 SeoDescription = request.SeoDescription,
                 SeoTitle = request.SeoTitle,
-                StatusId = (int)(object)(Status.InActive),
+                StatusId = (int)(object)(Status.Private),
                 ProductDetails = new List<ProductDetail>()
                 {
                     new ProductDetail()
@@ -99,29 +98,16 @@ namespace eRentSolution.Application.Catalog.Products
             }
             else
             {
-                return new ApiErrorResult<string>("Ảnh không tồn tại");
+                return new ApiErrorResult<int>("Ảnh không tồn tại");
             }
             await _context.Products.AddAsync(product);
             var result = await _context.SaveChangesAsync();
             if (result > 0)
             {
-                var prod = await _context.Products.FirstOrDefaultAsync(x => x.DateCreated == product.DateCreated);
-                foreach (var category in request.Categories)
-                {
-                    if (category.Selected == true)
-                    {
-                        await _context.ProductInCategories.AddAsync(new ProductInCategory()
-                        {
-                            CategoryId = int.Parse(category.Id),
-                            ProductId = prod.Id,
-                        });
-                    }
-                }
-                await _context.SaveChangesAsync();
-                return new ApiSuccessResult<string>("Thêm sản phẩm thành công");
+                return new ApiSuccessResult<int>(product.Id);
             }
                 
-            return new ApiErrorResult<string>("Thêm sản phẩm thất bại, vui lòng thử lại sau");
+            return new ApiErrorResult<int>("Thêm sản phẩm thất bại, vui lòng thử lại sau");
         }
         public async Task<ApiResult<string>> Delete(int productId)
         {
@@ -180,7 +166,7 @@ namespace eRentSolution.Application.Catalog.Products
             await _context.Censors.AddAsync(censor);
 
             product.StatusId = (int)(object)Status.Private;
-
+            _context.Products.Update(product);
             var result = await _context.SaveChangesAsync();
             if (result != 0)
                 return new ApiSuccessResult<string>("Ẩn sản phẩm thành công");
@@ -195,7 +181,7 @@ namespace eRentSolution.Application.Catalog.Products
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
             product.StatusId = (int)(object)Status.Public;
-
+            _context.Products.Update(product);
             var result = await _context.SaveChangesAsync();
             if (result > 0)
             {
@@ -227,7 +213,7 @@ namespace eRentSolution.Application.Catalog.Products
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
             product.StatusId = (int)(object)Status.Active;
-
+            _context.Products.Update(product);
             var result = await _context.SaveChangesAsync();
             if(result >0)
             {
@@ -271,7 +257,7 @@ namespace eRentSolution.Application.Catalog.Products
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-
+            _context.Products.Update(product);
             product.StatusId = (int)(object)Status.InActive;
 
             var result = await _context.SaveChangesAsync();
@@ -625,18 +611,30 @@ namespace eRentSolution.Application.Catalog.Products
             }
             if (request.Address != null)
             {
-                var address = request.Address.Split("_");
-                foreach (var item in address)
+                string[] address = request.Address.Split("_");
+                if (request.Address.Contains("/"))
                 {
-                    query = query.Where(x => x.p.Address.Contains(item));
+                    query = query.Where(x => x.p.Address.Contains(address[1]));
                 }
+                else
+                {
+                    foreach (var item in address)
+                    {
+                        query = query.Where(x => x.p.Address.Contains(item));
+                    }
+                }
+                
             }
             if(request.IsGuess==true)
             {
                 query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
             }    
             int totalRow = await query.CountAsync();
-            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
+            var data = await query.OrderBy(x => x.p.DateCreated)
+                .Skip(request.PageSize * (request.PageIndex - 1))
+                .Take(request.PageSize)
+                
+                .Select(x => new ProductViewModel()
             {
                 Id = x.p.Id,
                 DateCreated = x.p.DateCreated,
@@ -787,20 +785,12 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 query = query.Where(x => x.pic.CategoryId == request.CategoryId);
             }
-            if (request.Address != null)
-            {
-                var address = request.Address.Split("_");
-                foreach (var item in address)
-                {
-                    query = query.Where(x => x.p.Address.Contains(item));
-                }
-            }
             if (request.IsGuess == true)
             {
                 query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
             }
             var totalRow = query.Count();
-            var data = await query.OrderByDescending(x => x.p.DateCreated)
+            var data = await query.OrderBy(x => x.p.DateCreated)
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(x => new ProductViewModel()
@@ -871,7 +861,7 @@ namespace eRentSolution.Application.Catalog.Products
                         select new { p, pd };//, pic};
 
             var totalRow = query.Count();
-            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
+            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(take).OrderBy(x => x.p.DateCreated)
                 .Select(x => new ProductViewModel()
                 {
 
@@ -921,10 +911,17 @@ namespace eRentSolution.Application.Catalog.Products
             }
             if (request.Address != null)
             {
-                var address = request.Address.Split("_");
-                foreach (var item in address)
+                string[] address = request.Address.Split("_");
+                if (request.Address.Contains("/"))
                 {
-                    query = query.Where(x => x.p.Address.Contains(item));
+                    query = query.Where(x => x.p.Address.Contains(address[1]));
+                }
+                else
+                {
+                    foreach (var item in address)
+                    {
+                        query = query.Where(x => x.p.Address.Contains(item));
+                    }
                 }
             }
             if (request.IsGuess == true)
@@ -933,7 +930,10 @@ namespace eRentSolution.Application.Catalog.Products
             }
             
             int totalRow = await query.CountAsync();
-            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new ProductViewModel()
+            var data = await query.OrderBy(x => x.p.DateCreated)
+                .Skip(request.PageSize * (request.PageIndex - 1))
+                .Take(request.PageSize)
+                .Select(x => new ProductViewModel()
             {
                 Id = x.p.Id,
                 DateCreated = x.p.DateCreated,

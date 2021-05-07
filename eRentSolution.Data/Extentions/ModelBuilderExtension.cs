@@ -43,7 +43,28 @@ namespace eRentSolution.Data.Extentions
                      ImageSize = 3021
                  }) ;
 
-            
+            modelBuilder.Entity<ProductStatus>().HasData(
+               new ProductStatus()
+               {
+                   Id = 1,
+                   StatusName = "Khóa hoạt động"
+               },
+               new ProductStatus()
+               {
+                   Id = 2,
+                   StatusName = "Hoạt động"
+               },
+               new ProductStatus()
+               {
+                   Id = 3,
+                   StatusName = "Chờ duyệt"
+               },
+               new ProductStatus()
+               {
+                   Id = 4,
+                   StatusName = "Ẩn"
+               });
+
             modelBuilder.Entity<ProductInCategory>().HasData(
                 new ProductInCategory() { ProductId = 1, CategoryId = 1 }
                 );
@@ -104,7 +125,8 @@ namespace eRentSolution.Data.Extentions
                SeoTitle = "HomeStay-thanh-loi",
                Description = "HomeStay Thanh Loi tại pờ tít",
                IsFeatured = Status.InActive,
-               Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3"
+               Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
+               StatusId = 2,
            }) ;
             modelBuilder.Entity<ProductDetail>().HasData(
            new ProductDetail()
@@ -139,37 +161,37 @@ namespace eRentSolution.Data.Extentions
            new UserAction()
            {
                Id = 4,
-               ActionName = "Chỉnh sửa tồn kho"
+               ActionName = "Chờ duyệt" 
            },
            new UserAction()
            {
                Id = 5,
-               ActionName = "Chỉnh sửa giá"
+               ActionName = "Hoạt động"
            },
            new UserAction()
            {
                Id = 6,
-               ActionName = "Ẩn sản phẩm trình chiếu"
+               ActionName = "Khóa hoạt động"
            },
            new UserAction()
            {
                Id = 7,
-               ActionName = "Chỉnh sửa sản phẩm trình chiếu"
-           },
-           new UserAction()
-           {
-               Id = 8,
                ActionName = "Tạo sản phẩm trình chiếu"
            },
            new UserAction()
            {
+               Id = 8,
+               ActionName = "Chỉnh sửa sản phẩm trình chiếu"
+           },
+           new UserAction()
+           {
                Id = 9,
-               ActionName = "Ẩn sản phẩm nổi bật"
+               ActionName = "Ẩn sản phẩm trình chiếu"
            },
            new UserAction()
            {
                Id = 10,
-               ActionName = "Tạo sản phẩm nổi bật"
+               ActionName = "Hiện sản phẩm trình chiếu"
            },
            new UserAction()
            {
@@ -179,7 +201,7 @@ namespace eRentSolution.Data.Extentions
            new UserAction()
            {
                Id = 12,
-               ActionName = "Hiện sản phẩm nổi bật"
+               ActionName = "Tạo sản phẩm nổi bật"
            },
            new UserAction()
            {
@@ -189,12 +211,12 @@ namespace eRentSolution.Data.Extentions
            new UserAction()
            {
                Id = 14,
-               ActionName = "Hiện sản phẩm trình chiếu"
+               ActionName = "Ẩn sản phẩm nổi bật" 
            },
            new UserAction()
            {
                Id = 15,
-               ActionName = "Hiện sản phẩm"
+               ActionName = "Hiện sản phẩm nổi bật" 
            },
            new UserAction()
            {
@@ -229,12 +251,12 @@ namespace eRentSolution.Data.Extentions
            new UserAction()
            {
                Id = 22,
-               ActionName = "Không cho phép hiển thị"
+               ActionName = "Chỉnh sửa tồn kho"
            },
            new UserAction()
            {
                Id = 23,
-               ActionName = "Cho phép hiển thị"
+               ActionName = "Chỉnh sửa giá"
            });
             modelBuilder.Entity<Censor>().HasData(
            new Censor()
@@ -251,27 +273,7 @@ namespace eRentSolution.Data.Extentions
                 UserId = adminId
             });
 
-            modelBuilder.Entity<ProductStatus>().HasData(
-            new ProductStatus() 
-            {
-                Id = 1,
-                StatusName = "Khóa hoạt động"
-            },
-            new ProductStatus()
-            {
-                Id = 2,
-                StatusName = "Hoạt động"
-            },
-            new ProductStatus()
-            {
-                Id = 3,
-                StatusName = "Chờ duyệt"
-            },
-            new ProductStatus()
-            {
-                Id = 4,
-                StatusName = "Ẩn"
-            });
+           
         }
     }
 }

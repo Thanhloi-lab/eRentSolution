@@ -23,7 +23,7 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.Description).IsRequired().HasMaxLength(2000);
             builder.Property(x => x.IsFeatured).IsRequired().HasDefaultValue(Status.InActive);
             builder.Property(x => x.Address).HasMaxLength(300).IsRequired();
-            builder.Property(x => x.StatusId).HasDefaultValue(Status.Private);
+            builder.Property(x => x.StatusId).IsRequired().HasDefaultValue(Status.Private);
 
             builder.HasOne(x => x.ProductStatus).WithOne(x => x.Product).HasForeignKey<Product>(x => x.StatusId);
         }

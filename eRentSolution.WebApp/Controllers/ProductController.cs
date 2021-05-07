@@ -230,7 +230,17 @@ namespace eRentSolution.WebApp.Controllers
             var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (result.IsSuccessed)
             {
-                TempData["result"] = result.ResultObject;
+                CategoryAssignRequest assignRequest = new CategoryAssignRequest(){
+                    Categories = request.Categories,
+                    Id = result.ResultObject
+                };
+                var assignResult = await _productApiClient.CategoryAssign(assignRequest.Id, assignRequest, SystemConstant.AppSettings.TokenWebApp);
+                if(assignResult.IsSuccessed)
+                {
+                    TempData["result"] = "Thêm sản phẩm thành công";
+                    return RedirectToAction("MyListProducts");
+                }
+                TempData["result"] = "Đã xảy ra lỗi trong quá trình thiết lập danh mục, vui lòng thiết lập lại sau";
                 return RedirectToAction("MyListProducts");
             }
 

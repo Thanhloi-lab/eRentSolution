@@ -12,7 +12,7 @@ namespace eRentSolution.Application.Catalog.Products
 {
     public interface IProductService
     {
-        Task<ApiResult<string>> Create(ProductCreateRequest request, Guid userInfoId);
+        Task<ApiResult<int>> Create(ProductCreateRequest request, Guid userInfoId);
         Task<ApiResult<string>> Update(ProductUpdateRequest request, Guid userInfoId);
         Task<ApiResult<string>> Hide(int productId, Guid userInfoId);
         Task<ApiResult<string>> Show(int productId, Guid userInfoId);

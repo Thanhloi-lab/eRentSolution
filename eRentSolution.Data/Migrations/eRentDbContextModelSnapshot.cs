@@ -179,7 +179,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "87b37ff4-b9a1-4333-9b70-cedcfe01d294",
+                            ConcurrencyStamp = "8235eb62-82a7-4afc-bf77-0d65abd06048",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -187,7 +187,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "a9248874-2e12-4334-bb0e-94d691119d3e",
+                            ConcurrencyStamp = "34e98e13-85b9-4d88-a64f-d507b6db24b3",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -268,14 +268,14 @@ namespace eRentSolution.Data.Migrations
                             AccessFailedCount = 0,
                             AvatarFilePath = "default_avatar.png",
                             AvatarFileSize = 15131L,
-                            ConcurrencyStamp = "f3d4bae2-8a80-444d-9690-4297e408ca82",
-                            DateChangePassword = new DateTime(2021, 5, 3, 13, 51, 37, 194, DateTimeKind.Utc).AddTicks(3073),
+                            ConcurrencyStamp = "a3f9a981-1fad-4856-aada-f1813ef47b8f",
+                            DateChangePassword = new DateTime(2021, 5, 7, 10, 43, 55, 652, DateTimeKind.Utc).AddTicks(3871),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAENA5Uo7u+VLUIAhw1N60mOLRGpm58f+3zl5Dql362nweO8s9bM1rNGlQOJUsuU5/MQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAE8n0OAMDav9Bt6mv6PAmQZmcyrZkUjlapnOLh25pTjOlwfnuczeff7qHikO+qiSg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 2,
@@ -395,7 +395,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 5, 3, 13, 51, 37, 230, DateTimeKind.Utc).AddTicks(8660),
+                            Date = new DateTime(2021, 5, 7, 10, 43, 55, 680, DateTimeKind.Utc).AddTicks(9059),
                             ProductId = 1,
                             UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
@@ -499,14 +499,14 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
-                            DateCreated = new DateTime(2021, 5, 3, 13, 51, 37, 229, DateTimeKind.Utc).AddTicks(940),
+                            DateCreated = new DateTime(2021, 5, 7, 10, 43, 55, 678, DateTimeKind.Utc).AddTicks(9921),
                             Description = "HomeStay Thanh Loi tại pờ tít",
                             IsFeatured = 1,
                             Name = "HomeStay Thanh Loi",
                             SeoAlias = "HomeStay-thanh-loi",
                             SeoDescription = "HomeStay-thanh-loi",
                             SeoTitle = "HomeStay-thanh-loi",
-                            StatusId = 0,
+                            StatusId = 2,
                             ViewCount = 0
                         });
                 });
@@ -568,7 +568,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 5, 3, 13, 51, 37, 229, DateTimeKind.Utc).AddTicks(9173),
+                            DateCreated = new DateTime(2021, 5, 7, 10, 43, 55, 679, DateTimeKind.Utc).AddTicks(9076),
                             Detail = "2 nvs .....",
                             Length = 10,
                             Name = "Phòng 1 chổ nằm",
@@ -680,48 +680,6 @@ namespace eRentSolution.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.Promotion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("ApplyForAll")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal?>("DiscountAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("DiscountPercent")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FromDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductCategoryIds")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductIds")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ToDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Promotions");
-                });
-
             modelBuilder.Entity("eRentSolution.Data.Entities.Slide", b =>
                 {
                     b.Property<int>("Id")
@@ -806,37 +764,37 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 4,
-                            ActionName = "Chỉnh sửa tồn kho"
+                            ActionName = "Chờ duyệt"
                         },
                         new
                         {
                             Id = 5,
-                            ActionName = "Chỉnh sửa giá"
+                            ActionName = "Hoạt động"
                         },
                         new
                         {
                             Id = 6,
-                            ActionName = "Ẩn sản phẩm trình chiếu"
+                            ActionName = "Khóa hoạt động"
                         },
                         new
                         {
                             Id = 7,
-                            ActionName = "Chỉnh sửa sản phẩm trình chiếu"
-                        },
-                        new
-                        {
-                            Id = 8,
                             ActionName = "Tạo sản phẩm trình chiếu"
                         },
                         new
                         {
+                            Id = 8,
+                            ActionName = "Chỉnh sửa sản phẩm trình chiếu"
+                        },
+                        new
+                        {
                             Id = 9,
-                            ActionName = "Ẩn sản phẩm nổi bật"
+                            ActionName = "Ẩn sản phẩm trình chiếu"
                         },
                         new
                         {
                             Id = 10,
-                            ActionName = "Tạo sản phẩm nổi bật"
+                            ActionName = "Hiện sản phẩm trình chiếu"
                         },
                         new
                         {
@@ -846,7 +804,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 12,
-                            ActionName = "Hiện sản phẩm nổi bật"
+                            ActionName = "Tạo sản phẩm nổi bật"
                         },
                         new
                         {
@@ -856,12 +814,12 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 14,
-                            ActionName = "Hiện sản phẩm trình chiếu"
+                            ActionName = "Ẩn sản phẩm nổi bật"
                         },
                         new
                         {
                             Id = 15,
-                            ActionName = "Hiện sản phẩm"
+                            ActionName = "Hiện sản phẩm nổi bật"
                         },
                         new
                         {
@@ -896,12 +854,12 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = 22,
-                            ActionName = "Không cho phép hiển thị"
+                            ActionName = "Chỉnh sửa tồn kho"
                         },
                         new
                         {
                             Id = 23,
-                            ActionName = "Cho phép hiển thị"
+                            ActionName = "Chỉnh sửa giá"
                         });
                 });
 

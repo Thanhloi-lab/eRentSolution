@@ -35,8 +35,7 @@ namespace eRentSolution.AdminApp.Controllers
         public async Task<IActionResult> Index()
         {
             var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
-
-            if (token != null)
+            if (!string.IsNullOrEmpty(token))
             {
                 var userPrincipal = this.ValidateToken(token);
                 if (userPrincipal == null)

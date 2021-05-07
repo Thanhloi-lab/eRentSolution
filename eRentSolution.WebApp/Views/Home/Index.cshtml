@@ -47,7 +47,7 @@
         }
         @for (int index = 0; index < featuredProducts.Count; index++)
         {
-    @foreach (var item in featuredProducts[index])
+            @foreach (var item in featuredProducts[index])
     {
         var url = $"/Products/{item.Id}";
         <div class="box-full-flex">
@@ -96,10 +96,9 @@
         }
 
     </div>
-    <button class="btn-loadmore">Load More</button>
 </div>
-
-<script>
+@await Component.InvokeAsync("Pager", Model.PageProducts);
+@*<script>
     let navText = ["<i class='bx bx-chevron-left'></i>", "<i class='bx bx-chevron-right'></i>"]
     $('.slide-owl').owlCarousel({
         loop: true,
@@ -143,7 +142,7 @@
         })
 
   
-</script>
+</script>*@
 
 <style>
     

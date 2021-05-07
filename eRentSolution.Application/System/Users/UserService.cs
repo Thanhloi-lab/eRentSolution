@@ -297,28 +297,29 @@ namespace eRentSolution.Application.System.Users
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
             var query = from u in _userManager.Users
-                        join p in _context.UserInfos on u.Id equals p.UserId
-                        select new { u, p };
+                        join ui in _context.UserInfos on u.Id equals ui.UserId
+                        select new { u, ui };
             if (!string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.u.UserName.Contains(request.Keyword)
                             || x.u.PhoneNumber.Contains(request.Keyword)
-                            || x.p.LastName.Contains(request.Keyword)
-                            || x.p.FirstName.Contains(request.Keyword));
+                            || x.ui.LastName.Contains(request.Keyword)
+                            || x.ui.FirstName.Contains(request.Keyword));
             }
 
             /* PAGING*/
             int totalRow = await query.CountAsync();
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .OrderBy(x => x.ui.LastName)
                 .Take(request.PageSize)
                 .Select(x => new UserViewModel()
                 {
                     Id = x.u.Id,
                     PhoneNumber = x.u.PhoneNumber,
-                    FirstName = x.p.FirstName,
-                    Dob = x.p.Dob,
+                    FirstName = x.ui.FirstName,
+                    Dob = x.ui.Dob,
                     Email = x.u.Email,
-                    LastName = x.p.LastName,
+                    LastName = x.ui.LastName,
                     UserName = x.u.UserName,
                     AvatarFilePath = x.u.AvatarFilePath,
                     Status = x.u.Status
@@ -336,28 +337,29 @@ namespace eRentSolution.Application.System.Users
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetStaffPaging(GetUserPagingRequest request)
         {
             var query = from u in _userManager.Users
-                        join p in _context.UserInfos on u.Id equals p.UserId
-                        select new { u, p };
+                        join ui in _context.UserInfos on u.Id equals ui.UserId
+                        select new { u, ui };
             if (!string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.u.UserName.Contains(request.Keyword)
                             || x.u.PhoneNumber.Contains(request.Keyword)
-                            || x.p.LastName.Contains(request.Keyword)
-                            || x.p.FirstName.Contains(request.Keyword));
+                            || x.ui.LastName.Contains(request.Keyword)
+                            || x.ui.FirstName.Contains(request.Keyword));
             }
 
             /* PAGING*/
             int totalRow = await query.CountAsync();
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .OrderBy(x => x.ui.LastName)
                 .Take(request.PageSize)
                 .Select(x => new UserViewModel()
                 {
                     Id = x.u.Id,
                     PhoneNumber = x.u.PhoneNumber,
-                    FirstName = x.p.FirstName,
-                    Dob = x.p.Dob,
+                    FirstName = x.ui.FirstName,
+                    Dob = x.ui.Dob,
                     Email = x.u.Email,
-                    LastName = x.p.LastName,
+                    LastName = x.ui.LastName,
                     UserName = x.u.UserName,
                     AvatarFilePath = x.u.AvatarFilePath,
                     Status = x.u.Status
@@ -416,6 +418,7 @@ namespace eRentSolution.Application.System.Users
             var totalRow = await query.CountAsync();
 
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .OrderBy(x => x.c.Date)
                 .Take(request.PageSize)
                 .Select(x => new ActivityLogViewModel()
             {

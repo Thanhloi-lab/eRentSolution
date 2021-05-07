@@ -75,8 +75,11 @@
                                 <div class="form-group">
                                     <input type="password" class="form-control" asp-for="Password" placeholder="Password *" value="" />
                                 </div>
-
-                                <input type="submit" class="btnRegister" value="Sign in" />
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" asp-for="RememberMe" type="checkbox" />
+                                    <label class="custom-control-label">Nhớ đăng nhập</label>
+                                </div>
+                                <input type="submit" class="btnRegister" value="Đăng nhập" />
                             </div>
 
                         </div>

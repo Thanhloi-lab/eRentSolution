@@ -228,7 +228,7 @@ body{
 /*=============BOX PRODUCT============*/
 .box-app{
    
-    border: 1px solid rgb(244, 244, 244);
+   
 }
 .box-flex{
     display: flex;
@@ -1108,4 +1108,22 @@ a.text-danger:hover, a.text-danger:focus {
 }
 .hienthi{
     display:block;
+}
+.price-min {
+    margin-left: 20px;
+}
+
+.price-min, .price-max {
+    outline: none;
+    border: 3px solid #f9c431;
+    height: 40px;
+    color: black;
+    font-size: 1.4rem;
+}
+.border-black {
+    border: 2px solid #2196f3;
+}
+.imgbox:hover {
+    cursor: pointer;
+    filter: brightness(80%);
 }

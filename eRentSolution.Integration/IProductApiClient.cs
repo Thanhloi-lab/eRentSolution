@@ -12,7 +12,7 @@ namespace eRentSolution.Integration
     public interface IProductApiClient
     {
         #region ------ PRODUCT ACTION --------
-        Task<ApiResult<string>> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName);
+        Task<ApiResult<int>> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName);
         Task<ApiResult<string>> UpdateProduct(ProductUpdateRequest request, Guid userInfoId, string tokenName);
         Task<ApiResult<string>> HideProduct(int productId, Guid userInfoId, string tokenName);
         Task<ApiResult<string>> ShowProduct(int productId, Guid userInfoId, string tokenName);

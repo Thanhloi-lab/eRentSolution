@@ -9,6 +9,7 @@ using eRentSolution.Admin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using eRentSolution.Utilities.Constants;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace eRentSolution.Admin.Controllers
 {
@@ -27,7 +28,9 @@ namespace eRentSolution.Admin.Controllers
         public IActionResult Index()
         {
             var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
-            
+            var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
+            if (string.IsNullOrEmpty(token) && string.IsNullOrEmpty(session))
+                return RedirectToAction("Index", "login");
             return View();
         }
 

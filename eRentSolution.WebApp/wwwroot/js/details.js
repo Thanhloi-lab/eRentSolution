@@ -50,5 +50,8 @@ var options = document.querySelectorAll("#box-select option")
                     }
                 }
             
-         }
-   
+}
+function showPhoneFunction() {
+    document.querySelector("#box-showphone").style.display = "none";
+    document.querySelector("#box-sdt").style.display = "block";
+}

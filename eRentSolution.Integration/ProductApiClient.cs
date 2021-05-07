@@ -37,7 +37,7 @@ namespace eRentSolution.Integration
             var result = await PutAsync<string>($"/api/products/{productId}/categories", request, tokenName);
             return result;
         }
-        public async Task<ApiResult<string>> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName)
+        public async Task<ApiResult<int>> CreateProduct(ProductCreateRequest request, Guid userInfoId, string tokenName)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(tokenName);
             var client = _httpClientFactory.CreateClient();
@@ -76,9 +76,9 @@ namespace eRentSolution.Integration
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(body);
+                return JsonConvert.DeserializeObject<ApiSuccessResult<int>>(body);
             }
-            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
+            return JsonConvert.DeserializeObject<ApiErrorResult<int>>(body);
 
         }
         public async Task<ApiResult<string>> DeleteProduct(int productId, string tokenName)

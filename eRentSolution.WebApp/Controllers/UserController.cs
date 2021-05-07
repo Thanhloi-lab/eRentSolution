@@ -33,9 +33,9 @@ namespace eRentSolution.WebApp.Controllers
             token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
         }
         [HttpGet]
-        public async Task<IActionResult> Details(Guid id)
+        public async Task<IActionResult> Details()
         {
-            var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var result = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if(!result.IsSuccessed)
             {
                 return RedirectToAction("index","home");
@@ -43,14 +43,9 @@ namespace eRentSolution.WebApp.Controllers
             return View(result.ResultObject);
         }
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit()
         {
-            //var reusult = User.IsInRole(SystemConstant.AppSettings.AdminRole);
-            if (!id.ToString().Equals(userId))
-            {
-                return RedirectToAction("Error", "Home");
-            }
-            var target = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var target = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (target.IsSuccessed)
             {
                 var updateRequest = new UserUpdateRequest()
@@ -60,7 +55,7 @@ namespace eRentSolution.WebApp.Controllers
                     FirstName = target.ResultObject.FirstName,
                     LastName = target.ResultObject.LastName,
                     PhoneNumber = target.ResultObject.PhoneNumber,
-                    Id = id
+                    Id = Guid.Parse(userId)
                 };
                 return View(updateRequest);
             }
@@ -81,15 +76,11 @@ namespace eRentSolution.WebApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public IActionResult ChangePassword(Guid id)
+        public IActionResult ChangePassword()
         {
-            if (!id.ToString().Equals(userId))
-            {
-                return RedirectToAction("Error", "Home");
-            }
             return View(new UserUpdatePasswordRequest()
             {
-                Id = id
+                Id = Guid.Parse(userId)
             });
         }
         [HttpPost]
@@ -108,6 +99,62 @@ namespace eRentSolution.WebApp.Controllers
                 ModelState.AddModelError("", result.Message);
                 return View(request);
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditAvatar(Guid id)
+        {
+            var target = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (target.IsSuccessed)
+            {
+                var updateRequest = new UserAvatarUpdateRequest()
+                {
+                    Id = target.ResultObject.Id,
+                };
+                return View(updateRequest);
+            }
+            ModelState.AddModelError("", target.Message);
+            return RedirectToAction("Details");
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditAvatar(UserAvatarUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
+                return View(request);
+            }
+
+            var result = await _userApiClient.UpdateAvatar(request, SystemConstant.AppSettings.TokenWebApp);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("index");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ActivityLog(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new UserActivityLogRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                Id = Guid.Parse(userId)
+            };
+            ViewBag.keyword = keyword;
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
+            var data = await _userApiClient.GetUserActivities(request, SystemConstant.AppSettings.TokenWebApp);
+            return View(data.ResultObject);
+        }
+        public IActionResult Forbidden()
+        {
+            TempData["FailResult"] = "Thao tác không hợp lệ";
+            return RedirectToAction("Index");
         }
     }
 }
