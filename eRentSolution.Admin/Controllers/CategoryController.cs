@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace eRentSolution.AdminApp.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         public readonly ICategoryApiClient _categoryApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;

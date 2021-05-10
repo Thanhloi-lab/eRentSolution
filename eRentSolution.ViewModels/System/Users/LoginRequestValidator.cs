@@ -9,9 +9,8 @@ namespace eRentSolution.ViewModels.System.Users
     {
         public LoginRequestValidator()
         {
-            RuleFor(x => x.UserName).NotEmpty().WithMessage("Username is required.");
-            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required.")
-                .MinimumLength(6).WithMessage("Password is at least 6 characters.");
+            RuleFor(x => x.UserName).NotEmpty().WithMessage("Vui lòng nhập tài khoản.");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Vui lòng nhập mật khẩu.");
         }
     }
 }

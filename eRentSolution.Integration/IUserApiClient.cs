@@ -20,6 +20,7 @@ namespace eRentSolution.Integration
         Task<ApiResult<string>> RegisterUser(UserRegisterRequest registerRequest);
 
         Task<ApiResult<PagedResult<UserViewModel>>> GetUsersPaging(GetUserPagingRequest request, string tokenName);
+        Task<ApiResult<PagedResult<UserViewModel>>> GetStaffsPaging(GetUserPagingRequest request, string tokenName);
         Task<ApiResult<UserViewModel>> GetById(Guid id, string tokenName);
         Task<ApiResult<UserViewModel>> GetUserByProductId(int productId, string tokenName);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request, string tokenName);

@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace eRentSolution.AdminApp.Controllers
 {
     [Authorize]
-    public class SlideController : Controller
+    public class SlideController : BaseController
     {
         private readonly IConfiguration _configuration;
         private readonly ICategoryApiClient _categoryApiClient;

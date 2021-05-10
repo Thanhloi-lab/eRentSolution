@@ -9,18 +9,17 @@ namespace eRentSolution.ViewModels.System.Users
     {
         public UserUpdateRequestValidator()
         {
-            RuleFor(x => x.FirstName).NotEmpty().WithMessage("First name is required.")
-                .MaximumLength(200).WithMessage("First name cannot over 200 characters.");
-            RuleFor(x => x.LastName).NotEmpty().WithMessage("Last name is required.")
-                .MaximumLength(200).WithMessage("Last name cannot over 200 characters.");
+            RuleFor(x => x.FirstName).NotEmpty().WithMessage("Họ không thể để trống.")
+                .MaximumLength(200).WithMessage("Họ không vượt quá 200 kí tự.");
+            RuleFor(x => x.LastName).NotEmpty().WithMessage("Tên không thể để trống.")
+                .MaximumLength(200).WithMessage("Tên không vượt quá 200 kí tự.");
 
-            RuleFor(x => x.Dob).GreaterThan(DateTime.Now.AddYears(-150)).WithMessage("Noone can live over 150 bro!!")
-                .LessThan(DateTime.Now).WithMessage("Birthday cannot be greater than now");
-            RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Phonenumber is required.")
-                .Matches("^[0-9]{10}$").WithMessage("Phonenumber format is not match. Phonenumber must be 10 digits"); ;
-            RuleFor(x => x.Email).NotEmpty().WithMessage("Email is required.")
-                .Matches("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$").WithMessage("Email format is not match.");
-            RuleFor(x => x.UserName).NotEmpty().WithMessage("Username is required.");
+            RuleFor(x => x.Dob).GreaterThan(DateTime.UtcNow.AddYears(-150)).WithMessage("Tuổi không thể vượt quá 150")
+                .LessThan(DateTime.UtcNow.AddYears(-16)).WithMessage("Tuổi phải lớn hơn 16.");
+            RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Số điện thoại không thể để trống.")
+                .Matches("^[0-9]{10}$").WithMessage("Số điện thoại không hợp lệ. Số điện thoại phải có 10 chữ số."); ;
+            RuleFor(x => x.Email).NotEmpty().WithMessage("Email không thể để trống.")
+                .Matches("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$").WithMessage("Email không hợp lệ.");
         }
     }
 }

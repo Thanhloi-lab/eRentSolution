@@ -30,6 +30,8 @@ namespace eRentSolution.AdminApp.Controllers
             _userApiClient = userApiClient;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+
+
         }
         [HttpGet]
         public async Task<IActionResult> Index()

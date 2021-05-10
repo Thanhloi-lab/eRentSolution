@@ -163,7 +163,7 @@ namespace eRentSolution.Integration
                 $"&categoryId={request.CategoryId}" +
                 $"&address={request.Address}" +
                 $"&minprice={request.MinPrice}" +
-                $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}" , tokenName);
+                $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}&isStatisticMonth={request.IsStatisticMonth}" , tokenName);
             return result;
         }
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName)
@@ -195,6 +195,19 @@ namespace eRentSolution.Integration
                 $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}", tokenName);
             return result;
         }
+        public async Task<ApiResult<PagedResult<UserProductStatisticViewModel>>> GetStatisticUserProduct(GetProductPagingRequest request, string tokenName)
+        {
+            var result = await GetAsync<PagedResult<UserProductStatisticViewModel>>(
+                $"/api/products/GetStatisticUserProduct?pageIndex={request.PageIndex}" +
+                $"&pageSize={request.PageSize}" +
+                $"&keyword={request.Keyword}" +
+                $"&categoryId={request.CategoryId}" +
+                $"&address={request.Address}" +
+                $"&minprice={request.MinPrice}" +
+                $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}", tokenName);
+            return result;
+        }
+
         #endregion
 
         #region -----PRODUCT DETAIL------
@@ -359,6 +372,7 @@ namespace eRentSolution.Integration
         }
 
        
+
         #endregion
     }
 }

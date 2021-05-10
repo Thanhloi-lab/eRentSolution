@@ -1,0 +1,97 @@
+﻿@using eRentSolution.ViewModels.Common;
+@model PagedResult<eRentSolution.ViewModels.Catalog.Products.UserProductStatisticViewModel>
+
+@{ ViewData["Title"] = "Thống kê sản phẩm người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+
+}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
+<div class="container-fluid">
+    <h1 class="mt-4">Danh sách sản phẩm</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Danh sách người dùng</li>
+    </ol>
+    <div class="card mb-12">
+        <div class=" card-header">
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <form asp-action="Index" method="get">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                            </div>
+                            <div class="cold-md-3">
+                                <button type="submit"  class="btn btn-primary">Tìm</button>
+                                <button type="button" onclick="window.location.href='/Statistic/Index'" class="btn btn-dark">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @if (ViewBag.Success != null)
+                {
+                <div id="msgAlert" class="alert alert-success" role="alert">
+                    @ViewBag.Success
+                </div>
+                }
+                @if (TempData["failResult"] != null)
+                {
+                <div id="failAlert" class="alert alert-success" role="alert">
+                    @TempData["failResult"]
+                </div>
+                }
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Tài khoản
+                            </th>
+                            <th>
+                                Số sản phẩm
+                            </th>
+                            <th>
+                                Tổng lượt xem
+                            </th>
+                            <th>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AmountProducts)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ViewCount)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Xem chi tiết", "UserProduct", "Product",new { item.UserId })
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @await Component.InvokeAsync("Pager", Model)
+        </div>
+    </div>
+</div>
+

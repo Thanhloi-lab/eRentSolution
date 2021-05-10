@@ -30,6 +30,7 @@ namespace eRentSolution.Integration
         Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName);
         Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take, string tokenName);
         Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductsByUserId(GetProductPagingRequest request, Guid userId, string tokenName);
+        Task<ApiResult<PagedResult<UserProductStatisticViewModel>>> GetStatisticUserProduct(GetProductPagingRequest request, string tokenName);
         Task<ApiResult<ProductViewModel>> GetById(int productId, string tokenName);
 
         #endregion

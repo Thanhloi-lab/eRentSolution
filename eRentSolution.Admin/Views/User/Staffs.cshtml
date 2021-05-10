@@ -1,0 +1,162 @@
+﻿@using eRentSolution.ViewModels.Common;
+@using eRentSolution.Utilities.Constants;
+@model PagedResult<eRentSolution.ViewModels.System.Users.UserViewModel>
+
+@{
+    ViewData["Title"] = "Danh sách người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}
+<head>
+     <link href="./style3.css" rel="stylesheet" /> 
+</head>
+<div class="container-fluid">
+    <h1 class="mt-4">Danh sách người dùng</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Danh sách người dùng</li>
+    </ol>
+    <div class="card mb-12">
+        <div class=" card-header">
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <a class="btn-1" asp-action="create" asp-controller="user">
+                        <span>Tạo mới</span>
+                    </a>
+                    @*<a class="btn btn-success" asp-action="create" asp-controller="user">tạo mới</a>*@
+                </div>
+                <div class="col-md-6 col-xs-12">
+                    <form asp-action="Index" method="get">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="text" value=@ViewBag.keyword name="keyword" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-primary">tìm</button>
+                                <button type="button" onclick="window.location.href='/user/index'" class="btn btn-dark">reset</button>
+                            </div>
+                                
+                            </div>
+                    </form>
+                   
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @if (ViewBag.Success != null)
+                {
+                    <div id="msgAlert" class="alert alert-success" role="alert">
+                        @ViewBag.Success
+                    </div>
+                }
+                @if (TempData["FailResult"] != null)
+                {
+                    <div id="msgAlert" class="alert alert-fail" role="alert">
+                        @TempData["FailResult"]
+                    </div>
+                }
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Họ
+                            </th>
+                            <th>
+                                Tên
+                            </th>
+                            <th>
+                                Tài khoản
+                            </th>
+                            <th>
+                                SĐT
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Ngày sinh
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Dob)
+                            </td>
+                            @if (User.IsInRole(SystemConstant.AppSettings.AdminRole))
+                            {
+                                @if (User.Claims.FirstOrDefault(x => x.Type == SystemConstant.AppSettings.NameIdentifierClaimType).Value.Equals(item.Id.ToString()))
+                                {
+                                    <td>
+                                        @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                        @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                        @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                                        @Html.ActionLink("Reset mật khẩu", "ResetPassword", new { item.Id }) |
+                                        @Html.ActionLink("Gán quyền", "RoleAssign", new { item.Id })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                        @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                                        @Html.ActionLink("Reset mật khẩu", "ResetPassword", new { item.Id }) |
+                                        @Html.ActionLink("Gán quyền", "RoleAssign", new { item.Id })
+                                    </td>
+                                }
+                            }
+                            else
+                            {
+                                @if (User.Claims.FirstOrDefault(x => x.Type == SystemConstant.AppSettings.NameIdentifierClaimType).Value.Equals(item.Id.ToString()))
+                                {
+                                    <td>
+                                        @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                        @Html.ActionLink("Xem", "Details", new { item.Id })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.ActionLink("Xem", "Details", new { item.Id })
+                                    </td>
+
+                                }
+                            }
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @await Component.InvokeAsync("Pager", Model)
+        </div>
+    </div>
+</div>
+

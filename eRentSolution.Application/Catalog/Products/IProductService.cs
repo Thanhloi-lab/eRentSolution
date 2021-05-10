@@ -42,8 +42,8 @@ namespace eRentSolution.Application.Catalog.Products
         Task<ApiResult<PagedResult<ProductViewModel>>> GetAllPaging(GetProductPagingRequest request);
         Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request);
         Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId);
-        
-        
+        Task<ApiResult<PagedResult<UserProductStatisticViewModel>>> GetStatisticUserProduct(GetProductPagingRequest request);
+
         //Task<PagedResult<ProductViewModel>> GetAllPagingByCategoryId(GetProductPagingByCategoryIdRequest request);
     }
 }

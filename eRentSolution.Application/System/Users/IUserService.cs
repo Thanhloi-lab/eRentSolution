@@ -18,6 +18,7 @@ namespace eRentSolution.Application.System.Users
         Task<ApiResult<string>> Delete(Guid id);
         Task<ApiResult<string>> UpdateAvatar(UserAvatarUpdateRequest request);
         Task<ApiResult<string>> BanUser(Guid id);
+        Task<ApiResult<PagedResult<UserViewModel>>> GetStaffPaging(GetUserPagingRequest request);
         Task<ApiResult<UserViewModel>> GetById(Guid id);
         Task<ApiResult<UserViewModel>> GetUserByProductId(int productId);
         Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request);

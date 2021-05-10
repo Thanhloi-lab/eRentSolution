@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 namespace eRentSolution.WebApp.Controllers
 {
     [Authorize]
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         public readonly IProductApiClient _productApiClient;
         public readonly ICategoryApiClient _categoryApiClient;

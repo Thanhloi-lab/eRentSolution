@@ -13,5 +13,6 @@ namespace eRentSolution.ViewModels.Catalog.Products
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
         public bool IsGuess { get; set; }
+        public bool? IsStatisticMonth { get; set; }
     }
 }

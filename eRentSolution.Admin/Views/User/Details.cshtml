@@ -1,4 +1,5 @@
 ﻿@model eRentSolution.ViewModels.System.Users.UserViewModel
+@using eRentSolution.Utilities.Constants
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{
     ViewData["Title"] = "Thông tin người dùng";
@@ -99,13 +100,22 @@
                 </table>
             </div>
         </div>
-        <form asp-action="Edit" method="get" style="padding: 0 20px 20px 20px;">
-            <input asp-for="Id" type="hidden" input />
-            <input type="submit" value="Edit" class="btn btn-danger" />
-        </form>
-        <form asp-action="ChangePassword" method="get" style="padding: 0 20px 20px 20px;">
-            <input asp-for="Id" type="hidden" input />
-            <input type="submit" value="ChangePassword" class="btn btn-danger" />
+        
+        @if (Model.Id.ToString().Equals(User.Claims.FirstOrDefault(x => x.Type == SystemConstant.AppSettings.ActorClaimType).Value))
+        {
+            <form asp-action="ChangePassword" method="get" style="padding: 0 20px 20px 20px;">
+                <input asp-for="Id" type="hidden" input />
+                <input type="submit" value="Đổi mật khẩu" class="btn btn-danger" />
+            </form>
+            <form asp-action="Edit" method="get" style="padding: 0 20px 20px 20px;">
+                <input asp-for="Id" type="hidden" input />
+                <input type="submit" value="Chỉnh sửa" class="btn btn-danger" />
+            </form>
+        }
+
+        <form asp-action="UserProduct" asp-controller="product" method="get" style="padding: 0 20px 20px 20px;">
+            <input asp-for="Id" name="userId" type="hidden" input />
+            <input type="submit" value="Sản phẩm của @Model.FirstName" class="btn btn-danger" />
         </form>
     </div>
 

@@ -9,14 +9,16 @@ namespace eRentSolution.ViewModels.System.Users
     {
         public UpdatePasswordRequestValidator()
         {
-            RuleFor(x => x.NewPassword).NotEmpty().WithMessage("Password is required.")
-                .MinimumLength(6).WithMessage("Password is at least 8 characters.");
+            RuleFor(x => x.CurrentPassword).NotEmpty().WithMessage("Vui lòng nhập mật khẩu hiện tại.")
+                .MinimumLength(6).WithMessage("Mật khẩu phải có ít nhât 8 kí tự (phải có chữ, số, chữ viết hoa).");
+            RuleFor(x => x.NewPassword).NotEmpty().WithMessage("Vui lòng nhập mật khẩu mới.")
+                .MinimumLength(6).WithMessage("Mật khẩu phải có ít nhât 8 kí tự (phải có chữ, số, chữ viết hoa).");
             RuleFor(x => x).Custom((request, context) => {
                 if (request.NewPassword != request.ConfirmPassword)
                 {
-                    context.AddFailure("Confirm password is not match.");
+                    context.AddFailure("Xác nhận mật khẩu không đúng.");
                 }
-            }).NotEmpty().WithMessage("Confirm password is required.");
+            }).NotEmpty().WithMessage("Xác nhận mật khẩu không thể để trống.");
         }
     }
 }

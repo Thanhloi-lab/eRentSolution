@@ -61,6 +61,14 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        [HttpGet("staff")]
+        public async Task<IActionResult> GetStaffsPaging([FromQuery] GetUserPagingRequest request)
+        {
+            var result = await _userService.GetStaffPaging(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]UserRegisterRequest request)
         {

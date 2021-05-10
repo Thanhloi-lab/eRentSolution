@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace eRentSolution.AdminApp.Controllers
 {
-    public class FeaturedProductController : Controller
+    public class FeaturedProductController : BaseController
     {
         private readonly IProductApiClient _productApiClient;
         private readonly IConfiguration _configuration;

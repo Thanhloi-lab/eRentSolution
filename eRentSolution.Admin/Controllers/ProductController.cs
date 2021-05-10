@@ -15,25 +15,28 @@ using System.Threading.Tasks;
 namespace eRentSolution.AdminApp.Controllers
 {
     [Authorize]
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         private readonly IProductApiClient _productApiClient;
         private readonly IConfiguration _configuration;
         private readonly ICategoryApiClient _categoryApiClient;
         private readonly ISlideApiClient _slideApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserApiClient _userApiClient;
         private readonly string userId;
         //private readonly string userInfoId;
         public ProductController(IProductApiClient productApiClient,
             IConfiguration configuration,
             ICategoryApiClient categoryApiClient,
             ISlideApiClient slideApiClient,
+            IUserApiClient userApiClient,
             IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
             _slideApiClient = slideApiClient;
+            _userApiClient = userApiClient;
             _httpContextAccessor = httpContextAccessor;
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
@@ -211,8 +214,47 @@ namespace eRentSolution.AdminApp.Controllers
             ModelState.AddModelError("", result.Message);
             return RedirectToAction("Details");
         }
-        
 
+        [HttpGet]
+        public async Task<IActionResult> UserProduct(Guid userId ,string keyword, string address, int? categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new GetProductPagingRequest()
+            {
+                CategoryId = categoryId,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                Keyword = keyword,
+                Address = address,
+                IsGuess = false,
+                MaxPrice = maxPrice,
+                MinPrice = minPrice
+            };
+
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["result"];
+            }
+            var user = await _userApiClient.GetById(userId, SystemConstant.AppSettings.TokenAdmin);
+            if(!user.IsSuccessed)
+            {
+                ModelState.AddModelError("", user.Message);
+                return RedirectToAction("Index");
+            }
+            var products = await _productApiClient.GetPageProductsByUserId(request, userId, SystemConstant.AppSettings.TokenAdmin);
+            
+            ViewBag.Keyword = keyword;
+            ViewBag.UserName = user.ResultObject.UserName;
+            ViewBag.UserId = user.ResultObject.Id;
+
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
+            ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+                Selected = categoryId.HasValue && categoryId.Value == x.Id
+            });
+            return View(products.ResultObject);
+        }
 
 
 
@@ -327,7 +369,7 @@ namespace eRentSolution.AdminApp.Controllers
         //    ModelState.AddModelError("", result.ResultObject);
         //    return View(request);
         //}
-        
+
 
         //    return categoryAssignRequest;
         //}

@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using eRentSolution.Admin.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using eRentSolution.Utilities.Constants;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using eRentSolution.AdminApp.Controllers;
 
 namespace eRentSolution.Admin.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -27,10 +22,10 @@ namespace eRentSolution.Admin.Controllers
 
         public IActionResult Index()
         {
-            var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
-            var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
-            if (string.IsNullOrEmpty(token) && string.IsNullOrEmpty(session))
-                return RedirectToAction("Index", "login");
+            //var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
+            //var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
+            //if (string.IsNullOrEmpty(token) && string.IsNullOrEmpty(session))
+            //    return RedirectToAction("Index", "login");
             return View();
         }
 

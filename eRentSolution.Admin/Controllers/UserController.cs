@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace eRentSolution.AdminApp.Controllers
 {
     [Authorize]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
@@ -37,7 +37,7 @@ namespace eRentSolution.AdminApp.Controllers
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
         }
-
+        [HttpGet]
         public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)
         {
             var request = new GetUserPagingRequest()
@@ -52,6 +52,23 @@ namespace eRentSolution.AdminApp.Controllers
                 ViewBag.success = TempData["Result"];
             }
             var data = await _userApiClient.GetUsersPaging(request, SystemConstant.AppSettings.TokenAdmin);
+            return View(data.ResultObject);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Staffs(string keyword, int pageIndex = 1, int pageSize = 10)
+        {
+            var request = new GetUserPagingRequest()
+            {
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+            ViewBag.keyword = keyword;
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
+            var data = await _userApiClient.GetStaffsPaging(request, SystemConstant.AppSettings.TokenAdmin);
             return View(data.ResultObject);
         }
         [HttpPost]

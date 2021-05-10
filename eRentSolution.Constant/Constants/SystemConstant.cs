@@ -23,6 +23,7 @@ namespace eRentSolution.Utilities.Constants
             public const string UserAdminRole = "UserAdmin";
             public const string PasswordReseted = "123456aS`";
             public const string NameIdentifierClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+            public const string ActorClaimType = "http://schemas.xmlsoap.org/ws/2009/09/identity/claims/actor";
         }
 
         public class ProductSettings

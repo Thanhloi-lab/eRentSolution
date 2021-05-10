@@ -336,9 +336,13 @@ namespace eRentSolution.Application.System.Users
         }
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetStaffPaging(GetUserPagingRequest request)
         {
+           
             var query = from u in _userManager.Users
                         join ui in _context.UserInfos on u.Id equals ui.UserId
-                        select new { u, ui };
+                        join ur in _context.UserRoles on u.Id equals ur.UserId
+                        join r in _roleManager.Roles on ur.RoleId equals r.Id
+                        select new { u, ui, r };
+            
             if (!string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.u.UserName.Contains(request.Keyword)
@@ -349,7 +353,8 @@ namespace eRentSolution.Application.System.Users
 
             /* PAGING*/
             int totalRow = await query.CountAsync();
-            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+            var data = await query
+                .Skip((request.PageIndex - 1) * request.PageSize)
                 .OrderBy(x => x.ui.LastName)
                 .Take(request.PageSize)
                 .Select(x => new UserViewModel()
@@ -364,7 +369,7 @@ namespace eRentSolution.Application.System.Users
                     AvatarFilePath = x.u.AvatarFilePath,
                     Status = x.u.Status
                 }).ToListAsync();
-            
+
             var pageResult = new PagedResult<UserViewModel>()
             {
                 TotalRecords = totalRow,

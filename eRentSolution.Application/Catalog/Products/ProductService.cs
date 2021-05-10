@@ -628,25 +628,77 @@ namespace eRentSolution.Application.Catalog.Products
             if(request.IsGuess==true)
             {
                 query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
-            }    
+            }
             int totalRow = await query.CountAsync();
-            var data = await query.OrderBy(x => x.p.DateCreated)
-                .Skip(request.PageSize * (request.PageIndex - 1))
-                .Take(request.PageSize)
-                
-                .Select(x => new ProductViewModel()
+            List<ProductViewModel> data = new List<ProductViewModel>();
+            if (request.IsStatisticMonth!=null)
             {
-                Id = x.p.Id,
-                DateCreated = x.p.DateCreated,
-                Description = x.p.Description,
-                Name = x.p.Name,
-                SeoAlias = x.p.SeoAlias,
-                SeoDescription = x.p.SeoDescription,
-                SeoTitle = x.p.SeoTitle,
-                ViewCount = x.p.ViewCount,
-                StatusId = x.p.StatusId,
-                Address = x.p.Address
-            }).Distinct().ToListAsync();
+                if(request.IsStatisticMonth==true)
+                {
+                    data = await query
+                        .Skip(request.PageSize * (request.PageIndex - 1))
+                        .Take(request.PageSize)
+                        .Select(x => new ProductViewModel()
+                        {
+                            Id = x.p.Id,
+                            DateCreated = x.p.DateCreated,
+                            Description = x.p.Description,
+                            Name = x.p.Name,
+                            SeoAlias = x.p.SeoAlias,
+                            SeoDescription = x.p.SeoDescription,
+                            SeoTitle = x.p.SeoTitle,
+                            ViewCount = x.p.ViewCount,
+                            StatusId = x.p.StatusId,
+                            Address = x.p.Address
+                        }).Distinct().ToListAsync();
+                    foreach (var item in data)
+                    {
+                        int months = (DateTime.UtcNow.Year - item.DateCreated.Year) * 12 + DateTime.UtcNow.Month - item.DateCreated.Month;
+                        if(months > 0)
+                            item.ViewCount = item.ViewCount / months;
+                    }
+                    data.OrderByDescending(x => x.ViewCount);
+                }
+                else
+                {
+                    data = await query.OrderByDescending(x => x.p.ViewCount)
+                       .Skip(request.PageSize * (request.PageIndex - 1))
+                       .Take(request.PageSize)
+                       .Select(x => new ProductViewModel()
+                       {
+                           Id = x.p.Id,
+                           DateCreated = x.p.DateCreated,
+                           Description = x.p.Description,
+                           Name = x.p.Name,
+                           SeoAlias = x.p.SeoAlias,
+                           SeoDescription = x.p.SeoDescription,
+                           SeoTitle = x.p.SeoTitle,
+                           ViewCount = x.p.ViewCount,
+                           StatusId = x.p.StatusId,
+                           Address = x.p.Address
+                       }).Distinct().ToListAsync();
+                }
+            }    
+            else
+            {
+                data = await query.OrderByDescending(x => x.p.DateCreated)
+                       .Skip(request.PageSize * (request.PageIndex - 1))
+                       .Take(request.PageSize)
+                       .Select(x => new ProductViewModel()
+                       {
+                           Id = x.p.Id,
+                           DateCreated = x.p.DateCreated,
+                           Description = x.p.Description,
+                           Name = x.p.Name,
+                           SeoAlias = x.p.SeoAlias,
+                           SeoDescription = x.p.SeoDescription,
+                           SeoTitle = x.p.SeoTitle,
+                           ViewCount = x.p.ViewCount,
+                           StatusId = x.p.StatusId,
+                           Address = x.p.Address
+                       }).Distinct().ToListAsync();
+            }
+               
             var products = new List<ProductViewModel>();
             foreach (var item in data)
             {
@@ -790,7 +842,7 @@ namespace eRentSolution.Application.Catalog.Products
                 query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
             }
             var totalRow = query.Count();
-            var data = await query.OrderBy(x => x.p.DateCreated)
+            var data = await query.OrderByDescending(x => x.p.DateCreated)
                 .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(x => new ProductViewModel()
@@ -930,7 +982,7 @@ namespace eRentSolution.Application.Catalog.Products
             }
             
             int totalRow = await query.CountAsync();
-            var data = await query.OrderBy(x => x.p.DateCreated)
+            var data = await query.OrderByDescending(x => x.p.DateCreated)
                 .Skip(request.PageSize * (request.PageIndex - 1))
                 .Take(request.PageSize)
                 .Select(x => new ProductViewModel()
@@ -990,8 +1042,43 @@ namespace eRentSolution.Application.Catalog.Products
             }    
             return new ApiSuccessResult<PagedResult<ProductViewModel>>(page);
         }
-
-
+        public async Task<ApiResult<PagedResult<UserProductStatisticViewModel>>> GetStatisticUserProduct(GetProductPagingRequest request)
+        {
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
+            var query = from p in _context.Products
+                        join cen in _context.Censors on p.Id equals cen.ProductId
+                        //join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        //from pic in ppic.DefaultIfEmpty()
+                        join u in _context.AppUsers on cen.UserInfoId equals u.Id
+                        where cen.ActionId == action.Id
+                        select new {u, p};
+            if (request.Keyword != null)
+            {
+                query = query.Where(x => x.u.UserName.Contains(request.Keyword)
+                           || x.u.PhoneNumber.Contains(request.Keyword));
+            }
+            
+            var data = await query.GroupBy(x=> new {x.u.Id, x.u.UserName})
+                .Select(x => new UserProductStatisticViewModel()
+                {
+                    UserId = x.Key.Id,
+                    UserName = x.Key.UserName,
+                    ViewCount = x.Sum(x=>x.p.ViewCount),
+                    AmountProducts = x.Count()
+                }).ToListAsync();
+            
+            var totalRow = data.Count();
+            data.Skip(request.PageSize * (request.PageIndex - 1))
+                .Take(request.PageSize);
+            var page = new PagedResult<UserProductStatisticViewModel>()
+            {
+                Items = data,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                TotalRecords = totalRow
+            };
+            return new ApiSuccessResult<PagedResult<UserProductStatisticViewModel>>(page);
+        }
         //----------------Images-------
         // No Done
         public async Task<ApiResult<string>> DeleteImage(int imageId, Guid userId)

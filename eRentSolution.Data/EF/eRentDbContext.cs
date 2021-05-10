@@ -54,6 +54,7 @@ namespace eRentSolution.Data.EF
         public DbSet<ProductDetail> ProductDetails { get; set; }
         public DbSet<UserInfo> UserInfos { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<IdentityUserRole<Guid>> UserRoles { get; set; }
         public DbSet<ProductStatus> ProductStatus { get; set; }
     }
 }

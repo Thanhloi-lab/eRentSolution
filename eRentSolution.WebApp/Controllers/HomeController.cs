@@ -9,10 +9,12 @@ using eRentSolution.Integration;
 using eRentSolution.ViewModels.Catalog.Products;
 using eRentSolution.Utilities.Constants;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace eRentSolution.WebApp.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ISlideApiClient _slideApiClient;

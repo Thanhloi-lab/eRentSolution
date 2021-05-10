@@ -34,6 +34,14 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(product);
             return BadRequest(product);
         }
+        [HttpGet("GetStatisticUserProduct")]
+        public async Task<IActionResult> GetStatisticUserProduct([FromQuery] GetProductPagingRequest request)
+        {
+            var product = await _productService.GetStatisticUserProduct(request);
+            if (product.IsSuccessed)
+                return Ok(product);
+            return BadRequest(product);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -42,7 +50,6 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(product);
             return BadRequest(product);
         }
-        
         [HttpPost("{userInfoId}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] ProductCreateRequest request, Guid userInfoId)

@@ -15,7 +15,7 @@ namespace eRentSolution.WebApp.Controllers
 {
 
     [Authorize]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;

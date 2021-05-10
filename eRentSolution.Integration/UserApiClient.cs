@@ -114,6 +114,12 @@ namespace eRentSolution.Integration
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}", tokenName);
             return result;
         }
+        public async Task<ApiResult<PagedResult<UserViewModel>>> GetStaffsPaging(GetUserPagingRequest request, string tokenName)
+        {
+            var result = await GetPageAsync<PagedResult<UserViewModel>>($"/api/users/staff?pageIndex=" +
+                $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}", tokenName);
+            return result;
+        }
         public async Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request, string tokenName)
         {
             var result = await GetPageAsync<PagedResult<ActivityLogViewModel>>($"/api/users/activity-log?id={request.Id}&pageIndex=" +
