@@ -16,7 +16,7 @@ namespace eRentSolution.AdminApp.Controllers
     public class StatisticController : BaseController
     {
         private readonly IProductApiClient _productApiClient;
-        private readonly IUserApiClient _userApiClient;
+        //private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
         private readonly ICategoryApiClient _categoryApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -30,7 +30,7 @@ namespace eRentSolution.AdminApp.Controllers
         {
             _configuration = configuration;
             _productApiClient = productApiClient;
-            _userApiClient = userApiClient;
+            //_userApiClient = userApiClient;
             _httpContextAccessor = httpContextAccessor;
             _categoryApiClient = categoryApiClient;
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
