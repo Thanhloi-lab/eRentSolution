@@ -635,7 +635,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 if(request.IsStatisticMonth==true)
                 {
-                    data = await query
+                    data = await query.OrderBy(x => x.p.ViewCount)
                         .Skip(request.PageSize * (request.PageIndex - 1))
                         .Take(request.PageSize)
                         .Select(x => new ProductViewModel()
@@ -657,11 +657,11 @@ namespace eRentSolution.Application.Catalog.Products
                         if(months > 0)
                             item.ViewCount = item.ViewCount / months;
                     }
-                    data.OrderByDescending(x => x.ViewCount);
+                    
                 }
                 else
                 {
-                    data = await query.OrderByDescending(x => x.p.ViewCount)
+                    data = await query.OrderBy(x => x.p.ViewCount)
                        .Skip(request.PageSize * (request.PageIndex - 1))
                        .Take(request.PageSize)
                        .Select(x => new ProductViewModel()
@@ -678,6 +678,7 @@ namespace eRentSolution.Application.Catalog.Products
                            Address = x.p.Address
                        }).Distinct().ToListAsync();
                 }
+                data.Sort(new ViewCountComparer());
             }    
             else
             {
@@ -827,7 +828,7 @@ namespace eRentSolution.Application.Catalog.Products
                         join pd in _context.ProductDetails on p.Id equals pd.ProductId
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
                         from pic in ppic.DefaultIfEmpty()
-                        where p.IsFeatured == Status.Active
+                        where p.IsFeatured == Status.Active &&  p.StatusId == (int)(object)Status.Active
                         select new { p, pd, pic };
             if (request.Keyword != null)
             {
@@ -1057,7 +1058,6 @@ namespace eRentSolution.Application.Catalog.Products
                 query = query.Where(x => x.u.UserName.Contains(request.Keyword)
                            || x.u.PhoneNumber.Contains(request.Keyword));
             }
-            
             var data = await query.GroupBy(x=> new {x.u.Id, x.u.UserName})
                 .Select(x => new UserProductStatisticViewModel()
                 {
@@ -1252,6 +1252,21 @@ namespace eRentSolution.Application.Catalog.Products
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
+        }
+        public class ViewCountComparer : Comparer<ProductViewModel>
+        {
+            // Compares by Length, Height, and Width.
+            public override int Compare(ProductViewModel x, ProductViewModel y)
+            {
+                if (y.ViewCount.CompareTo(x.ViewCount) != 0)
+                {
+                    return y.ViewCount.CompareTo(x.ViewCount);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
         }
 
     }

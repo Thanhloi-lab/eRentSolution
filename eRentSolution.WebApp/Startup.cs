@@ -86,13 +86,13 @@ namespace eRentSolution.WebApp
 
                     });
 
-                endpoints.MapControllerRoute(
-                    name: "Product Detail",
-                    pattern: "products/{id}", new
-                    {
-                        controller = "Product",
-                        action = "Detail"
-                    });
+                //endpoints.MapControllerRoute(
+                //    name: "Product Detail",
+                //    pattern: "products/{id}", new
+                //    {
+                //        controller = "Product",
+                //        action = "Detail"
+                //    });
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

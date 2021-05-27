@@ -1,36 +1,37 @@
 ﻿@model eRentSolution.ViewModels.Catalog.Products.ProductStatusRequest
 
-@{
-    ViewData["Title"] = "Xóa sản phẩm";
-    Layout = "~/Views/Shared/_Layout3.cshtml";
-}
+@{ ViewData["Title"] = "Xóa sản phẩm";
+    Layout = "~/Views/Shared/_Layout3.cshtml"; }
 
-<div class="container-fluid">
-    <h1 class="mt-4">Xóa</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a class="nav-link" asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Xóa</li>
-    </ol>
-    <div class="card mb-4">
-        <div class="card-header">
-            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
-        </div>
 
-        <div class="card-body">
-            <div class="col-md-12">
-                <dl class="row">
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Id)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Id)
-                    </dd>
-                </dl>
-                <form asp-action="Show">
-                    <input asp-for="Id" type="hidden" input />
-                    <input type="submit" value="Show" class="btn btn-danger" />
-                </form>
+
+
+<link rel="stylesheet" href="~/css/input.css" />
+<div class="container-contact100">
+    <div class="wrap-contact100">
+        <form asp-action="Show" class="contact100-form validate-form">
+            <span class="contact100-form-title">
+                Hiện sản phẩm
+            </span>
+
+            <div class="wrap-input100 validate-input">
+
+                <span style="font-size:2rem; text-align:center; font-weight:500;" class="input100">@Html.DisplayNameFor(model => model.Id): @Html.DisplayFor(model => model.Id)</span>
             </div>
-        </div>
+
+
+            <div class="container-contact100-form-btn">
+                <div class="wrap-contact100-form-btn">
+                    <div class="contact100-form-bgbtn"></div>
+                    <input asp-for="Id" type="hidden" input />
+                    <button type="submit" class="contact100-form-btn">
+                        <span>
+                            Submit
+                            <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>

@@ -40,7 +40,7 @@ namespace eRentSolution.Admin.Controllers
             var request = new GetProductPagingRequest()
             {
                 PageIndex = 1,
-                PageSize = 10,
+                PageSize = 7,
                 IsGuess = false,
                 IsStatisticMonth = false
             };
@@ -49,6 +49,7 @@ namespace eRentSolution.Admin.Controllers
                 request.IsStatisticMonth = isStatisticMonth;
             }
             var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
+            request.PageIndex = 6;
             var statisticUserProducts = await _productApiClient.GetStatisticUserProduct(request, SystemConstant.AppSettings.TokenAdmin);
             var viewbagStatistic = new List<SelectListItem>()
             {

@@ -14,7 +14,7 @@
     </script>
 }
 <div class="container-fluid">
-    <h1 class="mt-4">Danh sách sản phẩm</h1>
+    <h1 class="mt-4">Danh mục sản phẩm</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
         <li class="breadcrumb-item active">Danh sách người dùng</li>
@@ -101,7 +101,7 @@
                         <td>
                             @Html.ActionLink("Chi tiết", "Detail", new { item.Id })|
                             @Html.ActionLink("Sửa ảnh", "EditImage", new { item.Id })|
-                            @Html.ActionLink("Chính sửa", "UpdateCategory", new { item.Id, item.Name })|
+                            @Html.ActionLink("Chỉnh sửa", "UpdateCategory", new { item.Id, item.Name })|
                             @Html.ActionLink("Xóa", "DeleteCategory", new { item.Id })|
                             @Html.ActionLink("Tạo mục con", "CreateCategory", new { item.Id })
                         </td>

@@ -76,8 +76,8 @@
     <div class="box-flex">
         @foreach (var item in Model.PageProducts.Items)
         {
-            var url = $"/Products/{item.Id}";
-            <div class="box-full-flex loadmore">
+            var url = $"/Product/detail/{item.Id}";
+            <div class="box-full-flex">
                 <div class="box-item">
                     <div style="position: relative; class="box-item__photo">
                         <a href="roomdetails.html">
@@ -98,7 +98,7 @@
     </div>
 </div>
 @await Component.InvokeAsync("Pager", Model.PageProducts);
-@*<script>
+<script>
     let navText = ["<i class='bx bx-chevron-left'></i>", "<i class='bx bx-chevron-right'></i>"]
     $('.slide-owl').owlCarousel({
         loop: true,
@@ -133,16 +133,16 @@
         }
     })
     
-    $(".loadmore").slice(0, 5).show()
-        $(".btn-loadmore").on("click", function () {
-            $(".loadmore:hidden").slice(0, 5).slideDown()
-            if ($(".loadmore:hidden").length == 0) {
-                $(".btn-loadmore").fadeOut('slow')
-            }
-        })
+    //$(".loadmore").slice(0, 5).show()
+    //    $(".btn-loadmore").on("click", function () {
+    //        $(".loadmore:hidden").slice(0, 5).slideDown()
+    //        if ($(".loadmore:hidden").length == 0) {
+    //            $(".btn-loadmore").fadeOut('slow')
+    //        }
+    //    })
 
   
-</script>*@
+</script>
 
 <style>
     

@@ -8,19 +8,8 @@
         {
             var parent = parents.ElementAt(i);
             var childrens = Model.Where(x => x.ParentId == parent.Id);
-            if (childrens.Any())
-            {
-                @foreach (var item in childrens)
-                {
-                <div class="category-item">
-                    <a href="/Categories/@item.Id">
-                        <img  src=@Configuration["BaseAddress"]/user-content/@item.Image alt=@item.Name>
-                        <span>@item.Name</span>
-                    </a>
-                </div>
-                } 
-            }
-            else
+           
+            
             {
                 <div class="category-item">
                     <a href="/Categories/@parent.Id">

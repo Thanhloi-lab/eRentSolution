@@ -14,7 +14,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
 <div class="container-fluid">
-    <h1 class="mt-4">Danh sách sản phẩm</h1>
+    <h1 class="mt-4">Thống kê lượt xem sản phẩm</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
         <li class="breadcrumb-item active">Danh sách người dùng</li>
@@ -25,6 +25,7 @@
                 <div class="col-md-6 col-xs-12">
                     <form asp-action="Index" method="get">
                         <div class="row">
+                            
                             <div class="col-md-4">
                                 <select name="categoryId" onchange="" asp-items="@ViewBag.Categories" class="form-control">
                                     <option>--Chọn danh mục--</option>

@@ -81,12 +81,12 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
             string formatAdmin = SystemConstant.AdminBackendApiProductUrl + "detail/" + "([0-9]+)";
-            string formatWebApp = SystemConstant.AdminBackendApiProductUrl + "detail/" + "([0-9]+)";
+            string formatWebApp = SystemConstant.BackendApiProductUrl + "detail/" + "([0-9]+)";
             int id = 0;
             bool isContainHttps = request.Url.Contains("https://");
             if (isContainHttps)
             {
-                request.Url = request.Url.Split("https://")[1];
+                request.Url = request.Url.Split("https://")[1].ToLower();
             }
             if (Regex.IsMatch(request.Url, formatAdmin) || Regex.IsMatch(request.Url, formatWebApp))
             {

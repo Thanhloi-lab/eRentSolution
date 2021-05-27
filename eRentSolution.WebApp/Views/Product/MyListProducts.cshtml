@@ -26,7 +26,7 @@
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)</td>
                 <td>@Html.DisplayFor(modelItem => item.Address)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; max-width:500px; height:60px;">@Html.DisplayFor(modelItem => item.Description)</td>
                 <td>@Html.DisplayFor(modelItem => item.ViewCount)</td>
                 <td>@Html.DisplayFor(modelItem => item.Stock)</td>
                 <td>@Html.DisplayFor(modelItem => item.IsFeatured)</td>

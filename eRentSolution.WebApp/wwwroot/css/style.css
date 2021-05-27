@@ -206,6 +206,7 @@ body{
 .category-item a img{
     width: 84px;
     height: 84px;
+    box-shadow: 4px 5px 10px #888888;
 }
 .category-slider{
     display: flex;
@@ -1037,7 +1038,8 @@ a.text-danger:hover, a.text-danger:focus {
 .box-sdt {
     font-size: 1.6rem;
     color: black;
-    margin-left: 103px;
+    margin-left: 15px;
+    margin-right: 187px;
     padding: 4px 8px;
     border: 1px solid black;
     border-radius: 2px;

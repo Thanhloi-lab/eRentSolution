@@ -5,11 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Product\UserProduct.cshtml" />
-    <Content Remove="Views\User\Staffs.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Views\Category\CreateCategory.cshtml" />
     <None Include="Views\Category\DeleteCategory.cshtml" />
     <None Include="Views\Category\Detail.cshtml" />
@@ -47,6 +42,8 @@
     <None Include="Views\Slide\Hide.cshtml" />
     <None Include="Views\Slide\Index.cshtml" />
     <None Include="Views\Slide\Show.cshtml" />
+    <None Include="Views\Statistic\Index.cshtml" />
+    <None Include="Views\Statistic\UserProduct.cshtml" />
     <None Include="Views\User\ActivityLog.cshtml" />
     <None Include="Views\User\ChangePassword.cshtml" />
     <None Include="Views\User\Create.cshtml" />

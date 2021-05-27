@@ -1,42 +1,43 @@
 ﻿@model eRentSolution.ViewModels.Catalog.Categories.CategoryAssignRequest
 
-@{
-    ViewData["Title"] = "CategoryAssign";
-    Layout = "~/Views/Shared/_Layout3.cshtml";
-}
+@{ ViewData["Title"] = "CategoryAssign";
+                Layout = "~/Views/Shared/_Layout3.cshtml"; }
 
-<div class="container-fluid">
-    <h1 class="mt-4">Gán danh mục người dùng</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Gán danh mục người dùng</li>
-    </ol>
-    <div class="card mb-4">
-        <div class="card-header">
-            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Về danh sách</a>
-        </div>
 
-        <div class="card-body">
-            <form asp-action="CategoryAssign">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Id" />
+<link rel="stylesheet" href="~/css/input.css" />
+<div class="container-contact100">
+    <div class="wrap-contact100">
+        <form asp-action="CategoryAssign" class="contact100-form validate-form">
+            <span class="contact100-form-title">
+                Gán danh mục sản phẩm
+            </span>
+
+            <div class="wrap-input100 validate-input">
                 @for (int i = 0; i < Model.Categories.Count; i++)
                 {
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" asp-for="Categories[i].Selected" />
-                            <input type="hidden" asp-for="Categories[i].Id" />
-                            <input type="hidden" asp-for="Categories[i].Name" />
-                            @Model.Categories[i].Name
-                        </label>
-                    </div>
-                }
-                <div class="form-group">
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" asp-for="Categories[i].Selected" />
+                    <input type="hidden" asp-for="Categories[i].Id" />
+                    <input type="hidden" asp-for="Categories[i].Name" />
+                    @Model.Categories[i].Name
+                </label>
+            </div>}
+            </div>
+
+
+            <div class="container-contact100-form-btn">
+                <div class="wrap-contact100-form-btn">
+                    <div class="contact100-form-bgbtn"></div>
                     <input asp-for="Id" type="hidden" input />
-                    <input type="submit" value="Lưu" class="btn btn-primary" />
+                    <button type="submit" class="contact100-form-btn">
+                        <span>
+                            Lưu lại
+                            <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+                        </span>
+                    </button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
-
