@@ -80,8 +80,8 @@ namespace eRentSolution.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            string formatAdmin = SystemConstant.AdminBackendApiProductUrl + "detail/" + "([0-9]+)";
-            string formatWebApp = SystemConstant.BackendApiProductUrl + "detail/" + "([0-9]+)";
+            string formatAdmin = _configuration["AdminAppDomain"] + "/detail/" + "([0-9]+)";
+            string formatWebApp = _configuration["WebAppDomain"] + "/detail/" + "([0-9]+)";
             int id = 0;
             bool isContainHttps = request.Url.Contains("https://");
             if (isContainHttps)

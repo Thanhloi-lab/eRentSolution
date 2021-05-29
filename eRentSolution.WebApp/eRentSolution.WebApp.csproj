@@ -17,7 +17,7 @@
     <None Include="Views\Product\Delete.cshtml" />
     <None Include="Views\Product\DeleteDetail.cshtml" />
     <None Include="Views\Product\DeleteImage.cshtml" />
-    <None Include="Views\Product\Detail.cshtml" />
+    <None Include="Views\Product\Details.cshtml" />
     <None Include="Views\Product\Edit.cshtml" />
     <None Include="Views\Product\EditDetail.cshtml" />
     <None Include="Views\Product\EditImage.cshtml" />

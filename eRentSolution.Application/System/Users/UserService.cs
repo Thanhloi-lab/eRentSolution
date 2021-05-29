@@ -472,7 +472,9 @@ namespace eRentSolution.Application.System.Users
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
-
-       
+        public Task<ApiResult<string>> RefreshToken(UserViewModel userViewModel, bool isAdminPage)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

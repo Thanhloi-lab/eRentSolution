@@ -13,6 +13,7 @@ using System.Net.Http.Headers;
 using System.IO;
 using eRentSolution.ViewModels.Common;
 using eRentSolution.Utilities.Constants;
+using Microsoft.Extensions.Configuration;
 
 namespace eRentSolution.Application.Utilities.Slides
 {
@@ -20,12 +21,13 @@ namespace eRentSolution.Application.Utilities.Slides
     {
         private readonly eRentDbContext _context;
         private readonly IStorageService _storageService;
-        private string productUrlPattern = SystemConstant.BackendApiProductUrl;
+        private readonly IConfiguration _configuration;
 
-        public SlideService(eRentDbContext context, IStorageService storageService)
+        public SlideService(eRentDbContext context, IStorageService storageService, IConfiguration configuration)
         {
             _context = context;
             _storageService = storageService;
+            _configuration = configuration;
         }
 
         public async Task<ApiResult<string>> AddSlide(SlideCreateRequest request, Guid userInfoId)
@@ -43,7 +45,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 Description = request.Description,
                 ImagePath = await this.SaveFile(request.ImageFile),
                 ProductId = request.ProductId,
-                Url = productUrlPattern + request.ProductId,
+                Url = request.ProductUrl + request.ProductId,
                 Status = Data.Enums.Status.Active
             };
             await _context.Slides.AddAsync(slide);
@@ -218,7 +220,7 @@ namespace eRentSolution.Application.Utilities.Slides
                                             x.p.Name.Contains(request.Keyword));
                 }
             }
-            if (request.isGuess)
+            if (request.IsGuess)
             {
                 query = query.Where(x => x.s.Status == Data.Enums.Status.Active);
             }
@@ -238,7 +240,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 Description = x.s.Description,
                 FilePath = x.s.ImagePath,
                 ProductId = x.p.Id,
-                Url = productUrlPattern + x.s.Id,
+                Url = request.BaseAddress + x.s.Id,
                 ProductName = x.p.Name,
                 Status = x.s.Status
             }).ToListAsync();
@@ -296,7 +298,6 @@ namespace eRentSolution.Application.Utilities.Slides
             slideViewModel.ProductName = product.Name;
             return new ApiSuccessResult<SlideViewModel>(slideViewModel);
         }
-
 
         private async Task<string> SaveFile(IFormFile file)
         {

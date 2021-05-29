@@ -73,7 +73,7 @@ namespace eRentSolution.AdminApp.Controllers
             return View(products.ResultObject);
         }
         [HttpGet]
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
             if(!result.IsSuccessed)

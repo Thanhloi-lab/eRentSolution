@@ -9,6 +9,7 @@ namespace eRentSolution.ViewModels.Utilities.Slides
     {
         public string Keyword { get; set; }
         public int? Status { get; set; }
-        public bool isGuess { get; set; }
+        public bool IsGuess { get; set; }
+        public string BaseAddress { get; set; }
     }
 }

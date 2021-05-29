@@ -45,7 +45,8 @@ namespace eRentSolution.AdminApp.Controllers
                 PageIndex = pageIndex,
                 PageSize = pageSize,
                 Status = status,
-                isGuess = false
+                IsGuess = false,
+                BaseAddress = _configuration["WebAppDomain"]
             };
 
             if (TempData["result"] != null)
@@ -201,8 +202,8 @@ namespace eRentSolution.AdminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            string formatAdmin = SystemConstant.AdminBackendApiProductUrl+ "detail/"+"([0-9]+)";
-            string formatWebApp = SystemConstant.AdminBackendApiProductUrl+ "detail/" + "([0-9]+)";
+            string formatAdmin = _configuration["WebAppDomain"] + "/detail/"+"([0-9]+)";
+            string formatWebApp = _configuration["AdminAppDomain"]+ "/detail/" + "([0-9]+)";
             int id = 0;
             bool isContainHttps = request.ProductUrl.Contains("https://");
             if(isContainHttps)
@@ -215,8 +216,7 @@ namespace eRentSolution.AdminApp.Controllers
                 id = int.Parse(splitedUrl[splitedUrl.Length-1]);
             }
             request.ProductId = id;
-
-            
+            request.ProductUrl = _configuration["WebAppDomain"];
 
             var result = await _slideApiClient.CreateSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
             if (result.IsSuccessed)

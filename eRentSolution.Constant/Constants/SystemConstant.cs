@@ -7,13 +7,13 @@ namespace eRentSolution.Utilities.Constants
     public class SystemConstant
     {
         public const string MainConnectionString = "eRentSolutionDatabase";
-        public const string BackendApiProductUrl = "localhost:5003/product/";
-        public const string AdminBackendApiProductUrl = "localhost:5002/product/";
+        //public const string BackendApiProductUrl = "localhost:5003/product/";
+        //public const string AdminBackendApiProductUrl = "localhost:5002/product/";
         public const string DefaultAvatar = "default_avatar.png";
         public const string DefaultCategory = "default_category.jpg";
         public const long DefaultAvatarSize = 15131;
         public const long DefaultCategorySize = 3021;
-        public const string RememberMe = "/RememberMe:";
+        //public const string RememberMe = "/RememberMe:";
         public class AppSettings
         {
             public const string TokenAdmin = "Token";

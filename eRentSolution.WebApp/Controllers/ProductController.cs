@@ -66,7 +66,7 @@ namespace eRentSolution.WebApp.Controllers
             return View(products.ResultObject);
         }
         [AllowAnonymous]
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var product = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
             if (!product.IsSuccessed)

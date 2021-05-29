@@ -10,6 +10,7 @@ namespace eRentSolution.Application.System.Users
     public interface IUserService
     {
         Task<ApiResult<string>> Authenticate(UserLoginRequest request, bool isAdminPage);
+        Task<ApiResult<string>> RefreshToken(UserViewModel userViewModel, bool isAdminPage);
         Task<ApiResult<string>> Register(UserRegisterRequest request);
         Task<ApiResult<string>> Update(Guid id, UserUpdateRequest request);
         Task<ApiResult<string>> UpdatePassword(UserUpdatePasswordRequest request);

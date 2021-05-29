@@ -49,7 +49,7 @@
         {
             @foreach (var item in featuredProducts[index])
     {
-        var url = $"/Products/{item.Id}";
+        var url = $"/Product/Details/{item.Id}";
         <div class="box-full-flex">
             <div class="box-item">
                 <div style="position:relative;" class="box-item__photo">
@@ -76,7 +76,7 @@
     <div class="box-flex">
         @foreach (var item in Model.PageProducts.Items)
         {
-            var url = $"/Product/detail/{item.Id}";
+            var url = $"/Product/details/{item.Id}";
             <div class="box-full-flex">
                 <div class="box-item">
                     <div style="position: relative; class="box-item__photo">
