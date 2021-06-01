@@ -29,8 +29,8 @@ namespace eRentSolution.AdminApp.Controllers
             IConfiguration configuration,
             ICategoryApiClient categoryApiClient,
             ISlideApiClient slideApiClient,
-            IUserApiClient userApiClient,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _configuration = configuration;
             _productApiClient = productApiClient;

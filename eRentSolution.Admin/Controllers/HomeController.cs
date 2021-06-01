@@ -13,6 +13,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using eRentSolution.AdminApp.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace eRentSolution.Admin.Controllers
 {
@@ -24,10 +25,13 @@ namespace eRentSolution.Admin.Controllers
         private readonly IProductApiClient _productApiClient;
         private readonly ICategoryApiClient _categoryApiClient;
         private readonly string userId;
-        public HomeController(ILogger<HomeController> logger
-            , IHttpContextAccessor httpContextAccessor,
+        public HomeController(ILogger<HomeController> logger, 
             IProductApiClient productApiClient,
-            ICategoryApiClient categoryApiClient)
+            IConfiguration configuration,
+            ICategoryApiClient categoryApiClient,
+            ISlideApiClient slideApiClient,
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;

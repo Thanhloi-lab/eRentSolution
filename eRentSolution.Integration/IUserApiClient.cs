@@ -18,6 +18,7 @@ namespace eRentSolution.Integration
         Task<ApiResult<string>> BanUser(Guid id, string tokenName);
         Task<ApiResult<string>> RoleAssign(RoleAssignRequest request, string tokenName);
         Task<ApiResult<string>> RegisterUser(UserRegisterRequest registerRequest);
+        Task<ApiResult<string>> RefreshToken(UserLoginRequest login, bool isAdminPage);
 
         Task<ApiResult<PagedResult<UserViewModel>>> GetUsersPaging(GetUserPagingRequest request, string tokenName);
         Task<ApiResult<PagedResult<UserViewModel>>> GetStaffsPaging(GetUserPagingRequest request, string tokenName);

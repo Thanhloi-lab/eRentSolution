@@ -24,9 +24,10 @@ namespace eRentSolution.AdminApp.Controllers
         //private readonly string userInfoId;
         public StatisticController(IProductApiClient productApiClient,
             IConfiguration configuration,
-            IUserApiClient userApiClient,
             ICategoryApiClient categoryApiClient,
-            IHttpContextAccessor httpContextAccessor)
+            ISlideApiClient slideApiClient,
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _configuration = configuration;
             _productApiClient = productApiClient;

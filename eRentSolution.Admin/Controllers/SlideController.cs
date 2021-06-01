@@ -25,10 +25,12 @@ namespace eRentSolution.AdminApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string userId;
 
-        public SlideController(IConfiguration configuration
-            , ICategoryApiClient categoryApiClient
-            , ISlideApiClient slideApiClient
-            , IHttpContextAccessor httpContextAccessor)
+        public SlideController(IProductApiClient productApiClient,
+            IConfiguration configuration,
+            ICategoryApiClient categoryApiClient,
+            ISlideApiClient slideApiClient,
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _configuration = configuration;
             _categoryApiClient = categoryApiClient;

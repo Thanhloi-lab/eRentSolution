@@ -73,6 +73,8 @@ namespace eRentSolution.Application.System.Users
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Actor, userInfo.UserId.ToString()),
                 new Claim(ClaimTypes.Name, userInfo.FirstName),
+                new Claim(ClaimTypes.IsPersistent, request.RememberMe.ToString()),
+                new Claim(ClaimTypes.GivenName, request.UserName),
             };
             foreach (var item in roles)
             {
@@ -188,8 +190,15 @@ namespace eRentSolution.Application.System.Users
                     await _userManager.AddToRoleAsync(user, roleName);
                 }
             }
-
-            return new ApiSuccessResult<string>("Gán quyền thành công");
+            try
+            {
+                await _context.SaveChangesAsync();
+                return new ApiSuccessResult<string>("Gán quyền thành công");
+            }
+            catch(Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi");
+            }
         }
         public async Task<ApiResult<string>> Update(Guid id, UserUpdateRequest request)
         {
@@ -298,6 +307,7 @@ namespace eRentSolution.Application.System.Users
         {
             var query = from u in _userManager.Users
                         join ui in _context.UserInfos on u.Id equals ui.UserId
+                        where u.Status == Status.Active
                         select new { u, ui };
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -341,6 +351,7 @@ namespace eRentSolution.Application.System.Users
                         join ui in _context.UserInfos on u.Id equals ui.UserId
                         join ur in _context.UserRoles on u.Id equals ur.UserId
                         join r in _roleManager.Roles on ur.RoleId equals r.Id
+                        where u.Status == Status.Active
                         select new { u, ui, r };
             
             if (!string.IsNullOrEmpty(request.Keyword))
@@ -472,9 +483,45 @@ namespace eRentSolution.Application.System.Users
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
-        public Task<ApiResult<string>> RefreshToken(UserViewModel userViewModel, bool isAdminPage)
+        public async Task<ApiResult<string>> RefreshToken(UserLoginRequest request, bool isAdminPage)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            if (user == null)
+                return new ApiErrorResult<string>("Đã có lỗi trong quá trình. Vui lòng đăng nhập lại");
+
+            if (user.Status == Data.Enums.Status.InActive)
+                return new ApiErrorResult<string>("Tài khoản đã bị khóa");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            if (isAdminPage)
+            {
+                if (!roles.Contains(SystemConstant.AppSettings.UserAdminRole) && !roles.Contains(SystemConstant.AppSettings.AdminRole))
+                    return new ApiErrorResult<string>("Đã có lỗi trong quá trình. Vui lòng đăng nhập lại");
+            }
+
+            var userInfo = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Actor, userInfo.UserId.ToString()),
+                new Claim(ClaimTypes.Name, userInfo.FirstName),
+                new Claim(ClaimTypes.IsPersistent, request.RememberMe.ToString()),
+                new Claim(ClaimTypes.GivenName, request.UserName),
+            };
+            foreach (var item in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, item));
+            }
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_configuration["Tokens:Issuer"],
+              _configuration["Tokens:Audience"],
+              claims,
+              expires: DateTime.UtcNow.AddDays(30),
+              signingCredentials: credentials);
+            return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
     }
 }

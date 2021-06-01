@@ -30,8 +30,6 @@ namespace eRentSolution.AdminApp.Controllers
             _userApiClient = userApiClient;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
-
-
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -42,7 +40,7 @@ namespace eRentSolution.AdminApp.Controllers
                 var userPrincipal = this.ValidateToken(token);
                 if (userPrincipal == null)
                 {
-                    Response.Cookies.Delete("Token");
+                    Response.Cookies.Delete(SystemConstant.AppSettings.TokenAdmin);
                     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                     return RedirectToAction("index", "login");
                 }
@@ -90,7 +88,6 @@ namespace eRentSolution.AdminApp.Controllers
                 Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
-
         private ClaimsPrincipal ValidateToken(string jwtToken)
         {
             IdentityModelEventSource.ShowPII = true;
@@ -114,6 +111,39 @@ namespace eRentSolution.AdminApp.Controllers
                 return null;
             }
             return principal;
+        }
+        [HttpGet]
+        public async Task<IActionResult> RefreshToken()
+        {
+            UserLoginRequest request = new UserLoginRequest()
+            {
+                RememberMe = true,//bool.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.IsPersistent).Value),
+                UserName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value,
+                Password = "1"
+            };
+
+            var result = await _userApiClient.RefreshToken(request, true);
+            if (!result.IsSuccessed)
+            {
+                Response.Cookies.Delete(SystemConstant.AppSettings.TokenAdmin);
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return BadRequest();
+            }
+
+            var userPrincipal = this.ValidateToken(result.ResultObject);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = request.RememberMe,
+                ExpiresUtc = DateTimeOffset.Now.AddDays(30)
+            };
+            HttpContext.Session.SetString(SystemConstant.AppSettings.TokenAdmin, result.ResultObject);
+            await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        userPrincipal,
+                        authProperties);
+            if (request.RememberMe)
+                Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+            return Ok();
         }
     }
 }

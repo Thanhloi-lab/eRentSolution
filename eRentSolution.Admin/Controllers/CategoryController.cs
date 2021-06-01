@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,12 @@ namespace eRentSolution.AdminApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private string userId;
 
-        public CategoryController(ICategoryApiClient categoryApiClient, IHttpContextAccessor httpContextAccessor)
+        public CategoryController(IProductApiClient productApiClient,
+            IConfiguration configuration,
+            ICategoryApiClient categoryApiClient,
+            ISlideApiClient slideApiClient,
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _categoryApiClient = categoryApiClient;
             _httpContextAccessor = httpContextAccessor;

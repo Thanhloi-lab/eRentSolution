@@ -25,7 +25,9 @@ namespace eRentSolution.AdminApp.Controllers
         public FeaturedProductController(IProductApiClient productApiClient,
             IConfiguration configuration,
             ICategoryApiClient categoryApiClient,
-            IHttpContextAccessor httpContextAccessor)
+            ISlideApiClient slideApiClient,
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _configuration = configuration;
             _productApiClient = productApiClient;

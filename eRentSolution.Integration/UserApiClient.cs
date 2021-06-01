@@ -34,6 +34,11 @@ namespace eRentSolution.Integration
             var result = await PostAsync<string>($"api/users/authenticate/{isAdminPage}", login);
             return result;
         }
+        public async Task<ApiResult<string>> RefreshToken(UserLoginRequest login, bool isAdminPage)
+        {
+            var result = await PostAsync<string>($"api/users/refreshToken/{isAdminPage}", login);
+            return result;
+        }
         public async Task<ApiResult<string>> Delete(Guid id, string tokenName)
         {
             var result = await DeleteAsync<string>($"api/users/{id}", tokenName);

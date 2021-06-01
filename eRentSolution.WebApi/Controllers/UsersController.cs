@@ -29,6 +29,15 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        [HttpPost("refreshToken/{isAdminPage}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RefreshToken([FromBody] UserLoginRequest request, bool isAdminPage)
+        {
+            var result = await _userService.RefreshToken(request, isAdminPage);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
