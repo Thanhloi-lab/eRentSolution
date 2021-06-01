@@ -46,16 +46,17 @@ namespace eRentSolution.AdminApp.Controllers
         {
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
             var cookies = Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
-            //if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
-            //{
-            //    try
-            //    {
-            //        await RefreshToken();
-            //    }catch(Exception e)
-            //    {
+            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
+            {
+                try
+                {
+                    await RefreshToken();
+                }
+                catch (Exception e)
+                {
 
-            //    }
-            //}
+                }
+            }
 
             session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
             cookies = _httpContextAccessor.HttpContext.Request.Cookies[CookieAuthenticationDefaults.AuthenticationScheme];
