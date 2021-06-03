@@ -48,7 +48,7 @@ namespace eRentSolution.Admin
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
             services.AddTransient<ISlideApiClient, SlideApiClient>();
-
+            services.AddTransient<IContactApiClient, ContactApiClient>();
 
 
             IMvcBuilder builder = services.AddRazorPages();

@@ -37,6 +37,7 @@ namespace eRentSolution.Admin.Controllers
             _httpContextAccessor = httpContextAccessor;
             _categoryApiClient = categoryApiClient;
             _productApiClient = productApiClient;
+
         }
 
         public async Task<IActionResult> Index(bool? isStatisticMonth)

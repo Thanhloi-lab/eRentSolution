@@ -1,5 +1,6 @@
 ﻿using eRentSolution.Data.Entities;
 using eRentSolution.Data.Enums;
+using eRentSolution.Utilities.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -143,121 +144,121 @@ namespace eRentSolution.Data.Extentions
                Length = 10
            }) ;
             modelBuilder.Entity<UserAction>().HasData(
-           new UserAction()
-           {
-               Id = 1,
-               ActionName = "Tạo sản phẩm"
-           },
-           new UserAction()
-           {
-               Id = 2,
-               ActionName = "Chỉnh sửa sản phẩm"
-           }, 
-           new UserAction()
-           {
-               Id = 3,
-               ActionName = "Ẩn sản phẩm"
-           },
-           new UserAction()
-           {
-               Id = 4,
-               ActionName = "Chờ duyệt" 
-           },
-           new UserAction()
-           {
-               Id = 5,
-               ActionName = "Hoạt động"
-           },
-           new UserAction()
-           {
-               Id = 6,
-               ActionName = "Khóa hoạt động"
-           },
-           new UserAction()
-           {
-               Id = 7,
-               ActionName = "Tạo sản phẩm trình chiếu"
-           },
-           new UserAction()
-           {
-               Id = 8,
-               ActionName = "Chỉnh sửa sản phẩm trình chiếu"
-           },
-           new UserAction()
-           {
-               Id = 9,
-               ActionName = "Ẩn sản phẩm trình chiếu"
-           },
-           new UserAction()
-           {
-               Id = 10,
-               ActionName = "Hiện sản phẩm trình chiếu"
-           },
-           new UserAction()
-           {
-               Id = 11,
-               ActionName = "Xóa sản phẩm trình chiếu"
-           },
-           new UserAction()
-           {
-               Id = 12,
-               ActionName = "Tạo sản phẩm nổi bật"
-           },
-           new UserAction()
-           {
-               Id = 13,
-               ActionName = "Xóa sản phẩm nổi bật"
-           },
-           new UserAction()
-           {
-               Id = 14,
-               ActionName = "Ẩn sản phẩm nổi bật" 
-           },
-           new UserAction()
-           {
-               Id = 15,
-               ActionName = "Hiện sản phẩm nổi bật" 
-           },
-           new UserAction()
-           {
-               Id = 16,
-               ActionName = "Chỉnh sửa hình ảnh sản phẩm"
-           },
-           new UserAction()
-           {
-               Id = 17,
-               ActionName = "Thêm hình ảnh sản phẩm"
-           },
-           new UserAction()
-           {
-               Id = 18,
-               ActionName = "Xóa hình ảnh sản phẩm"
-           },
-           new UserAction()
-           {
-               Id = 19,
-               ActionName = "Xóa chi tiết sản phẩm"
-           } ,
-           new UserAction()
-           {
-               Id = 20,
-               ActionName = "Thêm chi tiết sản phẩm"
-           },
-           new UserAction()
-           {
-               Id = 21,
-               ActionName = "Chỉnh sửa chi tiết sản phẩm"
-           },
-           new UserAction()
-           {
-               Id = 22,
-               ActionName = "Chỉnh sửa tồn kho"
-           },
-           new UserAction()
-           {
-               Id = 23,
-               ActionName = "Chỉnh sửa giá"
-           });
+            new UserAction()
+            {
+                Id = 1,
+                ActionName = SystemConstant.ActionSettings.CreateProduct
+            },
+            new UserAction()
+            {
+                Id = 2,
+                ActionName = SystemConstant.ActionSettings.UpdateProduct
+            }, 
+            new UserAction()
+            {
+                Id = 3,
+                ActionName = SystemConstant.ActionSettings.HideProduct
+            },
+            new UserAction()
+            {
+                Id = 4,
+                ActionName = SystemConstant.ActionSettings.ShowProduct
+            },
+            new UserAction()
+            {
+                Id = 5,
+                ActionName = SystemConstant.ActionSettings.ActiveProduct
+            },
+            new UserAction()
+            {
+                Id = 6,
+                ActionName = SystemConstant.ActionSettings.InActiveProduct
+            },
+            new UserAction()
+            {
+                Id = 7,
+                ActionName = SystemConstant.ActionSettings.CreateSlide
+            },
+            new UserAction()
+            {
+                Id = 8,
+                ActionName = SystemConstant.ActionSettings.UpdateSlide
+            },
+            new UserAction()
+            {
+                Id = 9,
+                ActionName = SystemConstant.ActionSettings.HideSlide
+            },
+            new UserAction()
+            {
+                Id = 10,
+                ActionName = SystemConstant.ActionSettings.ShowSlide
+            },
+            new UserAction()
+            {
+                Id = 11,
+                ActionName = SystemConstant.ActionSettings.DeleteSlide
+            },
+            new UserAction()
+            {
+                Id = 12,
+                ActionName = SystemConstant.ActionSettings.CreateFeatureProduct
+            },
+            new UserAction()
+            {
+                Id = 13,
+                ActionName = SystemConstant.ActionSettings.DeleteFeatureProduct
+            },
+            new UserAction()
+            {
+                Id = 14,
+                ActionName = "Ẩn sản phẩm nổi bật" 
+            },
+            new UserAction()
+            {
+                Id = 15,
+                ActionName = "Hiện sản phẩm nổi bật" 
+            },
+            new UserAction()
+            {
+                Id = 16,
+                ActionName = SystemConstant.ActionSettings.UpdateImage
+            },
+            new UserAction()
+            {
+                Id = 17,
+                ActionName = SystemConstant.ActionSettings.CreateImage
+            },
+            new UserAction()
+            {
+                Id = 18,
+                ActionName = SystemConstant.ActionSettings.DeleteImage
+            },
+            new UserAction()
+            {
+                Id = 19,
+                ActionName = SystemConstant.ActionSettings.DeleteDetail
+            } ,
+            new UserAction()
+            {
+                Id = 20,
+                ActionName = SystemConstant.ActionSettings.CreateProductDetail
+            },
+            new UserAction()
+            {
+                Id = 21,
+                ActionName = SystemConstant.ActionSettings.UpdateProductDetail
+            },
+            new UserAction()
+            {
+                Id = 22,
+                ActionName = SystemConstant.ActionSettings.UpdateStockProduct
+            },
+            new UserAction()
+            {
+                Id = 23,
+                ActionName = SystemConstant.ActionSettings.UpdatePriceProduct
+            });
             modelBuilder.Entity<Censor>().HasData(
            new Censor()
            {

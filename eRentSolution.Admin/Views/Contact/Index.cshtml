@@ -1,5 +1,5 @@
 ﻿@using eRentSolution.ViewModels.Common;
-@model PagedResult<eRentSolution.ViewModels.Utilities.Slides.SlideViewModel>
+@model PagedResult<eRentSolution.ViewModels.Utilities.Contacts.ContactViewModel>
 
 @{
     ViewData["Title"] = "Danh sách sản phẩm";
@@ -22,7 +22,7 @@
         <div class=" card-header">
             <div class="row">
                 <div class="col-md-6 col-xs-12">
-                    <a class="btn btn-success" asp-action="CreateSlide" asp-controller="Slide">Tạo mới</a>
+                    <a class="btn btn-success" asp-action="create" asp-controller="Contact">Tạo mới</a>
                 </div>
                 <div class="col-md-6 col-xs-12">
                     <form asp-action="Index" method="get">
@@ -37,7 +37,7 @@
                             </div>
                             <div class="cold-md-3">
                                 <button type="submit" class="btn btn-primary">Tìm</button>
-                                <button type="button" onclick="window.location.href='/Slide/Index'" class="btn btn-dark">Reset</button>
+                                <button type="button" onclick="window.location.href='/contact/Index'" class="btn btn-dark">Reset</button>
                             </div>
                         </div>
                     </form>
@@ -62,16 +62,16 @@
                     <thead>
                         <tr>
                             <th>
-                                Mã slide
+                                Mã số
                             </th>
                             <th>
-                                Tên slide
+                                Tên
                             </th>
                             <th>
-                                Mã sản phẩm
+                                Email
                             </th>
                             <th>
-                                Tên sản phẩm
+                                Sđt
                             </th>
                             <th>
                                 Tình trạng
@@ -90,10 +90,10 @@
                                 @Html.DisplayFor(modelItem => item.Name)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ProductId)
+                                @Html.DisplayFor(modelItem => item.Email)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.ProductName)
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
                             </td>
                             @if (item.Status == eRentSolution.Data.Enums.Status.Active)
                             {

@@ -59,6 +59,7 @@ namespace eRentSolution.Utilities.Constants
             public const string UpdateImage = "Chỉnh sửa hình ảnh sản phẩm";
             public const string CreateImage = "Thêm hình ảnh sản phẩm";
             public const string DeleteImage = "Xóa hình ảnh sản phẩm";
+
         }
     }
 }

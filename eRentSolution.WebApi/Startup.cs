@@ -4,6 +4,7 @@ using eRentSolution.Application.Catalog.Products;
 using eRentSolution.Application.Common;
 using eRentSolution.Application.System.Roles;
 using eRentSolution.Application.System.Users;
+using eRentSolution.Application.Utilities.Contacts;
 using eRentSolution.Application.Utilities.Slides;
 using eRentSolution.Data.EF;
 using eRentSolution.Data.Entities;
@@ -54,7 +55,7 @@ namespace eRentSolution.BackendApi
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ISlideService, SlideService>();
-
+            services.AddTransient<IContactService, ContactService>();
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
 

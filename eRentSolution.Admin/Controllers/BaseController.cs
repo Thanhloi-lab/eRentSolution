@@ -45,7 +45,7 @@ namespace eRentSolution.AdminApp.Controllers
         public async override void OnActionExecuting(ActionExecutingContext context)
         {
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
-
+            var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
             {
                 try
@@ -66,9 +66,7 @@ namespace eRentSolution.AdminApp.Controllers
             {
                 session = "";
             }
-
             
-            var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
 
             if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session) && User.Identity.IsAuthenticated)
             {

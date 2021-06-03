@@ -214,7 +214,16 @@ namespace eRentSolution.Application.System.Users
             person.FirstName = request.FirstName;
             person.LastName = request.LastName;
 
-            var result = await _userManager.UpdateAsync(user);
+            IdentityResult result;
+            try
+            {
+                result = await _userManager.UpdateAsync(user);
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
+
             if (result.Succeeded)
             {
                 await _context.SaveChangesAsync();
@@ -238,8 +247,17 @@ namespace eRentSolution.Application.System.Users
 
                 user.AvatarFilePath = await this.SaveFile(request.AvatarFile);
             }
-            
-            var result = await _userManager.UpdateAsync(user);
+
+            IdentityResult result;
+            try
+            {
+                result = await _userManager.UpdateAsync(user);
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
+
             if (result.Succeeded)
             {
                 await _context.SaveChangesAsync();

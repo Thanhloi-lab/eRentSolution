@@ -38,8 +38,16 @@ namespace eRentSolution.Application.Catalog.Products
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
             product.ViewCount += 1;
-            await _context.SaveChangesAsync();
-            return new ApiSuccessResult<string>("Thêm lượt xem thành công");
+            try
+            {
+                await _context.SaveChangesAsync();
+                return new ApiSuccessResult<string>("Thêm lượt xem thành công");
+            }
+            catch(Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình cập nhật");
+            }
+            
         }
         public async Task<ApiResult<int>> Create(ProductCreateRequest request, Guid userInfoId)
         {
@@ -100,8 +108,18 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 return new ApiErrorResult<int>("Ảnh không tồn tại");
             }
-            await _context.Products.AddAsync(product);
-            var result = await _context.SaveChangesAsync();
+
+            int result = 0;
+            try
+            {
+                await _context.Products.AddAsync(product);
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<int>("Lỗi trong quá trình thực hiện thao tác");
+            }
+
             if (result > 0)
             {
                 return new ApiSuccessResult<int>(product.Id);
@@ -137,8 +155,16 @@ namespace eRentSolution.Application.Catalog.Products
             }
 
             _context.Products.Remove(product);
-
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
+            
             if (result != 0)
                 return new ApiSuccessResult<string>("Xóa ảnh thành công");
             else
@@ -167,7 +193,17 @@ namespace eRentSolution.Application.Catalog.Products
 
             product.StatusId = (int)(object)Status.Private;
             _context.Products.Update(product);
-            var result = await _context.SaveChangesAsync();
+
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
+
             if (result != 0)
                 return new ApiSuccessResult<string>("Ẩn sản phẩm thành công");
             else
@@ -182,7 +218,17 @@ namespace eRentSolution.Application.Catalog.Products
             }
             product.StatusId = (int)(object)Status.Public;
             _context.Products.Update(product);
-            var result = await _context.SaveChangesAsync();
+
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
+
             if (result > 0)
             {
                 var action = await _context.UserActions
@@ -197,7 +243,15 @@ namespace eRentSolution.Application.Catalog.Products
                     Date = DateTime.UtcNow
                 };
                 await _context.Censors.AddAsync(censor);
-                result = await _context.SaveChangesAsync();
+
+                try
+                {
+                    result = await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+                }
             }
 
             if (result != 0)
@@ -214,8 +268,18 @@ namespace eRentSolution.Application.Catalog.Products
             }
             product.StatusId = (int)(object)Status.Active;
             _context.Products.Update(product);
-            var result = await _context.SaveChangesAsync();
-            if(result >0)
+
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
+
+            if (result >0)
             {
                 var action = await _context.UserActions
                             .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.ActiveProduct);
@@ -229,7 +293,15 @@ namespace eRentSolution.Application.Catalog.Products
                     Date = DateTime.UtcNow
                 };
                 await _context.Censors.AddAsync(censor);
-                result = await _context.SaveChangesAsync();
+
+                try
+                {
+                    result = await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+                }
             }
 
             if (result != 0)
@@ -260,7 +332,16 @@ namespace eRentSolution.Application.Catalog.Products
             _context.Products.Update(product);
             product.StatusId = (int)(object)Status.InActive;
 
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
+
             if (result != 0)
                 return new ApiSuccessResult<string>("Khóa sản phẩm thành công");
             else
@@ -287,7 +368,15 @@ namespace eRentSolution.Application.Catalog.Products
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
                 return new ApiSuccessResult<string>("Cập nhật giá thành công");
             else
@@ -315,7 +404,15 @@ namespace eRentSolution.Application.Catalog.Products
 
             };
             await _context.Censors.AddAsync(censor);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
                 return new ApiSuccessResult<string>("Cập nhật tồn kho thành công");
             else
@@ -346,7 +443,15 @@ namespace eRentSolution.Application.Catalog.Products
             };
             await _context.Censors.AddAsync(censor);
 
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
                 return new ApiSuccessResult<string>("Cập nhật sản phẩm thành công");
             else
@@ -371,7 +476,15 @@ namespace eRentSolution.Application.Catalog.Products
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            };
             if (result > 0)
                 return new ApiSuccessResult<string>("Tạo sản phẩm nổi bật thành công");
             else
@@ -396,7 +509,15 @@ namespace eRentSolution.Application.Catalog.Products
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
                 return new ApiSuccessResult<string>("Hủy sản phẩm nổi bật thành công");
             else
@@ -428,7 +549,15 @@ namespace eRentSolution.Application.Catalog.Products
                     });
                 }
             }
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
                 return new ApiSuccessResult<string>("Gán danh mục thành công");
             return new ApiErrorResult<string>("Gán danh mục thất bại");
@@ -458,7 +587,15 @@ namespace eRentSolution.Application.Catalog.Products
             };
             
             await _context.Censors.AddAsync(censor);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
                 return new ApiSuccessResult<string>("Cập nhật chi tiết thành công");
             else
@@ -515,7 +652,15 @@ namespace eRentSolution.Application.Catalog.Products
                 return new ApiErrorResult<string>("Ảnh đính kèm không tồn tại");
             }
             await _context.ProductDetails.AddAsync(productDetail);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result < 1)
                 return new ApiErrorResult<string>("Thêm ảnh thất bại");
             var censors = new Censor()
@@ -526,7 +671,14 @@ namespace eRentSolution.Application.Catalog.Products
                 ProductId = product.Id
             };
             await _context.Censors.AddAsync(censors);
-            result = await _context.SaveChangesAsync();
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
                 return new ApiSuccessResult<string>("Thêm ảnh thành công");
             return new ApiErrorResult<string>("Thêm ảnh thất bại");
@@ -538,7 +690,15 @@ namespace eRentSolution.Application.Catalog.Products
                 return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
 
             _context.ProductDetails.Remove(detail);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
             {
                 var Imgages = _context.ProductImages.Where(p => p.ProductDetailId == productDetailId);
@@ -558,7 +718,14 @@ namespace eRentSolution.Application.Catalog.Products
                     UserInfoId = userId,
                 };
                 _context.Censors.Add(censor);
-                result = await _context.SaveChangesAsync();
+                try
+                {
+                    result = await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+                }
                 if (result > 0)
                     return new ApiSuccessResult<string>("Xóa chi tiết thành công");
             }
@@ -661,7 +828,7 @@ namespace eRentSolution.Application.Catalog.Products
                 }
                 else
                 {
-                    data = await query.OrderBy(x => x.p.ViewCount)
+                    data = await query.OrderByDescending(x => x.p.ViewCount)
                        .Skip(request.PageSize * (request.PageIndex - 1))
                        .Take(request.PageSize)
                        .Select(x => new ProductViewModel()
@@ -682,7 +849,7 @@ namespace eRentSolution.Application.Catalog.Products
             }    
             else
             {
-                data = await query.OrderByDescending(x => x.p.DateCreated)
+                data = await query.OrderBy(x => x.p.Id)
                        .Skip(request.PageSize * (request.PageIndex - 1))
                        .Take(request.PageSize)
                        .Select(x => new ProductViewModel()
@@ -1111,7 +1278,15 @@ namespace eRentSolution.Application.Catalog.Products
                 return new ApiErrorResult<string>("Xóa ảnh không thành công, vui lòng thử lại sau");
 
             _context.ProductImages.Remove(productImage);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
             {
                 var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.DeleteImage);
@@ -1145,7 +1320,15 @@ namespace eRentSolution.Application.Catalog.Products
                 productImage.FileSize = request.ImageFile.Length;
             }
             _context.ProductImages.Add(productImage);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
             {
                 var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateImage);
@@ -1175,7 +1358,15 @@ namespace eRentSolution.Application.Catalog.Products
                 productImage.FileSize = request.ImageFile.Length;
             }
             _context.ProductImages.Update(productImage);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
             {
                 var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateImage);
@@ -1251,8 +1442,6 @@ namespace eRentSolution.Application.Catalog.Products
             return new ApiSuccessResult<List<ProductImageViewModel>>(images);
         }
         
-
-
 
         //--------FILE--------
         private async Task<string> SaveFile(IFormFile file)

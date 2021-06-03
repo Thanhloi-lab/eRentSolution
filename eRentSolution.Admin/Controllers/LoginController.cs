@@ -1,6 +1,9 @@
-﻿using eRentSolution.Integration;
+﻿using eRentSolution.AdminApp.Models;
+using eRentSolution.Data.Enums;
+using eRentSolution.Integration;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.System.Users;
+using eRentSolution.ViewModels.Utilities.Contacts;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -22,14 +25,17 @@ namespace eRentSolution.AdminApp.Controllers
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IContactApiClient _contactApiClient;
 
         public LoginController(IUserApiClient userApiClient,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IContactApiClient contactApiClient)
         {
             _userApiClient = userApiClient;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _contactApiClient = contactApiClient;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -58,11 +64,23 @@ namespace eRentSolution.AdminApp.Controllers
                 return RedirectToAction("Index", "Home");
             }
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return View();
+            GetContactPagingRequest request = new GetContactPagingRequest()
+            {
+                PageIndex = 1,
+                Status = (int)(object)Status.Active,
+                PageSize = 2,
+            };
+            var contacts = await _contactApiClient.GetAllPaging(request, SystemConstant.AppSettings.TokenAdmin);
+            return View(new LoginViewModel()
+            {
+                contacts = contacts.ResultObject.Items,
+                userLoginRequest = null
+            });
         }
         [HttpPost]
-        public async Task<IActionResult> Index(UserLoginRequest request)
+        public async Task<IActionResult> Index(LoginViewModel model)
         {
+            UserLoginRequest request = model.userLoginRequest;
             if (!ModelState.IsValid)
                 return View(ModelState);
 
@@ -111,39 +129,6 @@ namespace eRentSolution.AdminApp.Controllers
                 return null;
             }
             return principal;
-        }
-        [HttpGet]
-        public async Task<IActionResult> RefreshToken()
-        {
-            UserLoginRequest request = new UserLoginRequest()
-            {
-                RememberMe = true,//bool.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.IsPersistent).Value),
-                UserName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value,
-                Password = "1"
-            };
-
-            var result = await _userApiClient.RefreshToken(request, true);
-            if (!result.IsSuccessed)
-            {
-                Response.Cookies.Delete(SystemConstant.AppSettings.TokenAdmin);
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return BadRequest();
-            }
-
-            var userPrincipal = this.ValidateToken(result.ResultObject);
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = request.RememberMe,
-                ExpiresUtc = DateTimeOffset.Now.AddDays(30)
-            };
-            HttpContext.Session.SetString(SystemConstant.AppSettings.TokenAdmin, result.ResultObject);
-            await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        userPrincipal,
-                        authProperties);
-            if (request.RememberMe)
-                Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
-            return Ok();
         }
     }
 }

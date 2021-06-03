@@ -46,7 +46,15 @@ namespace eRentSolution.Application.Catalog.Categories
                 return new ApiErrorResult<string>("Ảnh không tồn tại");
             }
             await _context.Categories.AddAsync(category);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result < 1)
             {
                 _storageService.DeleteFile(category.ImagePath);
@@ -68,7 +76,15 @@ namespace eRentSolution.Application.Catalog.Categories
             }
             var category = await _context.Categories.FindAsync(categoryId);
             _context.Categories.Remove(category);
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result < 1)
             {
                 return new ApiErrorResult<string>("Xóa danh mục thất bại");
@@ -161,7 +177,15 @@ namespace eRentSolution.Application.Catalog.Categories
                 return new ApiErrorResult<string>("Danh mục không tồn tại");
             category.Name = request.CategoryName;
 
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
             if (result > 0)
             {
                 await _context.SaveChangesAsync();
@@ -187,10 +211,18 @@ namespace eRentSolution.Application.Catalog.Categories
                 category.ImageSize = request.ImageFile.Length;
             }
 
-            var result = await _context.SaveChangesAsync();
+            int result;
+            try
+            {
+                result = await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
+
             if (result > 0)
             {
-                await _context.SaveChangesAsync();
                 return new ApiSuccessResult<string>("Chỉnh sửa ảnh thành công");
             }
             _storageService.DeleteFile(category.ImagePath);

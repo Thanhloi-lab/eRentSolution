@@ -57,9 +57,9 @@ namespace eRentSolution.Integration
                 requestContent.Add(bytes, "ThumbnailImage", request.ThumbnailImage.FileName);
             }
 
-            requestContent.Add(new StringContent(request.Price.ToString()), "price");
-            requestContent.Add(new StringContent(request.OriginalPrice.ToString()), "originalPrice");
-            requestContent.Add(new StringContent(request.Stock.ToString()), "stock");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Stock.ToString()) ? "" : request.Stock.ToString()), "stock");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.OriginalPrice.ToString()) ? "" : request.OriginalPrice.ToString()), "originalPrice");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Price.ToString()) ? "" : request.Price.ToString()), "price");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name), "name");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Detail) ? "" : request.Detail), "detail");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Width.ToString()) ? "" : request.Width.ToString()), "width");

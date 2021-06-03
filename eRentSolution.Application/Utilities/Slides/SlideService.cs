@@ -93,9 +93,10 @@ namespace eRentSolution.Application.Utilities.Slides
             };
             await _context.Censors.AddAsync(censor);
             result = await _context.SaveChangesAsync();
-            if (result < 0)
-                return new ApiErrorResult<string>("Ẩn sản phâm trình chiếu thất bại");
-            return new ApiSuccessResult<string>("Ẩn sản phẩm trình chiếu thành công");
+            if (result > 0)
+                return new ApiSuccessResult<string>("Ẩn sản phẩm trình chiếu thành công");
+            return new ApiErrorResult<string>("Ẩn sản phâm trình chiếu thất bại");
+            
         }
         public async Task<ApiResult<string>> DeleteSlide(SlideStatusRequest request, Guid userInfoId)
         {
@@ -167,7 +168,7 @@ namespace eRentSolution.Application.Utilities.Slides
 
             slide.Status = Data.Enums.Status.Active;
             var result = await _context.SaveChangesAsync();
-            if (result < 0)
+            if (result <= 0)
                 return new ApiErrorResult<string>("Hiện sản phâm trình chiếu thất bại");
 
             var censor = new Censor()
@@ -233,7 +234,7 @@ namespace eRentSolution.Application.Utilities.Slides
             }
 
             int totalRow = await query.CountAsync();
-            var data = await query.Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new SlideViewModel()
+            var data = await query.OrderBy(x => x.s.Id).Skip(request.PageSize * (request.PageIndex - 1)).Take(request.PageSize).Select(x => new SlideViewModel()
             {
                 Id = x.s.Id,
                 Name = x.s.Name,
@@ -282,7 +283,7 @@ namespace eRentSolution.Application.Utilities.Slides
         {
             var slide = await _context.Slides.FindAsync(slideId);
             if (slide == null)
-                return null;
+                return new ApiErrorResult<SlideViewModel>("Sản phẩm trình chiếu không tồn tại");
             var slideViewModel =  new SlideViewModel()
             {
                 Id = slide.Id,
