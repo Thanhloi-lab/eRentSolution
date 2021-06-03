@@ -6,8 +6,6 @@
 }
 
 
-
-
 <div class="container-fluid">
     <h1 class="mt-4">Cập nhật ảnh danh mục</h1>
     <ol class="breadcrumb mb-4">
@@ -20,17 +18,24 @@
         </div>
 
         <div class="card-body">
+
+            <div class="col-md-12">
+                <dl class="row">
+                    <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.CategoryId)
+                    </dt>
+                    <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.CategoryId)
+                    </dd>
+                </dl>
+            </div>
+
             <div class="col-md-4">
                 <form asp-action="EditImage" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="CategoryId" class="control-label"></label>
-                        <input asp-for="CategoryId" class="form-control" />
-                        <span asp-validation-for="CategoryId" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
                         <label asp-for="ImageFile" class="control-label"></label>
-                        <input asp-for="ImageFile" type ="file" class="form-control" />
+                        <input asp-for="ImageFile" type="file" class="form-control" />
                         <span asp-validation-for="ImageFile" class="text-danger"></span>
                     </div>
 

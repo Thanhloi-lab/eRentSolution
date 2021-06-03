@@ -44,7 +44,7 @@ namespace eRentSolution.WebApp.Controllers
         public async override void OnActionExecuting(ActionExecutingContext context)
         {
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
-            
+            var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
             {
                 try
@@ -66,7 +66,6 @@ namespace eRentSolution.WebApp.Controllers
                 session = "";
             }
 
-            var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
             if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session) && User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
