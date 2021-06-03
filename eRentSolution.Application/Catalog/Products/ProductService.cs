@@ -635,7 +635,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 if(request.IsStatisticMonth==true)
                 {
-                    data = await query.OrderBy(x => x.p.ViewCount)
+                    data = await query.OrderByDescending(x => x.p.ViewCount)
                         .Skip(request.PageSize * (request.PageIndex - 1))
                         .Take(request.PageSize)
                         .Select(x => new ProductViewModel()
@@ -1053,11 +1053,20 @@ namespace eRentSolution.Application.Catalog.Products
                         join u in _context.AppUsers on cen.UserInfoId equals u.Id
                         where cen.ActionId == action.Id
                         select new {u, p};
+            if(request.CategoryId!=null)
+            {
+                query = (from qr in query
+                        join pic in _context.ProductInCategories on qr.p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        where pic.CategoryId == request.CategoryId
+                        select new { qr.u, qr.p }).Distinct();
+            }
             if (request.Keyword != null)
             {
                 query = query.Where(x => x.u.UserName.Contains(request.Keyword)
                            || x.u.PhoneNumber.Contains(request.Keyword));
             }
+
             var data = await query.GroupBy(x=> new {x.u.Id, x.u.UserName})
                 .Select(x => new UserProductStatisticViewModel()
                 {

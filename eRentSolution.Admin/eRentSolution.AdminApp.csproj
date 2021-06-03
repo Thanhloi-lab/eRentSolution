@@ -23,7 +23,6 @@
     <None Include="Views\Product\CreateSlide.cshtml" />
     <None Include="Views\Product\Delete.cshtml" />
     <None Include="Views\Product\Details.cshtml" />
-    <None Include="Views\Product\Edit.cshtml" />
     <None Include="Views\Product\EditDetail.cshtml" />
     <None Include="Views\Product\EditImage.cshtml" />
     <None Include="Views\Product\FeaturedProduct.cshtml" />

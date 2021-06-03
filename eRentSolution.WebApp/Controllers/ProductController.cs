@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,10 +28,12 @@ namespace eRentSolution.WebApp.Controllers
         public readonly IUserApiClient _userApiClient;
         private string userId;
 
-        public ProductController(IProductApiClient productApiClient
-            , ICategoryApiClient categoryApiClient
-            , IHttpContextAccessor httpContextAccessor,
-            IUserApiClient userApiClient)
+        public ProductController(IProductApiClient productApiClient,
+            IConfiguration configuration,
+            ICategoryApiClient categoryApiClient,
+            ISlideApiClient slideApiClient,
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _productApiClient = productApiClient;
             _categoryApiClient = categoryApiClient;
@@ -271,7 +274,6 @@ namespace eRentSolution.WebApp.Controllers
                 SeoAlias = product.ResultObject.SeoAlias,
                 SeoDescription = product.ResultObject.SeoDescription,
                 SeoTitle = product.ResultObject.SeoTitle,
-                IsFeatured = product.ResultObject.IsFeatured
             };
             return View(productViewModel);
         }
@@ -440,7 +442,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index");
+                return RedirectToAction("MyListProducts");
             }
             ModelState.AddModelError("", result.Message);
             var categoryAssign = GetCategoryAssignRequest(request.Id);

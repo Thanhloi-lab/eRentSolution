@@ -38,7 +38,7 @@ namespace eRentSolution.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int? categoryId, bool? isStatisticMonth, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int? categoryId, string keyword, bool? isStatisticMonth, int pageIndex = 1, int pageSize = 10)
         {
             var request = new GetProductPagingRequest()
             {
@@ -46,7 +46,8 @@ namespace eRentSolution.AdminApp.Controllers
                 PageSize = pageSize,
                 CategoryId = categoryId,
                 IsGuess = false,
-                IsStatisticMonth = false
+                IsStatisticMonth = false,
+                Keyword =keyword
             };
             if(isStatisticMonth!=null)
             {
@@ -88,19 +89,29 @@ namespace eRentSolution.AdminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> UserProduct(string keyword, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> UserProduct(int? categoryId, string keyword, int pageIndex = 1, int pageSize = 10)
         {
             var request = new GetProductPagingRequest()
             {
                 PageIndex = pageIndex,
                 PageSize = pageSize,
                 Keyword = keyword,
+                CategoryId = categoryId
+                
             };
             if (TempData["result"] != null)
             {
                 ViewBag.success = TempData["result"];
             }
-            
+
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
+            ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+                Selected = categoryId.HasValue && categoryId.Value == x.Id
+            });
+
             var statistic = await _productApiClient.GetStatisticUserProduct(request, SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Keyword = keyword;
             return View(statistic.ResultObject);

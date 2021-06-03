@@ -169,36 +169,5 @@ namespace eRentSolution.WebApp.Controllers
             Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, loginResult.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> CheckLogin()
-        {
-            var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                var userPrincipal = this.ValidateToken(token);
-                if (userPrincipal == null)
-                {
-                    Response.Cookies.Delete(SystemConstant.AppSettings.TokenWebApp);
-                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                    return RedirectToAction("Index", "Home");
-                }
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                };
-                HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, token);
-                await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        userPrincipal,
-                        authProperties);
-
-                Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
-                return RedirectToAction("Index", "Home");
-            }
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
-        }
     }
 }

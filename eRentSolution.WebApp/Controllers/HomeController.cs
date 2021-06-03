@@ -11,6 +11,7 @@ using eRentSolution.Utilities.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
 
 namespace eRentSolution.WebApp.Controllers
 {
@@ -21,8 +22,12 @@ namespace eRentSolution.WebApp.Controllers
         private readonly IProductApiClient _productApiClient;
 
         public HomeController(ILogger<HomeController> logger,
+            IProductApiClient productApiClient,
+            IConfiguration configuration,
+            ICategoryApiClient categoryApiClient,
             ISlideApiClient slideApiClient,
-            IProductApiClient productApiClient)
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _logger = logger;
             _slideApiClient = slideApiClient;

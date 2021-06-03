@@ -45,7 +45,7 @@ namespace eRentSolution.AdminApp.Controllers
         public async override void OnActionExecuting(ActionExecutingContext context)
         {
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
-            var cookies = Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
+
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
             {
                 try
@@ -58,15 +58,25 @@ namespace eRentSolution.AdminApp.Controllers
                 }
             }
 
-            session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
-            cookies = _httpContextAccessor.HttpContext.Request.Cookies[CookieAuthenticationDefaults.AuthenticationScheme];
+            try
+            {
+                session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
+            }
+            catch (Exception e)
+            {
+                session = "";
+            }
+
+            
+            var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
+
             if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session) && User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 context.Result = new RedirectToActionResult("Index", "Login", null);
                 base.OnActionExecuting(context);
             }
-                        
+
             
         }
 
@@ -128,7 +138,15 @@ namespace eRentSolution.AdminApp.Controllers
 
         public async override void OnActionExecuted(ActionExecutedContext context)
         {
-            var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
+            string session;
+            try
+            {
+                session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
+            }
+            catch (Exception e)
+            {
+                session = "";
+            }
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
             {
                 try

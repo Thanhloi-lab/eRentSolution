@@ -43,6 +43,11 @@ namespace eRentSolution.AdminApp.Controllers
 
         public async Task<IActionResult> Index(string keyword, int? categoryId, decimal? minPrice, decimal? maxPrice, string address, int pageIndex = 1, int pageSize = 10)
         {
+            if (address != null)
+            {
+                if (address.Contains(SystemConstant.DefautAddress))
+                    address = null;
+            }    
             var request = new GetProductPagingRequest()
             {
                 Keyword = keyword,

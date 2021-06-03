@@ -1,18 +1,17 @@
 ﻿@model eRentSolution.ViewModels.System.Users.UserAvatarUpdateRequest
 
-@{
-    ViewData["Title"] = "EditAvatar";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{ ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout3.cshtml"; }
 
-<h1>EditAvatar</h1>
+<link rel="stylesheet" href="~/css/input.css" />
+<div class="container-contact100">
+    <div class="wrap-contact100">
+        <form asp-action="EditAvatar" class="contact100-form validate-form">
+            <span class="contact100-form-title">
+                Cập nhật ảnh đại diện
+            </span>
 
-<h4>UserAvatarUpdateRequest</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditAvatar" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger" ></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
                 <input asp-for="Id" class="form-control" />
@@ -27,6 +26,7 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
+
     </div>
 </div>
 

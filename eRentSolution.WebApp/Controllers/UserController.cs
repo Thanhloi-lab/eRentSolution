@@ -22,9 +22,12 @@ namespace eRentSolution.WebApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string userId;
         private readonly string token;
-        public UserController(IUserApiClient userApiClient,
+        public UserController(IProductApiClient productApiClient,
             IConfiguration configuration,
-            IHttpContextAccessor httpContextAccessor)
+            ICategoryApiClient categoryApiClient,
+            ISlideApiClient slideApiClient,
+            IHttpContextAccessor httpContextAccessor,
+            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
         {
             _userApiClient = userApiClient;
             _configuration = configuration;

@@ -26,9 +26,8 @@
                     <form asp-action="UserProduct" method="get">
                         <div class="row">
                             <div class="col-md-4">
-                              
-                                <select name="isStatisticMonth" onchange="" asp-items="@ViewBag.Statistic" class="form-control">
-                                    <option>--Thống kê theo--</option>
+                                <select name="categoryId" onchange="" asp-items="@ViewBag.Categories" class="form-control">
+                                    <option>--Danh mục--</option>
                                 </select>
                             </div>
                             <div class="col-md-5">
