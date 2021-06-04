@@ -1,4 +1,5 @@
 ﻿using eRentSolution.Application.Common;
+using eRentSolution.Application.MailServices;
 using eRentSolution.Data.EF;
 using eRentSolution.Data.Entities;
 using eRentSolution.Data.Enums;
@@ -30,13 +31,15 @@ namespace eRentSolution.Application.System.Users
         private readonly IConfiguration _configuration;
         private readonly eRentDbContext _context;
         private readonly IStorageService _storageService;
+        private readonly IMailService _mailService;
 
         public UserService(UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             RoleManager<AppRole> roleManager,
             IConfiguration configuration,
             eRentDbContext context,
-            IStorageService storageService)
+            IStorageService storageService,
+            IMailService mailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,6 +47,7 @@ namespace eRentSolution.Application.System.Users
             _configuration = configuration;
             _context = context;
             _storageService = storageService;
+            _mailService = mailService;
         }
 
         public async Task<ApiResult<string>> Authenticate(UserLoginRequest request, bool isAdminPage)
@@ -299,6 +303,23 @@ namespace eRentSolution.Application.System.Users
             }
             return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
         }
+        public async Task<ApiResult<string>> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var user = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
+            if (user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var schema = request.CurrentDomain;
+                var url = $"{schema}/user/ResetPassword?Email={request.Email}&Token={token}";
+                string message = string.Format("<p>Nhấn vào để khôi phục mật khẩu </p> <a href = \"{0}\" >Link </a>", url);
+                await _mailService.SendEmailAsync(request.Email, "Khôi phục mật khẩu", message);
+                return new ApiSuccessResult<string>("Đã gửi mail thành công.");
+
+            }
+            else
+                return new ApiErrorResult<string>("Email không tồn tại");
+
+        }
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
@@ -418,7 +439,10 @@ namespace eRentSolution.Application.System.Users
                         select new { ui, a, p, c };
 
             var totalRow = await query.CountAsync();
-            var data = await query.Select(x => new ActivityLogViewModel()
+            var data = await query.OrderBy(x => x.c.Date)
+                .Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new ActivityLogViewModel()
             {
                 ActionName = x.a.ActionName,
                 Date = x.c.Date,
@@ -451,8 +475,9 @@ namespace eRentSolution.Application.System.Users
 
             var totalRow = await query.CountAsync();
 
-            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+            var data = await query
                 .OrderBy(x => x.c.Date)
+                .Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(x => new ActivityLogViewModel()
             {
@@ -494,13 +519,6 @@ namespace eRentSolution.Application.System.Users
             };
             return new ApiSuccessResult<UserViewModel>(user);
         }
-        private async Task<string> SaveFile(IFormFile file)
-        {
-            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
-            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
-            return fileName;
-        }
         public async Task<ApiResult<string>> RefreshToken(UserLoginRequest request, bool isAdminPage)
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
@@ -540,6 +558,26 @@ namespace eRentSolution.Application.System.Users
               expires: DateTime.UtcNow.AddDays(30),
               signingCredentials: credentials);
             return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
+        }
+        public async Task<ApiResult<string>> ResetPasswordByEmail(UserResetPasswordByEmailRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user != null)
+            {
+                var res = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
+                if (res.Succeeded)
+                    return new ApiSuccessResult<string>("Đổi mật khẩu thành công");
+                else
+                    return new ApiErrorResult<string>("Đổi mật khẩu thất bại");
+            }
+            return new ApiErrorResult<string>("Không tìm thấy người dùng");
+        }
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
+            return fileName;
         }
     }
 }

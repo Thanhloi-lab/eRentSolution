@@ -118,6 +118,22 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        [HttpPut("ResetPasswordByEmail")]
+        public async Task<IActionResult> ResetPasswordByEmail([FromBody] UserResetPasswordByEmailRequest request)
+        {
+            var result = await _userService.ResetPasswordByEmail(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            var result = await _userService.ForgotPassword(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
         [HttpGet("activity-log")]
         public async Task<IActionResult> GetUserActivity([FromQuery] UserActivityLogRequest request)
         {

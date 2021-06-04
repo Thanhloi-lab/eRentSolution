@@ -114,6 +114,7 @@ namespace eRentSolution.AdminApp.Controllers
             var result = await _userApiClient.RegisterUser(request);
             if (result.IsSuccessed)
             {
+
                 TempData["result"] = result.ResultObject;
                 return RedirectToAction("index");
             }
@@ -252,6 +253,55 @@ namespace eRentSolution.AdminApp.Controllers
                 TempData["result"] = result.ResultObject;
                 return RedirectToAction("index");
             }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+            request.CurrentDomain = _configuration["CurrentDomain"];
+            var result = await _userApiClient.ForgotPassword(request);
+            if (result.IsSuccessed == true)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index", "Login");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordByEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordByEmail(UserResetPasswordByEmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
+                return View();
+            }
+
+            var result = await _userApiClient.ResetPasswordByEmail(request, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed == true)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index", "Login");
+            }
+
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
@@ -400,7 +450,7 @@ namespace eRentSolution.AdminApp.Controllers
             return View(data.ResultObject);
         }
         [HttpGet]
-        public async Task<IActionResult> ActivityLog(string keyword, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> ActivityLog(Guid targetId, string keyword, int pageIndex = 1, int pageSize = 10)
         {
             var request = new UserActivityLogRequest()
             {
@@ -409,6 +459,11 @@ namespace eRentSolution.AdminApp.Controllers
                 PageSize = pageSize,
                 Id = Guid.Parse(userId)
             };
+            if(targetId!=null)
+            {
+                if(targetId!= new Guid("{00000000-0000-0000-0000-000000000000}"))
+                    request.Id = targetId;
+            }
             ViewBag.keyword = keyword;
             if (TempData["result"] != null)
             {

@@ -117,6 +117,10 @@
             <input asp-for="Id" name="userId" type="hidden" input />
             <input type="submit" value="Sản phẩm của @Model.FirstName" class="btn btn-danger" />
         </form>
+        <form asp-action="ActivityLog" asp-controller="user" method="get" style="padding: 0 20px 20px 20px;">
+            <input asp-for="Id" name="targetId" type="hidden" input />
+            <input type="submit" value="Hoạt động của @Model.FirstName" class="btn btn-danger" />
+        </form>
     </div>
 
 </div>

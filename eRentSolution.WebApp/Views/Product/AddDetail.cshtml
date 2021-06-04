@@ -1,8 +1,7 @@
 ﻿@model eRentSolution.ViewModels.Catalog.ProductDetails.ProductDetailCreateRequest
 
-@{
-    ViewData["Title"] = "AddDetail";
-    Layout = "~/Views/Shared/_Layout3.cshtml";
+@{ ViewData["Title"] = "AddDetail";
+   Layout = "~/Views/Shared/_Layout3.cshtml"; 
 }
 <link rel="stylesheet" href="~/css/input.css" />
 
@@ -17,7 +16,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Tên loại sản phẩm</span>
-                <input class="input100"  asp-for="ProductDetailName">
+                <input class="input100" asp-for="ProductDetailName">
                 <span class="focus-input100"></span>
                 <span asp-validation-for="ProductDetailName" class="text-danger"></span>
             </div>
@@ -57,7 +56,7 @@
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Width" class="text-danger"></span>
             </div>
-            
+
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Hình ảnh</span>
                 <input class="input100" asp-for="Image" type="file">

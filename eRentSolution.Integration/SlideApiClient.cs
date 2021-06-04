@@ -51,6 +51,7 @@ namespace eRentSolution.Integration
 
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Name) ? "" : request.Name.ToString()), "name");
             requestContent.Add(new StringContent(string.IsNullOrEmpty(request.Description) ? "" : request.Description.ToString()), "description");
+            requestContent.Add(new StringContent(string.IsNullOrEmpty(request.ProductUrl) ? "" : request.ProductUrl.ToString()), "productUrl");
 
             var response = await client.PostAsync($"api/slides/{userInfoId}/create/{request.ProductId}", requestContent);
             var body = await response.Content.ReadAsStringAsync();

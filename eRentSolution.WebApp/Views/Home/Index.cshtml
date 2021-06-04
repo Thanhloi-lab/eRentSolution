@@ -14,7 +14,7 @@
                 {
                     var slide = Model.Slides[index];
                     <div class="item">
-                        <img style="height:320px; object-fit:cover;" src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" />
+                        <a href="@slide.Url"><img style="height:320px; object-fit:cover;" src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" /></a>
                     </div>
                 }
             }

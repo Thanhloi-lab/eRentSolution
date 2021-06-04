@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using eRentSolution.Application.Catalog.Categories;
 using eRentSolution.Application.Catalog.Products;
 using eRentSolution.Application.Common;
+using eRentSolution.Application.MailServices;
 using eRentSolution.Application.System.Roles;
 using eRentSolution.Application.System.Users;
 using eRentSolution.Application.Utilities.Contacts;
@@ -10,6 +11,7 @@ using eRentSolution.Data.EF;
 using eRentSolution.Data.Entities;
 using eRentSolution.Utilities.Constants;
 using eRentSolution.ViewModels.System.Users;
+using eRentSolution.ViewModels.Utilities.Emails;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -56,6 +58,7 @@ namespace eRentSolution.BackendApi
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<ISlideService, SlideService>();
             services.AddTransient<IContactService, ContactService>();
+            services.AddTransient<IMailService, MailService>();
             //services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
             //services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
 
@@ -121,6 +124,9 @@ namespace eRentSolution.BackendApi
                     IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes)
                 };
             });
+            var mailsettings = Configuration.GetSection("MailSettings");
+            services.Configure<MailSettings>(mailsettings);
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

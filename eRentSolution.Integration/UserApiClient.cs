@@ -137,7 +137,15 @@ namespace eRentSolution.Integration
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}", tokenName);
             return result;
         }
-
-        
+        public async Task<ApiResult<string>> ResetPasswordByEmail(UserResetPasswordByEmailRequest request, string tokenName)
+        {
+            var result = await PutAsync<string>($"/api/users/ResetPasswordByEmail", request, tokenName);
+            return result;
+        }
+        public async Task<ApiResult<string>> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var result = await PostAsync<string>($"/api/users/ForgotPassword", request);
+            return result;
+        }
     }
 }

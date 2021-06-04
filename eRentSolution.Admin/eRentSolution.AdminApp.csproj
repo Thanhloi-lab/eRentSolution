@@ -5,19 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Contact\Details.cshtml" />
-    <Content Remove="Views\Contact\Edit.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Views\Category\CreateCategory.cshtml" />
     <None Include="Views\Category\DeleteCategory.cshtml" />
     <None Include="Views\Category\Detail.cshtml" />
     <None Include="Views\Category\EditImage.cshtml" />
     <None Include="Views\Category\Index.cshtml" />
     <None Include="Views\Category\UpdateCategory.cshtml" />
+    <None Include="Views\Contact\Create.cshtml" />
+    <None Include="Views\Contact\Delete.cshtml" />
     <None Include="Views\Contact\Details.cshtml" />
     <None Include="Views\Contact\Edit.cshtml" />
+    <None Include="Views\Contact\Hide.cshtml" />
+    <None Include="Views\Contact\Index.cshtml" />
+    <None Include="Views\Contact\Show.cshtml" />
     <None Include="Views\FeaturedProduct\CreateFeatured.cshtml" />
     <None Include="Views\FeaturedProduct\DeleteFeature.cshtml" />
     <None Include="Views\FeaturedProduct\Index.cshtml" />
