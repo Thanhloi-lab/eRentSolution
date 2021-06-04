@@ -269,6 +269,7 @@ namespace eRentSolution.WebApp.Controllers
             {
                 Id = id,
                 Name = product.ResultObject.Name,
+                Address = product.ResultObject.Address,
                 Description = product.ResultObject.Description,
                 //Details = product.Details,
                 SeoAlias = product.ResultObject.SeoAlias,
@@ -285,8 +286,8 @@ namespace eRentSolution.WebApp.Controllers
             {
                 ModelState.AddModelError("", "Dữ liệu hông hợp lệ");
                 return View(request);
-            }    
-                
+            }
+
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var isMyProduct = await _productApiClient.IsMyProduct(request.Id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (!isMyProduct.IsSuccessed)

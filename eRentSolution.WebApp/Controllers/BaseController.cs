@@ -45,6 +45,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
             var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
+
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
             {
                 try
@@ -101,7 +102,7 @@ namespace eRentSolution.WebApp.Controllers
         {
             UserLoginRequest request = new UserLoginRequest()
             {
-                RememberMe = true,//bool.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.IsPersistent).Value),
+                RememberMe = bool.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.IsPersistent).Value),
                 UserName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value,
                 Password = "1"
             };

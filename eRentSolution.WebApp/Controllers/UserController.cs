@@ -131,7 +131,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("index");
+                return RedirectToAction("index", "home");
             }
             ModelState.AddModelError("", result.Message);
             return View(request);

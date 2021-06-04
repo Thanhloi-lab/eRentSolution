@@ -106,7 +106,7 @@ namespace eRentSolution.AdminApp.Controllers
         {
             UserLoginRequest request = new UserLoginRequest()
             {
-                RememberMe = true,//bool.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.IsPersistent).Value),
+                RememberMe = bool.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.IsPersistent).Value),
                 UserName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value,
                 Password = "1"
             };
