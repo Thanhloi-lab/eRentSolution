@@ -19,7 +19,7 @@ namespace eRentSolution.ViewModels.System.Users
             RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Số điện thoại không thể để trống.")
                 .Matches("^[0-9]{10}$").WithMessage("Số điện thoại không hợp lệ. Số điện thoại phải có 10 chữ số."); ;
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email không thể để trống.")
-                .Matches("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,3})+)$").WithMessage("Email không hợp lệ.");
+                .EmailAddress().WithMessage("Email không hợp lệ.");
         }
     }
 }

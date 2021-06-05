@@ -20,7 +20,7 @@ namespace eRentSolution.WebApp.Controllers
         private readonly IUserApiClient _userApiClient;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly string userId;
+        private string userId;
         private readonly string token;
         public UserController(IProductApiClient productApiClient,
             IConfiguration configuration,
@@ -32,12 +32,13 @@ namespace eRentSolution.WebApp.Controllers
             _userApiClient = userApiClient;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
-            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
             token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
         }
         [HttpGet]
         public async Task<IActionResult> Details()
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if(!result.IsSuccessed)
             {
@@ -48,6 +49,7 @@ namespace eRentSolution.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var target = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (target.IsSuccessed)
             {
@@ -81,6 +83,7 @@ namespace eRentSolution.WebApp.Controllers
         [HttpGet]
         public IActionResult ChangePassword()
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             return View(new UserUpdatePasswordRequest()
             {
                 Id = Guid.Parse(userId)
@@ -106,6 +109,7 @@ namespace eRentSolution.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> EditAvatar(Guid id)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var target = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (target.IsSuccessed)
             {
@@ -139,6 +143,7 @@ namespace eRentSolution.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> ActivityLog(string keyword, int pageIndex = 1, int pageSize = 10)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var request = new UserActivityLogRequest()
             {
                 Keyword = keyword,
@@ -207,8 +212,17 @@ namespace eRentSolution.WebApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public async Task<IActionResult> SendConfirmEmail()
+        public async Task<IActionResult> SendConfirmEmail(string email)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
+            if (user.IsSuccessed)
+            {
+                if (!user.ResultObject.Email.Equals(email))
+                {
+                    return RedirectToAction("index", "home");
+                }
+            }
             return View();
         }
         [HttpPost]

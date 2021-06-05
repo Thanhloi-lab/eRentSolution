@@ -209,7 +209,7 @@ namespace eRentSolution.Application.System.Users
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))
             {
-                return new ApiErrorResult<string>("Email không tồn tại");
+                return new ApiErrorResult<string>("Email đã tồn tại");
             }
             var user = await _userManager.FindByIdAsync(id.ToString());
             var person = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == id);

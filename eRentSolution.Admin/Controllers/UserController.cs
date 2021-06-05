@@ -317,12 +317,16 @@ namespace eRentSolution.AdminApp.Controllers
             var user = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
             if(user.IsSuccessed)
             {
-                if(user.ResultObject.Email.Equals(email))
+                if(!user.ResultObject.Email.Equals(email))
                 {
                     return RedirectToAction("index", "home");
                 }
             }
-            return View();
+            SendConfirmEmailRequest request = new SendConfirmEmailRequest()
+            {
+                Email=email
+            };
+            return View(request);
         }
         [HttpPost]
         public async Task<IActionResult> SendConfirmEmail(SendConfirmEmailRequest request)

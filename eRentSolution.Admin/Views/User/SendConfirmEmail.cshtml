@@ -21,7 +21,7 @@
     </script>
     
     <title>Xác nhận email</title>
-    <link rel="stylesheet" href="./style2.css" />
+    <link rel="stylesheet" href="~/style2.css" />
 </head>
     <body>
         <div class="container">
@@ -33,7 +33,7 @@
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="input-field">
                             <i class="fas fa-user"></i>
-                            <input asp-for="Email" type="text" placeholder="Email" />
+                            @Html.DisplayFor(model => model.Email)
                         </div>
                         <input type="submit" value="Gửi yêu cầu" class="btn solid" />
                     </form>
@@ -47,9 +47,12 @@
                         <p>
                             Hãy đăng kí tài khoản để bạn có thể trở thành quản trị viên của website
                         </p>
-                        <button class="btn transparent" id="sign-up-btn">
-                            Đăng ký
-                        </button>
+                        <a href="/Login">
+                            <button class="btn transparent" >
+                                Đăng nhập
+                            </button>
+                        </a>
+                        
                     </div>
                     <img src="./assets/img/log.svg" class="image" alt="" />
                 </div>

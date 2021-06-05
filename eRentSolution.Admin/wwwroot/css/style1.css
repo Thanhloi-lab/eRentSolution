@@ -115,5 +115,12 @@
 #check {
     display: none;
 }
-  
-  
+
+.tickCheck{
+    width:20px;
+    color: forestgreen;
+}
+.iconTimes {
+    width: 20px;
+    color: darkred;
+}

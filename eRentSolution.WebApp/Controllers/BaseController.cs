@@ -46,6 +46,12 @@ namespace eRentSolution.WebApp.Controllers
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
             var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
 
+            if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session) && User.Identity.IsAuthenticated)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                context.Result = new RedirectToActionResult("Index", "Home", null);
+                base.OnActionExecuting(context);
+            }
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
             {
                 try
@@ -67,12 +73,7 @@ namespace eRentSolution.WebApp.Controllers
                 session = "";
             }
 
-            if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session) && User.Identity.IsAuthenticated)
-            {
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                context.Result = new RedirectToActionResult("Index", "Home", null);
-                base.OnActionExecuting(context);
-            }
+            
         }
         private ClaimsPrincipal ValidateToken(string jwtToken)
         {

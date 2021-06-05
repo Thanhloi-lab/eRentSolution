@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Shared\_Layout1.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Views\Category\CreateCategory.cshtml" />
     <None Include="Views\Category\DeleteCategory.cshtml" />
     <None Include="Views\Category\Detail.cshtml" />
@@ -57,11 +53,15 @@
     <None Include="Views\Statistic\UserProduct.cshtml" />
     <None Include="Views\User\ActivityLog.cshtml" />
     <None Include="Views\User\ChangePassword.cshtml" />
+    <None Include="Views\User\ConfirmEmail.cshtml" />
     <None Include="Views\User\Create.cshtml" />
     <None Include="Views\User\Delete.cshtml" />
     <None Include="Views\User\Details.cshtml" />
     <None Include="Views\User\Edit.cshtml" />
     <None Include="Views\User\EditAvatar.cshtml" />
+    <None Include="Views\User\ForgotPassword.cshtml" />
+    <None Include="Views\User\ResetPasswordByEmail.cshtml" />
+    <None Include="Views\User\SendConfirmEmail.cshtml" />
     <None Include="Views\User\Staffs.cshtml" />
     <None Include="Views\User\Index.cshtml" />
     <None Include="Views\User\PageActivityLog.cshtml" />
