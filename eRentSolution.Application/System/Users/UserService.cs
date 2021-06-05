@@ -448,7 +448,8 @@ namespace eRentSolution.Application.System.Users
                 Roles = roles,
                 Id = id,
                 AvatarFilePath = user.AvatarFilePath,
-                Status = user.Status
+                Status = user.Status,
+                EmailConfirmed = user.EmailConfirmed
             };
             return new ApiSuccessResult<UserViewModel>(userViewModel);
         }

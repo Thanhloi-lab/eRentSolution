@@ -26,6 +26,8 @@ namespace eRentSolution.ViewModels.System.Users
         public DateTime Dob { get; set; }
         [Display(Name = "Hoạt động")]
         public Status Status { get; set; }
+        [Display(Name = "Xác thực email")]
+        public bool EmailConfirmed { get; set; }
         public IList<string> Roles { get; set; }
     }
 }
