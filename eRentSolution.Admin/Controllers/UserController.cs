@@ -311,8 +311,17 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public async Task<IActionResult> SendConfirmEmail()
+        public async Task<IActionResult> SendConfirmEmail(string email)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var user = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            if(user.IsSuccessed)
+            {
+                if(user.ResultObject.Email.Equals(email))
+                {
+                    return RedirectToAction("index", "home");
+                }
+            }
             return View();
         }
         [HttpPost]
@@ -348,7 +357,7 @@ namespace eRentSolution.AdminApp.Controllers
                 ModelState.AddModelError("", "Thông tin không hợp lệ");
                 return View(request);
             }
-
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _userApiClient.ConfirmEmail(request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed == true)
             {

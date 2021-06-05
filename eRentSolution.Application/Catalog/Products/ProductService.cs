@@ -69,7 +69,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     new ProductDetail()
                     {
-                        DateCreated = DateTime.UtcNow,
+                        DateCreated = DateTime.UtcNow, 
                         Price = request.Price,
                         OriginalPrice = request.OriginalPrice,
                         Stock = request.Stock,

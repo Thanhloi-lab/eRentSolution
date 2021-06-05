@@ -323,10 +323,10 @@ namespace eRentSolution.Application.System.Users
             {
                 return  new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
-            if (!user.Id.ToString().Equals(HttpUtility.UrlDecode(request.Token)))
-            {
-                return new ApiErrorResult<string>("Tài khoản không tồn tại");
-            }
+            //if (!user.Id.ToString().Equals(HttpUtility.UrlDecode(request.Token)))
+            //{
+            //    return new ApiErrorResult<string>("Tài khoản không tồn tại");
+            //}
             if (!user.EmailConfirmed)
             {
                 return new ApiErrorResult<string>("Email chưa được xác thực.");
@@ -334,19 +334,22 @@ namespace eRentSolution.Application.System.Users
             var date = DateTime.UtcNow;
             if (request.Date.CompareTo(date) > 0)
             {
-                var removeResult = await _userManager.RemovePasswordAsync(user);
-                //user.DateChangePassword = date;
-                if (removeResult.Succeeded)
+                request.Token = request.Token.Replace(" ", "+");
+                var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
+
+                //var removeResult = await _userManager.RemovePasswordAsync(user);
+                ////user.DateChangePassword = date;
+                if (result.Succeeded)
                 {
-                    var result = await _userManager.AddPasswordAsync(user, request.Password /*+ date*/);
-                    if (result.Succeeded)
-                    {
-                        //user.DateChangePassword = date;
-                        await _userManager.UpdateAsync(user);
+                    //var result = await _userManager.AddPasswordAsync(user, request.Password /*+ date*/);
+                    //if (result.Succeeded)
+                    //{
+                    //    //user.DateChangePassword = date;
+                    //    await _userManager.UpdateAsync(user);
                         return new ApiSuccessResult<string>("Đặt lại mật khẩu thành công");
-                    }
-                    else
-                        return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
+                    //}
+                    //else
+                    //    return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
                 }
             }
             return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
@@ -360,8 +363,9 @@ namespace eRentSolution.Application.System.Users
                 {
                     return new ApiErrorResult<string>("Email không khả dụng");
                 }
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var date = HttpUtility.UrlEncode(DateTime.UtcNow.AddMinutes(10).ToString());
-                var token = HttpUtility.UrlEncode(user.Id.ToString());
+                //var token = HttpUtility.UrlEncode(user.Id.ToString());
                 var schema = request.CurrentDomain;
                 var url = $"{schema}/user/ResetPasswordByEmail?expires={date}&Email={request.Email}&Token={token}";
                 string message = string.Format("<p>Nhấn vào đây để khôi phục mật khẩu</p><a href = \"{0}\" >Link </a>", url);
@@ -382,7 +386,8 @@ namespace eRentSolution.Application.System.Users
                     return new ApiErrorResult<string>("Email đã xác thực");
                 }
                 var date = HttpUtility.UrlEncode(DateTime.UtcNow.AddMinutes(10).ToString());
-                var token = HttpUtility.UrlEncode(user.Id.ToString());
+                //var token = HttpUtility.UrlEncode(user.Id.ToString());
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var schema = request.CurrentDomain;
                 var url = $"{schema}/user/confirmEmail?expires={date}&Email={request.Email}&Token={token}";
                 string message = string.Format("<p>Nhấn vào đây để xác nhận email</p><a href = \"{0}\" >Link </a>", url);
@@ -401,10 +406,10 @@ namespace eRentSolution.Application.System.Users
             {
                 return new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
-            if (!user.Id.ToString().Equals(HttpUtility.UrlDecode(request.Token)))
-            {
-                return new ApiErrorResult<string>("Tài khoản không tồn tại");
-            }
+            //if (!user.Id.ToString().Equals(HttpUtility.UrlDecode(request.Token)))
+            //{
+            //    return new ApiErrorResult<string>("Tài khoản không tồn tại");
+            //}
             if (user.EmailConfirmed)
             {
                 return new ApiErrorResult<string>("Email đã được xác thực.");
@@ -416,8 +421,8 @@ namespace eRentSolution.Application.System.Users
             }
             try
             {
-                user.EmailConfirmed = true;
-                var result = await _userManager.UpdateAsync(user);
+                request.Token = request.Token.Replace(" ", "+");
+                var result = await _userManager.ConfirmEmailAsync(user, request.Token);
                 if (result.Succeeded)
                 {
                     return new ApiSuccessResult<string>("Xác thực thành công");

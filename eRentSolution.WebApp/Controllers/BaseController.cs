@@ -121,7 +121,15 @@ namespace eRentSolution.WebApp.Controllers
                 IsPersistent = request.RememberMe,
                 ExpiresUtc = DateTimeOffset.Now.AddDays(30)
             };
-            HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, result.ResultObject);
+            try
+            {
+                HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, result.ResultObject);
+            }
+            catch (Exception e)
+            {
+
+            }
+            
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
