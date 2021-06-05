@@ -23,7 +23,7 @@ namespace eRentSolution.AdminApp.Controllers
         private readonly IConfiguration _configuration;
         private readonly IRoleApiClient _roleApiClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly string userId;
+        private string userId;
         private readonly string token;
         public UserController(IProductApiClient productApiClient,
             IConfiguration configuration,
@@ -37,7 +37,7 @@ namespace eRentSolution.AdminApp.Controllers
             _configuration = configuration;
             _roleApiClient = roleApiClient;
             _httpContextAccessor = httpContextAccessor;
-            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
             token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
         }
         [HttpGet]
@@ -124,6 +124,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (!id.ToString().Equals(userId))
             {
                 TempData["FailResult"] = "Không thể cập nhật thông tin của người dùng khác";
@@ -167,6 +168,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> EditAvatar(Guid id)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (!id.ToString().Equals(userId))
             {
                 TempData["FailResult"] = "Không thể cập nhật người dùng khác";
@@ -292,14 +294,62 @@ namespace eRentSolution.AdminApp.Controllers
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Thông tin không hợp lệ");
-                return View();
+                return View(request);
             }
 
             var result = await _userApiClient.ResetPasswordByEmail(request, SystemConstant.AppSettings.TokenAdmin);
             if (result.IsSuccessed == true)
             {
-                TempData["result"] = result.ResultObject;
                 return RedirectToAction("Index", "Login");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> SendConfirmEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendConfirmEmail(SendConfirmEmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
+                return View(request);
+            }
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            request.CurrentDomain = _configuration["CurrentDomain"];
+            var result = await _userApiClient.SendConfirmEmail(request, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed == true)
+            {
+                TempData["result"] = result.ResultObject;
+                return Redirect($"/user/details/{userId}");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
+                return View(request);
+            }
+
+            var result = await _userApiClient.ConfirmEmail(request, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed == true)
+            {
+                TempData["result"] = result.ResultObject;
+                return Redirect($"/user/details/{userId}");
             }
 
             ModelState.AddModelError("", result.Message);
@@ -319,6 +369,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (id.ToString().Equals(userId))
             {
                 TempData["FailResult"] = "Không thể xóa tài khoản đăng nhập hiện tại";
@@ -380,7 +431,7 @@ namespace eRentSolution.AdminApp.Controllers
                 ModelState.AddModelError("", "Thông tin không hợp lệ");
                 return View();
             }
-
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             bool isYourself = false;
             if (request.Id.ToString().Equals(userId))
             {
@@ -452,6 +503,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> ActivityLog(Guid targetId, string keyword, int pageIndex = 1, int pageSize = 10)
         {
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var request = new UserActivityLogRequest()
             {
                 Keyword = keyword,

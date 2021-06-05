@@ -88,7 +88,7 @@ namespace eRentSolution.AdminApp.Controllers
             if (!result.IsSuccessed)
             {
                 ModelState.AddModelError("", result.Message);
-                return View(request);
+                return View(model);
             }
 
             var userPrincipal = this.ValidateToken(result.ResultObject);

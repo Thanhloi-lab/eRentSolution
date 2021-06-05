@@ -154,6 +154,102 @@ namespace eRentSolution.WebApp.Controllers
             var data = await _userApiClient.GetUserActivities(request, SystemConstant.AppSettings.TokenWebApp);
             return View(data.ResultObject);
         }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View(request);
+            request.CurrentDomain = _configuration["CurrentDomain"];
+            var result = await _userApiClient.ForgotPassword(request);
+            if (result.IsSuccessed == true)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index", "Login");
+            }
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordByEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPasswordByEmail(UserResetPasswordByEmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
+                return View(request);
+            }
+
+            var result = await _userApiClient.ResetPasswordByEmail(request, SystemConstant.AppSettings.TokenWebApp);
+            if (result.IsSuccessed == true)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> SendConfirmEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendConfirmEmail(SendConfirmEmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
+                return View(request);
+            }
+
+            var result = await _userApiClient.SendConfirmEmail(request, SystemConstant.AppSettings.TokenWebApp);
+            if (result.IsSuccessed == true)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index", "Login");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Thông tin không hợp lệ");
+                return View(request);
+            }
+
+            var result = await _userApiClient.ConfirmEmail(request, SystemConstant.AppSettings.TokenWebApp);
+            if (result.IsSuccessed == true)
+            {
+                TempData["result"] = result.ResultObject;
+                return RedirectToAction("Index", "Login");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
         public IActionResult Forbidden()
         {
             TempData["FailResult"] = "Thao tác không hợp lệ";

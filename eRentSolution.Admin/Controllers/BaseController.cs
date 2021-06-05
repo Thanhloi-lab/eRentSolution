@@ -46,6 +46,16 @@ namespace eRentSolution.AdminApp.Controllers
         {
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
             var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
+            if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session))
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                    context.Result = new RedirectToActionResult("Index", "Login", null);
+                    base.OnActionExecuting(context);
+                }
+
+            }
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
             {
                 try
@@ -66,15 +76,6 @@ namespace eRentSolution.AdminApp.Controllers
             {
                 session = "";
             }
-            
-
-            if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session) && User.Identity.IsAuthenticated)
-            {
-                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                context.Result = new RedirectToActionResult("Index", "Login", null);
-                base.OnActionExecuting(context);
-            }
-
             
         }
 

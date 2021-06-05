@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Shared\_Layout1.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Views\Category\CreateCategory.cshtml" />
     <None Include="Views\Category\DeleteCategory.cshtml" />
     <None Include="Views\Category\Detail.cshtml" />
@@ -39,6 +43,7 @@
     <None Include="Views\Product\ActiveProduct.cshtml" />
     <None Include="Views\Shared\Components\Pager\Default.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_Layout1.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="Views\Slide\CreateSlide.cshtml" />

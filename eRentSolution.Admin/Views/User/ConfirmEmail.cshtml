@@ -1,0 +1,24 @@
+﻿@model eRentSolution.ViewModels.System.Users.ConfirmEmailRequest
+
+@{
+    ViewData["Title"] = "ResetPassword";
+    Layout = "~/Views/Shared/_Layout1.cshtml";
+}
+
+<h1>ResetPassword</h1>
+
+<h4>ResetPasswordRequest</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="confirmEmail">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Date" type="hidden" value="@(ViewContext.HttpContext.Request.Query["expires"])" hidden />
+            <input asp-for="Email" type="hidden" value="@(ViewContext.HttpContext.Request.Query["Email"])" hidden />
+            <input asp-for="Token" type="hidden" value="@(ViewContext.HttpContext.Request.Query["Token"])" hidden />
+            <div class="form-group">
+                <input type="submit" value="Xác nhận" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

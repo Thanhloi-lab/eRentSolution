@@ -20,6 +20,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace eRentSolution.Application.System.Users
 {
@@ -277,7 +278,16 @@ namespace eRentSolution.Application.System.Users
             {
                 new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
-            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword+user.DateChangePassword, request.NewPassword + DateTime.UtcNow);
+            var date = DateTime.UtcNow;
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword + user.DateChangePassword, request.NewPassword + date);
+            user = await _userManager.FindByIdAsync(request.Id.ToString());
+            if (result.Succeeded)
+            {
+                user.DateChangePassword = date;
+                result = await _userManager.UpdateAsync(user);
+            }
+                
+
             if (result.Succeeded)
             {
                // await _context.SaveChangesAsync();
@@ -291,34 +301,134 @@ namespace eRentSolution.Application.System.Users
             var user = await _userManager.FindByIdAsync(request.Id.ToString());
             if (user == null)
             {
-                new ApiErrorResult<string>("Tài khoản không tồn tại");
+                return new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
+            
             user.DateChangePassword = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
             var removeResult = await _userManager.RemovePasswordAsync(user);
             if (removeResult.Succeeded)
             {
+
                 var result = await _userManager.AddPasswordAsync(user, request.NewPassword + user.DateChangePassword);
                 return new ApiSuccessResult<string>("Đặt lại mật khẩu thành công");
+            }
+            return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
+        }
+        public async Task<ApiResult<string>> ResetPasswordByEmail(UserResetPasswordByEmailRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            
+            if (user == null)
+            {
+                return  new ApiErrorResult<string>("Tài khoản không tồn tại");
+            }
+            if (!user.Id.ToString().Equals(HttpUtility.UrlDecode(request.Token)))
+            {
+                return new ApiErrorResult<string>("Tài khoản không tồn tại");
+            }
+            if (!user.EmailConfirmed)
+            {
+                return new ApiErrorResult<string>("Email chưa được xác thực.");
+            }
+            var date = DateTime.UtcNow;
+            if (request.Date.CompareTo(date) > 0)
+            {
+                var removeResult = await _userManager.RemovePasswordAsync(user);
+                user.DateChangePassword = date;
+                if (removeResult.Succeeded)
+                {
+                    var result = await _userManager.AddPasswordAsync(user, request.Password + date);
+                    if (result.Succeeded)
+                    {
+                        user.DateChangePassword = date;
+                        await _userManager.UpdateAsync(user);
+                        return new ApiSuccessResult<string>("Đặt lại mật khẩu thành công");
+                    }
+                    else
+                        return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
+                }
             }
             return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
         }
         public async Task<ApiResult<string>> ForgotPassword(ForgotPasswordRequest request)
         {
             var user = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
+            if (user != null) 
+            {
+                if(!user.EmailConfirmed)
+                {
+                    return new ApiErrorResult<string>("Email không khả dụng");
+                }
+                var date = HttpUtility.UrlEncode(DateTime.UtcNow.AddMinutes(10).ToString());
+                var token = HttpUtility.UrlEncode(user.Id.ToString());
+                var schema = request.CurrentDomain;
+                var url = $"{schema}/user/ResetPasswordByEmail?expires={date}&Email={request.Email}&Token={token}";
+                string message = string.Format("<p>Nhấn vào đây để khôi phục mật khẩu</p><a href = \"{0}\" >Link </a>", url);
+                await _mailService.SendEmailAsync(request.Email, "Khôi phục mật khẩu", message);
+                return new ApiSuccessResult<string>("Đã gửi mail thành công.");
+            }
+            else
+                return new ApiErrorResult<string>("Email không tồn tại");
+
+        }
+        public async Task<ApiResult<string>> SendConfirmEmail(SendConfirmEmailRequest request)
+        {
+            var user = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
             if (user != null)
             {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                if (user.EmailConfirmed)
+                {
+                    return new ApiErrorResult<string>("Email đã xác thực");
+                }
+                var date = HttpUtility.UrlEncode(DateTime.UtcNow.AddMinutes(10).ToString());
+                var token = HttpUtility.UrlEncode(user.Id.ToString());
                 var schema = request.CurrentDomain;
-                var url = $"{schema}/user/ResetPassword?Email={request.Email}&Token={token}";
-                string message = string.Format("<p>Nhấn vào để khôi phục mật khẩu </p> <a href = \"{0}\" >Link </a>", url);
-                await _mailService.SendEmailAsync(request.Email, "Khôi phục mật khẩu", message);
+                var url = $"{schema}/user/confirmEmail?expires={date}&Email={request.Email}&Token={token}";
+                string message = string.Format("<p>Nhấn vào đây để xác nhận email</p><a href = \"{0}\" >Link </a>", url);
+                await _mailService.SendEmailAsync(request.Email, "Xác nhận email", message);
                 return new ApiSuccessResult<string>("Đã gửi mail thành công.");
 
             }
             else
                 return new ApiErrorResult<string>("Email không tồn tại");
 
+        }
+        public async Task<ApiResult<string>> ConfirmEmail(ConfirmEmailRequest request)
+        {
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return new ApiErrorResult<string>("Tài khoản không tồn tại");
+            }
+            if (!user.Id.ToString().Equals(HttpUtility.UrlDecode(request.Token)))
+            {
+                return new ApiErrorResult<string>("Tài khoản không tồn tại");
+            }
+            if (user.EmailConfirmed)
+            {
+                return new ApiErrorResult<string>("Email đã được xác thực.");
+            }
+            var date = DateTime.UtcNow;
+            if (request.Date.CompareTo(date) < 0)
+            {
+                return new ApiErrorResult<string>("Mã xác thực đã hết hạn.");
+            }
+            try
+            {
+                user.EmailConfirmed = true;
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return new ApiSuccessResult<string>("Xác thực thành công");
+                }
+                else
+                    return new ApiErrorResult<string>("Xác thực thất bại.");
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Có lỗi trong quá trình thực hiện");
+            }
         }
         public async Task<ApiResult<UserViewModel>> GetById(Guid id)
         {
@@ -558,19 +668,6 @@ namespace eRentSolution.Application.System.Users
               expires: DateTime.UtcNow.AddDays(30),
               signingCredentials: credentials);
             return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
-        }
-        public async Task<ApiResult<string>> ResetPasswordByEmail(UserResetPasswordByEmailRequest request)
-        {
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user != null)
-            {
-                var res = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
-                if (res.Succeeded)
-                    return new ApiSuccessResult<string>("Đổi mật khẩu thành công");
-                else
-                    return new ApiErrorResult<string>("Đổi mật khẩu thất bại");
-            }
-            return new ApiErrorResult<string>("Không tìm thấy người dùng");
         }
         private async Task<string> SaveFile(IFormFile file)
         {

@@ -147,5 +147,15 @@ namespace eRentSolution.Integration
             var result = await PostAsync<string>($"/api/users/ForgotPassword", request);
             return result;
         }
+        public async Task<ApiResult<string>> SendConfirmEmail(SendConfirmEmailRequest request, string tokenName)
+        {
+            var result = await PutAsync<string>($"/api/users/SendConfirmEmail", request, tokenName);
+            return result;
+        }
+        public async Task<ApiResult<string>> ConfirmEmail(ConfirmEmailRequest request, string tokenName)
+        {
+            var result = await PutAsync<string>($"/api/users/ConfirmEmail", request, tokenName);
+            return result;
+        }
     }
 }

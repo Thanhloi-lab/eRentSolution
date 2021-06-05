@@ -21,6 +21,8 @@ namespace eRentSolution.Application.System.Users
         Task<ApiResult<string>> UpdateAvatar(UserAvatarUpdateRequest request);
         Task<ApiResult<string>> BanUser(Guid id);
         Task<ApiResult<string>> ForgotPassword(ForgotPasswordRequest request);
+        Task<ApiResult<string>> SendConfirmEmail(SendConfirmEmailRequest request);
+        Task<ApiResult<string>> ConfirmEmail(ConfirmEmailRequest request);
         Task<ApiResult<PagedResult<UserViewModel>>> GetStaffPaging(GetUserPagingRequest request);
         Task<ApiResult<UserViewModel>> GetById(Guid id);
         Task<ApiResult<UserViewModel>> GetUserByProductId(int productId);

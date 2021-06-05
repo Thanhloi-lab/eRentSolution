@@ -16,6 +16,8 @@ namespace eRentSolution.Integration
         Task<ApiResult<string>> ForgotPassword(ForgotPasswordRequest request);
         Task<ApiResult<string>> ResetPassword(UserResetPasswordRequest request, string tokenName);
         Task<ApiResult<string>> ResetPasswordByEmail(UserResetPasswordByEmailRequest request, string tokenName);
+        Task<ApiResult<string>> SendConfirmEmail(SendConfirmEmailRequest request, string tokenName);
+        Task<ApiResult<string>> ConfirmEmail(ConfirmEmailRequest request, string tokenName);
         Task<ApiResult<string>> Delete(Guid id, string tokenName);
         Task<ApiResult<string>> BanUser(Guid id, string tokenName);
         Task<ApiResult<string>> RoleAssign(RoleAssignRequest request, string tokenName);

@@ -126,6 +126,22 @@ namespace eRentSolution.BackendApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
+        [HttpPut("SendConfirmEmail")]
+        public async Task<IActionResult> SendEmailConfirm([FromBody] SendConfirmEmailRequest request)
+        {
+            var result = await _userService.SendConfirmEmail(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
+        [HttpPut("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
+        {
+            var result = await _userService.ConfirmEmail(request);
+            if (result.IsSuccessed)
+                return Ok(result);
+            return BadRequest(result);
+        }
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
