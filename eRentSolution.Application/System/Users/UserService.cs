@@ -67,7 +67,7 @@ namespace eRentSolution.Application.System.Users
                     return new ApiErrorResult<string>("Tài khoản hoặc mật khẩu không đúng");
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, request.Password + user.DateChangePassword, request.RememberMe, true);
+            var result = await _signInManager.PasswordSignInAsync(user, request.Password/* + user.DateChangePassword*/, request.RememberMe, true);
             if(!result.Succeeded)
                 return new ApiErrorResult<string>("Tài khoản hoặc mật khẩu không đúng");
             
@@ -279,11 +279,11 @@ namespace eRentSolution.Application.System.Users
                 new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
             var date = DateTime.UtcNow;
-            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword + user.DateChangePassword, request.NewPassword + date);
+            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword /*+ user.DateChangePassword*/, request.NewPassword /*+ date)*/);
             user = await _userManager.FindByIdAsync(request.Id.ToString());
             if (result.Succeeded)
             {
-                user.DateChangePassword = date;
+                //user.DateChangePassword = date;
                 result = await _userManager.UpdateAsync(user);
             }
                 
@@ -304,13 +304,13 @@ namespace eRentSolution.Application.System.Users
                 return new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
             
-            user.DateChangePassword = DateTime.UtcNow;
-            await _userManager.UpdateAsync(user);
+            //user.DateChangePassword = DateTime.UtcNow;
+            //await _userManager.UpdateAsync(user);
             var removeResult = await _userManager.RemovePasswordAsync(user);
             if (removeResult.Succeeded)
             {
 
-                var result = await _userManager.AddPasswordAsync(user, request.NewPassword + user.DateChangePassword);
+                var result = await _userManager.AddPasswordAsync(user, request.NewPassword);
                 return new ApiSuccessResult<string>("Đặt lại mật khẩu thành công");
             }
             return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
@@ -335,13 +335,13 @@ namespace eRentSolution.Application.System.Users
             if (request.Date.CompareTo(date) > 0)
             {
                 var removeResult = await _userManager.RemovePasswordAsync(user);
-                user.DateChangePassword = date;
+                //user.DateChangePassword = date;
                 if (removeResult.Succeeded)
                 {
-                    var result = await _userManager.AddPasswordAsync(user, request.Password + date);
+                    var result = await _userManager.AddPasswordAsync(user, request.Password /*+ date*/);
                     if (result.Succeeded)
                     {
-                        user.DateChangePassword = date;
+                        //user.DateChangePassword = date;
                         await _userManager.UpdateAsync(user);
                         return new ApiSuccessResult<string>("Đặt lại mật khẩu thành công");
                     }

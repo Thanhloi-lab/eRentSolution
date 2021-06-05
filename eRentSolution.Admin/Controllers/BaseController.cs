@@ -56,7 +56,7 @@ namespace eRentSolution.AdminApp.Controllers
                 }
 
             }
-            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
+            if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(cookies))
             {
                 try
                 {
