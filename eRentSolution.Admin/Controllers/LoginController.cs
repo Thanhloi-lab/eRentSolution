@@ -76,6 +76,10 @@ namespace eRentSolution.AdminApp.Controllers
                 PageSize = 2,
             };
             var contacts = await _contactApiClient.GetAllPaging(request, SystemConstant.AppSettings.TokenAdmin);
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
             return View(new LoginViewModel()
             {
                 contacts = contacts.ResultObject.Items,

@@ -62,6 +62,10 @@ namespace eRentSolution.WebApp.Controllers
                 Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
                 return RedirectToAction("Index", "Home");
             }
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
             if (!string.IsNullOrEmpty(session))
             {
                 return RedirectToAction("Index", "Home");

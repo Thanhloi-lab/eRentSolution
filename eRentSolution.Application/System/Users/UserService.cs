@@ -536,7 +536,7 @@ namespace eRentSolution.Application.System.Users
                     AvatarFilePath = x.u.AvatarFilePath,
                     Status = x.u.Status,
                     EmailConfirmed = x.u.EmailConfirmed
-                }).ToListAsync();
+                }).Distinct().ToListAsync();
 
             var pageResult = new PagedResult<UserViewModel>()
             {

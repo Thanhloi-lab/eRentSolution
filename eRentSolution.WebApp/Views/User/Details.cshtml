@@ -13,19 +13,19 @@
 }
     <div style="display:flex;justify-content:center;align-items:center;width:100vw;height:100%;flex-direction:column; margin: 20px 0 20px 0;">
     <div style="display:flex; justify-content:space-between;align-items:center">
-        @if (ViewBag.Success != null)
-        {
-            <div style="left:385px;" id="msgAlert" class="alert alert-success" role="alert">
-                @ViewBag.Success
-            </div>
-        }
-        @if (TempData["failResult"] != null)
-        {
-            <div style="left:385px;" id="msgAlert" class="alert alert-success" role="alert">
-                @TempData["failResult"]
-            </div>
-        }
-        <h1>Thông tin người dùng</h1>
+    @if (ViewBag.Success != null)
+    {
+        <div style="left:385px;" id="msgAlert" class="alert alert-success" role="alert">
+            @ViewBag.Success
+        </div>
+    }
+    @if (TempData["failResult"] != null)
+    {
+        <div style="left:385px;" id="msgAlert" class="alert alert-success" role="alert">
+            @TempData["failResult"]
+        </div>
+    }
+    <h1>Thông tin người dùng</h1>
     </div>
     <table style="font-size:15px" id="customers">
         <tr>
