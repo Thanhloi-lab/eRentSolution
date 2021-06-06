@@ -21,9 +21,6 @@
     <div class="card mb-12">
         <div class=" card-header">
             <div class="row">
-                <div class="col-md-2 col-xs-12">
-                    <a class="btn btn-success" asp-action="Create" asp-controller="Product">Tạo mới</a>
-                </div>
                 <div class="col-md-4 col-xs-12">
                     <select style="margin-left:0; border:1px solid #7f7f7f; height:38px;" id="province" name="calc_shipping_provinces" required="">
                         <option value="">Tỉnh / Thành phố</option>
@@ -32,11 +29,11 @@
                         <option value="">Quận / Huyện</option>
                     </select>
                 </div>
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-8 col-xs-12">
                     <form asp-action="Index" method="get">
                         <div class="row">
                             <div class="col-md-5">
-                                <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                <input type="text" value="@ViewBag.Keyword" name="keyword" placeholder="Từ khóa...." class="form-control" />
                             </div>
                             <div class="col-md-4">
                                 <select name="categoryId" onchange="" asp-items="@ViewBag.Categories" class="form-control">

@@ -12,6 +12,8 @@ namespace eRentSolution.ViewModels.System.Users
         [Display(Name = "Mật khẩu mới")]
         public string NewPassword { get; set; }
         public string Token { get; set; }
+        [Display(Name = "Mật khẩu mới")]
+        public UserViewModel User { get; set; }
     }
 
 }

@@ -119,12 +119,18 @@ namespace eRentSolution.Application.System.Users
                 return new ApiErrorResult<string>("Không thể khóa tài khoản hiện tại");
 
             user.Status = Data.Enums.Status.InActive;
-            
-            var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
-                return new ApiSuccessResult<string>("Khóa tài khoản thành công");
-            return new ApiErrorResult<string>("Khóa tài khoản thất bại, vui lòng thử lại sau");
 
+            try
+            {
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                    return new ApiSuccessResult<string>("Khóa tài khoản thành công");
+                return new ApiErrorResult<string>("Khóa tài khoản thất bại, vui lòng thử lại sau");
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
         }
         public async Task<ApiResult<string>> Register(UserRegisterRequest request)
         {
@@ -152,23 +158,32 @@ namespace eRentSolution.Application.System.Users
                 }
             };
             
-            var result = await _userManager.CreateAsync(user, request.Password + user.DateChangePassword);
-            if (result.Succeeded)
+            
+            try
             {
-                var addedRoles = request.Roles.Where(x => x.Selected == true).Select(x => x.Name).ToList();
-                foreach (var roleName in addedRoles)
+                var result = await _userManager.CreateAsync(user, request.Password + user.DateChangePassword);
+                if (result.Succeeded)
                 {
-                    if (await _userManager.IsInRoleAsync(user, roleName) == false)
+                    var addedRoles = request.Roles.Where(x => x.Selected == true).Select(x => x.Name).ToList();
+                    foreach (var roleName in addedRoles)
                     {
-                        await _userManager.AddToRoleAsync(user, roleName);
+                        if (await _userManager.IsInRoleAsync(user, roleName) == false)
+                        {
+                            await _userManager.AddToRoleAsync(user, roleName);
+                        }
                     }
+                    user.AvatarFilePath = SystemConstant.DefaultAvatar;
+                    user.AvatarFileSize = SystemConstant.DefaultAvatarSize;
+                    await _userManager.UpdateAsync(user);
+                    return new ApiSuccessResult<string>("Tạo thành công");
                 }
-                user.AvatarFilePath = SystemConstant.DefaultAvatar;
-                user.AvatarFileSize = SystemConstant.DefaultAvatarSize;
-                await _userManager.UpdateAsync(user);
-                return new ApiSuccessResult<string>("Tạo thành công");
-            }    
-            return new ApiErrorResult<string>("Tại tài khoản thất bại");
+                return new ApiErrorResult<string>("Tại tài khoản thất bại");
+            }
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            } 
+            
         }
         public async Task<ApiResult<string>> RoleAssign(Guid id, RoleAssignRequest request)
         {
@@ -197,8 +212,10 @@ namespace eRentSolution.Application.System.Users
             }
             try
             {
-                await _context.SaveChangesAsync();
-                return new ApiSuccessResult<string>("Gán quyền thành công");
+                var result = await _context.SaveChangesAsync();
+                if(result>0)
+                    return new ApiSuccessResult<string>("Gán quyền thành công");
+                return new ApiErrorResult<string>("Gán quyền thất bại");
             }
             catch(Exception e)
             {
@@ -223,22 +240,19 @@ namespace eRentSolution.Application.System.Users
                 user.EmailConfirmed = false;
             }
             user.Email = request.Email;
-            IdentityResult result;
             try
             {
-                result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    await _context.SaveChangesAsync();
+                    return new ApiSuccessResult<string>("Cập nhật thành công");
+                }
             }
             catch (Exception e)
             {
                 return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
             }
-
-            if (result.Succeeded)
-            {
-                await _context.SaveChangesAsync();
-                return new ApiSuccessResult<string>("Cập nhật thành công");
-            }
-                
             return new ApiErrorResult<string>("Cập nhật thất bại");
         }
         public async Task<ApiResult<string>> UpdateAvatar(UserAvatarUpdateRequest request)
@@ -256,23 +270,19 @@ namespace eRentSolution.Application.System.Users
 
                 user.AvatarFilePath = await this.SaveFile(request.AvatarFile);
             }
-
-            IdentityResult result;
             try
             {
-                result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    await _context.SaveChangesAsync();
+                    return new ApiSuccessResult<string>("Cập nhật ảnh thành công");
+                }
             }
             catch (Exception e)
             {
                 return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
             }
-
-            if (result.Succeeded)
-            {
-                await _context.SaveChangesAsync();
-                return new ApiSuccessResult<string>("Cập nhật ảnh thành công");
-            }
-
             return new ApiErrorResult<string>("Cập nhật ảnh thất bại");
         }
         public async Task<ApiResult<string>> UpdatePassword(UserUpdatePasswordRequest request)
@@ -283,22 +293,22 @@ namespace eRentSolution.Application.System.Users
                 new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
             var date = DateTime.UtcNow;
-            var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword /*+ user.DateChangePassword*/, request.NewPassword /*+ date)*/);
-            user = await _userManager.FindByIdAsync(request.Id.ToString());
-            if (result.Succeeded)
+            try
             {
-                //user.DateChangePassword = date;
-                result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword /*+ user.DateChangePassword*/, request.NewPassword /*+ date)*/);
+                if (result.Succeeded)
+                {
+                    user = await _userManager.FindByIdAsync(request.Id.ToString());
+                    await _userManager.UpdateAsync(user);
+                    return new ApiSuccessResult<string>("Đổi mật khẩu thành công");
+                }    
+                return new ApiErrorResult<string>("Dổi mật khẩu thất bại, vui lòng thử lại sau");
             }
-                
-
-            if (result.Succeeded)
+            catch (Exception e)
             {
-               // await _context.SaveChangesAsync();
-                return new ApiSuccessResult<string>("Đổi mật khẩu thành công");
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
             }
 
-            return new ApiErrorResult<string>("Đổi mật khẩu thất bại, vui lòng thử lại sau");
         }
         public async Task<ApiResult<string>> ResetPassword(UserResetPasswordRequest request)
         {
@@ -307,17 +317,18 @@ namespace eRentSolution.Application.System.Users
             {
                 return new ApiErrorResult<string>("Tài khoản không tồn tại");
             }
-            
-            //user.DateChangePassword = DateTime.UtcNow;
-            //await _userManager.UpdateAsync(user);
-            var removeResult = await _userManager.RemovePasswordAsync(user);
-            if (removeResult.Succeeded)
+            try
             {
-
-                var result = await _userManager.AddPasswordAsync(user, request.NewPassword);
-                return new ApiSuccessResult<string>("Đặt lại mật khẩu thành công");
+                string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
+                if (result.Succeeded)
+                    return new ApiSuccessResult<string>("Đặt lại mật khẩu thành công");
+                return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
             }
-            return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
+            catch (Exception e)
+            {
+                return new ApiErrorResult<string>("Lỗi trong quá trình thực hiện thao tác");
+            }
         }
         public async Task<ApiResult<string>> ResetPasswordByEmail(UserResetPasswordByEmailRequest request)
         {

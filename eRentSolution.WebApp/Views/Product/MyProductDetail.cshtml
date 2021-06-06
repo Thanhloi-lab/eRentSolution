@@ -37,7 +37,7 @@
         }
         <h1>Thông tin phòng</h1>
     </div>
-    <table id="customers">
+    <table style="font-size:13px;font-weight:bold;" id="customers">
         <tr>
             <th style="width:20%">Thuộc tính</th>
             <th>Mô tả</th>
@@ -109,7 +109,7 @@
         </tr>
     </table>
 
-    <table id="customers">
+    <table style="font-size:13px;font-weight:bold;" id="customers">
         <h1>Chi tiết phòng</h1>
         <tr>
             <th style="text-align:center;vertical-align:middle;">
@@ -205,7 +205,7 @@
                         </form>
                         <form>
 
-                            <input onclick="myFunction1()" class="btn danger" type="button" value="Delete Img" />
+                            <input onclick="myFunction1()" class="btn danger" type="button" value="Xóa ảnh" />
                         </form>
                         <form asp-action="EditDetail" method="get">
                             <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
@@ -232,7 +232,7 @@
         </form>
         <div>
             @*@Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |*@
-            <a style="margin-top:1px; display:block;" class="btn success" asp-controller="Product" asp-action="MyListProducts">Back to List</a>
+            <a style="margin-top:1px; display:block;" class="btn success" asp-controller="Product" asp-action="MyListProducts">Quay về</a>
         </div>
     </div>
 

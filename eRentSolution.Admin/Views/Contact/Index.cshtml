@@ -13,22 +13,22 @@
     </script>
 }
 <div class="container-fluid">
-    <h1 class="mt-4">Danh sách sản phẩm trình chiếu</h1>
+    <h1 class="mt-4">Danh sách thông tin liên hệ</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Danh sách</li>
+        <li class="breadcrumb-item active">Danh sách thông tin liên hệ</li>
     </ol>
     <div class="card mb-12">
         <div class=" card-header">
             <div class="row">
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-3 col-xs-12">
                     <a class="btn btn-success" asp-action="create" asp-controller="Contact">Tạo mới</a>
                 </div>
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-9 col-xs-12">
                     <form asp-action="Index" method="get">
                         <div class="row">
                             <div class="col-md-5">
-                                <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                <input type="text" value="@ViewBag.Keyword" name="keyword" placeholder="Từ khóa...." class="form-control" />
                             </div>
                             <div class="col-md-4">
                                 <select name="status" onchange="this.form.submit()" asp-items="@ViewBag.Status" class="form-control">

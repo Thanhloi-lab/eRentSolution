@@ -17,7 +17,7 @@
     <h1 class="mt-4">Danh sách sản phẩm của @ViewBag.UserName</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Danh sách người dùng</li>
+        <li class="breadcrumb-item active">Danh sách sản phẩm</li>
     </ol>
     <div class="card mb-12">
         <div class=" card-header">
@@ -25,7 +25,7 @@
                 <div class="col-md-2 col-xs-12">
                     <a class="btn btn-success" asp-action="Create" asp-controller="Product">Tạo mới</a>
                 </div>
-                <div class="col-md-4 col-xs-12">
+                <div class="col-md-3 col-xs-12">
                     <select style="margin-left:0; border:1px solid #7f7f7f; height:38px;" id="province" name="calc_shipping_provinces" required="">
                         <option value="">Tỉnh / Thành phố</option>
                     </select>
@@ -33,11 +33,11 @@
                         <option value="">Quận / Huyện</option>
                     </select>
                 </div>
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-7 col-xs-12">
                     <form asp-action="Index" method="get">
                         <div class="row">
                             <div class="col-md-5">
-                                <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                <input type="text" value="@ViewBag.Keyword" name="keyword" placeholder="Từ khóa...." class="form-control" />
                             </div>
                             <div class="col-md-4">
                                 <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">

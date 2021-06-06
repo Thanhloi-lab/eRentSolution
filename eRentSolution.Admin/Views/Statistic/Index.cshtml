@@ -17,25 +17,26 @@
     <h1 class="mt-4">Thống kê lượt xem sản phẩm</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Danh sách người dùng</li>
+        <li class="breadcrumb-item active">Thống kê lượt xem sản phẩm</li>
     </ol>
     <div class="card mb-12">
         <div class=" card-header">
             <div class="row">
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-8 col-xs-12">
                     <form asp-action="Index" method="get">
                         <div class="row">
-                            
                             <div class="col-md-4">
-                                <select name="categoryId" onchange="" asp-items="@ViewBag.Categories" class="form-control">
-                                    <option>--Chọn danh mục--</option>
+                                <select name="isStatisticMonth" onchange="" asp-items="@ViewBag.Statistic" class="form-control">
+                                    <option>--Thống kê theo--</option>
                                 </select>
+                            </div>
+                            <div class="col-md-4">
                                 <select name="isStatisticMonth" onchange="" asp-items="@ViewBag.Statistic" class="form-control">
                                     <option>--Thống kê theo--</option>
                                 </select>
                             </div>
                             <div class="cold-md-3">
-                                <button type="submit"  class="btn btn-primary">Tìm</button>
+                                <button type="submit" class="btn btn-primary">Tìm</button>
                                 <button type="button" onclick="window.location.href='/Statistic/Index'" class="btn btn-dark">Reset</button>
                             </div>
                         </div>

@@ -17,12 +17,12 @@
     <h1 class="mt-4">Thống kê sản phẩm người dùng</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Thống kê</li>
+        <li class="breadcrumb-item active">Thống kê sản phẩm người dùng</li>
     </ol>
     <div class="card mb-12">
         <div class=" card-header">
             <div class="row">
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-8 col-xs-12">
                     <form asp-action="UserProduct" method="get">
                         <div class="row">
                             <div class="col-md-4">
@@ -31,7 +31,7 @@
                                 </select>
                             </div>
                             <div class="col-md-5">
-                                <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                                <input type="text" value="@ViewBag.Keyword" name="keyword" placeholder="Từ khóa...." class="form-control" />
                             </div>
                             <div class="cold-md-3">
                                 <button type="submit" class="btn btn-primary">Tìm</button>

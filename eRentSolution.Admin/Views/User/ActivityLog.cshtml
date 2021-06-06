@@ -23,14 +23,14 @@
         <div class=" card-header">
             <div class="row">
                 <div class="col-md-6 col-xs-12">
-                    <form asp-action="Index" method="get">
+                    <form asp-action="ActivityLog" method="get">
                         <div class="row">
                             <div class="col-md-8">
                                 <input type="text" value=@ViewBag.keyword name="keyword" class="form-control" />
                             </div>
                             <div class="col-md-4">
                                 <button type="submit" class="btn btn-primary">Tìm</button>
-                                <button type="button" onclick="window.location.href='/User/index'" class="btn btn-dark">Reset</button>
+                                <button type="button" onclick="window.location.href='/User/ActivityLog'" class="btn btn-dark">Reset</button>
                             </div>
                         </div>
                     </form>

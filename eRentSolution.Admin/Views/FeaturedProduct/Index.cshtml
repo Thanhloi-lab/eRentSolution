@@ -21,16 +21,16 @@
     <div class="card mb-12">
         <div class=" card-header">
             <div class="row">
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-2 col-xs-12">
                     <a class="btn btn-success" asp-action="CreateFeatured" asp-controller="FeaturedProduct">Tạo mới</a>
                 </div>
-                <div class="col-md-6 col-xs-12">
+                <div class="col-md-10 col-xs-12">
                     <form asp-action="Index" method="get">
                         <div class="row">
-                            <div class="col-md-5">
-                                <input type="text" value="@ViewBag.Keyword" name="keyword" class="form-control" />
+                            <div class="col-md-7">
+                                <input type="text" value="@ViewBag.Keyword" name="keyword" placeholder="Từ khóa ...................." class="form-control" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
                                     <option>--Chọn danh mục--</option>
                                 </select>

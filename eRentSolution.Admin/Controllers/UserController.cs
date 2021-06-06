@@ -246,14 +246,21 @@ namespace eRentSolution.AdminApp.Controllers
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpGet]
-        public IActionResult ResetPassword(Guid id)
+        public async Task<IActionResult> ResetPassword(Guid id)
         {
-            return View(new UserResetPasswordRequest()
+            var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if(result.IsSuccessed)
             {
-                Id = id,
-                Token = token,
-                NewPassword = SystemConstant.AppSettings.PasswordReseted
-            });
+                return View(new UserResetPasswordRequest()
+                {
+                    Id = id,
+                    Token = token,
+                    NewPassword = SystemConstant.AppSettings.PasswordReseted,
+                    User = result.ResultObject
+                });
+            }
+            ModelState.AddModelError("", result.Message);
+            return RedirectToAction("index");
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpPost]
