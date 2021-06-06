@@ -32,7 +32,17 @@
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.Email)</td>
-            <td>@Html.DisplayFor(model => model.Email)</td>
+            @if (Model.EmailConfirmed == true)
+            {
+        <td>
+            @Html.DisplayFor(model => model.Email)   <i class="fas fa-check tickCheck"></i>
+        </td>
+ }
+                    else
+                    {
+        <td>
+            @Html.DisplayFor(model => model.Email) <i class="fas fa-times iconTimes"></i> @Html.ActionLink("Xác thực", "SendConfirmEmail", "User", new { Model.Email })
+        </td>}
 
         </tr>
         <tr>

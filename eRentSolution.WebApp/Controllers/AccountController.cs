@@ -39,7 +39,7 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> Login()
         {
             var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
-
+            var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
             if (!string.IsNullOrEmpty(token))
             {
                 var userPrincipal = this.ValidateToken(token);
@@ -60,6 +60,10 @@ namespace eRentSolution.WebApp.Controllers
                         authProperties);
 
                 Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+                return RedirectToAction("Index", "Home");
+            }
+            if (!string.IsNullOrEmpty(session))
+            {
                 return RedirectToAction("Index", "Home");
             }
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

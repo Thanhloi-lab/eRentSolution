@@ -487,7 +487,8 @@ namespace eRentSolution.Application.System.Users
                     LastName = x.ui.LastName,
                     UserName = x.u.UserName,
                     AvatarFilePath = x.u.AvatarFilePath,
-                    Status = x.u.Status
+                    Status = x.u.Status,
+                    EmailConfirmed =x.u.EmailConfirmed
                 }).ToListAsync();
 
             var pageResult = new PagedResult<UserViewModel>()
@@ -533,7 +534,8 @@ namespace eRentSolution.Application.System.Users
                     LastName = x.ui.LastName,
                     UserName = x.u.UserName,
                     AvatarFilePath = x.u.AvatarFilePath,
-                    Status = x.u.Status
+                    Status = x.u.Status,
+                    EmailConfirmed = x.u.EmailConfirmed
                 }).ToListAsync();
 
             var pageResult = new PagedResult<UserViewModel>()

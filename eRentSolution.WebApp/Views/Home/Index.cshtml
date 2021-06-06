@@ -4,7 +4,6 @@
 
 @{ ViewData["Title"] = "Home Page"; }
 
-
 @section slider{
     <div style="height:350px" class="box-slider">
         <div style="margin:0;"  class="slide-owl owl-carousel owl-theme slider">
@@ -92,12 +91,12 @@
                         <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
                     </div>
                 </div>
-            </div>
-        }
+            </div>}
 
     </div>
+    @await Component.InvokeAsync("Pager", Model.PageProducts);
 </div>
-@await Component.InvokeAsync("Pager", Model.PageProducts);
+
 <script>
     let navText = ["<i class='bx bx-chevron-left'></i>", "<i class='bx bx-chevron-right'></i>"]
     $('.slide-owl').owlCarousel({

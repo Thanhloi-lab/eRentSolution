@@ -180,7 +180,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed == true)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Login", "Account");
             }
             ModelState.AddModelError("", result.Message);
             return View(request);
@@ -205,7 +205,7 @@ namespace eRentSolution.WebApp.Controllers
             var result = await _userApiClient.ResetPasswordByEmail(request, SystemConstant.AppSettings.TokenWebApp);
             if (result.IsSuccessed == true)
             {
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("index", "home");
             }
 
             ModelState.AddModelError("", result.Message);
@@ -223,7 +223,11 @@ namespace eRentSolution.WebApp.Controllers
                     return RedirectToAction("index", "home");
                 }
             }
-            return View();
+            SendConfirmEmailRequest request = new SendConfirmEmailRequest()
+            {
+                Email = email
+            };
+            return View(request);
         }
         [HttpPost]
         public async Task<IActionResult> SendConfirmEmail(SendConfirmEmailRequest request)
@@ -233,12 +237,12 @@ namespace eRentSolution.WebApp.Controllers
                 ModelState.AddModelError("", "Thông tin không hợp lệ");
                 return View(request);
             }
-
+            request.CurrentDomain = _configuration["CurrentDomain"];
             var result = await _userApiClient.SendConfirmEmail(request, SystemConstant.AppSettings.TokenWebApp);
             if (result.IsSuccessed == true)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Login", "Account");
             }
 
             ModelState.AddModelError("", result.Message);
@@ -257,12 +261,12 @@ namespace eRentSolution.WebApp.Controllers
                 ModelState.AddModelError("", "Thông tin không hợp lệ");
                 return View(request);
             }
-
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _userApiClient.ConfirmEmail(request, SystemConstant.AppSettings.TokenWebApp);
             if (result.IsSuccessed == true)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index", "Login");
+                return Redirect($"/user/details/{userId}");
             }
 
             ModelState.AddModelError("", result.Message);

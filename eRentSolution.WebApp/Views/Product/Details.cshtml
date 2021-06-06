@@ -20,20 +20,20 @@
 </ul>
 <div class="box-container">
     @foreach (var item in Model.Product.ProductDetailViewModels)
-            {
-    <div class="box-photo-slider @Html.DisplayFor(model => item.ProductDetailName)">
+    {
+        <div class="box-photo-slider @Html.DisplayFor(model => item.ProductDetailName)">
         <div class="slideshow-container">
-            @foreach (var img in item.Images)
-            {
-                <div class="mySlides fade">
-                    <div class="numbertext">2 / 3</div>
-                    <img class="slider-photo" src="@Configuration["BaseAddress"]/user-content/@img.ImagePath" alt="photo" style="width:100%">
+        @foreach (var img in item.Images)
+        {
+            <div class="mySlides fade">
+                <div class="numbertext">2 / 3</div>
+                <img class="slider-photo" src="@Configuration["BaseAddress"]/user-content/@img.ImagePath" alt="photo" style="width:100%">
 
-                </div>
-            }
+            </div>
+        }
 
-            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
         </div>
         <div class="box-description">
             <p class="box-description__name">@Model.Product.Name</p>
@@ -62,7 +62,7 @@
         </div>
 
     </div>
-            }
+    }
 
     <div class="box-sidebar">
         <a href="/product/GetUserListProducts?ownerId=@Model.Owner.Id" class="box-wrapper-info">

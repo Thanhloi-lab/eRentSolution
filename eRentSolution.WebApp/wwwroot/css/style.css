@@ -1129,3 +1129,39 @@ a.text-danger:hover, a.text-danger:focus {
     cursor: pointer;
     filter: brightness(80%);
 }
+.tickCheck {
+    width: 20px;
+    color: forestgreen;
+}
+
+.iconTimes {
+    width: 20px;
+    color: darkred;
+}
+.pagination{
+    list-style:none;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.page-item {
+    margin: 0 12px;
+}
+.page-link {
+    
+    text-decoration: none;
+    font-size: 2rem;
+    font-weight: 300;
+    color: #939393;
+    min-width: 40px;
+    height: 30px;
+    margin: auto;
+    display: block;
+    text-align: center;
+    line-height: 30px;
+    border-radius: 2px;
+}
+.active-paging {
+    background-color: #ee4d2d;
+    color: white;
+}

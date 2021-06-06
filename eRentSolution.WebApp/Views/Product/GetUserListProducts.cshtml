@@ -1,10 +1,39 @@
 ﻿@using eRentSolution.ViewModels.Catalog.Products
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @model UserListProductsViewModel
-@{ ViewData["Title"] = "Page of " + @Model.Owner.LastName;
-                Layout = "_Layout1"; }
+@{ ViewData["Title"] = "Page of ";
+    Layout = "_Layout3"; }
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
+<div class="box-select">
+    <p class="category__heading">Lọc phòng</p>
+    <div class="box-filter">
+        <select id="province" name="calc_shipping_provinces" required="">
+            <option value="">Tỉnh / Thành phố</option>
+        </select>
+        <select id="district" name="calc_shipping_district" required="">
+            <option value="">Quận / Huyện</option>
+        </select>
+        <form asp-action="GetUserListProducts" asp-controller="Product" method="get">
+            <input asp-for="Owner.Id" name="ownerId" type="hidden"/>
+            <select style="width:150px;" onchange="myFunction1()" class="category-select" id="province" name="categoryId" asp-items="@ViewBag.Categories" required="">
+                <option>--Chọn danh mục--</option>
+            </select>
+            <input class="billing_address_2" name="address" type="hidden" value="">
+            <input style="width:140px;" type="number" name="minPrice" class="price-min" placeholder="Giá min">
+            <input style="width:140px;" type="number" name="maxPrice" class="price-max" placeholder="Giá max">
 
 
+
+            <button onclick="myFunction()" type="submit" class="btn-filter">Lọc</button>
+        </form>
+
+
+
+    </div>
+
+</div>
 
 <div class="box-product">
     <p class="category__heading">Tin đăng cho bạn</p>
@@ -13,26 +42,243 @@
         {
             ProductViewModel item = Model.Products.Items[i];
             var url = $"/Product/details/{item.Id}";
-            <div class="box-full-flex">
-                <div class="box-item">
-                    <div style="position: relative;" class="box-item__photo">
-                        <a href="roomdetails.html">
-                            <a href="@url"> <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="" class="box-item__img"></a>
-                            <img class="icon-heart" width="20px" src="https://static.chotot.com/storage/chotot-icons/next/save-ad.svg" alt="photos">
-                        </a>
-                    </div>
+<div class="box-full-flex">
+    <div class="box-item">
+        <div style="position: relative;" class="box-item__photo">
+            <a href="roomdetails.html">
+                <a href="@url"> <img src="@Configuration["BaseAddress"]/user-content/@item.ThumbnailImage" alt="" class="box-item__img"></a>
+                <img class="icon-heart" width="20px" src="https://static.chotot.com/storage/chotot-icons/next/save-ad.svg" alt="photos">
+            </a>
+        </div>
 
-                    <div class="box-item__caption">
-                        <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
-                        <p class="box-item__size">@(item.ProductDetailViewModels.ElementAt(0).Width * item.ProductDetailViewModels.ElementAt(0).Length) m²</p>
-                        <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
-                        <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
-                    </div>
-                </div>
-            </div>}
+        <div class="box-item__caption">
+            <p style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; " class="box-item__name">@item.Name</p>
+            <p class="box-item__size">@(item.ProductDetailViewModels.ElementAt(0).Width * item.ProductDetailViewModels.ElementAt(0).Length) m²</p>
+            <p style="text-decoration: line-through;color: #8d8a8a; font-weight: 500; font-size: 1.2rem;" class="box-item-oriPrice">@item.ProductDetailViewModels.ElementAt(0).OriginalPrice&#8363</p>
+            <p class="box-item__price">@item.ProductDetailViewModels.ElementAt(0).Price&#8363</p>
+        </div>
+    </div>
+</div>}
     </div>
 </div>
 @await Component.InvokeAsync("Pager", Model.Products);
 
 <br class="clr" />
 
+<script>
+    
+
+    /*==============SELECT*===============*/
+    if (address_2 = localStorage.getItem('address_2_saved')) {
+        $('select[name="calc_shipping_district"] option').each(function () {
+            if ($(this).text() == address_2) {
+                $(this).attr('selected', '')
+            }
+        })
+
+        $('input.billing_address_2').attr('value', address_2)
+    }
+    if (district = localStorage.getItem('district')) {
+        $('select[name="calc_shipping_district"]').html(district)
+        $('select[name="calc_shipping_district"]').on('change', function () {
+            var target = $(this).children('option:selected')
+            target.attr('selected', '')
+            $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+            address_2 = target.text()
+            $('input.billing_address_2').attr('value', address_2)
+            district = $('select[name="calc_shipping_district"]').html()
+            localStorage.setItem('district', district)
+            localStorage.setItem('address_2_saved', address_2)
+        })
+    }
+    $('select[name="calc_shipping_provinces"]').each(function () {
+
+        var $this = $(this),
+            stc = ''
+        c.forEach(function (i, e) {
+            e += +1
+            stc += '<option value=' + e + '>' + i + '</option>'
+            $this.html('<option value="">Tỉnh / Thành phố</option>' + stc)
+            if (address_1 = localStorage.getItem('address_1_saved')) {
+                $('select[name="calc_shipping_provinces"] option').each(function () {
+                    if ($(this).text() == address_1) {
+                        $(this).attr('selected', '')
+                    }
+                })
+
+
+                $('input.billing_address_1').attr('value', address_1)
+            }
+            $this.on('change', function (i) {
+                i = $this.children('option:selected').index() - 1
+                var str = '',
+                    r = $this.val()
+                if (r != '') {
+                    arr[i].forEach(function (el) {
+                        str += '<option value="' + el + '">' + el + '</option>'
+                        $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>' + str)
+                    })
+                    var address_1 = $this.children('option:selected').text()
+                    var district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('address_1_saved', address_1)
+                    localStorage.setItem('district', district)
+                    $('select[name="calc_shipping_district"]').on('change', function () {
+                        var target = $(this).children('option:selected')
+                        target.attr('selected', '')
+                        $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+                        var address_2 = target.text()
+                        $('input.billing_address_2').attr('value', address_2)
+                        district = $('select[name="calc_shipping_district"]').html()
+                        localStorage.setItem('district', district)
+                        localStorage.setItem('address_2_saved', address_2)
+                    })
+                } else {
+                    $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>')
+                    district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('district', district)
+                    localStorage.removeItem('address_1_saved', address_1)
+                }
+            })
+        })
+    })
+    function getThamSo(nameThamSo) {
+        let thamSo = new URLSearchParams(window.location.search);
+        return thamSo.get(nameThamSo);
+    }
+    var address = (getThamSo("address"));
+    var minPrice = (getThamSo("minPrice"));
+    var maxPrice = (getThamSo("maxPrice"));
+    var add2 = ""
+    var add3 = ""
+    var flag = 0;
+    for (var i = 0; i < address.length; i++) {
+        if (address[i] === "_") {
+            flag = i;
+            break;
+        }
+        add2 += address[i];
+    }
+    for (var i = flag + 1; i < address.length; i++) {
+        if (address[i] === "_") {
+            flag = i;
+            break;
+        }
+        add3 += address[i];
+    }
+    localStorage.setItem("address_1_saved", add3)
+    localStorage.setItem("address_2_saved", add2)
+
+    if (address_2 = localStorage.getItem('address_2_saved')) {
+        $('select[name="calc_shipping_district"] option').each(function () {
+            if ($(this).text() == address_2) {
+                $(this).attr('selected', '')
+            }
+        })
+
+        $('input.billing_address_2').attr('value', address_2)
+    }
+    if (district = localStorage.getItem('district')) {
+        $('select[name="calc_shipping_district"]').html(district)
+        $('select[name="calc_shipping_district"]').on('change', function () {
+            var target = $(this).children('option:selected')
+            target.attr('selected', '')
+            $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+            address_2 = target.text()
+            $('input.billing_address_2').attr('value', address_2)
+            district = $('select[name="calc_shipping_district"]').html()
+            localStorage.setItem('district', district)
+            localStorage.setItem('address_2_saved', address_2)
+        })
+    }
+    $('select[name="calc_shipping_provinces"]').each(function () {
+
+        var $this = $(this),
+            stc = ''
+        c.forEach(function (i, e) {
+            e += +1
+            stc += '<option value=' + e + '>' + i + '</option>'
+            $this.html('<option value="">Tỉnh / Thành phố</option>' + stc)
+            if (address_1 = localStorage.getItem('address_1_saved')) {
+                $('select[name="calc_shipping_provinces"] option').each(function () {
+                    if ($(this).text() == address_1) {
+                        $(this).attr('selected', '')
+                    }
+                })
+
+
+                $('input.billing_address_1').attr('value', address_1)
+            }
+
+            $(document).ready(function (i) {
+                sttTP = $this.children('option:selected').index() - 1
+                var str = '',
+                    r = $this.val()
+                if (r != '') {
+                    arr[sttTP].forEach(function (el) {
+                        str += '<option value="' + el + '">' + el + '</option>'
+                        $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>' + str)
+                    })
+                    var address_1 = $this.children('option:selected').text()
+                    var district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('address_1_saved', address_1)
+                    localStorage.setItem('district', district)
+                    $('select[name="calc_shipping_district"]').on('change', function () {
+                        var target = $(this).children('option:selected')
+                        target.attr('selected', '')
+                        $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+                        var address_2 = target.text()
+                        $('input.billing_address_2').attr('value', address_2)
+                        district = $('select[name="calc_shipping_district"]').html()
+                        localStorage.setItem('district', district)
+                        localStorage.setItem('address_2_saved', address_2)
+                    })
+                } else {
+                    $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>')
+                    district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('district', district)
+                    localStorage.removeItem('address_1_saved', address_1)
+                }
+                var optionTP = document.querySelector("#district")
+
+                var sttQuan = 0;
+                for (var i = 1; i < optionTP.options.length; i++) {
+
+
+                    if (optionTP.options[i].text === add2) {
+                        sttQuan = i;
+
+                        break;
+                    }
+
+                }
+
+                document.querySelector("#district").options.selectedIndex = sttQuan;
+            })
+
+        })
+    })
+    /*==============PHAN URL================= */
+
+
+
+    document.querySelector(".price-min").value = minPrice;
+    document.querySelector(".price-max").value = maxPrice;
+
+    function myFunction1() {
+        var provinceText = $("#province option:selected").text();
+        var districtText = $("#district option:selected").text();
+        var road = districtText + "_" + provinceText;
+        document.querySelector('.k_category').value = document.querySelector(".category-select").value
+        document.querySelector('.k_address').value = road;
+        document.querySelector('.k_price-min').value = document.querySelector(".price-min").value;
+        document.querySelector('.k_price-max').value = document.querySelector(".price-max").value;
+    }
+    function myFunction() {
+        var provinceText = $("#province option:selected").text();
+        var districtText = $("#district option:selected").text();
+        var road = districtText + "_" + provinceText;
+        document.querySelector('input.billing_address_2').value = road;
+
+
+    }
+</script>

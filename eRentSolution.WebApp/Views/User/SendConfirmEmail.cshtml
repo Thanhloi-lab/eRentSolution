@@ -1,0 +1,50 @@
+﻿@model eRentSolution.ViewModels.System.Users.SendConfirmEmailRequest
+
+@{
+    ViewData["Title"] = "SendConfirmEmail";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+
+<div class="container register">
+    <div class="row">
+        <div class="col-md-3 register-left">
+            <img src="https://image.ibb.co/n7oTvU/logo_white.png" alt="" />
+            <h3>Welcome</h3>
+        </div>
+        <div class="col-md-9 register-right">
+            <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <h3 style="margin-right:200px;" class="register-heading">Xác nhận email</h3>
+                    <form asp-action="sendconfirmEmail" asp-controller="user" method="post" class="sign-in-form">
+                        <div class="row register-form">
+                            <div class="col-md-8">
+                                <div asp-validation-summary="All" class="text-error">
+                                    <div class="form-group">
+                                 <div style=" padding: 10px 20px; border: 1px solid black; font-size: 1.4rem; ">
+                                            <span>Email:</span>
+                                            <span>
+                                                @Html.DisplayFor(model => model.Email)
+                                            </span>
+                                        </div>
+                                        <input asp-for="Email"  type="hidden"/>
+                                    </div>
+                                    
+                                    <input type="submit" class="btnRegister" value="Gửi yêu cầu" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+

@@ -3,7 +3,32 @@
 @model PagedResult<eRentSolution.ViewModels.Catalog.Products.ProductViewModel>
 
 @{ ViewData["Title"] = "MyListProducts";
-                Layout = "~/Views/Shared/_Layout3.cshtml"; }
+    Layout = "~/Views/Shared/_Layout3.cshtml"; }
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
+
+<div class="box-select">
+    <p class="category__heading">Lọc phòng</p>
+    <div class="box-filter">
+        <select id="province" name="calc_shipping_provinces" required="">
+            <option value="">Tỉnh / Thành phố</option>
+        </select>
+        <select id="district" name="calc_shipping_district" required="">
+            <option value="">Quận / Huyện</option>
+        </select>
+        <form asp-action="MyListProducts" asp-controller="Product" method="get">
+
+            <select style="width:150px;" onchange="myFunction1()" class="category-select" id="province" name="categoryId" asp-items="@ViewBag.Categories" required="">
+                <option>--Chọn danh mục--</option>
+            </select>
+            <input class="billing_address_2" name="address" type="hidden" value="">
+            <input style="width:140px;" type="number" name="minPrice" class="price-min" placeholder="Giá min">
+            <input style="width:140px;" type="number" name="maxPrice" class="price-max" placeholder="Giá max">
+            <button onclick="myFunction()" type="submit" class="btn-filter">Lọc</button>
+        </form>
+    </div>
+
+</div>
 <div style="display:flex;justify-content:center;align-items:center;width:100vw;height:100%;flex-direction:column; margin: 20px 0 20px 0;">
     <h1>Danh sách phòng</h1>
     <table id="customers">
@@ -44,20 +69,20 @@
                 }
                 else
                 {
-                     <td>
+                    <td>
                         @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.Id }) |
                         @Html.ActionLink("Chi tiết", "MyProductDetail", new { id = item.Id }) |
                         @Html.ActionLink("Xóa", "Delete", new { id = item.Id })|
                         @Html.ActionLink("Ẩn", "Hide", new { id = item.Id })|
                         @Html.ActionLink("Danh mục", "CategoryAssign", new { id = item.Id })|
                         @Html.ActionLink("Thêm chi tiết", "AddDetail", new { id = item.Id })
-                    </td>
+                    </td>                
                 }
-        </tr>
+            </tr>
         }
     </table>
     <div style="margin-top:20px;">
-         <a class="btn success" asp-action="Create">Tạo mới</a>
+        <a class="btn success" asp-action="Create">Tạo mới</a>
     </div>
 </div>
 @await Component.InvokeAsync("Pager", Model)
@@ -116,3 +141,217 @@
         color: #4CAF50;
     }
 </style>
+<script>
+    if (address_2 = localStorage.getItem('address_2_saved')) {
+        $('select[name="calc_shipping_district"] option').each(function () {
+            if ($(this).text() == address_2) {
+                $(this).attr('selected', '')
+            }
+        })
+
+        $('input.billing_address_2').attr('value', address_2)
+    }
+    if (district = localStorage.getItem('district')) {
+        $('select[name="calc_shipping_district"]').html(district)
+        $('select[name="calc_shipping_district"]').on('change', function () {
+            var target = $(this).children('option:selected')
+            target.attr('selected', '')
+            $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+            address_2 = target.text()
+            $('input.billing_address_2').attr('value', address_2)
+            district = $('select[name="calc_shipping_district"]').html()
+            localStorage.setItem('district', district)
+            localStorage.setItem('address_2_saved', address_2)
+        })
+    }
+    $('select[name="calc_shipping_provinces"]').each(function () {
+
+        var $this = $(this),
+            stc = ''
+        c.forEach(function (i, e) {
+            e += +1
+            stc += '<option value=' + e + '>' + i + '</option>'
+            $this.html('<option value="">Tỉnh / Thành phố</option>' + stc)
+            if (address_1 = localStorage.getItem('address_1_saved')) {
+                $('select[name="calc_shipping_provinces"] option').each(function () {
+                    if ($(this).text() == address_1) {
+                        $(this).attr('selected', '')
+                    }
+                })
+
+
+                $('input.billing_address_1').attr('value', address_1)
+            }
+            $this.on('change', function (i) {
+                i = $this.children('option:selected').index() - 1
+                var str = '',
+                    r = $this.val()
+                if (r != '') {
+                    arr[i].forEach(function (el) {
+                        str += '<option value="' + el + '">' + el + '</option>'
+                        $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>' + str)
+                    })
+                    var address_1 = $this.children('option:selected').text()
+                    var district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('address_1_saved', address_1)
+                    localStorage.setItem('district', district)
+                    $('select[name="calc_shipping_district"]').on('change', function () {
+                        var target = $(this).children('option:selected')
+                        target.attr('selected', '')
+                        $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+                        var address_2 = target.text()
+                        $('input.billing_address_2').attr('value', address_2)
+                        district = $('select[name="calc_shipping_district"]').html()
+                        localStorage.setItem('district', district)
+                        localStorage.setItem('address_2_saved', address_2)
+                    })
+                } else {
+                    $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>')
+                    district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('district', district)
+                    localStorage.removeItem('address_1_saved', address_1)
+                }
+            })
+        })
+    })
+    function getThamSo(nameThamSo) {
+        let thamSo = new URLSearchParams(window.location.search);
+        return thamSo.get(nameThamSo);
+    }
+    var address = (getThamSo("address"));
+    var minPrice = (getThamSo("minPrice"));
+    var maxPrice = (getThamSo("maxPrice"));
+    var add2 = ""
+    var add3 = ""
+    var flag = 0;
+    for (var i = 0; i < address.length; i++) {
+        if (address[i] === "_") {
+            flag = i;
+            break;
+        }
+        add2 += address[i];
+    }
+    for (var i = flag + 1; i < address.length; i++) {
+        if (address[i] === "_") {
+            flag = i;
+            break;
+        }
+        add3 += address[i];
+    }
+    localStorage.setItem("address_1_saved", add3)
+    localStorage.setItem("address_2_saved", add2)
+
+    if (address_2 = localStorage.getItem('address_2_saved')) {
+        $('select[name="calc_shipping_district"] option').each(function () {
+            if ($(this).text() == address_2) {
+                $(this).attr('selected', '')
+            }
+        })
+
+        $('input.billing_address_2').attr('value', address_2)
+    }
+    if (district = localStorage.getItem('district')) {
+        $('select[name="calc_shipping_district"]').html(district)
+        $('select[name="calc_shipping_district"]').on('change', function () {
+            var target = $(this).children('option:selected')
+            target.attr('selected', '')
+            $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+            address_2 = target.text()
+            $('input.billing_address_2').attr('value', address_2)
+            district = $('select[name="calc_shipping_district"]').html()
+            localStorage.setItem('district', district)
+            localStorage.setItem('address_2_saved', address_2)
+        })
+    }
+    $('select[name="calc_shipping_provinces"]').each(function () {
+
+        var $this = $(this),
+            stc = ''
+        c.forEach(function (i, e) {
+            e += +1
+            stc += '<option value=' + e + '>' + i + '</option>'
+            $this.html('<option value="">Tỉnh / Thành phố</option>' + stc)
+            if (address_1 = localStorage.getItem('address_1_saved')) {
+                $('select[name="calc_shipping_provinces"] option').each(function () {
+                    if ($(this).text() == address_1) {
+                        $(this).attr('selected', '')
+                    }
+                })
+
+
+                $('input.billing_address_1').attr('value', address_1)
+            }
+
+            $(document).ready(function (i) {
+                sttTP = $this.children('option:selected').index() - 1
+                var str = '',
+                    r = $this.val()
+                if (r != '') {
+                    arr[sttTP].forEach(function (el) {
+                        str += '<option value="' + el + '">' + el + '</option>'
+                        $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>' + str)
+                    })
+                    var address_1 = $this.children('option:selected').text()
+                    var district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('address_1_saved', address_1)
+                    localStorage.setItem('district', district)
+                    $('select[name="calc_shipping_district"]').on('change', function () {
+                        var target = $(this).children('option:selected')
+                        target.attr('selected', '')
+                        $('select[name="calc_shipping_district"] option').not(target).removeAttr('selected')
+                        var address_2 = target.text()
+                        $('input.billing_address_2').attr('value', address_2)
+                        district = $('select[name="calc_shipping_district"]').html()
+                        localStorage.setItem('district', district)
+                        localStorage.setItem('address_2_saved', address_2)
+                    })
+                } else {
+                    $('select[name="calc_shipping_district"]').html('<option value="">Quận / Huyện</option>')
+                    district = $('select[name="calc_shipping_district"]').html()
+                    localStorage.setItem('district', district)
+                    localStorage.removeItem('address_1_saved', address_1)
+                }
+                var optionTP = document.querySelector("#district")
+
+                var sttQuan = 0;
+                for (var i = 1; i < optionTP.options.length; i++) {
+
+
+                    if (optionTP.options[i].text === add2) {
+                        sttQuan = i;
+
+                        break;
+                    }
+
+                }
+
+                document.querySelector("#district").options.selectedIndex = sttQuan;
+            })
+
+        })
+    })
+    /*==============PHAN URL================= */
+
+
+
+    document.querySelector(".price-min").value = minPrice;
+    document.querySelector(".price-max").value = maxPrice;
+
+    function myFunction1() {
+        var provinceText = $("#province option:selected").text();
+        var districtText = $("#district option:selected").text();
+        var road = districtText + "_" + provinceText;
+        document.querySelector('.k_category').value = document.querySelector(".category-select").value
+        document.querySelector('.k_address').value = road;
+        document.querySelector('.k_price-min').value = document.querySelector(".price-min").value;
+        document.querySelector('.k_price-max').value = document.querySelector(".price-max").value;
+    }
+    function myFunction() {
+        var provinceText = $("#province option:selected").text();
+        var districtText = $("#district option:selected").text();
+        var road = districtText + "_" + provinceText;
+        document.querySelector('input.billing_address_2').value = road;
+
+
+    }
+</script>

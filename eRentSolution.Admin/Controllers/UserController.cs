@@ -317,7 +317,7 @@ namespace eRentSolution.AdminApp.Controllers
             var user = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
             if(user.IsSuccessed)
             {
-                if(!user.ResultObject.Email.Equals(email))
+                if(!user.ResultObject.Email.Equals(email) || user.ResultObject.EmailConfirmed)
                 {
                     return RedirectToAction("index", "home");
                 }

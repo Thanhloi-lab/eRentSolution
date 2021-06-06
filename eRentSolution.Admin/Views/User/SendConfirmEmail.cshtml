@@ -34,6 +34,7 @@
                         <div class="input-field">
                             <i class="fas fa-user"></i>
                             @Html.DisplayFor(model => model.Email)
+                            <input asp-for="Email" type="hidden" />
                         </div>
                         <input type="submit" value="Gửi yêu cầu" class="btn solid" />
                     </form>

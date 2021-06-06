@@ -44,6 +44,11 @@ namespace eRentSolution.WebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(string keyword, string address, int? categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
         {
+            if (address != null)
+            {
+                if (address.Contains(SystemConstant.DefautAddress))
+                    address = null;
+            }
             var request = new GetProductPagingRequest()
             {
                 CategoryId = categoryId,
@@ -133,6 +138,11 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> MyListProducts(string keyword, string address, int? categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
         {
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (address != null)
+            {
+                if (address.Contains(SystemConstant.DefautAddress))
+                    address = null;
+            }
             var request = new GetProductPagingRequest()
             {
                 CategoryId = categoryId,
@@ -163,8 +173,14 @@ namespace eRentSolution.WebApp.Controllers
             return View(products.ResultObject);
         }
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUserListProducts(Guid ownerId, string keyword, string address, int? categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
         {
+            if (address != null)
+            {
+                if (address.Contains(SystemConstant.DefautAddress))
+                    address = null;
+            }
             var request = new GetProductPagingRequest()
             {
                 CategoryId = categoryId,
@@ -174,7 +190,7 @@ namespace eRentSolution.WebApp.Controllers
                 Address = address,
                 IsGuess = true,
                 MaxPrice = maxPrice,
-                MinPrice = minPrice
+                MinPrice = minPrice,
             };
 
             if (TempData["result"] != null)
