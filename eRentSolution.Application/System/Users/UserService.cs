@@ -161,7 +161,7 @@ namespace eRentSolution.Application.System.Users
             
             try
             {
-                var result = await _userManager.CreateAsync(user, request.Password + user.DateChangePassword);
+                var result = await _userManager.CreateAsync(user, request.Password);
                 if (result.Succeeded)
                 {
                     var addedRoles = request.Roles.Where(x => x.Selected == true).Select(x => x.Name).ToList();

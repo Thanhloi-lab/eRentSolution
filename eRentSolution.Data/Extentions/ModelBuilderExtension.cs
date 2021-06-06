@@ -98,7 +98,7 @@ namespace eRentSolution.Data.Extentions
                 NormalizedEmail = "caothanhloi@gmail.com",
                 EmailConfirmed = true,
                 DateChangePassword = now,
-                PasswordHash = hasher.HashPassword(null, "123456aS`" + now),
+                PasswordHash = hasher.HashPassword(null, "123456aS`"),
                 SecurityStamp = string.Empty,
                 Status = Status.Active,
                 AvatarFilePath = "default_avatar.png",

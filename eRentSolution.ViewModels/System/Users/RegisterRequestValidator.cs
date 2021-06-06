@@ -17,7 +17,7 @@ namespace eRentSolution.ViewModels.System.Users
             RuleFor(x => x.Dob).GreaterThan(DateTime.UtcNow.AddYears(-150)).WithMessage("Tuổi không thể vượt quá 150.")
                 .LessThan(DateTime.UtcNow.AddYears(-16)).WithMessage("Tuổi phải lớn hơn 16.");
             RuleFor(x => x.PhoneNumber).NotEmpty().WithMessage("Số điện thoại không được bỏ trống")
-                .Matches("^[0-9]{10}$").WithMessage("Số điện thoại không hợp lệ. Số điện thoại phải có 10 chữ số.");;
+                .Matches("^0\\d{9}|\\d{10}$").WithMessage("Số điện thoại không hợp lệ. Số điện thoại phải có 10 chữ số.");;
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email không được bỏ trống.")
                 .EmailAddress().WithMessage("Email không hợp lệ.");
             RuleFor(x => x.UserName).NotEmpty().WithMessage("Tài khoản không được bỏ trống.");
