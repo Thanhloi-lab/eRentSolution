@@ -70,37 +70,39 @@
         </tr>
         @foreach (var item in Model.Items)
         {
-<tr>
-    <td>@Html.DisplayFor(modelItem => item.Id)</td>
-    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-    <td>@Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)</td>
-    <td>@Html.DisplayFor(modelItem => item.Address)</td>
-    <td style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; max-width:500px; height:60px;">@Html.DisplayFor(modelItem => item.Description)</td>
-    <td>@Html.DisplayFor(modelItem => item.ViewCount)</td>
-    <td>@Html.DisplayFor(modelItem => item.Stock)</td>
-    <td>@Html.DisplayFor(modelItem => item.IsFeatured)</td>
-    <td>@Html.DisplayFor(modelItem => item.Status)</td>
-    @if (item.StatusId == (int)(object)Status.Private)
-    {
-<td>
-    @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.Id }) |
-    @Html.ActionLink("Chi tiết", "MyProductDetail", new { id = item.Id }) |
-    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })|
-    @Html.ActionLink("Hiện", "Show", new { id = item.Id })|
-    @Html.ActionLink("Danh mục", "CategoryAssign", new { id = item.Id })|
-    @Html.ActionLink("Thêm chi tiết", "AddDetail", new { id = item.Id })
-</td> }
-                else
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProductDetailViewModels[0].Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                <td style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; max-width:500px; height:60px;">@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.ViewCount)</td>
+                <td>@Html.DisplayFor(modelItem => item.Stock)</td>
+                <td>@Html.DisplayFor(modelItem => item.IsFeatured)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                @if (item.StatusId == (int)(object)Status.Private)
                 {
-<td>
-    @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.Id }) |
-    @Html.ActionLink("Chi tiết", "MyProductDetail", new { id = item.Id }) |
-    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })|
-    @Html.ActionLink("Ẩn", "Hide", new { id = item.Id })|
-    @Html.ActionLink("Danh mục", "CategoryAssign", new { id = item.Id })|
-    @Html.ActionLink("Thêm chi tiết", "AddDetail", new { id = item.Id })
-</td>}
-</tr>}
+            <td>
+                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Chi tiết", "MyProductDetail", new { id = item.Id }) |
+                @Html.ActionLink("Xóa", "Delete", new { id = item.Id })|
+                @Html.ActionLink("Hiện", "Show", new { id = item.Id })|
+                @Html.ActionLink("Danh mục", "CategoryAssign", new { id = item.Id })|
+                @Html.ActionLink("Thêm chi tiết", "AddDetail", new { id = item.Id })
+            </td> 
+        }
+        else
+        {
+            <td>
+                @Html.ActionLink("Chỉnh sửa", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Chi tiết", "MyProductDetail", new { id = item.Id }) |
+                @Html.ActionLink("Xóa", "Delete", new { id = item.Id })|
+                @Html.ActionLink("Ẩn", "Hide", new { id = item.Id })|
+                @Html.ActionLink("Danh mục", "CategoryAssign", new { id = item.Id })|
+                @Html.ActionLink("Thêm chi tiết", "AddDetail", new { id = item.Id })
+            </td>}
+        </tr>
+    }
     </table>
     <div style="margin-top:20px;">
         <a class="btn success" asp-action="Create">Tạo mới</a>

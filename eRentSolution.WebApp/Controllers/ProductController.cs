@@ -489,11 +489,11 @@ namespace eRentSolution.WebApp.Controllers
 
         #region ------DETAIL------
         [HttpGet]
-        public IActionResult AddDetail(int productId)
+        public IActionResult AddDetail(int id)
         {
             return View(new ProductDetailCreateRequest()
             {
-                ProductId = productId
+                ProductId = id
             });
         }
         [HttpPost]

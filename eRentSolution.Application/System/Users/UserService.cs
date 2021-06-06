@@ -213,12 +213,16 @@ namespace eRentSolution.Application.System.Users
             }
             var user = await _userManager.FindByIdAsync(id.ToString());
             var person = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == id);
+            
             person.Dob = request.Dob;
-            user.Email = request.Email;
             user.PhoneNumber = request.PhoneNumber;
             person.FirstName = request.FirstName;
             person.LastName = request.LastName;
-
+            if(!user.Email.Equals(request.Email))
+            {
+                user.EmailConfirmed = false;
+            }
+            user.Email = request.Email;
             IdentityResult result;
             try
             {
