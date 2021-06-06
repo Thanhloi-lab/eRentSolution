@@ -5,7 +5,13 @@
     ViewData["Title"] = "Thông tin người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}
 <div class="container-fluid">
     <h1 class="mt-4">Chi tiết</h1>
     <ol class="breadcrumb mb-4">
@@ -16,6 +22,18 @@
         <div class="card-header">
             <a class="btn btn-success" asp-action="Index" asp-controller="User">Về danh sách</a>
         </div>
+         @if (ViewBag.Success != null)
+        {
+            <div id="msgAlert" class="alert alert-success" role="alert">
+                @ViewBag.Success
+            </div>
+        }
+        @if (TempData["FailResult"] != null)
+        {
+            <div id="msgAlert" class="alert alert-fail" role="alert">
+                @TempData["FailResult"]
+            </div>
+        }
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered">

@@ -77,6 +77,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.SetString(SystemConstant.AppSettings.TokenAdmin, "");
             Response.Cookies.Delete(SystemConstant.AppSettings.TokenAdmin);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("index", "login");
@@ -180,6 +181,8 @@ namespace eRentSolution.AdminApp.Controllers
                 var updateRequest = new UserAvatarUpdateRequest()
                 {
                     Id = target.ResultObject.Id,
+                    Name = target.ResultObject.FirstName,
+                    OldAvatarFilePath = target.ResultObject.AvatarFilePath
                 };
                 return View(updateRequest);
             }
@@ -205,12 +208,24 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public IActionResult ChangePassword(Guid id)
+        public async Task<IActionResult> ChangePassword(Guid id)
         {
-            return View(new UserUpdatePasswordRequest()
+            userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (!id.ToString().Equals(userId))
             {
-                Id = id
-            });
+                TempData["FailResult"] = "Không thể cập nhật thông tin của người dùng khác";
+                return RedirectToAction("Index");
+            }
+            var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if(result.IsSuccessed)
+            {
+                return View(new UserUpdatePasswordRequest()
+                {
+                    Id = id,
+                    FirstName = result.ResultObject.FirstName
+                });
+            }
+            return RedirectToAction("Error", "Home");
         }
         [HttpPost]
         public async Task<IActionResult> ChangePassword(UserUpdatePasswordRequest request)
@@ -377,8 +392,13 @@ namespace eRentSolution.AdminApp.Controllers
         {
             var result = await _userApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             if(result.IsSuccessed)
+            {
+                if (TempData["result"] != null)
+                {
+                    ViewBag.success = TempData["Result"];
+                }
                 return View(result.ResultObject);
-
+            }    
             TempData["FailResult"] = result.Message;
             return RedirectToAction("Index");
         }
@@ -405,7 +425,8 @@ namespace eRentSolution.AdminApp.Controllers
                 Email = user.ResultObject.Email,
                 FirstName = user.ResultObject.FirstName,
                 LastName = user.ResultObject.LastName,
-                UserName = user.ResultObject.UserName
+                UserName = user.ResultObject.UserName,
+                PhoneNumber = user.ResultObject.PhoneNumber
             });
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]

@@ -5,13 +5,14 @@ using System.Text;
 
 namespace eRentSolution.ViewModels.Catalog.Categories
 {
-    public class CategoryUpdateRequest
+    public class CategoryStatusRequest
     {
         [Display(Name = "Mã danh mục")]
-        public int CategoryId { get; set; }
+        public int Id { get; set; }
+        [Display(Name = "Ảnh danh mục")]
+        public string CategoryImagePath { get; set; }
+
         [Display(Name = "Tên danh mục")]
         public string CategoryName { get; set; }
-        [Display(Name = "Ảnh đại diện")]
-        public string CategoryImagePath { get; set; }
     }
 }

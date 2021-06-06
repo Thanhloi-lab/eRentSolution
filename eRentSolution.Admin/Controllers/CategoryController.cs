@@ -63,7 +63,9 @@ namespace eRentSolution.AdminApp.Controllers
             {
                 var updateRequest = new CategoryImageUpdateRequest()
                 {
-                    CategoryId = id
+                    CategoryId = id,
+                    CategoryOldImagePath = target.ResultObject.Image,
+                    CategoryName = target.ResultObject.Name
                 };
                 return View(updateRequest);
             }
@@ -86,16 +88,23 @@ namespace eRentSolution.AdminApp.Controllers
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpGet]
-        public IActionResult DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(int id)
         {
-            return View(new SlideStatusRequest()
+            var target = await _categoryApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (target.IsSuccessed && target.ResultObject != null)
             {
-                Id = id,
-            });
+                return View(new CategoryStatusRequest()
+                {
+                    Id = id,
+                    CategoryImagePath = target.ResultObject.Image,
+                    CategoryName = target.ResultObject.Name
+                });
+            }
+            return RedirectToAction("index");
         }
         [Authorize(Roles = SystemConstant.AppSettings.AdminRole)]
         [HttpPost]
-        public async Task<IActionResult> DeleteCategory(SlideStatusRequest request)
+        public async Task<IActionResult> DeleteCategory(CategoryStatusRequest request)
         {
             if (!ModelState.IsValid)
                 return View();
@@ -141,7 +150,6 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public IActionResult UpdateCategory(int id, string name)
         {
-
             return View(new CategoryUpdateRequest()
             {
                 CategoryId = id,

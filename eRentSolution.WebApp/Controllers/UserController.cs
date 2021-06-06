@@ -39,6 +39,10 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> Details()
         {
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["Result"];
+            }
             var result = await _userApiClient.GetById(Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if(!result.IsSuccessed)
             {
@@ -116,6 +120,7 @@ namespace eRentSolution.WebApp.Controllers
                 var updateRequest = new UserAvatarUpdateRequest()
                 {
                     Id = target.ResultObject.Id,
+                    OldAvatarFilePath = target.ResultObject.AvatarFilePath
                 };
                 return View(updateRequest);
             }
@@ -135,7 +140,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("index", "home");
+                return RedirectToAction("details");
             }
             ModelState.AddModelError("", result.Message);
             return View(request);
@@ -242,7 +247,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed == true)
             {
                 TempData["result"] = result.ResultObject;
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("details");
             }
 
             ModelState.AddModelError("", result.Message);
@@ -266,7 +271,7 @@ namespace eRentSolution.WebApp.Controllers
             if (result.IsSuccessed == true)
             {
                 TempData["result"] = result.ResultObject;
-                return Redirect($"/user/details/{userId}");
+                return RedirectToAction("details");
             }
 
             ModelState.AddModelError("", result.Message);

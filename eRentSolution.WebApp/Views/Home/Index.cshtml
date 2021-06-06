@@ -13,7 +13,7 @@
                 {
                     var slide = Model.Slides[index];
                     <div class="item">
-                        <a href="@slide.Url"><img style="height:320px; object-fit:cover;" src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" /></a>
+                        <a href="@slide.Url"><img style="height:360px; object-fit:cover;" src="@Configuration["BaseAddress"]/user-content/@slide.FilePath" alt="@slide.Name" /></a>
                     </div>
                 }
             }
@@ -47,7 +47,7 @@
         @for (int index = 0; index < featuredProducts.Count; index++)
         {
             @foreach (var item in featuredProducts[index])
-    {
+        {
         var url = $"/Product/Details/{item.Id}";
         <div class="box-full-flex">
             <div class="box-item">

@@ -9,5 +9,7 @@ namespace eRentSolution.ViewModels.Utilities.Slides
     {
         [Display(Name = "Mã sản phẩm trình chiếu")]
         public int Id { get; set; }
+        [Display(Name = "Ảnh trình chiếu")]
+        public string SlideImagePath { get; set; }
     }
 }

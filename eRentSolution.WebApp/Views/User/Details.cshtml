@@ -1,24 +1,45 @@
 ﻿@model eRentSolution.ViewModels.System.Users.UserViewModel
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
-@{ ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout3.cshtml"; }
-<div style="display:flex;justify-content:center;align-items:center;width:100vw;height:100%;flex-direction:column; margin: 20px 0 20px 0;">
-    <h1>Thông tin người dùng</h1>
-    <table id="customers">
+@{ 
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout3.cshtml"; 
+}
+@section Scripts{
+<script>setTimeout(function ()
+    {
+        $('#msgAlert').fadeOut('slow');
+    }, 2000);
+</script>
+}
+    <div style="display:flex;justify-content:center;align-items:center;width:100vw;height:100%;flex-direction:column; margin: 20px 0 20px 0;">
+    <div style="display:flex; justify-content:space-between;align-items:center">
+        @if (ViewBag.Success != null)
+        {
+            <div style="left:385px;" id="msgAlert" class="alert alert-success" role="alert">
+                @ViewBag.Success
+            </div>
+        }
+        @if (TempData["failResult"] != null)
+        {
+            <div style="left:385px;" id="msgAlert" class="alert alert-success" role="alert">
+                @TempData["failResult"]
+            </div>
+        }
+        <h1>Thông tin người dùng</h1>
+    </div>
+    <table style="font-size:15px" id="customers">
         <tr>
             <th>Thuộc tính</th>
             <th>Mô tả</th>
-
         </tr>
         <tr>
-            <td> @Html.DisplayNameFor(model => model.Id)</td>
-            <td>@Html.DisplayFor(model => model.Id)</td>
+            <td>Avatar</td>
+            <td><img src="@Configuration["BaseAddress"]/user-content/@Model.AvatarFilePath" style="width: 100px; height: 100px"; alt="@Model.LastName"></td>
 
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.FirstName)</td>
             <td>@Html.DisplayFor(model => model.FirstName)</td>
-
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.LastName)</td>
@@ -34,15 +55,16 @@
             <td>@Html.DisplayNameFor(model => model.Email)</td>
             @if (Model.EmailConfirmed == true)
             {
-        <td>
-            @Html.DisplayFor(model => model.Email)   <i class="fas fa-check tickCheck"></i>
-        </td>
- }
-                    else
-                    {
-        <td>
-            @Html.DisplayFor(model => model.Email) <i class="fas fa-times iconTimes"></i> @Html.ActionLink("Xác thực", "SendConfirmEmail", "User", new { Model.Email })
-        </td>}
+                <td>
+                    @Html.DisplayFor(model => model.Email)   <i class="fas fa-check tickCheck"></i>
+                </td> 
+            }
+            else
+            {
+                <td>
+                    @Html.DisplayFor(model => model.Email) <i class="fas fa-times iconTimes"></i> @Html.ActionLink("Xác thực", "SendConfirmEmail", "User", new { Model.Email })
+                </td>
+            }
 
         </tr>
         <tr>
@@ -56,16 +78,16 @@
         <div>
             <a class="btn success" asp-controller="Product" asp-action="MyListProducts">Sản phẩm của tôi</a>
         </div>
-        <form asp-action="Edit" method="get" style="margin-left:10px;">
+        <form asp-action="Edit" method="get" asp-controller="User" style="margin-left:10px;">
             <input asp-for="Id" type="hidden" input />
             <input type="submit" value="Chỉnh sửa" class="btn danger" />
         </form>
         <form asp-controller="User" asp-action="EditAvatar" method="get" style="margin-left: 10px;">
             <input asp-for="Id" type="hidden" input />
-            <input type="submit" value="EditAvatar" class="btn info "/>
+            <input type="submit" value="EditAvatar" class="btn info " />
         </form>
     </div>
-   
+
 </div>
 
 
@@ -124,6 +146,7 @@
         text-transform: uppercase;
         color: #4CAF50;
     }
+
     .danger {
         border-color: #f44336;
         color: red;

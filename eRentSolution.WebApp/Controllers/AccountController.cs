@@ -127,6 +127,7 @@ namespace eRentSolution.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, "");
             Response.Cookies.Delete(SystemConstant.AppSettings.TokenWebApp);
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("index", "home");

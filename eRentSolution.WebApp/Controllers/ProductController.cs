@@ -120,6 +120,10 @@ namespace eRentSolution.WebApp.Controllers
         public async Task<IActionResult> MyProductDetail(int id)
         {
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (TempData["result"] != null)
+            {
+                ViewBag.success = TempData["result"];
+            }
             var isMyProduct = await _productApiClient.IsMyProduct(id, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
             if (!isMyProduct.IsSuccessed)
             {

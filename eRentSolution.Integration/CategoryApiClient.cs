@@ -131,7 +131,7 @@ namespace eRentSolution.Integration
             }
             return JsonConvert.DeserializeObject<ApiErrorResult<string>>(body);
         }
-        public async Task<ApiResult<string>> DeteleCategory(SlideStatusRequest request, string tokenName)
+        public async Task<ApiResult<string>> DeteleCategory(CategoryStatusRequest request, string tokenName)
         {
             var result = await DeleteAsync<string>($"/api/categories/deleteCategory/{request.Id}", tokenName);
             return result;

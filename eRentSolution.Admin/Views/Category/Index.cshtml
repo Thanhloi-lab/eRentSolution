@@ -17,7 +17,7 @@
     <h1 class="mt-4">Danh mục sản phẩm</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Danh sách người dùng</li>
+        <li class="breadcrumb-item active">Danh sách danh mục</li>
     </ol>
     <div class="card mb-12">
         <div class=" card-header">
@@ -46,12 +46,14 @@
                 {
                     <div id="msgAlert" class="alert alert-success" role="alert">
                         @ViewBag.Success
-                    </div>}
+                    </div>
+                }
                 @if (TempData["failResult"] != null)
                 {
                     <div id="failAlert" class="alert alert-success" role="alert">
                         @TempData["failResult"]
-                    </div>}
+                    </div>
+                }
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered">

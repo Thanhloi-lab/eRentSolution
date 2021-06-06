@@ -1,5 +1,5 @@
 ﻿@model eRentSolution.ViewModels.Catalog.Categories.CategoryViewModel
-
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{ ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 
@@ -68,12 +68,10 @@
                                 @Html.DisplayNameFor(model => model.Image)
                             </td>
                             <td>
-                                @Html.DisplayFor(model => model.Image)
+                                <img src="@Configuration["BaseAddress"]/user-content/@Model.Image" alt="N/A" style="width: 70px; height: 70px; object-fit: cover;">
                             </td>
                         </tr>
                     </tbody>
-
-
                 </table>
             </div>
         </div>

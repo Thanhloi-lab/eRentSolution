@@ -36,9 +36,13 @@
     <None Include="Views\Shared\_Layout3.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="Views\User\ChangePassword.cshtml" />
+    <None Include="Views\User\ConfirmEmail.cshtml" />
     <None Include="Views\User\Details.cshtml" />
     <None Include="Views\User\Edit.cshtml" />
     <None Include="Views\User\EditAvatar.cshtml" />
+    <None Include="Views\User\ForgotPassword.cshtml" />
+    <None Include="Views\User\ResetPasswordByEmail.cshtml" />
+    <None Include="Views\User\SendConfirmEmail.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
     <None Include="wwwroot\js\details.js" />

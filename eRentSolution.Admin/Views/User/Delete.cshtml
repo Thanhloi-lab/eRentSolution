@@ -1,5 +1,5 @@
 ﻿@model eRentSolution.ViewModels.System.Users.UserDeleteRequest
-
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{
     ViewData["Title"] = "Xóa người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,17 +18,83 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="card-body">
             <div class="col-md-12">
-                <dl class="row">
-                    <dt class="col-sm-4">
-                        @Html.DisplayNameFor(model => model.Id)
-                    </dt>
-                    <dd class="col-sm-8">
-                        @Html.DisplayFor(model => model.Id)
-                    </dd>
-                </dl>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Thuộc tính
+                            </th>
+                            <th>
+                                Mô tả
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Avatar)
+
+                            </td>
+                            <td>
+                                <a href="/User/EditAvatar/@Model.Id"><img src="@Configuration["BaseAddress"]/user-content/@Model.Avatar" alt="N/A" style="width: 100px; height: 100px; object-fit: cover;"></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.UserName)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.FirstName)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.LastName)
+                            </td>
+                        </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.PhoneNumber)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Email)
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
                 <form asp-action="Delete">
                     <input asp-for="Id" type="hidden" input />
-                    <input type="submit" value="Delete" class="btn btn-danger" />
+                    <input type="submit" value="Xóa" class="btn btn-danger" />
                 </form>
             </div>
         </div>

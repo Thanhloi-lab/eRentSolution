@@ -1,5 +1,5 @@
 ﻿@model eRentSolution.ViewModels.Catalog.Categories.CategoryImageUpdateRequest
-
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{
     ViewData["Title"] = "EditImage";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,34 +18,59 @@
         </div>
 
         <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Thuộc tính
+                            </th>
+                            <th>
+                                Mô tả
+                        </tr>
+                    </thead>
+                    <tbody>
 
-            <div class="col-md-12">
-                <dl class="row">
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.CategoryId)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.CategoryId)
-                    </dd>
-                </dl>
-            </div>
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.CategoryOldImagePath)
 
-            <div class="col-md-4">
-                <form asp-action="EditImage" enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="ImageFile" class="control-label"></label>
-                        <input asp-for="ImageFile" type="file" class="form-control" />
-                        <span asp-validation-for="ImageFile" class="text-danger"></span>
-                    </div>
+                            </td>
+                            <td>
+                                <img src="@Configuration["BaseAddress"]/user-content/@Model.CategoryOldImagePath" alt="N/A" style="width: 70px; height: 70px; object-fit: cover;">
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
 
-                    <div class="form-group">
-                        <input asp-for="CategoryId" type="hidden" input />
-                        <input type="submit" value="Lưu lại" class="btn btn-primary" />
-                    </div>
-                </form>
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.CategoryName)
 
-            </div>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.CategoryName)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="col-md-4">
+                    <form asp-action="EditImage" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label"></label>
+                            <input asp-for="ImageFile" type="file" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="CategoryId" type="hidden" input />
+                            <input type="submit" value="Lưu lại" class="btn btn-primary" />
+                        </div>
+                    </form>
+
+                </div>
         </div>
 
     </div>

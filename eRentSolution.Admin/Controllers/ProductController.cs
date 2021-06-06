@@ -80,7 +80,7 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenWebApp);
+            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
             if(!result.IsSuccessed)
             {
                 TempData["failResult"] = result.Message;
@@ -89,11 +89,19 @@ namespace eRentSolution.AdminApp.Controllers
             return View(result.ResultObject);
         }
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View(new ProductStatusRequest() {
-                Id = id
-            });
+            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
+            {
+                return View(new ProductStatusRequest()
+                {
+                    Id = id,
+                    ProductImagePath=result.ResultObject.ThumbnailImage,
+                    ProductName = result.ResultObject.Name
+                });
+            }
+            return RedirectToAction("index");
         }
         [HttpPost]
         public async Task<IActionResult> Delete(ProductStatusRequest request)
@@ -111,12 +119,19 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request.Id);
         }
         [HttpGet]
-        public IActionResult InActiveProduct(int id)
+        public async Task<IActionResult> InActiveProduct(int id)
         {
-            return View(new ProductStatusRequest()
+            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
             {
-                Id = id
-            });
+                return View(new ProductStatusRequest()
+                {
+                    Id = id,
+                    ProductImagePath = result.ResultObject.ThumbnailImage,
+                    ProductName = result.ResultObject.Name
+                });
+            }
+            return RedirectToAction("index");
         }
         [HttpPost]
         public async Task<IActionResult> InActiveProduct(ProductStatusRequest request)
@@ -134,12 +149,19 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request.Id);
         }
         [HttpGet]
-        public IActionResult ActiveProduct(int id)
+        public async Task<IActionResult> ActiveProduct(int id)
         {
-            return View(new ProductStatusRequest()
+            var result = await _productApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
             {
-                Id = id
-            });
+                return View(new ProductStatusRequest()
+                {
+                    Id = id,
+                    ProductImagePath = result.ResultObject.ThumbnailImage,
+                    ProductName = result.ResultObject.Name
+                });
+            }
+            return RedirectToAction("index");
         }
         [HttpPost]
         public async Task<IActionResult> ActiveProduct(ProductStatusRequest request)
@@ -156,69 +178,70 @@ namespace eRentSolution.AdminApp.Controllers
             ModelState.AddModelError("", result.Message);
             return View(request.Id);
         }
-        [HttpGet]
-        public IActionResult CreateSlide(int id)
-        {
-            return View(new SlideCreateRequest()
-            {
-                ProductId = id
-            });
-        }
-        [HttpPost]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> CreateSlide([FromForm] SlideCreateRequest request)
-        {
-            if (!ModelState.IsValid)
-                return View();
+        //[HttpGet]
+        //public IActionResult CreateSlide(int id)
+        //{
+        //    return View(new SlideCreateRequest()
+        //    {
+        //        ProductId = id
+        //    });
+        //}
+        //[HttpPost]
+        //[Consumes("multipart/form-data")]
+        //public async Task<IActionResult> CreateSlide([FromForm] SlideCreateRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return View();
 
-            var result = await _slideApiClient.CreateSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
-            if (result.IsSuccessed)
-            {
-                TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index");
-            }
+        //    var result = await _slideApiClient.CreateSlide(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+        //    if (result.IsSuccessed)
+        //    {
+        //        TempData["result"] = result.ResultObject;
+        //        return RedirectToAction("Index");
+        //    }
 
-            ModelState.AddModelError("", result.Message);
-            return View(request);
-        }
-        [HttpPost]
-        public async Task<IActionResult> CreateFeature(int id)
-        {
-            if (!ModelState.IsValid)
-                return View();
-            var request = new FeatureProductRequest()
-            {
-                ProductId = id
-            };
-            var result = await _productApiClient.CreateFeature(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
-            if (result.IsSuccessed)
-            {
-                TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index");
-            }
+        //    ModelState.AddModelError("", result.Message);
+        //    return View(request);
+        //}
 
-            ModelState.AddModelError("", result.Message);
-            return RedirectToAction("Details");
-        }
-        [HttpPost]
-        public async Task<IActionResult> DeleteFeature(int id)
-        {
-            if (!ModelState.IsValid)
-                return View();
-            var request = new FeatureProductRequest()
-            {
-                ProductId = id
-            };
-            var result = await _productApiClient.DeleteFeature(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
-            if (result.IsSuccessed)
-            {
-                TempData["result"] = result.ResultObject;
-                return RedirectToAction("Index");
-            }
+        //[HttpPost]
+        //public async Task<IActionResult> CreateFeature(int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return View();
+        //    var request = new FeatureProductRequest()
+        //    {
+        //        ProductId = id
+        //    };
+        //    var result = await _productApiClient.CreateFeature(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+        //    if (result.IsSuccessed)
+        //    {
+        //        TempData["result"] = result.ResultObject;
+        //        return RedirectToAction("Index");
+        //    }
 
-            ModelState.AddModelError("", result.Message);
-            return RedirectToAction("Details");
-        }
+        //    ModelState.AddModelError("", result.Message);
+        //    return RedirectToAction("Details");
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> DeleteFeature(int id)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return View();
+        //    var request = new FeatureProductRequest()
+        //    {
+        //        ProductId = id
+        //    };
+        //    var result = await _productApiClient.DeleteFeature(request, SystemConstant.AppSettings.TokenAdmin, Guid.Parse(userId));
+        //    if (result.IsSuccessed)
+        //    {
+        //        TempData["result"] = result.ResultObject;
+        //        return RedirectToAction("Index");
+        //    }
+
+        //    ModelState.AddModelError("", result.Message);
+        //    return RedirectToAction("Details");
+        //}
 
         [HttpGet]
         public async Task<IActionResult> UserProduct(Guid userId ,string keyword, string address, int? categoryId, int? minPrice, int? maxPrice, int pageIndex = 1, int pageSize = 10)
@@ -251,7 +274,7 @@ namespace eRentSolution.AdminApp.Controllers
             ViewBag.UserName = user.ResultObject.UserName;
             ViewBag.UserId = user.ResultObject.Id;
 
-            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenWebApp);
+            var categories = await _categoryApiClient.GetAll(SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Categories = categories.ResultObject.Select(x => new SelectListItem()
             {
                 Text = x.Name,

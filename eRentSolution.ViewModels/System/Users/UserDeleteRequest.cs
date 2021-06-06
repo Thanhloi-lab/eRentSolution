@@ -19,5 +19,7 @@ namespace eRentSolution.ViewModels.System.Users
         public string Avatar { get; set; }
         [Display(Name = "Email")]
         public string Email { get; set; }
+        [Display(Name = "Sđt")]
+        public string PhoneNumber { get; set; }
     }
 }

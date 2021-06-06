@@ -15,7 +15,7 @@ namespace eRentSolution.Integration
         Task<ApiResult<List<CategoryViewModel>>> GetAllCategoryByProductId(int productId, string tokenName);
         Task<ApiResult<string>> UpdateImage(CategoryImageUpdateRequest request, string tokenName);
         Task<ApiResult<string>> CreateCategory(CategoryCreateRequest request, string tokenName);
-        Task<ApiResult<string>> DeteleCategory(SlideStatusRequest request, string tokenName);
+        Task<ApiResult<string>> DeteleCategory(CategoryStatusRequest request, string tokenName);
         Task<ApiResult<PagedResult<CategoryViewModel>>> GetPagings(GetCategoryPagingRequest request, string tokenName);
         Task<ApiResult<string>> UpdateCategory(CategoryUpdateRequest request, string tokenName);
     }

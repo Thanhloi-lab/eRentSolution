@@ -113,12 +113,18 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request);
         }
         [HttpGet]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            return View(new SlideStatusRequest()
+            var result = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
             {
-                Id = id,
-            });
+                return View(new SlideStatusRequest()
+                {
+                    Id = id,
+                    SlideImagePath = result.ResultObject.FilePath
+                });
+            }
+            return RedirectToAction("index");
         }
         [HttpPost]
         public async Task<IActionResult> Delete(SlideStatusRequest request)
@@ -136,12 +142,18 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request.Id);
         }
         [HttpGet]
-        public IActionResult Hide(int id)
+        public async Task<IActionResult> Hide(int id)
         {
-            return View(new SlideStatusRequest()
+            var result = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
             {
-                Id = id,
-            });
+                return View(new SlideStatusRequest()
+                {
+                    Id = id,
+                    SlideImagePath = result.ResultObject.FilePath
+                });
+            }
+            return RedirectToAction("index");
         }
         [HttpPost]
         public async Task<IActionResult> Hide(SlideStatusRequest request)
@@ -159,12 +171,18 @@ namespace eRentSolution.AdminApp.Controllers
             return View(request.Id);
         }
         [HttpGet]
-        public IActionResult Show(int id)
+        public async Task<IActionResult> Show(int id)
         {
-            return View(new SlideStatusRequest()
+            var result = await _slideApiClient.GetById(id, SystemConstant.AppSettings.TokenAdmin);
+            if (result.IsSuccessed)
             {
-                Id = id,
-            });
+                return View(new SlideStatusRequest()
+                {
+                    Id = id,
+                    SlideImagePath = result.ResultObject.FilePath
+                });
+            }
+            return RedirectToAction("index");
         }
         [HttpPost]
         public async Task<IActionResult> Show(SlideStatusRequest request)

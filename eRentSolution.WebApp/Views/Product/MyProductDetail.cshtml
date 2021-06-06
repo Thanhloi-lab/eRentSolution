@@ -3,7 +3,13 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{ ViewData["Title"] = "MyProductDetail";
     Layout = "~/Views/Shared/_Layout3.cshtml"; }
+@section Scripts{
+    <script>
+    setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);</script>
 
+}
 <style>
     th {
         text-align: center !important;
@@ -16,9 +22,21 @@
     }
 </style>
 <div style="display:flex;justify-content:flex-start;align-items:center;width:100vw;height:100%;flex-direction:column; margin: 20px 0 20px 0;">
-    <h1>Thông tin phòng</h1>
+    <div style="display:flex; justify-content:space-between;align-items:center">
+        @if (ViewBag.Success != null)
+        {
+    <div style="left:385px;" id="msgAlert" class="alert alert-success" role="alert">
+        @ViewBag.Success
+    </div>}
+        @if (TempData["failResult"] != null)
+        {
+    <div style="left:385px;" id="msgAlert" class="alert alert-success" role="alert">
+        @TempData["failResult"]
+    </div>}
+        <h1>Thông tin phòng</h1>
+    </div>
     <table id="customers">
-        <tr >
+        <tr>
             <th style="width:20%">Thuộc tính</th>
             <th>Mô tả</th>
 
@@ -75,10 +93,12 @@
             <td>@Html.DisplayNameFor(model => model.IsFeatured)</td>
             @if (Model.IsFeatured == eRentSolution.Data.Enums.Status.Active)
             {
-<td>Có</td> }
-            else
-            {
-<td>Không</td>            }
+<td>Có</td>
+ }
+else
+{
+<td>Không</td>
+}
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(model => model.Status)</td>
@@ -149,32 +169,29 @@
         @(item.Width * item.Length)
     </td>
     <td>
-    
+
         <div style="display:flex; width:311px;height:113px; flex-wrap:wrap; ">
-            @{
-                var i = 0;
-                foreach (var image in item.Images)
-                {
-                    <div class="@i" onclick="myFunction(@image.Id)"><img class="imgbox stt-@image.Id" style="width: 50px; height: 50px; object-fit: cover;" src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="" class="box-item__img"></div>
-                    
+            @{ var i = 0;
+                                foreach (var image in item.Images)
+                                {
+                <div class="@i" onclick="myFunction(@image.Id)"><img class="imgbox stt-@image.Id" style="width: 50px; height: 50px; object-fit: cover;" src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="" class="box-item__img"></div>
 
 
-                    <div style="display:flex; flex-direction:column;">
-                        <form asp-action="EditImage" method="get" style="padding: 0 20px 0 20px;">
-                            <input asp-for="@image.Id" name="imageId" type="hidden" input />
-                            <input asp-for="@Model.Id" name="productId" type="hidden" input />
-                            <input type="submit" value="Edit" class="btn warning small" />
-                        </form>
 
-                        <form style="display:none;" asp-action="DeleteImage" method="get" style="padding: 0 20px 0 20px;">
-                            <input asp-for="@image.Id" name="imageId" type="hidden" input />
-                            <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-                            <input class="delInput delInput-@image.Id" style="width:56px;" type="submit" value="Del" class="btn danger small" />
-                        </form>
-                    </div>
-                    i++;
-                }
-            }
+                                    <div style="display:flex; flex-direction:column;">
+                                        <form asp-action="EditImage" method="get" style="padding: 0 20px 0 20px;">
+                                            <input asp-for="@image.Id" name="imageId" type="hidden" input />
+                                            <input asp-for="@Model.Id" name="productId" type="hidden" input />
+                                            <input type="submit" value="Edit" class="btn warning small" />
+                                        </form>
+
+                                        <form style="display:none;" asp-action="DeleteImage" method="get" style="padding: 0 20px 0 20px;">
+                                            <input asp-for="@image.Id" name="imageId" type="hidden" input />
+                                            <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+                                            <input class="delInput delInput-@image.Id" style="width:56px;" type="submit" value="Del" class="btn danger small" />
+                                        </form>
+                                    </div> i++;
+                                                    } }
 
 
 
@@ -188,8 +205,8 @@
                 <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
                 <input class="btn info" type="submit" value="Add Img" />
             </form>
-            <form >
-               
+            <form>
+
                 <input onclick="myFunction1()" class="btn danger" type="button" value="Delete Img" />
             </form>
             <form asp-action="EditDetail" method="get">
@@ -206,7 +223,8 @@
         </div>
 
     </td>
-</tr>}
+</tr>
+}
 
     </table>
     <div style="display:flex; justify-content:center; align-items:center; margin-top: 20px;">
@@ -235,23 +253,23 @@
         if (document.querySelector(".border-black")) {
             document.querySelector(".border-black").classList.remove("border-black");
         }
-        
+
         document.querySelector(`.stt-${n}`).classList.add("border-black")
 
         numberArr.pop();
         numberArr.push(n);
         console.log(numberArr)
-       
+
     }
     var delInput = document.querySelectorAll(".delInput")
     function myFunction1() {
-     
+
         var flag = false;
         if (numberArr.length == 0) flag = true
         for (var i = 0; i < delInput.length; i++) {
-           
+
             if (delInput[i].className.includes(numberArr[0])) {
-              
+
                 delInput[i].form.submit();
             }
         }
@@ -259,9 +277,9 @@
             alert("Bạn chưa chọn ảnh")
         }
     }
-  
-    
-    
+
+
+
 </script>
 <style>
     #customers {
@@ -368,12 +386,12 @@
 
 
 @*<form asp-action="EditImage" method="get" style="padding: 0 20px 0 20px;">
-    <input asp-for="@image.Id" name="imageId" type="hidden" input />
-    <input asp-for="@Model.Id" name="productId" type="hidden" input />
-    <input type="submit" value="Edit" class="btn warning small" />
-</form>
-<form asp-action="DeleteImage" method="get" style="padding: 0 20px 0 20px;">
-    <input asp-for="@image.Id" name="imageId" type="hidden" input />
-    <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
-    <input style="width:56px;" type="submit" value="Del" class="btn danger small" />
-</form>*@
+        <input asp-for="@image.Id" name="imageId" type="hidden" input />
+        <input asp-for="@Model.Id" name="productId" type="hidden" input />
+        <input type="submit" value="Edit" class="btn warning small" />
+    </form>
+    <form asp-action="DeleteImage" method="get" style="padding: 0 20px 0 20px;">
+        <input asp-for="@image.Id" name="imageId" type="hidden" input />
+        <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
+        <input style="width:56px;" type="submit" value="Del" class="btn danger small" />
+    </form>*@

@@ -50,26 +50,24 @@
                         <div>
                             @if (Model.contacts.Count != 0)
                             {
-                @foreach (var item in Model.contacts)
-                {
-                <div class="contact-box">
-                    <div class="contact-name">
-                        <i class="fas fa-file-signature icon"></i> <span>@item.Name</span>
-                    </div>
-                    <div class="contact-email">
-                        <i class="far fa-envelope icon"></i> <span>@item.Email</span>
-                    </div>
-                    <div class="contact-phone">
-                        <i class="fas fa-phone-volume icon"></i> <span>@item.PhoneNumber</span>
-                    </div>
-                    <div class="contact-text">
-                        <i class="far fa-comments icon"></i> <span>@item.Message</span>
-                    </div>
+                                @foreach (var item in Model.contacts)
+                                {
+                                <div class="contact-box">
+                                    <div class="contact-name">
+                                        <i class="fas fa-file-signature icon"></i> <span>@item.Name</span>
+                                    </div>
+                                    <div class="contact-email">
+                                        <i class="far fa-envelope icon"></i> <span>@item.Email</span>
+                                    </div>
+                                    <div class="contact-phone">
+                                        <i class="fas fa-phone-volume icon"></i> <span>@item.PhoneNumber</span>
+                                    </div>
+                                    <div class="contact-text">
+                                        <i class="far fa-comments icon"></i> <span>@item.Message</span>
+                                    </div>
 
-                </div>}}
+                                </div>}}
                         </div>
-
-
                     </form>
                 </div>
             </div>

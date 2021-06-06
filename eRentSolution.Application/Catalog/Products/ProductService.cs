@@ -266,7 +266,10 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
-            product.StatusId = (int)(object)Status.Active;
+            if(product.StatusId == (int)(object)Status.InActive)
+                product.StatusId = (int)(object)Status.Private;
+            else
+                product.StatusId = (int)(object)Status.Active;
             _context.Products.Update(product);
 
             int result;

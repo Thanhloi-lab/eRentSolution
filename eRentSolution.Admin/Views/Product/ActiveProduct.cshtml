@@ -1,5 +1,5 @@
 ﻿@model eRentSolution.ViewModels.Catalog.Products.ProductStatusRequest
-
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{
     ViewData["Title"] = "Xóa sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,14 +18,53 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="card-body">
             <div class="col-md-12">
-                <dl class="row">
-                    <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Id)
-                    </dt>
-                    <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Id)
-                    </dd>
-                </dl>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>
+                                Thuộc tính
+                            </th>
+                            <th>
+                                Mô tả
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Id)
+
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Id)
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.ProductImagePath)
+
+                            </td>
+                            <td>
+                                <img src="@Configuration["BaseAddress"]/user-content/@Model.ProductImagePath" alt="N/A" style="width: 70px; height: 70px; object-fit: cover;">
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.ProductName)
+
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.ProductName)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 <form asp-action="ActiveProduct">
                     <input asp-for="Id" type="hidden" input />
                     <input type="submit" value="Show" class="btn btn-danger" />

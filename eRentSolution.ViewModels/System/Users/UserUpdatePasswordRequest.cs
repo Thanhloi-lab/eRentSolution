@@ -9,6 +9,8 @@ namespace eRentSolution.ViewModels.System.Users
     {
         [Display(Name = "Mã người dùng")]
         public Guid Id { get; set; }
+        [Display(Name = "Tên người dùng")]
+        public string FirstName { get; set; }
         [Display(Name = "Mật khẩu hiện tại")]
         public string CurrentPassword { get; set; }
         [Display(Name = "Mật khẩu mới")]

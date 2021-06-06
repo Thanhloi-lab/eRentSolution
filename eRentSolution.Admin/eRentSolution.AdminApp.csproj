@@ -24,15 +24,8 @@
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
     <None Include="Views\Login\Index.cshtml" />
-    <None Include="Views\Product\AddDetail.cshtml" />
-    <None Include="Views\Product\AddImage.cshtml" />
-    <None Include="Views\Product\Create.cshtml" />
     <None Include="Views\Product\CreateSlide.cshtml" />
-    <None Include="Views\Product\Delete.cshtml" />
     <None Include="Views\Product\Details.cshtml" />
-    <None Include="Views\Product\EditDetail.cshtml" />
-    <None Include="Views\Product\EditImage.cshtml" />
-    <None Include="Views\Product\FeaturedProduct.cshtml" />
     <None Include="Views\Product\InActiveProduct.cshtml" />
     <None Include="Views\Product\UserProduct.cshtml" />
     <None Include="Views\Product\Index.cshtml" />
