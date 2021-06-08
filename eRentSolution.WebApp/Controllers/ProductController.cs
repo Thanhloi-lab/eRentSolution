@@ -372,7 +372,7 @@ namespace eRentSolution.WebApp.Controllers
             var products = await _productApiClient.GetPagings(new GetProductPagingRequest()
             {
                 CategoryId = categoryId,
-                PageIndex = pageSize,
+                PageIndex = pageIndex,
                 PageSize = pageSize,
                 Address = address,
                 IsGuess = true,

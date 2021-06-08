@@ -11,8 +11,8 @@ namespace eRentSolution.ViewModels.Catalog.Categories
         {
             RuleFor(x => x.CategoryName).NotEmpty().WithMessage("Vui lòng nhập tên danh mục.")
                 .MaximumLength(200).WithMessage("Tên danh mục không vượt quá 200 kí tự.");
-            RuleFor(x => x.ImageFile.FileName).NotEmpty().WithMessage("Vui lòng thêm ảnh.")
-                .MaximumLength(200).WithMessage("Đường dẫn ảnh không vượt quá 200 kí tự.");
+
+            RuleFor(x => x.ImageFile).NotNull().WithMessage("Vui lòng chọn ảnh.");
             //RuleFor(x => x).Custom((request, context) => {
             //    if (request.NewPassword != request.ConfirmPassword)
             //    {

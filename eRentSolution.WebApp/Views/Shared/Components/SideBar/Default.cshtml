@@ -8,11 +8,9 @@
         {
             var parent = parents.ElementAt(i);
             var childrens = Model.Where(x => x.ParentId == parent.Id);
-           
-            
             {
                 <div class="category-item">
-                    <a href="/Categories/@parent.Id">
+                    <a href="/product/index?categoryid=@parent.Id">
                         <img style=" border-radius: 27px;" src=@Configuration["BaseAddress"]/user-content/@parent.Image alt=@parent.Name>
                         <span>@parent.Name</span>
                     </a>

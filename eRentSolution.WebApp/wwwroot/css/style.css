@@ -177,7 +177,8 @@ body{
 }
 /*=================SLIDER BANNER===========*/
 .box-slider{
-    margin: 0 266px 0 266px;
+    margin: auto;
+    width:987.2px;
     background-color: white;
     height: 261px;
     
@@ -199,9 +200,10 @@ body{
     font-weight: 500;
     padding: 20px 20px 0 20px;
 }
-.box-category{
+.box-category {
     background-color: white;
-    margin: 0 266px 0 266px;
+    margin: auto;
+    width: 987.2px;
 }
 .category-item a img{
     width: 84px;
@@ -253,7 +255,8 @@ body{
 }
 .box-product{
     background-color: white;
-    margin: 10px 266px 0 266px;
+    margin: 10px auto 0 auto;
+    width:987.2px;
 }
 .box-item__img{
     width: 166px;
@@ -1073,7 +1076,8 @@ a.text-danger:hover, a.text-danger:focus {
 }
 .box-select {
     background-color: white;
-    margin: 20px 266px 0 266px;
+    margin: 20px auto 0 auto;
+    width:987.2px;
 }
 
 .box-filter {

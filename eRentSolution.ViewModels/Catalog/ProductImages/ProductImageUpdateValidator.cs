@@ -9,8 +9,7 @@ namespace eRentSolution.ViewModels.Catalog.ProductImages
     {
         public ProductImageUpdateValidator()
         {
-            RuleFor(x => x.ImageFile.FileName).NotEmpty().WithMessage("Vui lòng chọn ảnh.")
-                .MaximumLength(200).WithMessage("Đường dẫn ảnh không vượt quá 200 kí tự.");
+            RuleFor(x => x.ImageFile).NotNull().WithMessage("Vui lòng chọn ảnh.");
         }
     }
 }

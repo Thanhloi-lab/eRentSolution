@@ -177,12 +177,12 @@
                     @{ var i = 0;
                         foreach (var image in item.Images)
                         {
-                            <div class="@i" onclick="myFunction(@image.Id)"><img class="imgbox stt-@image.Id" style="width: 50px; height: 50px; object-fit: cover;" src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="" class="box-item__img"></div>
+                            <div class="@i" onclick="myFunction(@image.Id)"><img class="imgbox stt-@image.Id" style="width: 50px; height: 50px; object-fit: cover;margin-left:8px;" src="@Configuration["BaseAddress"]/user-content/@image.ImagePath" alt="" class="box-item__img"></div>
                             <div style="display:flex; flex-direction:column;">
-                                <form asp-action="EditImage" method="get" style="padding: 0 20px 0 20px;">
+                                <form asp-action="EditImage" method="get" style="padding: 0 20px 0 20px; display:none;">
                                     <input asp-for="@image.Id" name="imageId" type="hidden" input />
                                     <input asp-for="@Model.Id" name="productId" type="hidden" input />
-                                    <input type="submit" value="Sửa ảnh" class="btn warning small" />
+                                    <input class="editInput editInput-@image.Id" type="submit" value="Sửa ảnh" class="btn warning small" />
                                 </form>
 
                                 <form style="display:none;" asp-action="DeleteImage" method="get" style="padding: 0 20px 0 20px;">
@@ -206,6 +206,10 @@
                         <form>
 
                             <input onclick="myFunction1()" class="btn danger" type="button" value="Xóa ảnh" />
+                        </form>
+                        <form>
+
+                            <input onclick="myFunction2()" class="btn success" type="button" value="Sửa ảnh" />
                         </form>
                         <form asp-action="EditDetail" method="get">
                             <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
@@ -260,6 +264,7 @@
 
     }
     var delInput = document.querySelectorAll(".delInput")
+    var editInput = document.querySelectorAll(".editInput")
     function myFunction1() {
 
         var flag = false;
@@ -271,6 +276,22 @@
                 delInput[i].form.submit();
             }
         }
+        
+        if (flag == true) {
+            alert("Bạn chưa chọn ảnh")
+        }
+    }
+    function myFunction2() {
+        var flag = false;
+        if (numberArr.length == 0) flag = true
+        for (var i = 0; i < editInput.length; i++) {
+
+            if (editInput[i].className.includes(numberArr[0])) {
+
+                editInput[i].form.submit();
+            }
+        }
+
         if (flag == true) {
             alert("Bạn chưa chọn ảnh")
         }
