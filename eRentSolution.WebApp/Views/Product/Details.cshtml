@@ -44,7 +44,7 @@
             <span class="box-description__dtich"> - @(Model.Product.ProductDetailViewModels.ElementAt(0).Width * Model.Product.ProductDetailViewModels.ElementAt(0).Length) m2</span>
             <p class="box-description__address">
                 <img src="https://static.chotot.com/storage/icons/logos/ad-param/location.svg" alt="">
-                <a style="text-decoration:none; font-size:13px; color:blue;" target="_blank" href="https://www.google.com.vn/search?q=@Model.Product.Address">@Model.Product.Address</a>
+                <a style="text-decoration:none; font-size:13px; color:blue;" target="_blank" href="https://www.google.com.vn/maps/place/@Model.Product.Address">@Model.Product.Address</a>
                 @*<span>@Model.Product.Address</span>*@
             </p>
             <p style="word-wrap: break-word; width:500px;  white-space: pre-line;" class="box-description__text">

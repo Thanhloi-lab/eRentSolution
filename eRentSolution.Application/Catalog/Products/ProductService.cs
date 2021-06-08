@@ -941,7 +941,7 @@ namespace eRentSolution.Application.Catalog.Products
                 StatusId = product.StatusId,
                 Categories = categories,
                 IsFeatured = product.IsFeatured,
-                Address = product.Address,
+                Address = product.Address.Replace("-", ", "),
                 Status = status.StatusName
             };
             var productImages = await GetListImage(product.Id);

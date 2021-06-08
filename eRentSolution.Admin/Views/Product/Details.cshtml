@@ -54,6 +54,16 @@
                         </tr>
                     </tbody>
                     <tbody>
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Address)
+                            </td>
+                            <td>
+                                <a target="_blank" href="https://www.google.com.vn/maps/place/@Html.DisplayFor(model => model.Address)">@Html.DisplayFor(model => model.Address)</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody>
 
                         <tr>
                             <td>
@@ -71,26 +81,22 @@
                             </td>
                             @if (Model.Categories != null)
                             {
-                                <td>
-                                    @for (int i = 0; i < Model.Categories.Count; i++)
-                                    {
-                                        @Html.DisplayFor(model => Model.Categories[i])
-                                        <br />
-                                    }
-                                </td>
-                                if (Model.Categories.Count == 0)
+                <td>
+                    @for (int i = 0; i < Model.Categories.Count; i++)
+                    {
+                @Html.DisplayFor(model => Model.Categories[i])
+                                    <br />}
+                </td> if (Model.Categories.Count == 0)
                                 {
-                                    <td>
-                                        N/A
-                                    </td>
-                                }
+                <td>
+                    N/A
+                </td> }
                             }
                             else
                             {
-                                <td>
-                                    N/A
-                                </td>
-                            }
+                <td>
+                    N/A
+                </td>}
                         </tr>
                     </tbody>
                     <tbody>
