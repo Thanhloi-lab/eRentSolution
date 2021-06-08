@@ -248,7 +248,7 @@ namespace eRentSolution.WebApp.Controllers
                 ModelState.AddModelError("", "Thông tin không hợp lệ");
                 return View(request);
             }
-
+            
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var result = await _productApiClient.CreateProduct(request, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp); 
             if (result.IsSuccessed)

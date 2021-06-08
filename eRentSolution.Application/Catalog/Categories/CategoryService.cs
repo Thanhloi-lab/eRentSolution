@@ -175,6 +175,17 @@ namespace eRentSolution.Application.Catalog.Categories
             var category = await _context.Categories.FindAsync(request.CategoryId);
             if(category==null)
                 return new ApiErrorResult<string>("Danh mục không tồn tại");
+
+            var query = from c in _context.Categories
+                        join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
+                        where c.Id == request.CategoryId
+                        select new { c };
+
+            if (query.Count() > 0)
+            {
+                return new ApiErrorResult<string>("Không thể sửa danh mục đã có sản phẩm");
+            }
+
             category.Name = request.CategoryName;
 
             int result;

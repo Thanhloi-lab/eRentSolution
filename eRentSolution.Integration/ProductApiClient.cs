@@ -162,7 +162,9 @@ namespace eRentSolution.Integration
                 $"&categoryId={request.CategoryId}" +
                 $"&address={request.Address}" +
                 $"&minprice={request.MinPrice}" +
-                $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}&isStatisticMonth={request.IsStatisticMonth}" , tokenName);
+                $"&maxprice={request.MaxPrice}&isGuess={request.IsGuess}" +
+                $"&isStatisticMonth={request.IsStatisticMonth}" +
+                $"&status={request.Status}" , tokenName);
             return result;
         }
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request, string tokenName)

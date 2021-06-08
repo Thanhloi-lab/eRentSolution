@@ -36,6 +36,7 @@ namespace eRentSolution.Utilities.Constants
         {
             public const string UpdateProduct = "Chỉnh sửa sản phẩm";
             public const string CreateProduct = "Tạo sản phẩm";
+
             public const string HideProduct = "Ẩn sản phẩm";
             public const string ShowProduct = "Chờ duyệt";
             public const string InActiveProduct = "Khóa hoạt động";

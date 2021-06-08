@@ -54,6 +54,10 @@ namespace eRentSolution.Application.Catalog.Products
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             if (action == null)
                 return new ApiErrorResult<int>("Không tìm thấy hành động");
+            if(request.Address.ElementAt(0).Equals("_"))
+            {
+                request.Address.Remove(0);
+            }
             var product = new Product()
             {
                 Name = request.Name,
@@ -771,6 +775,10 @@ namespace eRentSolution.Application.Catalog.Products
                             //&& pd.IsThumbnail == true
                         select new { p, c, pic };//, pd};
 
+            if (request.Status != null && request.Status.HasValue)
+            {
+                 query = query.Where(x => x.p.StatusId == request.Status);
+            }
             if (request.Keyword != null)
             {
                 query = query.Where(x => x.p.Name.Contains(request.Keyword));
@@ -793,12 +801,12 @@ namespace eRentSolution.Application.Catalog.Products
                         query = query.Where(x => x.p.Address.Contains(item));
                     }
                 }
-                
             }
             if(request.IsGuess==true)
             {
                 query = query.Where(x => x.p.StatusId == (int)(object)(Status.Active));
             }
+
             int totalRow = await query.CountAsync();
             List<ProductViewModel> data = new List<ProductViewModel>();
             if (request.IsStatisticMonth!=null)
@@ -888,7 +896,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     if(request.MinPrice!=null && request.MaxPrice!=null)
                     {
-                        if (item.ProductDetailViewModels.ElementAt(i).Price > request.MinPrice && item.ProductDetailViewModels.ElementAt(i).Price < request.MaxPrice)
+                        if (item.ProductDetailViewModels.ElementAt(i).Price >= request.MinPrice && item.ProductDetailViewModels.ElementAt(i).Price <= request.MaxPrice)
                         {
                             products.Add(item);
                             break;
@@ -941,9 +949,11 @@ namespace eRentSolution.Application.Catalog.Products
                 StatusId = product.StatusId,
                 Categories = categories,
                 IsFeatured = product.IsFeatured,
-                Address = product.Address.Replace("-", ", "),
+                Address = product.Address,
                 Status = status.StatusName
             };
+            productViewModel.Address = productViewModel.Address.Replace("/", ", ");
+            productViewModel.Address = productViewModel.Address.Replace("_", ", ");
             var productImages = await GetListImage(product.Id);
             if (!productImages.IsSuccessed)
                 return new ApiErrorResult<ProductViewModel>(productImages.Message);
@@ -1167,9 +1177,9 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoTitle = x.p.SeoTitle,
                 ViewCount = x.p.ViewCount,
                 StatusId = x.p.StatusId,
-                Address = x.p.Address,
+                Address = x.p.Address.Replace("_", ", ").Replace("/", ", "),
             }).Distinct().ToListAsync();
-
+            
             foreach (var item in data)
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
@@ -1188,7 +1198,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     if (request.MinPrice != null && request.MaxPrice != null)
                     {
-                        if (item.ProductDetailViewModels.ElementAt(i).Price > request.MinPrice && item.ProductDetailViewModels.ElementAt(i).Price < request.MaxPrice)
+                        if (item.ProductDetailViewModels.ElementAt(i).Price >= request.MinPrice && item.ProductDetailViewModels.ElementAt(i).Price <= request.MaxPrice)
                         {
                             products.Add(item);
                             break;

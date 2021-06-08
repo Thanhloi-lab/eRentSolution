@@ -32,14 +32,20 @@
                 <div class="col-md-8 col-xs-12">
                     <form asp-action="Index" method="get">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-3">
                                 <input type="text" value="@ViewBag.Keyword" name="keyword" placeholder="Từ khóa...." class="form-control" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                
                                 <select name="categoryId" onchange="" asp-items="@ViewBag.Categories" class="form-control">
                                     <option>--Chọn danh mục--</option>
                                 </select>
 
+                            </div>
+                            <div class="col-md-3">
+                                <select name="status" onchange="" asp-items="@ViewBag.Status" class="form-control">
+                                    <option>--Chọn tình trạng--</option>
+                                </select>
                             </div>
                             <div class="cold-md-3">
                                 <input class="billing_address_2" name="address" type="hidden" value="">

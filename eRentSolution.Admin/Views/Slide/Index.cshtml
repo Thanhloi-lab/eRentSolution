@@ -109,22 +109,22 @@
                             }
                             @if (item.Status == eRentSolution.Data.Enums.Status.Active)
                             {
-                            <td>
-                                @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                @Html.ActionLink("Xem", "Details", new { item.Id }) |
-                                @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
-                                @Html.ActionLink("Ẩn", "Hide", new { item.Id })
-                            </td>
+                                <td>
+                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                    @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { item.Id }) |
+                                    @Html.ActionLink("Ẩn", "Hide", new { item.Id })
+                                </td>
                             }
                             else
                             {
-                            <td>
-                                @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
-                                @Html.ActionLink("Xem", "Details", new { item.Id }) |
-                                @Html.ActionLink("Xóa", "Delete", new { item.Id })|
-                                @Html.ActionLink("Hiện", "Show", new { item.Id })
+                                <td>
+                                    @Html.ActionLink("Sửa", "Edit", new { item.Id }) |
+                                    @Html.ActionLink("Xem", "Details", new { item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { item.Id })|
+                                    @Html.ActionLink("Hiện", "Show", new { item.Id })
 
-                            </td>
+                                </td>
                             }
                         </tr>
                         }

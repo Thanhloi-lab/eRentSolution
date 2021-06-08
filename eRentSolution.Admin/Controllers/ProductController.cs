@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace eRentSolution.AdminApp.Controllers
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
-        public async Task<IActionResult> Index(string keyword, int? categoryId, decimal? minPrice, decimal? maxPrice, string address, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(string keyword, int? categoryId, int? status, decimal? minPrice, decimal? maxPrice, string address, int pageIndex = 1, int pageSize = 10)
         {
             if (address != null)
             {
@@ -57,13 +58,44 @@ namespace eRentSolution.AdminApp.Controllers
                 IsGuess = false,
                 Address = address,
                 MaxPrice = maxPrice,
-                MinPrice = maxPrice
+                MinPrice = maxPrice,
+                Status = status
             };
 
             if (TempData["result"] != null)
             {
                 ViewBag.success = TempData["result"];
             }
+
+            var viewBagStatus = new List<SelectListItem>()
+            {
+                new SelectListItem()
+                {
+                    Text = "Bị khóa",
+                    Value = "1",
+                    Selected = status.HasValue && status.Value.ToString() == "1"
+                },
+                new SelectListItem()
+                {
+                    Text = "Hoạt động",
+                    Value = "2",
+                    Selected = status.HasValue && status.Value.ToString() == "2"
+                },
+                new SelectListItem()
+                {
+                    Text = "Chờ kiểm duyệt",
+                    Value = "3",
+                    Selected = status.HasValue && status.Value.ToString() == "3"
+                },
+                new SelectListItem()
+                {
+                    Text = "Đang ẩn",
+                    Value = "4",
+                    Selected = status.HasValue && status.Value.ToString() == "4"
+                }
+            };
+
+            ViewBag.Status = viewBagStatus;
 
             var products = await _productApiClient.GetPagings(request, SystemConstant.AppSettings.TokenAdmin);
             ViewBag.Keyword = keyword;
