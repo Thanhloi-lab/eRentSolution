@@ -1,8 +1,16 @@
 ﻿@model eRentSolution.ViewModels.System.Users.UserRegisterRequest
 @{ ViewData["Title"] = "Register";
-                Layout = "~/Views/Shared/_Layout2.cshtml"; }
+ Layout = "~/Views/Shared/_Layout2.cshtml";
+}
 
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
 
+}
 
 <div style="margin-bottom:40px;" class="container register">
     <div class="row">
@@ -18,6 +26,18 @@
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                     <form asp-action="Register" asp-controller="Account" method="post">
                         <h3 class="register-heading">Đăng ký tài khoản</h3>
+                         @if (ViewBag.Success != null)
+                        {
+                            <div id="msgAlert" class="alert alert-success" role="alert">
+                                @ViewBag.Success
+                            </div>
+                        }
+                        @if (TempData["failResult"] != null)
+                        {
+                            <div id="msgAlert" class="alert alert-success" role="alert">
+                                @TempData["failResult"]
+                            </div>
+                        }
                         <div class="row register-form">
                             <div class="col-md-6">
                                 <div class="form-group">

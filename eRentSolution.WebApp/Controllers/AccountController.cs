@@ -40,6 +40,10 @@ namespace eRentSolution.WebApp.Controllers
         {
             var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
+            if(!string.IsNullOrEmpty(session))
+            {
+                token = session;
+            }
             if (!string.IsNullOrEmpty(token))
             {
                 var userPrincipal = this.ValidateToken(token);
@@ -153,7 +157,7 @@ namespace eRentSolution.WebApp.Controllers
             var result = await _userApiClient.RegisterUser(request);
             if (!result.IsSuccessed)
             {
-                ModelState.AddModelError("", result.Message);
+                TempData["failResult"] = result.Message;
                 return View(request);
             }
 
@@ -161,7 +165,7 @@ namespace eRentSolution.WebApp.Controllers
             {
                 UserName = request.UserName,
                 Password = request.Password,
-                RememberMe = true
+                RememberMe = false
             }, false);
 
             var userPrincipal = this.ValidateToken(loginResult.ResultObject);
@@ -175,7 +179,6 @@ namespace eRentSolution.WebApp.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
-            Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, loginResult.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
             return RedirectToAction("Index", "Home");
         }
     }
