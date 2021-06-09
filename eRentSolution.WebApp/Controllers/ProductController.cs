@@ -599,7 +599,7 @@ namespace eRentSolution.WebApp.Controllers
             }
 
             userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var result = await _productApiClient.DeleteDetail(request.ProductDetailId, Guid.Parse(userId), SystemConstant.AppSettings.TokenAdmin);
+            var result = await _productApiClient.DeleteDetail(request.ProductDetailId, Guid.Parse(userId), SystemConstant.AppSettings.TokenWebApp);
 
             if (result.IsSuccessed)
             {

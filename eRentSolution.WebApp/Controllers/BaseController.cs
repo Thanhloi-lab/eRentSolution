@@ -46,11 +46,19 @@ namespace eRentSolution.WebApp.Controllers
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
             var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenWebApp];
 
+            try
+            {
+                session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
+            }
+            catch (Exception e)
+            {
+                session = "";
+            }
             if (!string.IsNullOrEmpty(session))
             {
                 cookies = session;
             }
-           
+
             if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(session))
             {
                 try
@@ -63,17 +71,9 @@ namespace eRentSolution.WebApp.Controllers
                 }
             }
 
-            try
-            {
-                session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
-            }
-            catch(Exception e)
-            {
-                session = "";
-            }
-
             if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session) && User.Identity.IsAuthenticated)
             {
+                Response.Cookies.Delete(SystemConstant.AppSettings.TokenWebApp);
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 context.Result = new RedirectToActionResult("Index", "Home", null);
                 base.OnActionExecuting(context);
@@ -120,16 +120,22 @@ namespace eRentSolution.WebApp.Controllers
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return;
             }
-
-            var userPrincipal = this.ValidateToken(result.ResultObject);
+            string token;
+            if(string.IsNullOrEmpty(result.ResultObject))
+            {
+                return;
+            }
+            token = new string(result.ResultObject);
+            var userPrincipal = this.ValidateToken(token);
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = request.RememberMe,
                 ExpiresUtc = DateTimeOffset.Now.AddDays(30)
             };
+            token = new string(result.ResultObject);
             try
             {
-                HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, result.ResultObject);
+                HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, token);
             }
             catch (Exception e)
             {
@@ -141,7 +147,7 @@ namespace eRentSolution.WebApp.Controllers
                         userPrincipal,
                         authProperties);
             if (request.RememberMe)
-                Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, result.ResultObject, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+                Response.Cookies.Append(SystemConstant.AppSettings.TokenWebApp, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
         }
 
         public async override void OnActionExecuted(ActionExecutedContext context)

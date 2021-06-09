@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace eRentSolution.WebApp.Controllers
 {
 
-    [Authorize]
+    
     public class UserController : BaseController
     {
         private readonly IUserApiClient _userApiClient;
@@ -35,6 +35,7 @@ namespace eRentSolution.WebApp.Controllers
             
             token = _httpContextAccessor.HttpContext.Session.GetString(SystemConstant.AppSettings.TokenWebApp);
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Details()
         {
@@ -50,6 +51,7 @@ namespace eRentSolution.WebApp.Controllers
             }
             return View(result.ResultObject);
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
@@ -70,6 +72,7 @@ namespace eRentSolution.WebApp.Controllers
             }
             return RedirectToAction("Error", "Home");
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Edit(UserUpdateRequest request)
         {
@@ -84,6 +87,7 @@ namespace eRentSolution.WebApp.Controllers
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
+        [Authorize]
         [HttpGet]
         public IActionResult ChangePassword()
         {
@@ -93,6 +97,7 @@ namespace eRentSolution.WebApp.Controllers
                 Id = Guid.Parse(userId)
             });
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(UserUpdatePasswordRequest request)
         {
@@ -110,6 +115,7 @@ namespace eRentSolution.WebApp.Controllers
                 return View(request);
             }
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> EditAvatar(Guid id)
         {
@@ -127,6 +133,7 @@ namespace eRentSolution.WebApp.Controllers
             ModelState.AddModelError("", target.Message);
             return RedirectToAction("Details");
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> EditAvatar(UserAvatarUpdateRequest request)
         {
@@ -145,6 +152,7 @@ namespace eRentSolution.WebApp.Controllers
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ActivityLog(string keyword, int pageIndex = 1, int pageSize = 10)
         {
@@ -216,6 +224,7 @@ namespace eRentSolution.WebApp.Controllers
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> SendConfirmEmail(string email)
         {
@@ -234,6 +243,7 @@ namespace eRentSolution.WebApp.Controllers
             };
             return View(request);
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> SendConfirmEmail(SendConfirmEmailRequest request)
         {
@@ -253,11 +263,13 @@ namespace eRentSolution.WebApp.Controllers
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail()
         {
             return View();
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request)
         {

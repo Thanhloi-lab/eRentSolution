@@ -42,6 +42,10 @@ namespace eRentSolution.AdminApp.Controllers
         {
             var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
             var session  = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
+            if (!string.IsNullOrEmpty(session))
+            {
+                token = session;
+            }
             if (!string.IsNullOrEmpty(token))
             {
                 var userPrincipal = this.ValidateToken(token);
@@ -64,6 +68,7 @@ namespace eRentSolution.AdminApp.Controllers
                 Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
                 return RedirectToAction("Index", "Home");
             }
+
             if(!string.IsNullOrEmpty(session))
             {
                 return RedirectToAction("Index", "Home");

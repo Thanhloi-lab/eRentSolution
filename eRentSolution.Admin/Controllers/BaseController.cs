@@ -46,6 +46,7 @@ namespace eRentSolution.AdminApp.Controllers
         {
             var session = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
             var cookies = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
+
             if (string.IsNullOrEmpty(cookies) && string.IsNullOrEmpty(session))
             {
                 if (User.Identity.IsAuthenticated)
