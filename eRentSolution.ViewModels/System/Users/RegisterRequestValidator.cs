@@ -22,7 +22,8 @@ namespace eRentSolution.ViewModels.System.Users
                 .EmailAddress().WithMessage("Email không hợp lệ.");
             RuleFor(x => x.UserName).NotEmpty().WithMessage("Tài khoản không được bỏ trống.");
             RuleFor(x => x.Password).NotEmpty().WithMessage("Mật khẩu không được bỏ trống")
-                .MinimumLength(8).WithMessage("Mật khẩu phải có ít nhất 8 kí tự (bắt buộc có cả số, chữ và chữ viết hoa).");
+                .Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[`@_!?,:*-./\\$€¢£])[a-zA-Z\\d]{8,20}$").WithMessage("Mật khẩu phải có ít nhất 8-20 kí tự (bắt buộc có cả số, chữ và chữ viết hoa).");
+                 
             RuleFor(x => x).Custom((request, context) => {
                 if (request.Password != request.ConfirmPassword)
                 {

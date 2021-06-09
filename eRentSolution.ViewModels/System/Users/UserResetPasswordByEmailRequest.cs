@@ -19,7 +19,7 @@ namespace eRentSolution.ViewModels.System.Users
         public UserResetPasswordByEmailValidator()
         {
             RuleFor(x => x.Password).NotEmpty().WithMessage("Vui lòng nhập mật khẩu mới.")
-                .MinimumLength(8).WithMessage("Mật khẩu phải có ít nhât 8 kí tự (phải có chữ, số, chữ viết hoa).");
+                 .Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[`@_!?,:*-./\\$€¢£])[a-zA-Z\\d]{8,20}$").WithMessage("Mật khẩu phải có ít nhât 8 kí tự (phải có chữ, số, chữ viết hoa).");
         }
     }
 }
