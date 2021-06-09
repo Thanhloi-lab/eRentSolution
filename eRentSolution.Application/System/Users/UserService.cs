@@ -213,9 +213,7 @@ namespace eRentSolution.Application.System.Users
             try
             {
                 var result = await _context.SaveChangesAsync();
-                if(result>0)
-                    return new ApiSuccessResult<string>("Gán quyền thành công");
-                return new ApiErrorResult<string>("Gán quyền thất bại");
+                return new ApiSuccessResult<string>("Gán quyền thành công");
             }
             catch(Exception e)
             {
