@@ -299,8 +299,12 @@ namespace eRentSolution.Application.System.Users
                     user = await _userManager.FindByIdAsync(request.Id.ToString());
                     await _userManager.UpdateAsync(user);
                     return new ApiSuccessResult<string>("Đổi mật khẩu thành công");
+                }
+                {
+                    return new ApiErrorResult<string>("Mật khẩu phải từ 8 kí tự trở lên và bao gồm kí tự đặt biệt, chữ , số, chữ in hoa.");
                 }    
-                return new ApiErrorResult<string>("Dổi mật khẩu thất bại, vui lòng thử lại sau");
+                
+                
             }
             catch (Exception e)
             {
@@ -349,7 +353,6 @@ namespace eRentSolution.Application.System.Users
             {
                 request.Token = request.Token.Replace(" ", "+");
                 var result = await _userManager.ResetPasswordAsync(user, request.Token, request.Password);
-
                 //var removeResult = await _userManager.RemovePasswordAsync(user);
                 ////user.DateChangePassword = date;
                 if (result.Succeeded)
@@ -364,6 +367,7 @@ namespace eRentSolution.Application.System.Users
                     //else
                     //    return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
                 }
+                return new ApiErrorResult<string>("Mã xác nhận đã mất hiệu lực hoặc mật khẩu phải từ 8 kí tự trở lên và bao gồm kí tự đặt biệt, chữ, số, chữ in hoa.");
             }
             return new ApiErrorResult<string>("Đặt lại mật khẩu thất bại");
         }

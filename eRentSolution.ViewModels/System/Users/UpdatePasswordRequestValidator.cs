@@ -12,7 +12,7 @@ namespace eRentSolution.ViewModels.System.Users
             RuleFor(x => x.CurrentPassword).NotEmpty().WithMessage("Vui lòng nhập mật khẩu hiện tại.")
                 .MinimumLength(8).WithMessage("Mật khẩu phải có ít nhât 8 kí tự (phải có chữ, số, chữ viết hoa).");
             RuleFor(x => x.NewPassword).NotEmpty().WithMessage("Vui lòng nhập mật khẩu mới.")
-                .Matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[`@_!?,:*-./\\$€¢£])[a-zA-Z\\d]{8,20}$").WithMessage("Mật khẩu phải có ít nhât 8 kí tự (phải có chữ, số, chữ viết hoa).");
+                .MinimumLength(8).WithMessage("Mật khẩu phải có ít nhât 8 kí tự (phải có chữ, số, chữ viết hoa).");
             RuleFor(x => x).Custom((request, context) => {
                 if (request.NewPassword != request.ConfirmPassword)
                 {

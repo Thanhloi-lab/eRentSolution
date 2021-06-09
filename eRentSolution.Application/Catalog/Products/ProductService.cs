@@ -766,12 +766,17 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetAllPaging(GetProductPagingRequest request)
         {
+            var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var query = from p in _context.Products
                             //join pd in _context.ProductDetails on p.Id equals pd.Id
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
+                        join cen in _context.Censors on p.Id equals cen.ProductId
+                        join u in _context.AppUsers on cen.UserInfoId equals u.Id
+                        where u.Status == Status.Active
+                             && cen.ActionId == action.Id
                             //&& pd.IsThumbnail == true
                         select new { p, c, pic };//, pd};
 

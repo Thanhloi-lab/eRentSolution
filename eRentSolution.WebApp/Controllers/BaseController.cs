@@ -116,6 +116,7 @@ namespace eRentSolution.WebApp.Controllers
             var result = await _userApiClient.RefreshToken(request, false);
             if (!result.IsSuccessed)
             {
+                HttpContext.Session.SetString(SystemConstant.AppSettings.TokenWebApp, "");
                 Response.Cookies.Delete(SystemConstant.AppSettings.TokenWebApp);
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
                 return;
