@@ -18,7 +18,7 @@ using Microsoft.Extensions.Configuration;
 namespace eRentSolution.Admin.Controllers
 {
     [Authorize]
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -31,7 +31,7 @@ namespace eRentSolution.Admin.Controllers
             ICategoryApiClient categoryApiClient,
             ISlideApiClient slideApiClient,
             IHttpContextAccessor httpContextAccessor,
-            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
+            IUserApiClient userApiClient)
         {
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;

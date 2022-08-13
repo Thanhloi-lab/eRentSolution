@@ -10,8 +10,8 @@ using eRentSolution.Data.EF;
 namespace eRentSolution.Data.Migrations
 {
     [DbContext(typeof(eRentDbContext))]
-    [Migration("20210507101153_db4")]
-    partial class db4
+    [Migration("20220809135917_first-gen")]
+    partial class firstgen
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -181,7 +181,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "8365e96e-cb2e-4e1e-8120-8b568149682c",
+                            ConcurrencyStamp = "a7cbe7b0-6e12-4500-afae-e29dba954f4c",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -189,7 +189,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "f38a9c6a-722a-4494-9981-2da0202a391f",
+                            ConcurrencyStamp = "bb800e52-91c7-4d9f-adc2-7e03f7818080",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -218,11 +218,24 @@ namespace eRentSolution.Data.Migrations
                     b.Property<DateTime>("DateChangePassword")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -270,14 +283,17 @@ namespace eRentSolution.Data.Migrations
                             AccessFailedCount = 0,
                             AvatarFilePath = "default_avatar.png",
                             AvatarFileSize = 15131L,
-                            ConcurrencyStamp = "e28b00f1-32e1-42f8-aa6f-e9f5fbb68108",
-                            DateChangePassword = new DateTime(2021, 5, 7, 10, 11, 52, 162, DateTimeKind.Utc).AddTicks(3121),
+                            ConcurrencyStamp = "59e7e0f5-5ce5-463d-b34e-6e51c7342372",
+                            DateChangePassword = new DateTime(2022, 8, 9, 13, 59, 16, 727, DateTimeKind.Utc).AddTicks(9434),
+                            Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
+                            FirstName = "Lợi",
+                            LastName = "Cao Thành",
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE0ExTG/cMK41bl+rcfnuvhVyB/H6Lwxu8PErcql9pEYQfbWguGjVrYkV7FZGidL9g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFb8rcCqMymX3R0fY8aLfg3qPGhR/myZFBOKDVdCeVZ2QAyWbcPn8RGaG9em0+uZmA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 2,
@@ -379,7 +395,7 @@ namespace eRentSolution.Data.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserInfoId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -388,7 +404,7 @@ namespace eRentSolution.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("UserInfoId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Censors");
 
@@ -397,9 +413,9 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2021, 5, 7, 10, 11, 52, 190, DateTimeKind.Utc).AddTicks(5748),
+                            Date = new DateTime(2022, 8, 9, 13, 59, 16, 753, DateTimeKind.Utc).AddTicks(3245),
                             ProductId = 1,
-                            UserInfoId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
+                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
                 });
 
@@ -494,14 +510,14 @@ namespace eRentSolution.Data.Migrations
                     b.HasIndex("StatusId")
                         .IsUnique();
 
-                    b.ToTable("Products");
+                    b.ToTable("News");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
-                            DateCreated = new DateTime(2021, 5, 7, 10, 11, 52, 188, DateTimeKind.Utc).AddTicks(7640),
+                            DateCreated = new DateTime(2022, 8, 9, 13, 59, 16, 752, DateTimeKind.Utc).AddTicks(1111),
                             Description = "HomeStay Thanh Loi tại pờ tít",
                             IsFeatured = 1,
                             Name = "HomeStay Thanh Loi",
@@ -564,13 +580,13 @@ namespace eRentSolution.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductDetails");
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 5, 7, 10, 11, 52, 189, DateTimeKind.Utc).AddTicks(6234),
+                            DateCreated = new DateTime(2022, 8, 9, 13, 59, 16, 752, DateTimeKind.Utc).AddTicks(6766),
                             Detail = "2 nvs .....",
                             Length = 10,
                             Name = "Phòng 1 chổ nằm",
@@ -680,48 +696,6 @@ namespace eRentSolution.Data.Migrations
                             Id = 4,
                             StatusName = "Ẩn"
                         });
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.Promotion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("ApplyForAll")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal?>("DiscountAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("DiscountPercent")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FromDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductCategoryIds")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductIds")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ToDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Slide", b =>
@@ -907,38 +881,6 @@ namespace eRentSolution.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Dob")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("UserInfos");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"),
-                            Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FirstName = "Lợi",
-                            LastName = "Cao Thành"
-                        });
-                });
-
             modelBuilder.Entity("eRentSolution.Data.Entities.Censor", b =>
                 {
                     b.HasOne("eRentSolution.Data.Entities.UserAction", "AdminAction")
@@ -953,9 +895,9 @@ namespace eRentSolution.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eRentSolution.Data.Entities.UserInfo", "UserInfo")
+                    b.HasOne("eRentSolution.Data.Entities.AppUser", "User")
                         .WithMany("Censors")
-                        .HasForeignKey("UserInfoId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -963,7 +905,7 @@ namespace eRentSolution.Data.Migrations
 
                     b.Navigation("Product");
 
-                    b.Navigation("UserInfo");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
@@ -1029,20 +971,9 @@ namespace eRentSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
-                {
-                    b.HasOne("eRentSolution.Data.Entities.AppUser", "AppUser")
-                        .WithOne("Person")
-                        .HasForeignKey("eRentSolution.Data.Entities.UserInfo", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
             modelBuilder.Entity("eRentSolution.Data.Entities.AppUser", b =>
                 {
-                    b.Navigation("Person");
+                    b.Navigation("Censors");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Category", b =>
@@ -1072,11 +1003,6 @@ namespace eRentSolution.Data.Migrations
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.UserAction", b =>
-                {
-                    b.Navigation("Censors");
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.UserInfo", b =>
                 {
                     b.Navigation("Censors");
                 });

@@ -40,40 +40,40 @@ namespace eRentSolution.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
-            var session  = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
-            if (!string.IsNullOrEmpty(session))
-            {
-                token = session;
-            }
-            if (!string.IsNullOrEmpty(token))
-            {
-                var userPrincipal = this.ValidateToken(token);
-                if (userPrincipal == null)
-                {
-                    Response.Cookies.Delete(SystemConstant.AppSettings.TokenAdmin);
-                    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                    return RedirectToAction("index", "login");
-                }
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                };
-                HttpContext.Session.SetString(SystemConstant.AppSettings.TokenAdmin, token);
-                await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        userPrincipal,
-                        authProperties);
+            //var token = _httpContextAccessor.HttpContext.Request.Cookies[SystemConstant.AppSettings.TokenAdmin];
+            //var session  = HttpContext.Session.GetString(SystemConstant.AppSettings.TokenAdmin);
+            //if (!string.IsNullOrEmpty(session))
+            //{
+            //    token = session;
+            //}
+            //if (!string.IsNullOrEmpty(token))
+            //{
+            //    var userPrincipal = this.ValidateToken(token);
+            //    if (userPrincipal == null)
+            //    {
+            //        Response.Cookies.Delete(SystemConstant.AppSettings.TokenAdmin);
+            //        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //        return RedirectToAction("index", "login");
+            //    }
+            //    var authProperties = new AuthenticationProperties
+            //    {
+            //        IsPersistent = true,
+            //    };
+            //    HttpContext.Session.SetString(SystemConstant.AppSettings.TokenAdmin, token);
+            //    await HttpContext.SignInAsync(
+            //            CookieAuthenticationDefaults.AuthenticationScheme,
+            //            userPrincipal,
+            //            authProperties);
 
-                Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
-                return RedirectToAction("Index", "Home");
-            }
+            //    Response.Cookies.Append(SystemConstant.AppSettings.TokenAdmin, token, new CookieOptions() { Expires = DateTimeOffset.Now.AddDays(30) });
+            //    return RedirectToAction("Index", "Home");
+            //}
 
-            if(!string.IsNullOrEmpty(session))
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //if(!string.IsNullOrEmpty(session))
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
+            //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             GetContactPagingRequest request = new GetContactPagingRequest()
             {
                 PageIndex = 1,
@@ -128,7 +128,6 @@ namespace eRentSolution.AdminApp.Controllers
             TokenValidationParameters validationParameters = new TokenValidationParameters();
 
             validationParameters.ValidateLifetime = true;
-
             validationParameters.ValidAudience = _configuration["Tokens:Audience"];
             validationParameters.ValidIssuer = _configuration["Tokens:Issuer"];
             validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));

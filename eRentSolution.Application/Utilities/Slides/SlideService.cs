@@ -55,7 +55,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 var censor = new Censor()
                 {
                     ActionId = action.Id,
-                    UserInfoId = userInfoId,
+                    UserId = userInfoId,
                     Date = DateTime.UtcNow,
                     ProductId = product.Id
                 };
@@ -87,7 +87,7 @@ namespace eRentSolution.Application.Utilities.Slides
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 Date = DateTime.UtcNow,
                 ProductId = slide.ProductId
             };
@@ -113,7 +113,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 var censor = new Censor()
                 {
                     ActionId = action.Id,
-                    UserInfoId = userInfoId,
+                    UserId = userInfoId,
                     Date = DateTime.UtcNow,
                     ProductId = slide.ProductId
                 };
@@ -143,7 +143,7 @@ namespace eRentSolution.Application.Utilities.Slides
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 Date = DateTime.UtcNow,
                 ProductId = slide.ProductId
             };
@@ -174,7 +174,7 @@ namespace eRentSolution.Application.Utilities.Slides
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 Date = DateTime.UtcNow,
                 ProductId = slide.ProductId
             };

@@ -102,17 +102,11 @@ namespace eRentSolution.Data.Extentions
                 SecurityStamp = string.Empty,
                 Status = Status.Active,
                 AvatarFilePath = "default_avatar.png",
-                AvatarFileSize = 15131
+                AvatarFileSize = 15131,
+                FirstName = "Lợi",
+                LastName = "Cao Thành",
+                Dob = new DateTime(2000, 01, 31),
             }) ;
-
-            modelBuilder.Entity<UserInfo>().HasData(
-           new UserInfo()
-           {
-               UserId = adminId,
-               FirstName = "Lợi",
-               LastName = "Cao Thành",
-               Dob = new DateTime(2000, 01, 31),
-           });
 
             modelBuilder.Entity<Product>().HasData(
            new Product()
@@ -264,7 +258,7 @@ namespace eRentSolution.Data.Extentions
            {
                ActionId = 1,
                Date = DateTime.UtcNow,
-               UserInfoId = adminId,
+               UserId = adminId,
                ProductId = 1,
                Id = 1
            });

@@ -12,7 +12,7 @@ namespace eRentSolution.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ProductDetail> builder)
         {
-            builder.ToTable("ProductDetails");
+            builder.ToTable("Products");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.Price).IsRequired().HasColumnType("decimal(18,2)");

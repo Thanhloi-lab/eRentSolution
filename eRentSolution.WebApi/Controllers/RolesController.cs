@@ -18,6 +18,8 @@ namespace eRentSolution.BackendApi.Controllers
         {
             _roleService = roleService;
         }
+
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var result = await _roleService.GetAll();

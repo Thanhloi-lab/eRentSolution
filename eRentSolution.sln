@@ -28,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.Solution Items", "0.Solut
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eRentSolution.Integration", "eRentSolution.Integration\eRentSolution.Integration.csproj", "{E795CD88-04DC-4B60-8BEC-EA681F4C18AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eRentSolution.Integration", "eRentSolution.Integration\eRentSolution.Integration.csproj", "{E795CD88-04DC-4B60-8BEC-EA681F4C18AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -68,15 +68,16 @@ namespace eRentSolution.Application.System.Users
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, request.Password/* + user.DateChangePassword*/, request.RememberMe, true);
-            if(!result.Succeeded)
+            
+            if (!result.Succeeded)
                 return new ApiErrorResult<string>("Tài khoản hoặc mật khẩu không đúng");
             
-            var userInfo = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            var userInfo = await _context.AppUsers.FirstOrDefaultAsync(x => x.Id == user.Id);
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Actor, userInfo.UserId.ToString()),
+                new Claim(ClaimTypes.Actor, userInfo.Id.ToString()),
                 new Claim(ClaimTypes.Name, userInfo.FirstName),
                 new Claim(ClaimTypes.IsPersistent, request.RememberMe.ToString()),
                 new Claim(ClaimTypes.GivenName, request.UserName),
@@ -150,12 +151,9 @@ namespace eRentSolution.Application.System.Users
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
                 DateChangePassword = DateTime.UtcNow,
-                Person = new UserInfo()
-                {
-                    Dob = request.Dob,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName
-                }
+                Dob = request.Dob,
+                FirstName = request.FirstName,
+                LastName = request.LastName
             };
             
             
@@ -227,12 +225,12 @@ namespace eRentSolution.Application.System.Users
                 return new ApiErrorResult<string>("Email đã tồn tại");
             }
             var user = await _userManager.FindByIdAsync(id.ToString());
-            var person = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == id);
-            
-            person.Dob = request.Dob;
+            //var person = await _context.AppUsers.FirstOrDefaultAsync(x => x.UserId == id);
+
+            user.Dob = request.Dob;
             user.PhoneNumber = request.PhoneNumber;
-            person.FirstName = request.FirstName;
-            person.LastName = request.LastName;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
             if(!user.Email.Equals(request.Email))
             {
                 user.EmailConfirmed = false;
@@ -458,14 +456,14 @@ namespace eRentSolution.Application.System.Users
             if (user == null)
                 return new ApiErrorResult<UserViewModel>($"Tài khoản không tồn tại");
             var roles = await _userManager.GetRolesAsync(user);
-            var person = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == id);
+            //var person = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == id);
             var userViewModel = new UserViewModel()
             {
                 PhoneNumber = user.PhoneNumber,
-                FirstName = person.FirstName,
-                Dob = person.Dob,
+                FirstName = user.FirstName,
+                Dob = user.Dob,
                 Email = user.Email,
-                LastName = person.LastName,
+                LastName = user.LastName,
                 UserName = user.UserName,
                 Roles = roles,
                 Id = id,
@@ -478,30 +476,29 @@ namespace eRentSolution.Application.System.Users
         public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
             var query = from u in _userManager.Users
-                        join ui in _context.UserInfos on u.Id equals ui.UserId
                         where u.Status == Status.Active
-                        select new { u, ui };
+                        select new { u};
             if (!string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.u.UserName.Contains(request.Keyword)
                             || x.u.PhoneNumber.Contains(request.Keyword)
-                            || x.ui.LastName.Contains(request.Keyword)
-                            || x.ui.FirstName.Contains(request.Keyword));
+                            || x.u.LastName.Contains(request.Keyword)
+                            || x.u.FirstName.Contains(request.Keyword));
             }
 
             /* PAGING*/
             int totalRow = await query.CountAsync();
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
-                .OrderBy(x => x.ui.LastName)
+                .OrderBy(x => x.u.LastName)
                 .Take(request.PageSize)
                 .Select(x => new UserViewModel()
                 {
                     Id = x.u.Id,
                     PhoneNumber = x.u.PhoneNumber,
-                    FirstName = x.ui.FirstName,
-                    Dob = x.ui.Dob,
+                    FirstName = x.u.FirstName,
+                    Dob = x.u.Dob,
                     Email = x.u.Email,
-                    LastName = x.ui.LastName,
+                    LastName = x.u.LastName,
                     UserName = x.u.UserName,
                     AvatarFilePath = x.u.AvatarFilePath,
                     Status = x.u.Status,
@@ -521,34 +518,34 @@ namespace eRentSolution.Application.System.Users
         {
            
             var query = from u in _userManager.Users
-                        join ui in _context.UserInfos on u.Id equals ui.UserId
+                        //join ui in _context.UserInfos on u.Id equals ui.UserId
                         join ur in _context.UserRoles on u.Id equals ur.UserId
                         join r in _roleManager.Roles on ur.RoleId equals r.Id
                         where u.Status == Status.Active
-                        select new { u, ui, r };
+                        select new { u, r };
             
             if (!string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.u.UserName.Contains(request.Keyword)
                             || x.u.PhoneNumber.Contains(request.Keyword)
-                            || x.ui.LastName.Contains(request.Keyword)
-                            || x.ui.FirstName.Contains(request.Keyword));
+                            || x.u.LastName.Contains(request.Keyword)
+                            || x.u.FirstName.Contains(request.Keyword));
             }
 
             /* PAGING*/
             int totalRow = await query.CountAsync();
             var data = await query
                 .Skip((request.PageIndex - 1) * request.PageSize)
-                .OrderBy(x => x.ui.LastName)
+                .OrderBy(x => x.u.LastName)
                 .Take(request.PageSize)
                 .Select(x => new UserViewModel()
                 {
                     Id = x.u.Id,
                     PhoneNumber = x.u.PhoneNumber,
-                    FirstName = x.ui.FirstName,
-                    Dob = x.ui.Dob,
+                    FirstName = x.u.FirstName,
+                    Dob = x.u.Dob,
                     Email = x.u.Email,
-                    LastName = x.ui.LastName,
+                    LastName = x.u.LastName,
                     UserName = x.u.UserName,
                     AvatarFilePath = x.u.AvatarFilePath,
                     Status = x.u.Status,
@@ -566,11 +563,11 @@ namespace eRentSolution.Application.System.Users
         }
         public async Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetUserActivities(UserActivityLogRequest request)
         {
-            var query = from ui in _context.UserInfos
-                        join c in _context.Censors on ui.UserId equals c.UserInfoId
+            var query = from ui in _context.AppUsers
+                        join c in _context.Censors on ui.Id equals c.UserId
                         join a in _context.UserActions on c.ActionId equals a.Id
                         join p in _context.Products on c.ProductId equals p.Id
-                        where ui.UserId == request.Id
+                        where ui.Id == request.Id
                         select new { ui, a, p, c };
 
             var totalRow = await query.CountAsync();
@@ -596,8 +593,8 @@ namespace eRentSolution.Application.System.Users
         }
         public async Task<ApiResult<PagedResult<ActivityLogViewModel>>> GetPageUserActivities(UserActivityLogRequest request)
         {
-            var query = from ui in _context.UserInfos
-                        join c in _context.Censors on ui.UserId equals c.UserInfoId
+            var query = from ui in _context.AppUsers
+                        join c in _context.Censors on ui.Id equals c.UserId
                         join a in _context.UserActions on c.ActionId equals a.Id
                         join p in _context.Products on c.ProductId equals p.Id
                         select new { ui, a, p, c };
@@ -634,21 +631,20 @@ namespace eRentSolution.Application.System.Users
         public async Task<ApiResult<UserViewModel>> GetUserByProductId(int productId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
-            var query = (from ui in _context.UserInfos
-                         join u in _context.AppUsers on ui.UserId equals u.Id
-                         join c in _context.Censors on ui.UserId equals c.UserInfoId
+            var query = (from u in _context.AppUsers
+                         join c in _context.Censors on u.Id equals c.UserId
                          join a in _context.UserActions on c.ActionId equals a.Id
                          join p in _context.Products on c.ProductId equals p.Id
                          where p.Id == productId && a.ActionName == action.ActionName
-                         select new { u, ui }).FirstOrDefault();
+                         select new { u }).FirstOrDefault();
             var user = new UserViewModel()
             {
                 AvatarFilePath = query.u.AvatarFilePath,
-                Dob = query.ui.Dob,
+                Dob = query.u.Dob,
                 Email = query.u.Email,
-                FirstName = query.ui.FirstName,
+                FirstName = query.u.FirstName,
                 Id = query.u.Id,
-                LastName = query.ui.LastName,
+                LastName = query.u.LastName,
                 PhoneNumber = query.u.PhoneNumber,
                 UserName = query.u.UserName
             };
@@ -670,13 +666,13 @@ namespace eRentSolution.Application.System.Users
                     return new ApiErrorResult<string>("Đã có lỗi trong quá trình. Vui lòng đăng nhập lại");
             }
 
-            var userInfo = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            //var userInfo = await _context.UserInfos.FirstOrDefaultAsync(x => x.UserId == user.Id);
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Actor, userInfo.UserId.ToString()),
-                new Claim(ClaimTypes.Name, userInfo.FirstName),
+                new Claim(ClaimTypes.Actor, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FirstName),
                 new Claim(ClaimTypes.IsPersistent, request.RememberMe.ToString()),
                 new Claim(ClaimTypes.GivenName, request.UserName),
             };

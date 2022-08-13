@@ -144,6 +144,7 @@ namespace eRentSolution.BackendApi
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
@@ -156,9 +157,7 @@ namespace eRentSolution.BackendApi
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
     }

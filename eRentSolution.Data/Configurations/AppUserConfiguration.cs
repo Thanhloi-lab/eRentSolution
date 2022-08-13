@@ -18,8 +18,10 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.Status).IsRequired().HasDefaultValue(Status.Active);
             builder.Property(x => x.DateChangePassword).IsRequired();
             builder.Property(x => x.AvatarFilePath).HasMaxLength(200);
+            builder.Property(x => x.FirstName).HasMaxLength(200).IsRequired();
+            builder.Property(x => x.LastName).HasMaxLength(200).IsRequired();
+            builder.Property(x => x.Dob).IsRequired();
 
-            builder.HasOne(x => x.Person).WithOne(x => x.AppUser).HasForeignKey<UserInfo>(x => x.UserId);
         }
     }
 }

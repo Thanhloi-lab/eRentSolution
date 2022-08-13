@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace eRentSolution.Data.Migrations
 {
-    public partial class db2 : Migration
+    public partial class firstgen : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -95,6 +95,9 @@ namespace eRentSolution.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Dob = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false, defaultValue: 2),
                     DateChangePassword = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AvatarFilePath = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
@@ -185,27 +188,6 @@ namespace eRentSolution.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Promotions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FromDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ToDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ApplyForAll = table.Column<bool>(type: "bit", nullable: false),
-                    DiscountPercent = table.Column<int>(type: "int", nullable: true),
-                    DiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    ProductIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductCategoryIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Promotions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserActions",
                 columns: table => new
                 {
@@ -219,27 +201,7 @@ namespace eRentSolution.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserInfos",
-                columns: table => new
-                {
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Dob = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserInfos", x => x.UserId);
-                    table.ForeignKey(
-                        name: "FK_UserInfos_AppUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AppUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Products",
+                name: "News",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -252,14 +214,14 @@ namespace eRentSolution.Data.Migrations
                     Address = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     ViewCount = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: false, defaultValue: 4),
                     IsFeatured = table.Column<int>(type: "int", nullable: false, defaultValue: 1)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_News", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_ProductStatuses_StatusId",
+                        name: "FK_News_ProductStatuses_StatusId",
                         column: x => x.StatusId,
                         principalTable: "ProductStatuses",
                         principalColumn: "Id",
@@ -274,56 +236,28 @@ namespace eRentSolution.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ActionId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    UserInfoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Censors", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Censors_Products_ProductId",
+                        name: "FK_Censors_AppUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Censors_News_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "Products",
+                        principalTable: "News",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Censors_UserActions_ActionId",
                         column: x => x.ActionId,
                         principalTable: "UserActions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Censors_UserInfos_UserInfoId",
-                        column: x => x.UserInfoId,
-                        principalTable: "UserInfos",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Detail = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    Width = table.Column<int>(type: "int", nullable: false),
-                    Length = table.Column<int>(type: "int", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 2)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ProductDetails_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -345,9 +279,37 @@ namespace eRentSolution.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductInCategories_Products_ProductId",
+                        name: "FK_ProductInCategories_News_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "Products",
+                        principalTable: "News",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Detail = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    Length = table.Column<int>(type: "int", nullable: false),
+                    Stock = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 2)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_News_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "News",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -370,9 +332,9 @@ namespace eRentSolution.Data.Migrations
                 {
                     table.PrimaryKey("PK_Slides", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Slides_Products_ProductId",
+                        name: "FK_Slides_News_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "Products",
+                        principalTable: "News",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -394,9 +356,9 @@ namespace eRentSolution.Data.Migrations
                 {
                     table.PrimaryKey("PK_ProductImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductImages_ProductDetails_ProductDetailId",
+                        name: "FK_ProductImages_Products_ProductDetailId",
                         column: x => x.ProductDetailId,
-                        principalTable: "ProductDetails",
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -416,8 +378,8 @@ namespace eRentSolution.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "3aa758cb-03b9-4a16-b4f2-d425df0479cd", "Administrator role", "Admin", "admin" },
-                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "6a2ffc83-ef2a-4baf-9995-7026b6d5ff70", "User admin role", "UserAdmin", "useradmin" }
+                    { new Guid("8d04dce2-969a-435d-bba4-df3f325983de"), "a7cbe7b0-6e12-4500-afae-e29dba954f4c", "Administrator role", "Admin", "admin" },
+                    { new Guid("e4df483b-524d-467b-b6f4-2ee002742987"), "bb800e52-91c7-4d9f-adc2-7e03f7818080", "User admin role", "UserAdmin", "useradmin" }
                 });
 
             migrationBuilder.InsertData(
@@ -427,8 +389,8 @@ namespace eRentSolution.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "AppUsers",
-                columns: new[] { "Id", "AccessFailedCount", "AvatarFilePath", "AvatarFileSize", "ConcurrencyStamp", "DateChangePassword", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "default_avatar.png", 15131L, "4bc40c09-8671-4e81-9300-0e9671a19bc1", new DateTime(2021, 5, 7, 10, 1, 2, 780, DateTimeKind.Utc).AddTicks(9258), "caothanhloi@gmail.com", true, false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAED5u0iRkLbAPWs8ANblSYwqrFB2+eoCqtOleqI5eISlO9iTAHTH1WEodS90B95ZH5g==", null, false, "", 2, false, "thanhloi" });
+                columns: new[] { "Id", "AccessFailedCount", "AvatarFilePath", "AvatarFileSize", "ConcurrencyStamp", "DateChangePassword", "Dob", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), 0, "default_avatar.png", 15131L, "59e7e0f5-5ce5-463d-b34e-6e51c7342372", new DateTime(2022, 8, 9, 13, 59, 16, 727, DateTimeKind.Utc).AddTicks(9434), new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "caothanhloi@gmail.com", true, "Lợi", "Cao Thành", false, null, "caothanhloi@gmail.com", "thanhloi", "AQAAAAEAACcQAAAAEFb8rcCqMymX3R0fY8aLfg3qPGhR/myZFBOKDVdCeVZ2QAyWbcPn8RGaG9em0+uZmA==", null, false, "", 2, false, "thanhloi" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -481,29 +443,24 @@ namespace eRentSolution.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Products",
+                table: "News",
                 columns: new[] { "Id", "Address", "DateCreated", "Description", "IsFeatured", "Name", "SeoAlias", "SeoDescription", "SeoTitle", "StatusId" },
-                values: new object[] { 1, "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3", new DateTime(2021, 5, 7, 10, 1, 2, 808, DateTimeKind.Utc).AddTicks(6337), "HomeStay Thanh Loi tại pờ tít", 1, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", 2 });
-
-            migrationBuilder.InsertData(
-                table: "UserInfos",
-                columns: new[] { "UserId", "Dob", "FirstName", "LastName" },
-                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd"), new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Lợi", "Cao Thành" });
+                values: new object[] { 1, "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3", new DateTime(2022, 8, 9, 13, 59, 16, 752, DateTimeKind.Utc).AddTicks(1111), "HomeStay Thanh Loi tại pờ tít", 1, "HomeStay Thanh Loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", "HomeStay-thanh-loi", 2 });
 
             migrationBuilder.InsertData(
                 table: "Censors",
-                columns: new[] { "Id", "ActionId", "Date", "ProductId", "UserInfoId" },
-                values: new object[] { 1, 1, new DateTime(2021, 5, 7, 10, 1, 2, 810, DateTimeKind.Utc).AddTicks(6018), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
-
-            migrationBuilder.InsertData(
-                table: "ProductDetails",
-                columns: new[] { "Id", "DateCreated", "Detail", "Length", "Name", "OriginalPrice", "Price", "ProductId", "Width" },
-                values: new object[] { 1, new DateTime(2021, 5, 7, 10, 1, 2, 809, DateTimeKind.Utc).AddTicks(5746), "2 nvs .....", 10, "Phòng 1 chổ nằm", 100000m, 200000m, 1, 5 });
+                columns: new[] { "Id", "ActionId", "Date", "ProductId", "UserId" },
+                values: new object[] { 1, 1, new DateTime(2022, 8, 9, 13, 59, 16, 753, DateTimeKind.Utc).AddTicks(3245), 1, new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd") });
 
             migrationBuilder.InsertData(
                 table: "ProductInCategories",
                 columns: new[] { "CategoryId", "ProductId" },
                 values: new object[] { 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "DateCreated", "Detail", "Length", "Name", "OriginalPrice", "Price", "ProductId", "Width" },
+                values: new object[] { 1, new DateTime(2022, 8, 9, 13, 59, 16, 752, DateTimeKind.Utc).AddTicks(6766), "2 nvs .....", 10, "Phòng 1 chổ nằm", 100000m, 200000m, 1, 5 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Censors_ActionId",
@@ -516,14 +473,15 @@ namespace eRentSolution.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Censors_UserInfoId",
+                name: "IX_Censors_UserId",
                 table: "Censors",
-                column: "UserInfoId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductDetails_ProductId",
-                table: "ProductDetails",
-                column: "ProductId");
+                name: "IX_News_StatusId",
+                table: "News",
+                column: "StatusId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductImages_ProductDetailId",
@@ -536,10 +494,9 @@ namespace eRentSolution.Data.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_StatusId",
+                name: "IX_Products_ProductId",
                 table: "Products",
-                column: "StatusId",
-                unique: true);
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Slides_ProductId",
@@ -583,28 +540,22 @@ namespace eRentSolution.Data.Migrations
                 name: "ProductInCategories");
 
             migrationBuilder.DropTable(
-                name: "Promotions");
-
-            migrationBuilder.DropTable(
                 name: "Slides");
-
-            migrationBuilder.DropTable(
-                name: "UserActions");
-
-            migrationBuilder.DropTable(
-                name: "UserInfos");
-
-            migrationBuilder.DropTable(
-                name: "ProductDetails");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "AppUsers");
 
             migrationBuilder.DropTable(
+                name: "UserActions");
+
+            migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "News");
 
             migrationBuilder.DropTable(
                 name: "ProductStatuses");

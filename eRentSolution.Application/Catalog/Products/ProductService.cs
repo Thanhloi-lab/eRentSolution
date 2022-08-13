@@ -88,7 +88,7 @@ namespace eRentSolution.Application.Catalog.Products
                     new Censor()
                     {
                         ActionId = action.Id,
-                        UserInfoId = userInfoId,
+                        UserId = userInfoId,
                         Date = DateTime.UtcNow
                     }
                 },
@@ -189,7 +189,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.UtcNow
             };
@@ -242,7 +242,7 @@ namespace eRentSolution.Application.Catalog.Products
                 var censor = new Censor()
                 {
                     ActionId = action.Id,
-                    UserInfoId = userInfoId,
+                    UserId = userInfoId,
                     ProductId = product.Id,
                     Date = DateTime.UtcNow
                 };
@@ -295,7 +295,7 @@ namespace eRentSolution.Application.Catalog.Products
                 var censor = new Censor()
                 {
                     ActionId = action.Id,
-                    UserInfoId = userInfoId,
+                    UserId = userInfoId,
                     ProductId = product.Id,
                     Date = DateTime.UtcNow
                 };
@@ -331,7 +331,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.UtcNow
             };
@@ -370,7 +370,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.UtcNow
             };
@@ -405,7 +405,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.UtcNow
 
@@ -444,7 +444,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.UtcNow
             };
@@ -478,7 +478,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.UtcNow
             };
@@ -511,7 +511,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 ProductId = product.Id,
                 Date = DateTime.UtcNow
             };
@@ -588,7 +588,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censor = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 ProductId = productDetail.ProductId,
                 Date = DateTime.UtcNow
             };
@@ -613,7 +613,7 @@ namespace eRentSolution.Application.Catalog.Products
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
             var query = from p in _context.Products
                         join cen in _context.Censors on p.Id equals cen.ProductId
-                        where cen.UserInfoId == userId && cen.ActionId == action.Id && p.Id == productId
+                        where cen.UserId == userId && cen.ActionId == action.Id && p.Id == productId
                         select new { p };
 
             if (query.Count() > 0)
@@ -673,7 +673,7 @@ namespace eRentSolution.Application.Catalog.Products
             var censors = new Censor()
             {
                 ActionId = action.Id,
-                UserInfoId = userInfoId,
+                UserId = userInfoId,
                 Date = DateTime.UtcNow,
                 ProductId = product.Id
             };
@@ -722,7 +722,7 @@ namespace eRentSolution.Application.Catalog.Products
                     ActionId = action.Id,
                     Date = DateTime.UtcNow,
                     ProductId = detail.ProductId,
-                    UserInfoId = userId,
+                    UserId = userId,
                 };
                 _context.Censors.Add(censor);
                 try
@@ -774,7 +774,7 @@ namespace eRentSolution.Application.Catalog.Products
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
                         join cen in _context.Censors on p.Id equals cen.ProductId
-                        join u in _context.AppUsers on cen.UserInfoId equals u.Id
+                        join u in _context.AppUsers on cen.UserId equals u.Id
                         where u.Status == Status.Active
                              && cen.ActionId == action.Id
                             //&& pd.IsThumbnail == true
@@ -1135,7 +1135,7 @@ namespace eRentSolution.Application.Catalog.Products
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                        where cen.UserInfoId == userId 
+                        where cen.UserId == userId 
                              && cen.ActionId == action.Id
                         select new { p, c, pic };
 
@@ -1235,7 +1235,7 @@ namespace eRentSolution.Application.Catalog.Products
                         join cen in _context.Censors on p.Id equals cen.ProductId
                         //join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
                         //from pic in ppic.DefaultIfEmpty()
-                        join u in _context.AppUsers on cen.UserInfoId equals u.Id
+                        join u in _context.AppUsers on cen.UserId equals u.Id
                         where cen.ActionId == action.Id
                         select new {u, p};
             if(request.CategoryId!=null)
@@ -1313,7 +1313,7 @@ namespace eRentSolution.Application.Catalog.Products
                     ActionId = action.Id,
                     Date = DateTime.UtcNow,
                     ProductId = productDetail.ProductId,
-                    UserInfoId = userId,
+                    UserId = userId,
                 };
                 _context.Censors.Add(censor);
                 return new ApiSuccessResult<string>("Xóa hình ảnh thành công");
@@ -1355,7 +1355,7 @@ namespace eRentSolution.Application.Catalog.Products
                     ActionId = action.Id,
                     Date = DateTime.UtcNow,
                     ProductId = product.Id,
-                    UserInfoId = userId,
+                    UserId = userId,
                 };
                 _context.Censors.Add(censor);
                 return new ApiSuccessResult<string>($"Thêm ảnh thành công");
@@ -1394,7 +1394,7 @@ namespace eRentSolution.Application.Catalog.Products
                     ActionId = action.Id,
                     Date = DateTime.UtcNow,
                     ProductId = detail.ProductId,
-                    UserInfoId = userId,
+                    UserId = userId,
                 };
                 _context.Censors.Add(censor);
                 return new ApiSuccessResult<string>($"Thêm ảnh thành công");

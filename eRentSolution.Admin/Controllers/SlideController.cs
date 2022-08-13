@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace eRentSolution.AdminApp.Controllers
 {
     [Authorize]
-    public class SlideController : BaseController
+    public class SlideController : Controller
     {
         private readonly IConfiguration _configuration;
         private readonly ICategoryApiClient _categoryApiClient;
@@ -30,7 +30,7 @@ namespace eRentSolution.AdminApp.Controllers
             ICategoryApiClient categoryApiClient,
             ISlideApiClient slideApiClient,
             IHttpContextAccessor httpContextAccessor,
-            IUserApiClient userApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
+            IUserApiClient userApiClient)
         {
             _configuration = configuration;
             _categoryApiClient = categoryApiClient;

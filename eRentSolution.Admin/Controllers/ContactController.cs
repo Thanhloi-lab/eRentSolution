@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace eRentSolution.AdminApp.Controllers
 {
     [Authorize]
-    public class ContactController : BaseController
+    public class ContactController : Controller
     {
         public readonly IContactApiClient _contactApiClient;
 
@@ -24,7 +24,7 @@ namespace eRentSolution.AdminApp.Controllers
             ISlideApiClient slideApiClient,
             IHttpContextAccessor httpContextAccessor,
             IUserApiClient userApiClient,
-            IContactApiClient contactApiClient) : base(productApiClient, configuration, categoryApiClient, slideApiClient, httpContextAccessor, userApiClient)
+            IContactApiClient contactApiClient)
         {
             _contactApiClient = contactApiClient;
         }

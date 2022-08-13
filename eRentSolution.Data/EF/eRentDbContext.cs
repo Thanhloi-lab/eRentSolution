@@ -28,7 +28,6 @@ namespace eRentSolution.Data.EF
             modelBuilder.ApplyConfiguration(new UserActionConfiguration());
             modelBuilder.ApplyConfiguration(new SlideConfiguration());
             modelBuilder.ApplyConfiguration(new CensorConfiguration());
-            modelBuilder.ApplyConfiguration(new UserInfoConfiguration());
             modelBuilder.ApplyConfiguration(new ProductDetailConfiguration());
             modelBuilder.ApplyConfiguration(new ProductStatusConfiguration());
 
@@ -52,7 +51,6 @@ namespace eRentSolution.Data.EF
         public DbSet<Censor> Censors { get; set; }
         public DbSet<Slide> Slides { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
-        public DbSet<UserInfo> UserInfos { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<IdentityUserRole<Guid>> UserRoles { get; set; }
         public DbSet<ProductStatus> ProductStatus { get; set; }
