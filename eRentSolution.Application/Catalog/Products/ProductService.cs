@@ -32,7 +32,7 @@ namespace eRentSolution.Application.Catalog.Products
 
         public async Task<ApiResult<string>> AddViewcount(int productId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if(product == null)
             {
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
@@ -58,7 +58,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 request.Address.Remove(0);
             }
-            var product = new Product()
+            var product = new News()
             {
                 Name = request.Name,
                 DateCreated = DateTime.UtcNow,
@@ -69,9 +69,9 @@ namespace eRentSolution.Application.Catalog.Products
                 SeoDescription = request.SeoDescription,
                 SeoTitle = request.SeoTitle,
                 StatusId = (int)(object)(Status.Private),
-                ProductDetails = new List<ProductDetail>()
+                Products = new List<Product>()
                 {
-                    new ProductDetail()
+                    new Product()
                     {
                         DateCreated = DateTime.UtcNow, 
                         Price = request.Price,
@@ -96,7 +96,7 @@ namespace eRentSolution.Application.Catalog.Products
             // Luu Anh
             if (request.ThumbnailImage != null)
             {
-                product.ProductDetails.ElementAt(0).ProductImages = new List<ProductImage>()
+                product.Products.ElementAt(0).ProductImages = new List<ProductImage>()
                 {
                     new ProductImage()
                     {
@@ -116,7 +116,7 @@ namespace eRentSolution.Application.Catalog.Products
             int result = 0;
             try
             {
-                await _context.Products.AddAsync(product);
+                await _context.News.AddAsync(product);
                 result = await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -133,7 +133,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> Delete(int productId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if (product == null)
             {
                 throw new eRentException($"Cannot find a product: { product.Id}");
@@ -141,7 +141,7 @@ namespace eRentSolution.Application.Catalog.Products
             var details = await GetDetailsByProductId(productId);
             foreach (var item in details.ResultObject)
             {
-                var Imgages = _context.ProductImages.Where(p => p.ProductDetailId == item.Id);
+                var Imgages = _context.ProductImages.Where(p => p.ProductId == item.Id);
                 foreach (var image in Imgages)
                 {
                     int isDeleteSuccess = _storageService.DeleteFile(image.ImagePath);
@@ -152,13 +152,13 @@ namespace eRentSolution.Application.Catalog.Products
             // Lay anh
             
 
-            var censors = await _context.Censors.Where(x => x.ProductId == productId).ToListAsync();
+            var censors = await _context.Censors.Where(x => x.NewsId == productId).ToListAsync();
             foreach (var item in censors)
             {
                 _context.Censors.Remove(item);
             }
 
-            _context.Products.Remove(product);
+            _context.News.Remove(product);
             int result;
             try
             {
@@ -176,7 +176,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> Hide(int productId, Guid userInfoId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if (product == null)
             {
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
@@ -190,13 +190,13 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 UserId = userInfoId,
-                ProductId = product.Id,
+                NewsId = product.Id,
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
 
             product.StatusId = (int)(object)Status.Private;
-            _context.Products.Update(product);
+            _context.News.Update(product);
 
             int result;
             try
@@ -215,13 +215,13 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> Show(int productId, Guid userInfoId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if (product == null)
             {
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
             }
             product.StatusId = (int)(object)Status.Public;
-            _context.Products.Update(product);
+            _context.News.Update(product);
 
             int result;
             try
@@ -243,7 +243,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     ActionId = action.Id,
                     UserId = userInfoId,
-                    ProductId = product.Id,
+                    NewsId = product.Id,
                     Date = DateTime.UtcNow
                 };
                 await _context.Censors.AddAsync(censor);
@@ -265,7 +265,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> ActiveProduct(int productId, Guid userInfoId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if (product == null)
             {
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
@@ -274,7 +274,7 @@ namespace eRentSolution.Application.Catalog.Products
                 product.StatusId = (int)(object)Status.Private;
             else
                 product.StatusId = (int)(object)Status.Active;
-            _context.Products.Update(product);
+            _context.News.Update(product);
 
             int result;
             try
@@ -296,7 +296,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     ActionId = action.Id,
                     UserId = userInfoId,
-                    ProductId = product.Id,
+                    NewsId = product.Id,
                     Date = DateTime.UtcNow
                 };
                 await _context.Censors.AddAsync(censor);
@@ -318,7 +318,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> InActiveProduct(int productId, Guid userInfoId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if (product == null)
             {
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
@@ -332,11 +332,11 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 UserId = userInfoId,
-                ProductId = product.Id,
+                NewsId = product.Id,
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
-            _context.Products.Update(product);
+            _context.News.Update(product);
             product.StatusId = (int)(object)Status.InActive;
 
             int result;
@@ -356,14 +356,14 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> UpdatePrice(int productDetailId ,decimal newPrice, Guid userInfoId)
         {
-            var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
+            var productDetail = await _context.Products.FindAsync(productDetailId);
             if (productDetail == null)
             {
                 return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
             }
             productDetail.Price = newPrice;
 
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
+            var product = await _context.News.FirstOrDefaultAsync(x => x.Id == productDetail.NewsId);
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdatePriceProduct);
             if (action == null)
                 return new ApiErrorResult<string>("Không tìm thấy hành động");
@@ -371,7 +371,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 UserId = userInfoId,
-                ProductId = product.Id,
+                NewsId = product.Id,
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
@@ -391,14 +391,14 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> UpdateStock(int productDetailId, int addedQuantity, Guid userInfoId)
         {
-            var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
+            var productDetail = await _context.Products.FindAsync(productDetailId);
             if (productDetail == null)
             {
                 return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
             }
             productDetail.Stock += addedQuantity;
 
-            var product = await _context.Products.FirstOrDefaultAsync(x => x.Id == productDetail.ProductId);
+            var product = await _context.News.FirstOrDefaultAsync(x => x.Id == productDetail.NewsId);
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateStockProduct);
             if (action == null)
                 return new ApiErrorResult<string>("Không tìm thấy hành động");
@@ -406,7 +406,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 UserId = userInfoId,
-                ProductId = product.Id,
+                NewsId = product.Id,
                 Date = DateTime.UtcNow
 
             };
@@ -427,7 +427,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> Update(ProductUpdateRequest request, Guid userInfoId)
         {
-            var product = await _context.Products.FindAsync(request.Id);
+            var product = await _context.News.FindAsync(request.Id);
             if (product == null)
             {
                 return new ApiErrorResult<string>("Không tìm thấy sản phẩm");
@@ -445,7 +445,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 UserId = userInfoId,
-                ProductId = product.Id,
+                NewsId = product.Id,
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
@@ -466,7 +466,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> CreateFeature(int productId, Guid userInfoId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if (product == null)
             {
                 return new ApiErrorResult<string>($"Sản phẩm không tồn tại");
@@ -479,7 +479,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 UserId = userInfoId,
-                ProductId = product.Id,
+                NewsId = product.Id,
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
@@ -499,7 +499,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> DeleteFeature(int productId, Guid userInfoId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if (product == null)
             {
                 return new ApiErrorResult<string>($"Sản phẩm không tồn tại");
@@ -512,7 +512,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 ActionId = action.Id,
                 UserId = userInfoId,
-                ProductId = product.Id,
+                NewsId = product.Id,
                 Date = DateTime.UtcNow
             };
             await _context.Censors.AddAsync(censor);
@@ -532,7 +532,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> CategoryAssign(int id, CategoryAssignRequest request)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.News.FindAsync(id);
             if (product == null)
             {
                 return new ApiErrorResult<string>($"Sản phẩm không tồn tại");
@@ -540,19 +540,19 @@ namespace eRentSolution.Application.Catalog.Products
 
             foreach (var category in request.Categories)
             {
-                var productInCategory = await _context.ProductInCategories
-                    .FirstOrDefaultAsync(x => x.CategoryId == int.Parse(category.Id) && x.ProductId == id);
+                var productInCategory = await _context.NewsInCategories
+                    .FirstOrDefaultAsync(x => x.CategoryId == int.Parse(category.Id) && x.NewsId == id);
 
                 if (productInCategory != null && category.Selected == false)
                 {
-                    _context.ProductInCategories.Remove(productInCategory);
+                    _context.NewsInCategories.Remove(productInCategory);
                 }
                 if (productInCategory == null && category.Selected == true)
                 {
-                    await _context.ProductInCategories.AddAsync(new ProductInCategory()
+                    await _context.NewsInCategories.AddAsync(new NewsInCategory()
                     {
                         CategoryId = int.Parse(category.Id),
-                        ProductId = id,
+                        NewsId = id,
                     });
                 }
             }
@@ -571,7 +571,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> UpdateDetail(ProductDetailUpdateRequest request, Guid userInfoId)
         {
-            var productDetail = await _context.ProductDetails.FindAsync(request.Id);
+            var productDetail = await _context.Products.FindAsync(request.Id);
             if (productDetail == null)
             {
                 return new ApiErrorResult<string>($"Sản phẩm id không tồn tại");
@@ -583,13 +583,13 @@ namespace eRentSolution.Application.Catalog.Products
             productDetail.Stock = request.Stock;
             productDetail.Price = request.Price;
             productDetail.OriginalPrice = request.OriginalPrice;
-            _context.ProductDetails.Update(productDetail);
+            _context.Products.Update(productDetail);
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateProductDetail);
             var censor = new Censor()
             {
                 ActionId = action.Id,
                 UserId = userInfoId,
-                ProductId = productDetail.ProductId,
+                NewsId = productDetail.NewsId,
                 Date = DateTime.UtcNow
             };
             
@@ -611,8 +611,8 @@ namespace eRentSolution.Application.Catalog.Products
         public async Task<ApiResult<string>> IsMyProduct(Guid userId, int productId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
-            var query = from p in _context.Products
-                        join cen in _context.Censors on p.Id equals cen.ProductId
+            var query = from p in _context.News
+                        join cen in _context.Censors on p.Id equals cen.NewsId
                         where cen.UserId == userId && cen.ActionId == action.Id && p.Id == productId
                         select new { p };
 
@@ -624,10 +624,10 @@ namespace eRentSolution.Application.Catalog.Products
         public async Task<ApiResult<string>> AddDetail(ProductDetailCreateRequest request, Guid userInfoId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProductDetail);
-            var product = await _context.Products.FindAsync(request.ProductId);
+            var product = await _context.News.FindAsync(request.ProductId);
             if (product == null)
                 return new ApiErrorResult<string>("Sản phẩm không tồn tại");
-            var productDetail = new ProductDetail()
+            var productDetail = new Product()
             {
                 DateCreated = DateTime.UtcNow,
                 Price = request.Price,
@@ -637,7 +637,7 @@ namespace eRentSolution.Application.Catalog.Products
                 Detail = request.Detail,
                 Length = request.Length,
                 Width = request.Width,
-                ProductId = request.ProductId
+                NewsId = request.ProductId
             };
             // Luu Anh
             if (request.Image != null)
@@ -658,7 +658,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 return new ApiErrorResult<string>("Ảnh đính kèm không tồn tại");
             }
-            await _context.ProductDetails.AddAsync(productDetail);
+            await _context.Products.AddAsync(productDetail);
             int result;
             try
             {
@@ -675,7 +675,7 @@ namespace eRentSolution.Application.Catalog.Products
                 ActionId = action.Id,
                 UserId = userInfoId,
                 Date = DateTime.UtcNow,
-                ProductId = product.Id
+                NewsId = product.Id
             };
             await _context.Censors.AddAsync(censors);
             try
@@ -692,11 +692,11 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> DeleteDetail(int productDetailId, Guid userId)
         {
-            var detail = await _context.ProductDetails.FindAsync(productDetailId);
+            var detail = await _context.Products.FindAsync(productDetailId);
             if (detail == null)
                 return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
 
-            _context.ProductDetails.Remove(detail);
+            _context.Products.Remove(detail);
             int result;
             try
             {
@@ -708,7 +708,7 @@ namespace eRentSolution.Application.Catalog.Products
             }
             if (result > 0)
             {
-                var Imgages = _context.ProductImages.Where(p => p.ProductDetailId == productDetailId);
+                var Imgages = _context.ProductImages.Where(p => p.ProductId == productDetailId);
                 foreach (var image in Imgages)
                 {
                     int isDeleteSuccess = _storageService.DeleteFile(image.ImagePath);
@@ -721,7 +721,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     ActionId = action.Id,
                     Date = DateTime.UtcNow,
-                    ProductId = detail.ProductId,
+                    NewsId = detail.NewsId,
                     UserId = userId,
                 };
                 _context.Censors.Add(censor);
@@ -740,7 +740,7 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<ProductDetailViewModel>> GetProductDetailById(int productDetailId)
         {
-            var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
+            var productDetail = await _context.Products.FindAsync(productDetailId);
             if (productDetail == null)
                 return new ApiErrorResult<ProductDetailViewModel>("Không tìm thấy chi tiết sản phẩm");
 
@@ -760,20 +760,20 @@ namespace eRentSolution.Application.Catalog.Products
                 ProductDetailName = productDetail.Name,
                 Price = productDetail.Price,
                 Stock = productDetail.Stock,
-                ProductId = productDetail.ProductId
+                ProductId = productDetail.NewsId
             };
             return new ApiSuccessResult<ProductDetailViewModel>(viewModel);
         }
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetAllPaging(GetProductPagingRequest request)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
-            var query = from p in _context.Products
+            var query = from p in _context.News
                             //join pd in _context.ProductDetails on p.Id equals pd.Id
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        join pic in _context.NewsInCategories on p.Id equals pic.NewsId into ppic
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                        join cen in _context.Censors on p.Id equals cen.ProductId
+                        join cen in _context.Censors on p.Id equals cen.NewsId
                         join u in _context.AppUsers on cen.UserId equals u.Id
                         where u.Status == Status.Active
                              && cen.ActionId == action.Id
@@ -888,7 +888,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
                 item.ProductDetailViewModels = productDetails.ResultObject;
-                var status = await _context.ProductStatus.FirstOrDefaultAsync(x => x.Id == item.StatusId);
+                var status = await _context.NewsStatuses.FirstOrDefaultAsync(x => x.Id == item.StatusId);
                 item.Status = status.StatusName;
                 foreach (var productDetail in productDetails.ResultObject)
                 {
@@ -927,19 +927,19 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<ProductViewModel>> GetById(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.News.FindAsync(id);
             if (product == null)
                 return new ApiErrorResult<ProductViewModel>("Không tìm thấy sản phẩm");
 
             var categories = await (from c in _context.Categories
-                                    join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
-                                    where pic.ProductId == id
+                                    join pic in _context.NewsInCategories on c.Id equals pic.CategoryId
+                                    where pic.NewsId == id
                                     select c.Name).ToListAsync();
 
             var productDetails = await GetDetailsByProductId(product.Id);
             if (!productDetails.IsSuccessed)
                 return new ApiErrorResult<ProductViewModel>(productDetails.Message);
-            var status = await _context.ProductStatus.FirstOrDefaultAsync(x => x.Id == product.StatusId);
+            var status = await _context.NewsStatuses.FirstOrDefaultAsync(x => x.Id == product.StatusId);
             var productViewModel = new ProductViewModel()
             {
                 DateCreated = product.DateCreated,
@@ -980,9 +980,9 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<List<ProductDetailViewModel>>> GetDetailsByProductId(int productId)
         {
-            var query = from pd in _context.ProductDetails
-                        join p in _context.Products on pd.ProductId equals p.Id
-                        where pd.ProductId == productId
+            var query = from pd in _context.Products
+                        join p in _context.News on pd.NewsId equals p.Id
+                        where pd.NewsId == productId
                         select new { pd };
             var productDetails = await query.Select(x => new ProductDetailViewModel()
             {
@@ -1009,9 +1009,9 @@ namespace eRentSolution.Application.Catalog.Products
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetFeaturedProducts(GetProductPagingRequest request)
         {
             //1. Select join
-            var query = from p in _context.Products
-                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+            var query = from p in _context.News
+                        join pd in _context.Products on p.Id equals pd.NewsId
+                        join pic in _context.NewsInCategories on p.Id equals pic.NewsId into ppic
                         from pic in ppic.DefaultIfEmpty()
                         where p.IsFeatured == Status.Active &&  p.StatusId == (int)(object)Status.Active
                         select new { p, pd, pic };
@@ -1049,7 +1049,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
                 item.ProductDetailViewModels = productDetails.ResultObject;
-                var status = await _context.ProductStatus.FirstOrDefaultAsync(x => x.Id == item.StatusId);
+                var status = await _context.NewsStatuses.FirstOrDefaultAsync(x => x.Id == item.StatusId);
                 item.Status = status.StatusName;
                 foreach (var productDetail in productDetails.ResultObject)
                 {
@@ -1090,9 +1090,9 @@ namespace eRentSolution.Application.Catalog.Products
         public async Task<ApiResult<List<ProductViewModel>>> GetLastestProducts(int take)
         {
             //1. Select join
-            var query = from p in _context.Products
-                        join pd in _context.ProductDetails on p.Id equals pd.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+            var query = from p in _context.News
+                        join pd in _context.Products on p.Id equals pd.NewsId
+                        join pic in _context.NewsInCategories on p.Id equals pic.NewsId into ppic
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
@@ -1129,9 +1129,9 @@ namespace eRentSolution.Application.Catalog.Products
         public async Task<ApiResult<PagedResult<ProductViewModel>>> GetPageProductByUserID(GetProductPagingRequest request, Guid userId)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
-            var query = from p in _context.Products
-                        join cen in _context.Censors on p.Id equals cen.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
+            var query = from p in _context.News
+                        join cen in _context.Censors on p.Id equals cen.NewsId
+                        join pic in _context.NewsInCategories on p.Id equals pic.NewsId into ppic
                         from pic in ppic.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
@@ -1189,7 +1189,7 @@ namespace eRentSolution.Application.Catalog.Products
             {
                 var productDetails = await GetDetailsByProductId(item.Id);
                 item.ProductDetailViewModels = productDetails.ResultObject;
-                var status = await _context.ProductStatus.FirstOrDefaultAsync(x => x.Id == item.StatusId);
+                var status = await _context.NewsStatuses.FirstOrDefaultAsync(x => x.Id == item.StatusId);
                 item.Status = status.StatusName; 
                 foreach (var productDetail in productDetails.ResultObject)
                 {
@@ -1231,8 +1231,8 @@ namespace eRentSolution.Application.Catalog.Products
         public async Task<ApiResult<PagedResult<UserProductStatisticViewModel>>> GetStatisticUserProduct(GetProductPagingRequest request)
         {
             var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateProduct);
-            var query = from p in _context.Products
-                        join cen in _context.Censors on p.Id equals cen.ProductId
+            var query = from p in _context.News
+                        join cen in _context.Censors on p.Id equals cen.NewsId
                         //join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
                         //from pic in ppic.DefaultIfEmpty()
                         join u in _context.AppUsers on cen.UserId equals u.Id
@@ -1241,7 +1241,7 @@ namespace eRentSolution.Application.Catalog.Products
             if(request.CategoryId!=null)
             {
                 query = (from qr in query
-                        join pic in _context.ProductInCategories on qr.p.Id equals pic.ProductId into ppic
+                        join pic in _context.NewsInCategories on qr.p.Id equals pic.NewsId into ppic
                         from pic in ppic.DefaultIfEmpty()
                         where pic.CategoryId == request.CategoryId
                         select new { qr.u, qr.p }).Distinct();
@@ -1281,12 +1281,12 @@ namespace eRentSolution.Application.Catalog.Products
             if (productImage == null)
                 return new ApiErrorResult<string>("Không tìm thấy ảnh");
 
-            var productDetail = await _context.ProductDetails.FindAsync(productImage.ProductDetailId);
+            var productDetail = await _context.Products.FindAsync(productImage.ProductId);
             if (productDetail == null)
                 return new ApiErrorResult<string>("Không tìm thấy chi tiết sản phẩm");
 
-            var listProductImages = from pd in _context.ProductDetails
-                                    join i in _context.ProductImages on pd.Id equals i.ProductDetailId
+            var listProductImages = from pd in _context.Products
+                                    join i in _context.ProductImages on pd.Id equals i.ProductId
                                     select new { i };
             if (listProductImages.Count() <= 1)
                 return new ApiErrorResult<string>("Không thể xóa ảnh cuối cùng của chi tiết này");
@@ -1312,7 +1312,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     ActionId = action.Id,
                     Date = DateTime.UtcNow,
-                    ProductId = productDetail.ProductId,
+                    NewsId = productDetail.NewsId,
                     UserId = userId,
                 };
                 _context.Censors.Add(censor);
@@ -1323,14 +1323,14 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<string>> AddImage(ProductImageCreateRequest request, Guid userId)
         {
-            var product = await _context.Products.FindAsync(request.ProductId);
+            var product = await _context.News.FindAsync(request.ProductId);
             if (product == null)
                 return new ApiErrorResult<string>($"Sản phẩm id={request.ProductDetailId} không tồn tại");
             var productImage = new ProductImage()
             {
                 Caption = request.Caption == null ? "Non-caption" : request.Caption,
                 DateCreated = DateTime.UtcNow,
-                ProductDetailId = request.ProductDetailId
+                ProductId = request.ProductDetailId
             };
             if (request.ImageFile != null)
             {
@@ -1354,7 +1354,7 @@ namespace eRentSolution.Application.Catalog.Products
                 {
                     ActionId = action.Id,
                     Date = DateTime.UtcNow,
-                    ProductId = product.Id,
+                    NewsId = product.Id,
                     UserId = userId,
                 };
                 _context.Censors.Add(censor);
@@ -1388,12 +1388,12 @@ namespace eRentSolution.Application.Catalog.Products
             if (result > 0)
             {
                 var action = await _context.UserActions.FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.UpdateImage);
-                var detail = await _context.ProductDetails.FindAsync(productImage.ProductDetailId);
+                var detail = await _context.Products.FindAsync(productImage.ProductId);
                 var censor = new Censor()
                 {
                     ActionId = action.Id,
                     Date = DateTime.UtcNow,
-                    ProductId = detail.ProductId,
+                    NewsId = detail.NewsId,
                     UserId = userId,
                 };
                 _context.Censors.Add(censor);
@@ -1413,7 +1413,7 @@ namespace eRentSolution.Application.Catalog.Products
                 ImagePath = image.ImagePath,
                 FileSize = image.FileSize,
                 DateCreated = image.DateCreated,
-                ProductDetailId = image.ProductDetailId,
+                ProductDetailId = image.ProductId,
                 Id = image.Id,
                 IsDefault = image.IsDefault
             };
@@ -1421,14 +1421,14 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<List<ProductImageViewModel>>> GetListImage(int productId)
         {
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.News.FindAsync(productId);
             if (product == null)
                 return new ApiErrorResult<List<ProductImageViewModel>> ("Không tìm thấy sản phẩm");
-            var productDetail = await _context.ProductDetails.FirstOrDefaultAsync(x => x.ProductId == productId);
+            var productDetail = await _context.Products.FirstOrDefaultAsync(x => x.NewsId == productId);
             if (productDetail == null)
                 return new ApiErrorResult<List<ProductImageViewModel>>("Không tìm thấy chi tiết sản phẩm");
 
-            var images = await _context.ProductImages.Where(x => x.ProductDetailId == productDetail.Id)
+            var images = await _context.ProductImages.Where(x => x.ProductId == productDetail.Id)
                         .Select(i => new ProductImageViewModel()
                         {
                             Caption = i.Caption,
@@ -1443,10 +1443,10 @@ namespace eRentSolution.Application.Catalog.Products
         }
         public async Task<ApiResult<List<ProductImageViewModel>>> GetListImageByProductDetailId(int productDetailId)
         {
-            var productDetail = await _context.ProductDetails.FindAsync(productDetailId);
+            var productDetail = await _context.Products.FindAsync(productDetailId);
             if (productDetail == null)
                 return new ApiErrorResult<List<ProductImageViewModel>>("Không tìm thấy chi tiết sản phẩm");
-            var images = await _context.ProductImages.Where(x => x.ProductDetailId == productDetail.Id)
+            var images = await _context.ProductImages.Where(x => x.ProductId == productDetail.Id)
                         .Select(i => new ProductImageViewModel()
                         {
                             Caption = i.Caption,

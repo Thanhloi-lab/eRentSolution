@@ -4,10 +4,10 @@ using System.Text;
 
 namespace eRentSolution.Data.Entities
 {
-    public class ProductStatus
+    public class NewsStatus
     {
         public int Id { get; set; }
         public string StatusName { get; set; }
-        public Product Product { get; set; }
+        public News News { get; set; }
     }
 }

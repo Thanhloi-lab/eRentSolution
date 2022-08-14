@@ -10,7 +10,7 @@ using eRentSolution.Data.EF;
 namespace eRentSolution.Data.Migrations
 {
     [DbContext(typeof(eRentDbContext))]
-    [Migration("20220809135917_first-gen")]
+    [Migration("20220813094805_firstgen")]
     partial class firstgen
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -181,7 +181,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983de"),
-                            ConcurrencyStamp = "a7cbe7b0-6e12-4500-afae-e29dba954f4c",
+                            ConcurrencyStamp = "0662406b-9145-4a0b-8530-52ade85f6a34",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -189,7 +189,7 @@ namespace eRentSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("e4df483b-524d-467b-b6f4-2ee002742987"),
-                            ConcurrencyStamp = "bb800e52-91c7-4d9f-adc2-7e03f7818080",
+                            ConcurrencyStamp = "681d57ac-da00-4b3f-bc3b-38c2b42c1451",
                             Description = "User admin role",
                             Name = "UserAdmin",
                             NormalizedName = "useradmin"
@@ -283,8 +283,8 @@ namespace eRentSolution.Data.Migrations
                             AccessFailedCount = 0,
                             AvatarFilePath = "default_avatar.png",
                             AvatarFileSize = 15131L,
-                            ConcurrencyStamp = "59e7e0f5-5ce5-463d-b34e-6e51c7342372",
-                            DateChangePassword = new DateTime(2022, 8, 9, 13, 59, 16, 727, DateTimeKind.Utc).AddTicks(9434),
+                            ConcurrencyStamp = "c3205165-8282-4e59-96e5-66722162080c",
+                            DateChangePassword = new DateTime(2022, 8, 13, 9, 48, 4, 799, DateTimeKind.Utc).AddTicks(2624),
                             Dob = new DateTime(2000, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "caothanhloi@gmail.com",
                             EmailConfirmed = true,
@@ -293,7 +293,7 @@ namespace eRentSolution.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "caothanhloi@gmail.com",
                             NormalizedUserName = "thanhloi",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFb8rcCqMymX3R0fY8aLfg3qPGhR/myZFBOKDVdCeVZ2QAyWbcPn8RGaG9em0+uZmA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKejfrxhhzrjh78Y1xAhX1W2T2APENUA8voYfq5A5CHUFzPz2qXkc+tJD8G2oDJ3qA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             Status = 2,
@@ -392,7 +392,7 @@ namespace eRentSolution.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("NewsId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
@@ -402,7 +402,7 @@ namespace eRentSolution.Data.Migrations
 
                     b.HasIndex("ActionId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("NewsId");
 
                     b.HasIndex("UserId");
 
@@ -413,8 +413,8 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             ActionId = 1,
-                            Date = new DateTime(2022, 8, 9, 13, 59, 16, 753, DateTimeKind.Utc).AddTicks(3245),
-                            ProductId = 1,
+                            Date = new DateTime(2022, 8, 13, 9, 48, 4, 824, DateTimeKind.Utc).AddTicks(3020),
+                            NewsId = 1,
                             UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00dd")
                         });
                 });
@@ -455,7 +455,7 @@ namespace eRentSolution.Data.Migrations
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.News", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -517,7 +517,7 @@ namespace eRentSolution.Data.Migrations
                         {
                             Id = 1,
                             Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
-                            DateCreated = new DateTime(2022, 8, 9, 13, 59, 16, 752, DateTimeKind.Utc).AddTicks(1111),
+                            DateCreated = new DateTime(2022, 8, 13, 9, 48, 4, 823, DateTimeKind.Utc).AddTicks(797),
                             Description = "HomeStay Thanh Loi tại pờ tít",
                             IsFeatured = 1,
                             Name = "HomeStay Thanh Loi",
@@ -529,137 +529,29 @@ namespace eRentSolution.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Detail")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<int>("Length")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<decimal>("OriginalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(2);
-
-                    b.Property<int>("Stock")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<int>("Width")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DateCreated = new DateTime(2022, 8, 9, 13, 59, 16, 752, DateTimeKind.Utc).AddTicks(6766),
-                            Detail = "2 nvs .....",
-                            Length = 10,
-                            Name = "Phòng 1 chổ nằm",
-                            OriginalPrice = 100000m,
-                            Price = 200000m,
-                            ProductId = 1,
-                            Status = 0,
-                            Stock = 0,
-                            Width = 5
-                        });
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Caption")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<bool>("IsDefault")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<int>("ProductDetailId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductDetailId");
-
-                    b.ToTable("ProductImages");
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductInCategory", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.NewsInCategory", b =>
                 {
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("NewsId")
                         .HasColumnType("int");
 
-                    b.HasKey("CategoryId", "ProductId");
+                    b.HasKey("CategoryId", "NewsId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("NewsId");
 
-                    b.ToTable("ProductInCategories");
+                    b.ToTable("NewsInCategories");
 
                     b.HasData(
                         new
                         {
                             CategoryId = 1,
-                            ProductId = 1
+                            NewsId = 1
                         });
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductStatus", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.NewsStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -698,6 +590,114 @@ namespace eRentSolution.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Detail")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("NewsId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("OriginalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(2);
+
+                    b.Property<int>("Stock")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NewsId");
+
+                    b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DateCreated = new DateTime(2022, 8, 13, 9, 48, 4, 823, DateTimeKind.Utc).AddTicks(6545),
+                            Detail = "2 nvs .....",
+                            Length = 10,
+                            Name = "Phòng 1 chổ nằm",
+                            NewsId = 1,
+                            OriginalPrice = 100000m,
+                            Price = 200000m,
+                            Status = 0,
+                            Stock = 0,
+                            Width = 5
+                        });
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.ProductImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Caption")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("IsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
+                });
+
             modelBuilder.Entity("eRentSolution.Data.Entities.Slide", b =>
                 {
                     b.Property<int>("Id")
@@ -722,7 +722,7 @@ namespace eRentSolution.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("NewsId")
                         .HasColumnType("int");
 
                     b.Property<int>("SortOrder")
@@ -740,7 +740,7 @@ namespace eRentSolution.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("NewsId");
 
                     b.ToTable("Slides");
                 });
@@ -889,9 +889,9 @@ namespace eRentSolution.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eRentSolution.Data.Entities.Product", "Product")
+                    b.HasOne("eRentSolution.Data.Entities.News", "News")
                         .WithMany("Censors")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("NewsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -903,72 +903,72 @@ namespace eRentSolution.Data.Migrations
 
                     b.Navigation("AdminAction");
 
-                    b.Navigation("Product");
+                    b.Navigation("News");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.News", b =>
                 {
-                    b.HasOne("eRentSolution.Data.Entities.ProductStatus", "ProductStatus")
-                        .WithOne("Product")
-                        .HasForeignKey("eRentSolution.Data.Entities.Product", "StatusId")
+                    b.HasOne("eRentSolution.Data.Entities.NewsStatus", "NewsStatus")
+                        .WithOne("News")
+                        .HasForeignKey("eRentSolution.Data.Entities.News", "StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ProductStatus");
+                    b.Navigation("NewsStatus");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductDetail", b =>
-                {
-                    b.HasOne("eRentSolution.Data.Entities.Product", "Product")
-                        .WithMany("ProductDetails")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductImage", b =>
-                {
-                    b.HasOne("eRentSolution.Data.Entities.ProductDetail", "ProductDetail")
-                        .WithMany("ProductImages")
-                        .HasForeignKey("ProductDetailId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ProductDetail");
-                });
-
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductInCategory", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.NewsInCategory", b =>
                 {
                     b.HasOne("eRentSolution.Data.Entities.Category", "Category")
-                        .WithMany("ProductInCategories")
+                        .WithMany("NewsInCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("eRentSolution.Data.Entities.Product", "Product")
-                        .WithMany("ProductInCategories")
-                        .HasForeignKey("ProductId")
+                    b.HasOne("eRentSolution.Data.Entities.News", "News")
+                        .WithMany("NewsInCategories")
+                        .HasForeignKey("NewsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("News");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
+                {
+                    b.HasOne("eRentSolution.Data.Entities.News", "News")
+                        .WithMany("Products")
+                        .HasForeignKey("NewsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("News");
+                });
+
+            modelBuilder.Entity("eRentSolution.Data.Entities.ProductImage", b =>
+                {
+                    b.HasOne("eRentSolution.Data.Entities.Product", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Slide", b =>
                 {
-                    b.HasOne("eRentSolution.Data.Entities.Product", "Product")
+                    b.HasOne("eRentSolution.Data.Entities.News", "News")
                         .WithMany("Slides")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("NewsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("News");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.AppUser", b =>
@@ -978,28 +978,28 @@ namespace eRentSolution.Data.Migrations
 
             modelBuilder.Entity("eRentSolution.Data.Entities.Category", b =>
                 {
-                    b.Navigation("ProductInCategories");
+                    b.Navigation("NewsInCategories");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.News", b =>
                 {
                     b.Navigation("Censors");
 
-                    b.Navigation("ProductDetails");
+                    b.Navigation("NewsInCategories");
 
-                    b.Navigation("ProductInCategories");
+                    b.Navigation("Products");
 
                     b.Navigation("Slides");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductDetail", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.NewsStatus", b =>
                 {
-                    b.Navigation("ProductImages");
+                    b.Navigation("News");
                 });
 
-            modelBuilder.Entity("eRentSolution.Data.Entities.ProductStatus", b =>
+            modelBuilder.Entity("eRentSolution.Data.Entities.Product", b =>
                 {
-                    b.Navigation("Product");
+                    b.Navigation("ProductImages");
                 });
 
             modelBuilder.Entity("eRentSolution.Data.Entities.UserAction", b =>

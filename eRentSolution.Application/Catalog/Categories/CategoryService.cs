@@ -66,7 +66,7 @@ namespace eRentSolution.Application.Catalog.Categories
         public async Task<ApiResult<string>> DeleteCategory(int categoryId)
         {
             var query = from c in _context.Categories
-                        join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
+                        join pic in _context.NewsInCategories on c.Id equals pic.CategoryId
                         where c.Id == categoryId
                         select new { c };
 
@@ -110,8 +110,8 @@ namespace eRentSolution.Application.Catalog.Categories
         public async Task<ApiResult<List<CategoryViewModel>>> GetAllCategoryByProductId(int productId)
         {
             var query = from c in _context.Categories
-                        join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
-                        join p in _context.Products on pic.ProductId equals p.Id
+                        join pic in _context.NewsInCategories on c.Id equals pic.CategoryId
+                        join p in _context.News on pic.NewsId equals p.Id
                         where p.Id == productId
                         select new { c };
             if(query.Count()<0)
@@ -177,7 +177,7 @@ namespace eRentSolution.Application.Catalog.Categories
                 return new ApiErrorResult<string>("Danh mục không tồn tại");
 
             var query = from c in _context.Categories
-                        join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
+                        join pic in _context.NewsInCategories on c.Id equals pic.CategoryId
                         where c.Id == request.CategoryId
                         select new { c };
 

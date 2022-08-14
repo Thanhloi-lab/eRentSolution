@@ -4,11 +4,11 @@ using System.Text;
 
 namespace eRentSolution.Data.Entities
 {
-    public class ProductInCategory
+    public class NewsInCategory
     {
-        public int ProductId { get; set; }
+        public int NewsId { get; set; }
         public int CategoryId { get; set; }
-        public Product Product { get; set; }
+        public News News { get; set; }
         public Category Category { get; set; }
     }
 }

@@ -566,7 +566,7 @@ namespace eRentSolution.Application.System.Users
             var query = from ui in _context.AppUsers
                         join c in _context.Censors on ui.Id equals c.UserId
                         join a in _context.UserActions on c.ActionId equals a.Id
-                        join p in _context.Products on c.ProductId equals p.Id
+                        join p in _context.News on c.NewsId equals p.Id
                         where ui.Id == request.Id
                         select new { ui, a, p, c };
 
@@ -596,7 +596,7 @@ namespace eRentSolution.Application.System.Users
             var query = from ui in _context.AppUsers
                         join c in _context.Censors on ui.Id equals c.UserId
                         join a in _context.UserActions on c.ActionId equals a.Id
-                        join p in _context.Products on c.ProductId equals p.Id
+                        join p in _context.News on c.NewsId equals p.Id
                         select new { ui, a, p, c };
             if (!string.IsNullOrEmpty(request.Keyword))
             {
@@ -634,7 +634,7 @@ namespace eRentSolution.Application.System.Users
             var query = (from u in _context.AppUsers
                          join c in _context.Censors on u.Id equals c.UserId
                          join a in _context.UserActions on c.ActionId equals a.Id
-                         join p in _context.Products on c.ProductId equals p.Id
+                         join p in _context.News on c.NewsId equals p.Id
                          where p.Id == productId && a.ActionName == action.ActionName
                          select new { u }).FirstOrDefault();
             var user = new UserViewModel()

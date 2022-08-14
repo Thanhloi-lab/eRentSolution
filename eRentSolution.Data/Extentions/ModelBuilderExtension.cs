@@ -44,30 +44,30 @@ namespace eRentSolution.Data.Extentions
                      ImageSize = 3021
                  }) ;
 
-            modelBuilder.Entity<ProductStatus>().HasData(
-               new ProductStatus()
+            modelBuilder.Entity<NewsStatus>().HasData(
+               new NewsStatus()
                {
                    Id = 1,
                    StatusName = "Khóa hoạt động"
                },
-               new ProductStatus()
+               new NewsStatus()
                {
                    Id = 2,
                    StatusName = "Hoạt động"
                },
-               new ProductStatus()
+               new NewsStatus()
                {
                    Id = 3,
                    StatusName = "Chờ duyệt"
                },
-               new ProductStatus()
+               new NewsStatus()
                {
                    Id = 4,
                    StatusName = "Ẩn"
                });
 
-            modelBuilder.Entity<ProductInCategory>().HasData(
-                new ProductInCategory() { ProductId = 1, CategoryId = 1 }
+            modelBuilder.Entity<NewsInCategory>().HasData(
+                new NewsInCategory() { NewsId = 1, CategoryId = 1 }
                 );
             // any guid
             var roleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DE");
@@ -108,8 +108,8 @@ namespace eRentSolution.Data.Extentions
                 Dob = new DateTime(2000, 01, 31),
             }) ;
 
-            modelBuilder.Entity<Product>().HasData(
-           new Product()
+            modelBuilder.Entity<News>().HasData(
+           new News()
            {
                Id = 1,
                DateCreated = DateTime.UtcNow,
@@ -123,8 +123,8 @@ namespace eRentSolution.Data.Extentions
                Address = "TP.HCM-Hóc Môn-Xã Tân Thới Nhì-Ấp Dân Thắng 1, 77/3",
                StatusId = 2,
            }) ;
-            modelBuilder.Entity<ProductDetail>().HasData(
-           new ProductDetail()
+            modelBuilder.Entity<Product>().HasData(
+           new Product()
            {
                Id = 1,
                DateCreated = DateTime.UtcNow,
@@ -132,7 +132,7 @@ namespace eRentSolution.Data.Extentions
                Price = 200000,
                Stock = 0,
                Name = "Phòng 1 chổ nằm",
-               ProductId = 1,
+               NewsId = 1,
                Detail = "2 nvs .....",
                Width = 5,
                Length = 10
@@ -259,7 +259,7 @@ namespace eRentSolution.Data.Extentions
                ActionId = 1,
                Date = DateTime.UtcNow,
                UserId = adminId,
-               ProductId = 1,
+               NewsId = 1,
                Id = 1
            });
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>

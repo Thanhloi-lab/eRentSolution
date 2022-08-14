@@ -7,9 +7,9 @@ using System.Text;
 
 namespace eRentSolution.Data.Configurations
 {
-    public class ProductStatusConfiguration : IEntityTypeConfiguration<ProductStatus>
+    public class ProductStatusConfiguration : IEntityTypeConfiguration<NewsStatus>
     {
-        public void Configure(EntityTypeBuilder<ProductStatus> builder)
+        public void Configure(EntityTypeBuilder<NewsStatus> builder)
         {
             builder.ToTable("ProductStatuses");
 

@@ -18,9 +18,9 @@ namespace eRentSolution.Data.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new AppConfigConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new NewsConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductInCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new NewsInCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ContactConfiguration());
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
@@ -28,7 +28,7 @@ namespace eRentSolution.Data.EF
             modelBuilder.ApplyConfiguration(new UserActionConfiguration());
             modelBuilder.ApplyConfiguration(new SlideConfiguration());
             modelBuilder.ApplyConfiguration(new CensorConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductStatusConfiguration());
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
@@ -41,18 +41,18 @@ namespace eRentSolution.Data.EF
 
             //base.OnModelCreating(modelBuilder);
         }
-        public DbSet<Product> Products { get; set; }
+        public DbSet<News> News { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<AppConfig> AppConfigs { get; set; }
-        public DbSet<ProductInCategory> ProductInCategories { get; set; }
+        public DbSet<NewsInCategory> NewsInCategories { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<UserAction> UserActions { get; set; }
         public DbSet<Censor> Censors { get; set; }
         public DbSet<Slide> Slides { get; set; }
-        public DbSet<ProductDetail> ProductDetails { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<IdentityUserRole<Guid>> UserRoles { get; set; }
-        public DbSet<ProductStatus> ProductStatus { get; set; }
+        public DbSet<NewsStatus> NewsStatuses { get; set; }
     }
 }

@@ -17,6 +17,6 @@ namespace eRentSolution.Data.Entities
         public string ImagePath { get; set; }
         public long ImageSize { get; set; }
         public DateTime DateCreate { get; set; }
-        public List<ProductInCategory> ProductInCategories { get; set; }
+        public List<NewsInCategory> NewsInCategories { get; set; }
     }
 }

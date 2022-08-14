@@ -12,10 +12,10 @@ namespace eRentSolution.Data.Entities
         public string Name { set; get; }
         public string Description { set; get; }
         public string Url { set; get; }
-        public int ProductId { get; set; }
+        public int NewsId { get; set; }
         public string ImagePath { get; set; }
         public int SortOrder { get; set; }
         public Status Status { set; get; }
-        public Product Product { get; set; }
+        public News News { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace eRentSolution.Data.Configurations
             builder.Property(x => x.Url).HasMaxLength(200).IsRequired();
             builder.Property(x => x.ImagePath).HasMaxLength(200).IsRequired();
             builder.Property(x => x.Status).HasDefaultValue(Status.Active).IsRequired();
-            builder.HasOne(x => x.Product).WithMany(x => x.Slides).HasForeignKey(x => x.ProductId);
+            builder.HasOne(x => x.News).WithMany(x => x.Slides).HasForeignKey(x => x.NewsId);
         }
     }
 }

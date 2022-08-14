@@ -35,7 +35,7 @@ namespace eRentSolution.Application.Utilities.Slides
             var action = await _context.UserActions
                 .FirstOrDefaultAsync(x => x.ActionName == SystemConstant.ActionSettings.CreateSlide);
             
-            var product = await _context.Products.FindAsync(request.ProductId);
+            var product = await _context.News.FindAsync(request.ProductId);
             if (product == null)
                 return new ApiErrorResult<string>("Sản phẩm không tồn tại");
 
@@ -44,7 +44,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 Name = request.Name,
                 Description = request.Description,
                 ImagePath = await this.SaveFile(request.ImageFile),
-                ProductId = request.ProductId,
+                NewsId = request.ProductId,
                 Url = request.ProductUrl + request.ProductId,
                 Status = Data.Enums.Status.Active
             };
@@ -57,7 +57,7 @@ namespace eRentSolution.Application.Utilities.Slides
                     ActionId = action.Id,
                     UserId = userInfoId,
                     Date = DateTime.UtcNow,
-                    ProductId = product.Id
+                    NewsId = product.Id
                 };
                  await _context.Censors.AddAsync(censor);
             }
@@ -89,7 +89,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 ActionId = action.Id,
                 UserId = userInfoId,
                 Date = DateTime.UtcNow,
-                ProductId = slide.ProductId
+                NewsId = slide.NewsId
             };
             await _context.Censors.AddAsync(censor);
             result = await _context.SaveChangesAsync();
@@ -115,7 +115,7 @@ namespace eRentSolution.Application.Utilities.Slides
                     ActionId = action.Id,
                     UserId = userInfoId,
                     Date = DateTime.UtcNow,
-                    ProductId = slide.ProductId
+                    NewsId = slide.NewsId
                 };
                 await _context.Censors.AddAsync(censor);
                 result = await _context.SaveChangesAsync();
@@ -145,7 +145,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 ActionId = action.Id,
                 UserId = userInfoId,
                 Date = DateTime.UtcNow,
-                ProductId = slide.ProductId
+                NewsId = slide.NewsId
             };
             await _context.Censors.AddAsync(censor);
             result = await _context.SaveChangesAsync();
@@ -176,7 +176,7 @@ namespace eRentSolution.Application.Utilities.Slides
                 ActionId = action.Id,
                 UserId = userInfoId,
                 Date = DateTime.UtcNow,
-                ProductId = slide.ProductId
+                NewsId = slide.NewsId
             };
 
             await _context.Censors.AddAsync(censor);
@@ -196,12 +196,12 @@ namespace eRentSolution.Application.Utilities.Slides
                 Description = x.Description,
                 FilePath = x.ImagePath,
                 Name = x.Name,
-                ProductId = x.ProductId,
+                ProductId = x.NewsId,
                 Url = x.Url,
             }).ToListAsync();
             foreach (var item in slides)
             {
-                var product = await _context.Products.FindAsync(item.ProductId);
+                var product = await _context.News.FindAsync(item.ProductId);
                 item.ProductName = product.Name;
             }
             return new ApiSuccessResult<List<SlideViewModel>>(slides);
@@ -209,7 +209,7 @@ namespace eRentSolution.Application.Utilities.Slides
         public async Task<ApiResult<PagedResult<SlideViewModel>>> GetAllPaging(GetSlidePagingRequest request)
         {
             var query = from s in _context.Slides
-                        join p in _context.Products on s.ProductId equals p.Id
+                        join p in _context.News on s.NewsId equals p.Id
                         
                         select new { s, p};
 
@@ -291,11 +291,11 @@ namespace eRentSolution.Application.Utilities.Slides
                 FilePath = slide.ImagePath,
                 Url = slide.Url,
                 Name = slide.Name,
-                ProductId = slide.ProductId,
+                ProductId = slide.NewsId,
                 Status = slide.Status
             };
 
-            var product = await _context.Products.FindAsync(slideViewModel.ProductId);
+            var product = await _context.News.FindAsync(slideViewModel.ProductId);
             slideViewModel.ProductName = product.Name;
             return new ApiSuccessResult<SlideViewModel>(slideViewModel);
         }

@@ -12,20 +12,19 @@ namespace eRentSolution.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.ToTable("News");
-
+            builder.ToTable("Products");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
-
-            builder.Property(x => x.ViewCount).IsRequired().HasDefaultValue(0);
-            builder.Property(x => x.Id).UseIdentityColumn();
+            builder.Property(x => x.Price).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(x => x.OriginalPrice).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(x => x.Stock).IsRequired().HasDefaultValue(0);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
-            builder.Property(x => x.Description).IsRequired().HasMaxLength(2000);
-            builder.Property(x => x.IsFeatured).IsRequired().HasDefaultValue(Status.InActive);
-            builder.Property(x => x.Address).HasMaxLength(300).IsRequired();
-            builder.Property(x => x.StatusId).IsRequired().HasDefaultValue(Status.Private);
+            builder.Property(x => x.Status).IsRequired().HasDefaultValue(Status.Active);
+            builder.Property(x => x.Detail).HasMaxLength(1000).IsRequired();
+            builder.Property(x => x.Width).IsRequired();
+            builder.Property(x => x.Length).IsRequired();
 
-            builder.HasOne(x => x.ProductStatus).WithOne(x => x.Product).HasForeignKey<Product>(x => x.StatusId);
+            builder.HasOne(x => x.News).WithMany(x => x.Products).HasForeignKey(x => x.NewsId);
         }
     }
 }
