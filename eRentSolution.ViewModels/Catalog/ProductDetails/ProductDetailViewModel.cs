@@ -12,8 +12,10 @@ namespace eRentSolution.ViewModels.Catalog.ProductDetails
         public int Id { set; get; }
         [Display(Name = "Tên loại sản phẩm")]
         public string ProductDetailName { set; get; }
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         [Display(Name = "Giá")]
         public decimal Price { set; get; }
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         [Display(Name = "Giá gốc")]
         public decimal OriginalPrice { set; get; }
         [Display(Name = "Tồn kho")]
