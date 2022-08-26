@@ -2,7 +2,7 @@
 @model PagedResult<eRentSolution.ViewModels.Catalog.Products.ProductViewModel>
 
 @{
-    ViewData["Title"] = "Danh sách sản phẩm nổi bật";
+    ViewData["Title"] = "Danh sách tin tức nổi bật";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Scripts{
@@ -13,7 +13,7 @@
     </script>
 }
 <div class="container-fluid">
-    <h1 class="mt-4">Danh sách sản phẩm nổi bật</h1>
+    <h1 class="mt-4">Danh sách tin tức nổi bật</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
         <li class="breadcrumb-item active">Danh sách</li>
@@ -62,10 +62,10 @@
                     <thead>
                         <tr>
                             <th>
-                                Mã sản phẩm
+                                Mã tin tức
                             </th>
                             <th>
-                                Tên sản phẩm
+                                Tên tin tức
                             </th>
                             <th>
                                 Giá hiện tại

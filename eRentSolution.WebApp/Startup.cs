@@ -1,6 +1,7 @@
 using System;
 using eRentSolution.Integration;
 using eRentSolution.ViewModels.System.Users;
+using eRentSolution.WebApp.Hubs;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -18,7 +19,7 @@ namespace eRentSolution.WebApp
         {
             Configuration = configuration;
         }
-
+        
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -75,8 +76,11 @@ namespace eRentSolution.WebApp
             app.UseAuthorization();
             app.UseSession();
 
+            
+
             app.UseEndpoints(endpoints =>
             {
+
                 endpoints.MapControllerRoute(
                     name: "Product Category",
                     pattern: "categories/{categoryId}", new

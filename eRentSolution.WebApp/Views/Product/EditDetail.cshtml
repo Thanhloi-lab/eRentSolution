@@ -8,7 +8,7 @@
 
 
 <div class="container-contact100">
-    <div class="wrap-contact100">
+    <div class="wrap-contact100" style="width:auto; max-width:1024px;">
         <form asp-action="EditDetail" enctype="multipart/form-data" method="post" class="contact100-form validate-form">
             <span class="contact100-form-title">
                 Cập nhật chi tiết sản phẩm
@@ -28,7 +28,7 @@
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-        
+
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Giá gốc</span>
                 <input class="input100" asp-for="OriginalPrice">
@@ -43,7 +43,7 @@
             </div>
             <div class="wrap-input100 validate-input">
                 <span class="label-input100">Chi tiết</span>
-                <textarea class="input100" rows="5" asp-for="Detail"></textarea>
+                <textarea class="input100" rows="5" asp-for="Detail" id="mytextarea"></textarea>
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Detail" class="text-danger"></span>
             </div>
@@ -77,3 +77,21 @@
     </div>
 </div>
 
+
+<script>
+    tinymce.init({
+        selector: '#mytextarea',
+        plugins: [
+            'a11ychecker', 'advlist', 'advcode', 'advtable', 'autolink', 'checklist', 'export',
+            'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
+            'powerpaste', 'fullscreen', 'formatpainter', 'insertdatetime', 'media', 'table', 'help', 'wordcount',
+            "preview","importcss","searchreplace","autolink","autosave","save", "directionality","code","visualblocks",
+            "visualchars", "fullscreen", "image", "link", "media", "template", "codesample", "table", "charmap", "pagebreak", "nonbreaking", "anchor",
+            "insertdatetime","advlist","lists","wordcount","help","charmap","table","emoticons",
+        ],
+        fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt",
+        toolbar: 'undo redo | formatpainter casechange blocks | bold italic backcolor | ' +
+            'alignleft aligncenter alignright alignjustify | ' +
+            'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
+    });
+</script>

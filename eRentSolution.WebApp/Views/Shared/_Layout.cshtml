@@ -20,6 +20,8 @@
 
     <link href="~/css/style.css" rel="stylesheet" />
     <script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
+    <script src="~/lib/signalr/signalr.js"></script>
+
 </head>
 <body>
     <div style="position:relative;z-index:99999;" class="box-header">
@@ -59,35 +61,37 @@
                                     <li class="dropdown-menu-item">
                                         @if (User.Identity.IsAuthenticated)
                                         {
-                                <a href="/User/Details/@User.Claims.FirstOrDefault(x=>x.Type == SystemConstant.AppSettings.NameIdentifierClaimType).Value" class="dropdown-menu-link">
-                                    <div>
-                                        <i class="fas fa-user-tie"></i>
-                                    </div>
-                                    <span>Hồ sơ cá nhân</span>
-                                </a>}
+                                            <a href="/User/Details/@User.Claims.FirstOrDefault(x=>x.Type == SystemConstant.AppSettings.NameIdentifierClaimType).Value" class="dropdown-menu-link">
+                                                <div>
+                                                    <i class="fas fa-user-tie"></i>
+                                                </div>
+                                                <span>Hồ sơ cá nhân</span>
+                                            </a>}
 
                                     </li>
 
                                     @if (User.Identity.IsAuthenticated)
                                     {
-                                <li class="dropdown-menu-item">
-                                    <a style=" class="dropdown-menu-link">
-                                        <form method="post" asp-controller="account" asp-action="Logout" class="dropdown-menu-link">
-                                            <button type="submit" class="dropdown-item" style="width: 100%; border:none; outline:none; color:black;background-color:#fff;  padding:10px 80px; margin-left:6px; ">Đăng xuất</button>
-                                        </form>
-                                    </a>
-                                </li> }
-                                            else
-                                            {
-                                <li class="dropdown-menu-item">
-                                    <a href="/Account/Register" class="dropdown-menu-link">
-                                        <div>
-                                            <i class="fas fa-spinner"></i>
-                                        </div>
-                                        <span>Đăng ký</span>
-                                    </a>
+                                        <li class="dropdown-menu-item">
+                                            <a style=" class="dropdown-menu-link">
+                                                <form method="post" asp-controller="account" asp-action="Logout" class="dropdown-menu-link">
+                                                    <button type="submit" class="dropdown-item" style="width: 100%; border:none; outline:none; color:black;background-color:#fff;  padding:10px 80px; margin-left:6px; ">Đăng xuất</button>
+                                                </form>
+                                            </a>
+                                        </li>
+ }
+                                    else
+                                    {
+                                        <li class="dropdown-menu-item">
+                                            <a href="/Account/Register" class="dropdown-menu-link">
+                                                <div>
+                                                    <i class="fas fa-spinner"></i>
+                                                </div>
+                                                <span>Đăng ký</span>
+                                            </a>
 
-                                </li>}
+                                        </li>
+}
 
                                 </ul>
                             </div>
@@ -122,7 +126,7 @@
                             <svg class="appWrapper-Header-icon login-avatar" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><g class="svg-stroke" fill="none" fill-rule="evenodd" stroke="#000" stroke-width="1.2"><circle cx="15" cy="15" r="14.4"></circle><circle cx="15" cy="12" r="4.5"></circle><path d="M25.442 24.63c-1.453-4.536-5.579-7.807-10.442-7.807-4.932 0-9.106 3.365-10.502 8"></path></g></svg>
                             <span>Đăng nhập</span>
                         </a>
-                    </div> 
+                    </div>
                 }
                 else
                 {
@@ -132,7 +136,7 @@
                             <span>@User.Identity.Name</span>
                         </a>
                     </div>
-                 }
+                }
                 <div class="header__box-upload">
                     <a href="/Product/Create">
                         <i class="header__box-upload-icon fas fa-upload"></i>
@@ -172,7 +176,7 @@
 
         </div>
     </div>
-   
+
 
     <footer class="footer">
         <div class="grid">
@@ -243,7 +247,7 @@
                 <div class="grid__column-2-4">
                     <h3 class="footer__heading">Vào cửa hàng trên ứng dụng</h3>
                     <div class="footer__download">
-                        <img src="https://img.tickid.vn/photos/qrcode_base64/aHR0cDovL2h5cGVydXJsLmNvL215b2h1aQ" alt="" class="footer__download-qr">
+                        <img src="/QR.png" alt="" class="footer__download-qr">
                         <div class="footer__download-app">
                             <a href="" class="footer__download-app-link"><img src="http://demo.shop.tickid.vn/assets/images/icons/759416b55e2bd69ecc360ee2faab7ad0.png" alt="" class="footer__download-app-img"></a>
 
@@ -254,16 +258,34 @@
                 </div>
             </div>
 
-            </div>
-            <div class="footer__bottom">
-                <div class="grid">
-                    <div class="grid__row">
-                        <p class="footer__text">© 2020 - Bản quyền thuộc về Lợi</p>
-                    </div>
+        </div>
+        <div class="footer__bottom">
+            <div class="grid">
+                <div class="grid__row">
+                    <p class="footer__text">© 2020 - Bản quyền thuộc về Lợi</p>
                 </div>
             </div>
+        </div>
 
     </footer>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded',
+            function () {
+
+                // Start the connection.
+                var connection = new signalR.HubConnectionBuilder()
+                    .withUrl('https://localhost:5001/onlinecount',
+                        {
+                            skipNegotiation: true,
+                            transport: signalR.HttpTransportType.WebSockets
+                        })
+                    .build();
+                connection.start()
+                    .catch(error => {
+                        console.error(error.messageReservationHub);
+                    });
+            });
+    </script>
 </body>
 
 <script>

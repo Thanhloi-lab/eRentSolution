@@ -7,6 +7,7 @@ using eRentSolution.Application.System.Roles;
 using eRentSolution.Application.System.Users;
 using eRentSolution.Application.Utilities.Contacts;
 using eRentSolution.Application.Utilities.Slides;
+using eRentSolution.BackendApi.Hubs;
 using eRentSolution.Data.EF;
 using eRentSolution.Data.Entities;
 using eRentSolution.Utilities.Constants;
@@ -36,9 +37,15 @@ namespace eRentSolution.BackendApi
 
         public IConfiguration Configuration { get; }
 
+        // Enables SignalR for online user count.
+        public static bool EnableSignalR { get; } = true;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            if (EnableSignalR)
+                services.AddSignalR();
+
             services.AddDbContext<eRentDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString(SystemConstant.MainConnectionString)));
 
@@ -155,9 +162,12 @@ namespace eRentSolution.BackendApi
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger eRentSolution V1");
             });
 
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                if (EnableSignalR)
+                    endpoints.MapHub<OnlineCountHub>("/onlinecount");
             });
         }
     }

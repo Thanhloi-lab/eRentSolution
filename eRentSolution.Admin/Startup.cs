@@ -1,4 +1,5 @@
 using System;
+using eRentSolution.AdminApp.Hubs;
 using eRentSolution.Data.EF;
 using eRentSolution.Data.Entities;
 using eRentSolution.Integration;
@@ -22,7 +23,6 @@ namespace eRentSolution.Admin
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.

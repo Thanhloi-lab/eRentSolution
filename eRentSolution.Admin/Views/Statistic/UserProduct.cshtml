@@ -1,7 +1,7 @@
 ﻿@using eRentSolution.ViewModels.Common;
 @model PagedResult<eRentSolution.ViewModels.Catalog.Products.UserProductStatisticViewModel>
 
-@{ ViewData["Title"] = "Thống kê sản phẩm người dùng";
+@{ ViewData["Title"] = "Thống kê tin tức người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 @section Scripts{
     <script>
@@ -14,10 +14,10 @@
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src='https://cdn.jsdelivr.net/gh/vietblogdao/js/districts.min.js'></script>
 <div class="container-fluid">
-    <h1 class="mt-4">Thống kê sản phẩm người dùng</h1>
+    <h1 class="mt-4">Thống kê tin tức người dùng</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Thống kê sản phẩm người dùng</li>
+        <li class="breadcrumb-item active">Thống kê tin tức người dùng</li>
     </ol>
     <div class="card mb-12">
         <div class=" card-header">
@@ -65,7 +65,7 @@
                                 Tài khoản
                             </th>
                             <th>
-                                Số sản phẩm
+                                Số tin tức
                             </th>
                             <th>
                                 Tổng lượt xem

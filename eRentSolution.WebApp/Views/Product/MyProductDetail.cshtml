@@ -150,7 +150,7 @@
                     @Html.DisplayFor(model => item.ProductDetailName)
                 </td>
                 <td>
-                    <p style="word-wrap:break-word; width:200px;"> @Html.DisplayFor(model => item.Detail)</p>
+                    <p style="word-wrap:break-word; width:200px;"> @Html.Raw(item.Detail)</p>
 
                 </td>
                 <td>
@@ -173,7 +173,7 @@
                 </td>
                 <td>
 
-                <div style="display:flex; width:311px;height:113px; flex-wrap:wrap; ">
+                <div style="display: flex; max-width: 200px; flex-wrap: wrap; justify-content: center;">
                     @{ var i = 0;
                         foreach (var image in item.Images)
                         {
@@ -197,26 +197,26 @@
                 </div>
                 </td>
                 <td>
-                    <div style="display:flex;">
-                        <form asp-action="AddImage" method="get">
+                    <div style="display: flex; max-width: 200px; flex-direction: row; flex-wrap: wrap; justify-content:center;">
+                        <form asp-action="AddImage" method="get" style=" padding: 5px;">
                             <input asp-for="@Model.Id" name="productId" type="hidden" input />
                             <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
                             <input class="btn info" type="submit" value="Thêm ảnh" />
                         </form>
-                        <form>
+                        <form style=" padding: 5px;">
 
                             <input onclick="myFunction1()" class="btn danger" type="button" value="Xóa ảnh" />
                         </form>
-                        <form>
+                        <form style=" padding: 5px;">
 
                             <input onclick="myFunction2()" class="btn success" type="button" value="Sửa ảnh" />
                         </form>
-                        <form asp-action="EditDetail" method="get">
+                        <form asp-action="EditDetail" method="get" style=" padding: 5px;">
                             <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
                             <input asp-for="@Model.Id" name="productId" type="hidden" input />
                             <input class="btn warning" type="submit" value="Sửa chi tiết" />
                         </form>
-                        <form asp-action="DeleteDetail" method="get">
+                        <form asp-action="DeleteDetail" method="get" style=" padding: 5px;">
                             <input asp-for="@item.Id" name="productDetailId" type="hidden" input />
                             <input asp-for="@Model.Id" name="productId" type="hidden" input />
                             <input class="btn danger" type="submit" value="Xóa chi tiểt" />

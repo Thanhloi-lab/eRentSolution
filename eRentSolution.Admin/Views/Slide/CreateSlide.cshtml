@@ -1,7 +1,7 @@
 ﻿@model eRentSolution.ViewModels.Utilities.Slides.SlideCreateRequest
 
 @{
-    ViewData["Title"] = "CreateSlide";
+    ViewData["Title"] = "Tạo tin tức trình chiếu";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -21,7 +21,7 @@
                 <form asp-action="CreateSlide" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="ProductUrl" class="control-label">Đường dẫn sản phẩm</label>
+                        <label asp-for="ProductUrl" class="control-label">Đường dẫn tin tức</label>
                         <input asp-for="ProductUrl"  class="form-control" />
                         <span asp-validation-for="ProductUrl" class="text-danger"></span>
                     </div>

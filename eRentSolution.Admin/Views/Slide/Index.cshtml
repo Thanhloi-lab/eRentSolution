@@ -2,7 +2,7 @@
 @model PagedResult<eRentSolution.ViewModels.Utilities.Slides.SlideViewModel>
 
 @{
-    ViewData["Title"] = "Danh sách sản phẩm";
+    ViewData["Title"] = "Danh sách tin tức";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Scripts{
@@ -13,7 +13,7 @@
     </script>
 }
 <div class="container-fluid">
-    <h1 class="mt-4">Danh sách sản phẩm trình chiếu</h1>
+    <h1 class="mt-4">Danh sách tin tức trình chiếu</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="index" asp-controller="home">Trang chủ</a></li>
         <li class="breadcrumb-item active">Danh sách</li>
@@ -68,10 +68,10 @@
                                 Tên slide
                             </th>
                             <th>
-                                Mã sản phẩm
+                                Mã tin tức
                             </th>
                             <th>
-                                Tên sản phẩm
+                                Tên tin tức
                             </th>
                             <th>
                                 Tình trạng

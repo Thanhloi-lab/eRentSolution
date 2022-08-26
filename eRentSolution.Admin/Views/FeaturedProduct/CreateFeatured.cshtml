@@ -1,12 +1,12 @@
 ﻿@model eRentSolution.ViewModels.Catalog.Products.FeatureProductRequest
-@{ ViewData["Title"] = "CreateSlide";
+@{ ViewData["Title"] = "Tạo tin tức nổi bật";
                 Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 <div class="container-fluid">
-    <h1 class="mt-4">Tạo mới slide</h1>
+    <h1 class="mt-4">Tạo mới sản phẩm nổi bật</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Tạo mới slide</li>
+        <li class="breadcrumb-item active">Tạo mới sản phẩm nổi bật</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -18,7 +18,7 @@
                 <form asp-action="CreateFeatured" >
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="Url" class="control-label">Đường dẫn sản phẩm</label>
+                        <label asp-for="Url" class="control-label">Đường dẫn tin tức</label>
                         <input asp-for="Url" class="form-control" />
                         <span asp-validation-for="Url" class="text-danger"></span>
                     </div>

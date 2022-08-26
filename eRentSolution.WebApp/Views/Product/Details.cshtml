@@ -50,9 +50,7 @@
             <p style="word-wrap: break-word; width:500px;  white-space: pre-line;" class="box-description__text">
                 @Model.Product.Description
             </p>
-            <p style="word-wrap: break-word; width:500px;  white-space: pre-line;" class="box-description__text">
-                @Html.DisplayFor(model => item.Detail)
-            </p>
+            @Html.Raw(item.Detail)
 
             <span style="font-size: 1.4rem;" class="box-description__status-thue"><img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/ad_type.png" alt=""> Cho thuê: @Html.DisplayFor(model => item.Stock) phòng</span>
             <span class="box-description__s"><img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/size.png" alt=""> Diện tích: @(item.Width * item.Length) m2</span>

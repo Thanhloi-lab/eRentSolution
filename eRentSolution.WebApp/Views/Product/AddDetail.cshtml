@@ -1,21 +1,21 @@
 ﻿@model eRentSolution.ViewModels.Catalog.ProductDetails.ProductDetailCreateRequest
 
 @{ ViewData["Title"] = "AddDetail";
-   Layout = "~/Views/Shared/_Layout3.cshtml"; 
+    Layout = "~/Views/Shared/_Layout3.cshtml";
 }
 <link rel="stylesheet" href="~/css/input.css" />
 
 
 
 <div class="container-contact100">
-    <div class="wrap-contact100">
+    <div class="wrap-contact100" style="width:auto; max-width:1024px;">
         <form asp-action="AddDetail" enctype="multipart/form-data" class="contact100-form validate-form">
             <span class="contact100-form-title">
-                Tạo chi tiết sản phẩm
+                Tạo chi tiết tin tức
             </span>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="wrap-input100 validate-input">
-                <span class="label-input100">Tên loại sản phẩm</span>
+                <span class="label-input100">Tên loại tin tức</span>
                 <input class="input100" asp-for="ProductDetailName">
                 <span class="focus-input100"></span>
                 <span asp-validation-for="ProductDetailName" class="text-danger"></span>
@@ -39,8 +39,8 @@
                 <span asp-validation-for="Stock" class="text-danger"></span>
             </div>
             <div class="wrap-input100 validate-input">
-                <span class="label-input100">Chi tiết sản phẩm</span>
-                <textarea class="input100" asp-for="Detail"></textarea>
+                <span class="label-input100">Chi tiết sản phẩm</span>
+                <textarea class="input100" asp-for="Detail" id="mytextarea"></textarea>
                 <span class="focus-input100"></span>
                 <span asp-validation-for="Detail" class="text-danger"></span>
             </div>
@@ -78,3 +78,21 @@
         </form>
     </div>
 </div>
+
+<script>
+    tinymce.init({
+        selector: '#mytextarea',
+        plugins: [
+            'a11ychecker', 'advlist', 'advcode', 'advtable', 'autolink', 'checklist', 'export',
+            'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
+            'powerpaste', 'fullscreen', 'formatpainter', 'insertdatetime', 'media', 'table', 'help', 'wordcount',
+            "preview", "importcss", "searchreplace", "autolink", "autosave", "save", "directionality", "code", "visualblocks",
+            "visualchars", "fullscreen", "image", "link", "media", "template", "codesample", "table", "charmap", "pagebreak", "nonbreaking", "anchor",
+            "insertdatetime", "advlist", "lists", "wordcount", "help", "charmap", "table", "emoticons",
+        ],
+        fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt",
+        toolbar: 'undo redo | formatpainter casechange blocks | bold italic backcolor | ' +
+            'alignleft aligncenter alignright alignjustify | ' +
+            'bullist numlist checklist outdent indent | removeformat | a11ycheck code table help'
+    });
+</script>
