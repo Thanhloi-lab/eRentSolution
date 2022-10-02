@@ -21,46 +21,46 @@
 <div class="box-container">
     @foreach (var item in Model.Product.ProductDetailViewModels)
     {
-        <div class="box-photo-slider @Html.DisplayFor(model => item.ProductDetailName)">
-        <div class="slideshow-container">
-        @foreach (var img in item.Images)
-        {
-            <div class="mySlides fade">
-                <div class="numbertext">2 / 3</div>
-                <img class="slider-photo" src="@Configuration["BaseAddress"]/user-content/@img.ImagePath" alt="photo" style="width:100%">
+        <div class="box-photo-slider @Html.DisplayFor(model => item.ProductDetailName)" style="max-width:1024px; flex:1;">
+            <div class="slideshow-container" style="max-width:none;">
+            @foreach (var img in item.Images)
+            {
+                <div class="mySlides fade">
+                    <div class="numbertext">2 / 3</div>
+                    <img class="slider-photo" src="@Configuration["BaseAddress"]/user-content/@img.ImagePath" alt="photo" style="width:100%">
 
+                </div>
+            }
+
+            <a class="prev" style="left:0px;" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
             </div>
-        }
+            <div class="box-description" style="max-width: none;">
+                <p class="box-description__name">@Model.Product.Name</p>
+                <p class="box-description__name">Loại phòng: @Html.DisplayFor(model => item.ProductDetailName)</p>
+                <span class="box-description__price">
+                    @Html.DisplayFor(model => item.Price)&#8363 /tháng
+                </span>
+                <span class="box-description__dtich"> - @(Model.Product.ProductDetailViewModels.ElementAt(0).Width * Model.Product.ProductDetailViewModels.ElementAt(0).Length) m2</span>
+                <p class="box-description__address">
+                    <img src="https://static.chotot.com/storage/icons/logos/ad-param/location.svg" alt="">
+                    <a style="text-decoration:none; font-size:13px; color:blue;" target="_blank" href="https://www.google.com.vn/maps/place/@Model.Product.Address">@Model.Product.Address</a>
+                    @*<span>@Model.Product.Address</span>*@
+                </p>
+                <p style="word-wrap: break-word; width:500px;  white-space: pre-line;" class="box-description__text">
+                    @Model.Product.Description
+                </p>
+                @Html.Raw(item.Detail)
 
-        <a class="prev" style="left:0px;" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
-        </div>
-        <div class="box-description">
-            <p class="box-description__name">@Model.Product.Name</p>
-            <p class="box-description__name">Loại phòng: @Html.DisplayFor(model => item.ProductDetailName)</p>
-            <span class="box-description__price">
-                @Html.DisplayFor(model => item.Price)&#8363 /tháng
-            </span>
-            <span class="box-description__dtich"> - @(Model.Product.ProductDetailViewModels.ElementAt(0).Width * Model.Product.ProductDetailViewModels.ElementAt(0).Length) m2</span>
-            <p class="box-description__address">
-                <img src="https://static.chotot.com/storage/icons/logos/ad-param/location.svg" alt="">
-                <a style="text-decoration:none; font-size:13px; color:blue;" target="_blank" href="https://www.google.com.vn/maps/place/@Model.Product.Address">@Model.Product.Address</a>
-                @*<span>@Model.Product.Address</span>*@
-            </p>
-            <p style="word-wrap: break-word; width:500px;  white-space: pre-line;" class="box-description__text">
-                @Model.Product.Description
-            </p>
-            @Html.Raw(item.Detail)
-
-            <span style="font-size: 1.4rem;" class="box-description__status-thue"><img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/ad_type.png" alt=""> Cho thuê: @Html.DisplayFor(model => item.Stock) phòng</span>
-            <span class="box-description__s"><img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/size.png" alt=""> Diện tích: @(item.Width * item.Length) m2</span>
-            <div style="margin-top: 20px;">
-                <span style="font-size: 1.4rem;"><img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/furnishing_rent.png" alt=""> Tình trạng nội thất: Nội thất đầy đủ</span>
-                <span style="font-size: 1.4rem; margin-left: 85px;"> <img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/deposit.png" alt=""> Số tiền cọc: @Html.DisplayFor(model => item.Price)&#8363</span>
+                <span style="font-size: 1.4rem;" class="box-description__status-thue"><img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/ad_type.png" alt=""> Cho thuê: @Html.DisplayFor(model => item.Stock) phòng</span>
+                <span class="box-description__s"><img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/size.png" alt=""> Diện tích: @(item.Width * item.Length) m2</span>
+                <div style="margin-top: 20px;">
+                    <span style="font-size: 1.4rem;"><img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/furnishing_rent.png" alt=""> Tình trạng nội thất: Nội thất đầy đủ</span>
+                    <span style="font-size: 1.4rem; margin-left: 85px;"> <img class="icon-detail" src="https://static.chotot.com/storage/icons/logos/ad-param/deposit.png" alt=""> Số tiền cọc: @Html.DisplayFor(model => item.Price)&#8363</span>
+                </div>
             </div>
-        </div>
 
-    </div>
+        </div>
     }
 
     <div class="box-sidebar">

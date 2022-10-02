@@ -779,6 +779,7 @@ namespace eRentSolution.Application.Catalog.Products
                              && cen.ActionId == action.Id
                             //&& pd.IsThumbnail == true
                         select new { p, c, pic };//, pd};
+                
 
             if (request.Status != null && request.Status.HasValue)
             {

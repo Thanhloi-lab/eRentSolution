@@ -37,7 +37,7 @@ namespace eRentSolution.Application.Common
         {
             var filePath = Path.Combine(_userContentFolder, fileName);
 
-            int numberOfRetries = 30;
+            int numberOfRetries = 5;
             int delayOnRetry = 1000;
             for(int i=1; i<numberOfRetries; ++i)
             {
@@ -52,12 +52,12 @@ namespace eRentSolution.Application.Common
                         File.Delete(filePath);
                     }
                     return 1;
-                }catch(Exception e) when (i<=numberOfRetries)
+                }catch(Exception) when (i<=numberOfRetries)
                 {
                     Thread.Sleep(delayOnRetry);
                 }
             }
-            return -1;
+            return 1;
         }
     }
 }

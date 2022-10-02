@@ -260,7 +260,7 @@ namespace eRentSolution.WebApp.Controllers
                 var assignResult = await _productApiClient.CategoryAssign(assignRequest.Id, assignRequest, SystemConstant.AppSettings.TokenWebApp);
                 if(assignResult.IsSuccessed)
                 {
-                    TempData["result"] = "Thêm sản phẩm thành công";
+                    TempData["result"] = "Thêm tin tức thành công";
                     return RedirectToAction("MyListProducts");
                 }
                 TempData["result"] = "Đã xảy ra lỗi trong quá trình thiết lập danh mục, vui lòng thiết lập lại sau";
